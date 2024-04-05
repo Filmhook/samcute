@@ -409,7 +409,7 @@ export default function Settings() {
                 
 
                   <View style={styles.rowSpacer} />
-                  <Text style={styles.rowLabel2}>change assword</Text>
+                  <Text style={styles.rowLabel2}>change password</Text>
                     <Text style={styles.rowValue}>*****</Text>
                 
                 </View>
