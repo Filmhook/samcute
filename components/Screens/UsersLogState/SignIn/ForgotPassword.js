@@ -12,7 +12,23 @@ export default function Forgetpass() {
 
   const [email, setEmail] = useState('');
 
+  const handleResetPassword = async () => {
+    try {
+      const auth = getAuth(app);
+      await sendPasswordResetEmail(auth, email);
 
+      // Show a success message to the user
+      Alert.alert(
+        'Password Reset Email Sent',
+        'Please check your email to reset your password.'
+      );
+    } catch (error) {
+      console.error('Error sending password reset email:', error.message);
+
+      // Show an error message to the user
+      Alert.alert('Error', 'Failed to send password reset email. Please try again.');
+    }
+  };
   return (
     <>
       <View style={styles.container}>
@@ -56,7 +72,7 @@ export default function Forgetpass() {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.resetButton}  >
+          <TouchableOpacity style={styles.resetButton} onPress={handleForgotPassword} >
             <Text style={styles.resetButtonText}>Reset Password</Text>
           </TouchableOpacity> 
         </View>
