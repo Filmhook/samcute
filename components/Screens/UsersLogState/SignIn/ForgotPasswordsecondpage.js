@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ForgotPasswordsecondpage() {
   const navigation = useNavigation();
@@ -14,9 +16,20 @@ export default function ForgotPasswordsecondpage() {
   };
 
   const handleResetPassword = async () => {
-    // Implement your password reset logic here
-    Alert.alert('Password Reset Email Sent', 'Please check your email to reset your password.');
+    try {
+      const response = await axios.post(`http://18.61.66.68:8080/filmhook-0.0.1/user/changePassword`, {
+        password: Password
+      });
+      console.log('Password changed', response.data);
+      // Show success message to the user
+      Alert.alert('Password Changed', 'Your password has been changed successfully.');
+    } catch (error) {
+      console.error('Error changing password:', error);
+      // Show error message to the user
+      Alert.alert('Error', 'An error occurred while changing your password. Please try again later.');
+    }
   };
+
 
   return (
     <View style={styles.container}>
@@ -31,7 +44,7 @@ export default function ForgotPasswordsecondpage() {
         <View style={styles.boxContent}>
           <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
             <TextInput
-              placeholder="Reenter Password"
+              placeholder="Password"
               maxLength={12}
               placeholderTextColor="black"
               value={Password}
