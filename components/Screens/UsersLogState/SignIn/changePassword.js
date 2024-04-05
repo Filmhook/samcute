@@ -1,46 +1,69 @@
-import React, {useState} from 'react';
-import {ImageBackground, Text, TouchableOpacity} from 'react-native';
-import {Image} from 'react-native';
-import {View, TextInput, Button, Alert, StyleSheet} from 'react-native';
+import React, { useState } from 'react';
+import { ImageBackground, Text, TouchableOpacity } from 'react-native';
+import { Image } from 'react-native';
+import { View, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-
+import { useNavigation } from '@react-navigation/native';
+import { nativeViewHandlerName } from 'react-native-gesture-handler/lib/typescript/handlers/NativeViewGestureHandler';
 const ChangePasswordScreen = () => {
-  const [email, setEmail] = useState('');
+  const navigation = useNavigation();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+
 
   const handleChangePassword = async () => {
     try {
-      const response = await fetch(
-        'https://filmhook.annularprojects.com/DemoProject-0.0.1-SNAPSHOT/user/changeUserPassword',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization:
-              'Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyTmFtZSI6IkpvaG4gRG9lIiwidXNlclR5cGUiOiJjb21tb25Vc2VyIiwiaWF0IjoxNzEwMzMwMjkzLCJleHAiOjE3MTAzMzExOTN9.Ko_mw5RzwyX9Jnn2sfRgEx3iNg8zeKMlryDjVuHJZ6e2STcSFlv-EW51Idv9GwYrAdN5hjAcvuIsu42o9T-emw',
-          },
-          body: JSON.stringify({
-            email: email,
-            currentPassword: currentPassword,
-            newPassword: newPassword,
-          }),
-        },
-      );
+      // Fetch JWT token and email from AsyncStorage
+      const jwt = await AsyncStorage.getItem('jwt');
+      const email = await AsyncStorage.getItem('mail');
 
-      if (!response.ok) {
-        throw new Error('Failed to change password');
+      // Validate current password field
+      if (!currentPassword) {
+        Alert.alert('Error', 'Please enter your current password.');
+        return;
       }
 
-      // Password changed successfully
-      Alert.alert('Success', 'Password changed successfully');
+      // Check if new password and confirm password match
+      if (newPassword !== confirmPassword) {
+        Alert.alert('Error', 'New password and confirm password do not match.');
+        return;
+      }
+
+      // Make API call to change password
+      const response = await axios.post(
+        'http://18.61.66.68:8080/filmhook-0.0.1/user/changeUserPassword',
+        {
+          email: email,
+          currentPassword: currentPassword,
+          newPassword: newPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`, // Correct syntax for Authorization header
+          },
+        }
+      );
+
+      // Log response and show success message
+      console.log('Password changed', response.data);
+      Alert.alert('Success', 'Password changed successfully.');
+      navigation.navigate('Tabbar')
     } catch (error) {
-      Alert.alert('Error', error.message);
+      const jwt = await AsyncStorage.getItem('jwt');
+      const email = await AsyncStorage.getItem('email');
+      // Handle errors
+      console.error('Error:', error);
+      console.log(jwt, email)
+      Alert.alert('Error', 'An error occurred while changing password.');
     }
   };
 
@@ -55,7 +78,7 @@ const ChangePasswordScreen = () => {
                 width: responsiveWidth(35),
                 alignSelf: 'center',
               }}
-              source={require('../../../Assets/Login_page/FH_logos.png')}
+              source={require('../../Assets/Login_page/FH_logos.png')}
               resizeMode="stretch"
             />
           </View>
@@ -68,8 +91,8 @@ const ChangePasswordScreen = () => {
               alignItems: 'center',
             }}>
             <Image
-              style={{height: responsiveHeight(7), width: responsiveWidth(87)}}
-              source={require('../../../Assets/Login_page/Film_hook.png')}
+              style={{ height: responsiveHeight(7), width: responsiveWidth(87) }}
+              source={require('../../Assets/Login_page/Film_hook.png')}
               resizeMode="stretch"
             />
           </View>
@@ -80,14 +103,14 @@ const ChangePasswordScreen = () => {
           <View style={styles.boxContent}>
             <ImageBackground
               style={styles.inputContainer}
-              source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+              source={require('../../Assets/Login_page/Medium_B_User_Profile.png')}
               resizeMode="stretch">
               <TextInput
                 style={styles.input}
-                placeholder="Enter your email"
+                placeholder="Current Password"
                 placeholderTextColor="black"
-                value={email}
-                onChangeText={text => setEmail(text)}
+                value={currentPassword}
+                onChangeText={text => setCurrentPassword(text)}
               />
             </ImageBackground>
           </View>
@@ -95,28 +118,28 @@ const ChangePasswordScreen = () => {
           <View style={styles.boxContent}>
             <ImageBackground
               style={styles.inputContainer}
-              source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+              source={require('../../Assets/Login_page/Medium_B_User_Profile.png')}
               resizeMode="stretch">
               <TextInput
                 style={styles.input}
-                placeholder="Current Password"
+                placeholder="New Password"
                 placeholderTextColor="black"
-                onChangeText={text => setCurrentPassword(text)}
-                value={currentPassword}
+                value={newPassword}
+                onChangeText={text => setNewPassword(text)}
               />
             </ImageBackground>
           </View>
           <View style={styles.boxContent}>
             <ImageBackground
               style={styles.inputContainer}
-              source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+              source={require('../../Assets/Login_page/Medium_B_User_Profile.png')}
               resizeMode="stretch">
               <TextInput
                 style={styles.input}
-                placeholder="New Password"
+                placeholder="Confirm Password"
                 placeholderTextColor="black"
-                onChangeText={text => setNewPassword(text)}
-                value={newPassword}
+                value={confirmPassword}
+                onChangeText={text => setConfirmPassword(text)}
               />
             </ImageBackground>
           </View>
@@ -156,7 +179,7 @@ const styles = StyleSheet.create({
     width: responsiveWidth(85.1),
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: responsiveHeight(1),
+    marginBottom: responsiveHeight(2),
     borderRadius: responsiveWidth(3.2),
     borderWidth: responsiveWidth(0.3),
     color: 'black',
@@ -227,14 +250,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     top: responsiveHeight(2),
     marginTop: responsiveHeight(2),
-    width: responsiveWidth(40),
+    width: responsiveWidth(45),
 
     borderRadius: responsiveWidth(3),
     // height: responsiveHeight(6),
   },
   resetButtonText: {
     color: 'white',
-    fontSize: responsiveFontSize(2.3),
+    fontSize: responsiveFontSize(2.2),
     fontWeight: 'bold',
     textAlign: '',
   },

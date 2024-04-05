@@ -17,7 +17,7 @@ export default function Login() {
   const navigation = useNavigation();
 
 
-  const handleForgotPassword = async () => {
+  const handle_forgotpass = async () => {
     console.log("clicked")
     navigation.navigate('Forgetpass')
   }
@@ -38,7 +38,7 @@ export default function Login() {
       const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/user/login', {
         email: email,
         password: password,
-        
+
       });
 
       // Extract JWT token and ID from response data
@@ -48,14 +48,14 @@ export default function Login() {
 
       // Store JWT token and ID in AsyncStorage
       await AsyncStorage.setItem('jwt', jwt);
-      
-      await AsyncStorage.setItem('mail',emailId)
+
+      await AsyncStorage.setItem('mail', emailId)
 
       // Log stored values for verification
 
- 
+
       const storedMail = await AsyncStorage.getItem('mail')
-      console.log('stored ',storedMail)
+      console.log('stored ', storedMail)
 
 
 
@@ -76,27 +76,27 @@ export default function Login() {
   //=======================================================================
 
 
-  // const handleLogin = () => {
-  //   const emailRegex = /\S+@\S+\.\S+/; // Regex pattern for a basic email format check
-  //   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/; // Regex pattern to check password length (at least 6 characters)
+  const handleLogin = () => {
+    const emailRegex = /\S+@\S+\.\S+/; // Regex pattern for a basic email format check
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/; // Regex pattern to check password length (at least 6 characters)
 
 
-  //   if (!emailRegex.test(email.trim())) {
-  //     alert('Please enter a valid email address');
-  //     return;
+    if (!emailRegex.test(email.trim())) {
+      alert('Please enter a valid email address');
+      return;
 
-  //   } else if (!passwordRegex.test(password.trim())) {
-  //     alert('Password contains "0-9, A-Z, a-z, @-$"');
-  //     return;
-  //   }
-  //   else if (password.trim().length < 8) {
-  //     alert('password length at least 8 characters')
-  //   }
-  //   else {
-  //     // handleLoginAuth();
-  //     navigation.navigate('Tabbar');
-  //   }
-  // };
+    } else if (!passwordRegex.test(password.trim())) {
+      alert('Password contains "0-9, A-Z, a-z, @-$"');
+      return;
+    }
+    else if (password.trim().length < 8) {
+      alert('password length at least 8 characters')
+    }
+    else {
+      // handleLoginAuth();
+      navigation.navigate('Tabbar');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -164,7 +164,7 @@ export default function Login() {
 
 
         <TouchableOpacity style={styles.forgotPasswordButton}
-          onPress={handleForgotPassword} >
+          onPress={handle_forgotpass} >
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.loginButton}
@@ -172,7 +172,7 @@ export default function Login() {
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
 
-        <View style={{ flexDirection: 'row', top: responsiveHeight(20) }}> 
+        <View style={{ flexDirection: 'row', top: responsiveHeight(20) }}>
 
           <Text style={styles.signupTopic}>I don't have an account?/</Text>
           <TouchableOpacity
