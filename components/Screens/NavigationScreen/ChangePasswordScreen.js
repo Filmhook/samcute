@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, {useEffect ,useState} from 'react';
 import {ImageBackground, Text, TouchableOpacity} from 'react-native';
 import {Image} from 'react-native';
-import {View, TextInput, Button, Alert, StyleSheet} from 'react-native';
+import { View, TextInput, Button, Alert, StyleSheet } from 'react-native';
+
 
 import {
   responsiveFontSize,
@@ -9,46 +10,39 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import { AsyncStorage } from 'react-native';
+
 const ChangePasswordScreen = () => {
   const navigation = useNavigation();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleChangePassword = async () => {
+const handleChangePassword = async () => {
     try {
-      // Validate if new password matches confirm password
-      if (newPassword !== confirmPassword) {
-        throw new Error('New password and confirm password do not match');
-      }
+        const jwt = await AsyncStorage.getItem('jwt'); // Assuming jwt is fetched from AsyncStorage
+        const response = await axios.post(
+            'http://18.61.66.68:8080/filmhook-0.0.1/user/changeUserPassword',
+            {
+                email: email,
+                currentPassword: currentPassword,
+                newPassword: newPassword
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${jwt}` // Correct syntax for Authorization header
+                }
+            }
+        );
 
-      const response = await fetch(
-        'https://filmhook.annularprojects.com/DemoProject-0.0.1-SNAPSHOT/user/changeUserPassword',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization:
-              'Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyTmFtZSI6IkpvaG4gRG9lIiwidXNlclR5cGUiOiJjb21tb25Vc2VyIiwiaWF0IjoxNzEwMzMwMjkzLCJleHAiOjE3MTAzMzExOTN9.Ko_mw5RzwyX9Jnn2sfRgEx3iNg8zeKMlryDjVuHJZ6e2STcSFlv-EW51Idv9GwYrAdN5hjAcvuIsu42o9T-emw',
-          },
-          body: JSON.stringify({
-            currentPassword: currentPassword,
-            newPassword: newPassword,
-            confirmPassword: confirmPassword,
-          }),
-        },
-      );
+        console.log("Password changed", response.data);
 
-      if (!response.ok) {
-        throw new Error('Failed to change password');
-      }
-
-      // Password changed successfully
-      Alert.alert('Success', 'Password changed successfully');
     } catch (error) {
-      Alert.alert('Error', error.message);
+        console.error("Error:", error);
     }
-  };
+};
+
 
   return (
     <>

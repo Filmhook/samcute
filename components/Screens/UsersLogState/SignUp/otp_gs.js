@@ -13,46 +13,22 @@ export default function Otp_GS() {
 
     const verifyOtp = async () => {
         try {
-            const id = await AsyncStorage.getItem('userId'); // Retrieve id from AsyncStorage
-            const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/user/verify', {
-                userId: parseInt(id), // Convert id to an integer if needed
-                otp: otp // Assuming otp is a variable holding the OTP input value
+             // Retrieve id from AsyncStorage
+            const response = await axios.post(`http://18.61.66.68:8080/filmhook-0.0.1/user/verifyEmailOtp`, {
+                 // Convert id to an integer if needed
+                emailOtp: otp
             });
 
             console.log("success", response.data);
             Alert.alert("Mobile number Verified successfully");
             navigation.navigate('Login')
         } catch (error) {
-            const id = await AsyncStorage.getItem('userId'); // Retrieve id again in the catch block
-            console.error("Error while verifying OTP:", error);
-            console.log("Failed to verify OTP. User ID:", id);
+            
             console.log("Input OTP:", otp);
         }
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Retrieve the code from AsyncStorage
-                const code = await AsyncStorage.getItem('code');
 
-                // Fetch data from the API endpoint using the retrieved code
-                const response = await axios.get(`http://18.61.66.68:8080/filmhook-0.0.1/user/verifyUser?code=${code}`);
-
-                // Log the retrieved code
-                console.log(code);
-                console.log(response.data)
-                
-            } catch (error) {
-                console.error(error);
-                const code = await AsyncStorage.getItem('code');
-                console.log(code);
-            }
-        };
-
-        // Call the fetchData function
-        fetchData();
-    }, []);
 
 
 
