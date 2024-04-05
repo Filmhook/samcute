@@ -38,26 +38,22 @@ export default function Login() {
       const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/user/login', {
         email: email,
         password: password,
-        
+        userType: 'commonUser'
       });
 
       // Extract JWT token and ID from response data
       const jwt = response.data.jwt;
-
-      const emailId = response.data.email;
+      const id = response.data.id;
 
       // Store JWT token and ID in AsyncStorage
       await AsyncStorage.setItem('jwt', jwt);
-      
-      await AsyncStorage.setItem('mail',emailId)
+      await AsyncStorage.setItem('id', id.toString());
 
       // Log stored values for verification
-
- 
-      const storedMail = await AsyncStorage.getItem('mail')
-      console.log('stored ',storedMail)
-
-
+      const storedJwt = await AsyncStorage.getItem('jwt');
+      const storedId = await AsyncStorage.getItem('id');
+      console.log('Stored JWT token:', storedJwt);
+      console.log('Stored ID:', storedId);
 
       Alert.alert('Login Successful');
       console.log('Login successful:', response.data);

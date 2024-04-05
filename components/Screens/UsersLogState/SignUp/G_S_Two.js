@@ -226,7 +226,7 @@ export default function SignUpTwo() {
 
   const commanUser = async () => {
     try {
-      const response = await axios.post(`https://filmhook.annularprojects.com/filmhook-0.0.1/user/register`, {
+      const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/user/register', {
         name: name,
         email: mail,
         password: Password,
@@ -269,7 +269,7 @@ export default function SignUpTwo() {
   };
   const registerUser = async () => {
     try {
-      const response = await axios.post('https://filmhook.annularprojects.com/filmhook-0.0.1/user/register', {
+      const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/user/register', {
         name: name,
         email: mail,
         password: Password,
@@ -281,6 +281,24 @@ export default function SignUpTwo() {
         country: selectedCountry,
         state: selectedState
       });
+
+      const userDetails = response.data.data.userDetails;
+      const userId = userDetails.userId; // Access userId from userDetails
+      const code = response.data.data.verificationCode;
+
+
+      await AsyncStorage.setItem('userId', userId.toString());
+      await AsyncStorage.setItem('code', code)
+
+      // await AsyncStorage.setItem('code', code);
+
+      const storedId = await AsyncStorage.getItem('userId');
+      const storedCode = await AsyncStorage.getItem('code');
+
+
+
+      console.log(storedId);
+      console.log(storedCode)
 
       console.log('Registration successful:', response.data);
       navigation.navigate('Otp_GS');
