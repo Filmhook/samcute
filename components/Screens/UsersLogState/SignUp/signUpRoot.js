@@ -25,6 +25,7 @@ import SignUp_Login from '../SignIn/signup_login';
 import SignOut_Login from '../SignIn/signout_login';
 import Otp from './otp';
 import Otp_GS from './otp_gs';
+import ForgotPasswordsecondpage from '../SignIn/ForgotPasswordsecondpage';
 
 const Stack = createNativeStackNavigator();
 
@@ -69,6 +70,9 @@ export default function SignUpRoot() {
                 options={{ headerShown: false }} />
 
             <Stack.Screen name='Industry_S_Confirm' component={Industry_S_Confirm}
+                options={{ headerShown: false }} />
+
+<Stack.Screen name='ForgotPasswordsecondpage' component={ForgotPasswordsecondpage}
                 options={{ headerShown: false }} />
 
 

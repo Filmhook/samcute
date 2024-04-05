@@ -35,8 +35,8 @@ export default function Forgetpass() {
         <View style={styles.formContainer}>
           <View style={styles.headerContainer}>
             <Image style={{
-              height: responsiveHeight(25),
-              width: responsiveWidth(35), alignSelf: 'center'
+              height: responsiveHeight(21),
+              width: responsiveWidth(41), alignSelf: 'center'
             }} source={require("../../../Assets/Login_page/FH_logos.png")} resizeMode="stretch" />
 
           </View>
@@ -61,7 +61,7 @@ export default function Forgetpass() {
             </ImageBackground>
           </View>
 
-          <View style={{ flexDirection: 'row', width: '80%', justifyContent: 'center', alignItems: 'center', top: responsiveHeight(2.2) }}>
+          {/* <View style={{ flexDirection: 'row', width: '80%', justifyContent: 'center', alignItems: 'center', top: responsiveHeight(2.2) }}>
 
             <Text style={styles.backTopic}>Already have an account </Text>
             <TouchableOpacity
@@ -70,9 +70,9 @@ export default function Forgetpass() {
             >
               <Text style={styles.signInButtonText}> Login</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
-          <TouchableOpacity style={styles.resetButton} onPress={handleForgotPassword} >
+          <TouchableOpacity style={styles.resetButton} onPress={()=>navigation.navigate('ForgotPasswordsecondpage')} >
             <Text style={styles.resetButtonText}>Reset Password</Text>
           </TouchableOpacity> 
         </View>
