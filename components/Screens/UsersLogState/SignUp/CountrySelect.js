@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import {Dropdown} from 'react-native-element-dropdown';
-import axios from 'axios';
+import PublicAPI from '../../../api/publicAPI';
 import {BASE_URL, API_KEY} from '@env';
 
 const App = () => {
@@ -32,7 +32,7 @@ const App = () => {
       },
     };
 
-    axios(config)
+    PublicAPI(config)
       .then(response => {
         console.log(JSON.stringify(response.data));
         var count = Object.keys(response.data).length;
@@ -59,7 +59,7 @@ const App = () => {
       },
     };
 
-    axios(config)
+    PublicAPI(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
         var count = Object.keys(response.data).length;
@@ -86,7 +86,7 @@ const App = () => {
       },
     };
 
-    axios(config)
+    PublicAPI(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
         var count = Object.keys(response.data).length;

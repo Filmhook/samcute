@@ -14,9 +14,9 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import PublicAPI from '../../../api/publicAPI';
 const BodyMeasurement = () => {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -46,8 +46,8 @@ const BodyMeasurement = () => {
       const jwt = await AsyncStorage.getItem('jwt');
       const userId = await AsyncStorage.getItem('id');
 
-      const response = await axios.put(
-        `https://filmhook.annularprojects.com/filmhook-0.0.1/user/updateBiologicalDetails`,
+      const response = await PublicAPI.put(
+        `/user/updateBiologicalDetails`,
         {
           userId: userId,
           height: height,

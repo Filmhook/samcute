@@ -14,7 +14,8 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import axios from 'axios';
+
+import PublicAPI from '../../../api/publicAPI';
 
 export default function Professionalinfo() {
   const [expanded, setExpanded] = useState(false);
@@ -43,8 +44,8 @@ export default function Professionalinfo() {
           // const userId = parseInt(StoredId);
 
           // If JWT and user ID exist, send them in the request headers and as parameters
-          const response = await axios.get(
-            `https://filmhook.annularprojects.com/filmhook-0.0.1/user/getUserByUserId?userId=1`,
+          const response = await PublicAPI.get(
+            `/user/getUserByUserId?userId=1`,
             {
               headers: {
                 Authorization: `Bearer ${jwt}`,

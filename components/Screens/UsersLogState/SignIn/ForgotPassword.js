@@ -1,9 +1,22 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image, ImageBackground } from 'react-native';
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
-import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
-
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+} from 'react-native';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
+import {useNavigation} from '@react-navigation/native';
+import PublicAPI from '../../../api/publicAPI';
 
 export default function Forgetpass() {
   const navigation = useNavigation();
@@ -17,7 +30,10 @@ export default function Forgetpass() {
 
   const handleResetPassword = async () => {
     // Implement your password reset logic here
-    Alert.alert('Password Reset Email Sent', 'Please check your email to reset your password.');
+    Alert.alert(
+      'Password Reset Email Sent',
+      'Please check your email to reset your password.',
+    );
   };
 
   const handleSendOTP = async () => {
@@ -25,23 +41,23 @@ export default function Forgetpass() {
       await sendOTP();
       setIsSendClicked(true);
     } catch (error) {
-      console.error("Error sending OTP:", error);
+      console.error('Error sending OTP:', error);
     }
   };
 
   const handleVerify = async () => {
     try {
-      const response = await axios.post(`http://18.61.66.68:8080/filmhook-0.0.1/user/verifyForgotOtp`, {
-        forgotOtp: otp
+      const response = await PublicAPI.post(`/user/verifyForgotOtp`, {
+        forgotOtp: otp,
       });
       console.log('Email verified', response.data);
       navigation.navigate('ForgotPasswordsecondpage');
     } catch (error) {
-      console.error("Error verifying OTP:", error);
+      console.error('Error verifying OTP:', error);
     }
   };
 
-  const validateEmail = (text) => {
+  const validateEmail = text => {
     // Basic email validation
     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text);
     setIsEmailValid(isValid);
@@ -50,12 +66,12 @@ export default function Forgetpass() {
 
   const sendOTP = async () => {
     try {
-      const response = await axios.post(`http://18.61.66.68:8080/filmhook-0.0.1/user/forgotPassword`, {
-        email: email
+      const response = await PublicAPI.post(`/user/forgotPassword`, {
+        email: email,
       });
-      console.log("Code sent to email", response.data);
+      console.log('Code sent to email', response.data);
     } catch (error) {
-      console.error("Error sending OTP:", error);
+      console.error('Error sending OTP:', error);
       throw error; // Re-throw the error to handle it in the calling function
     }
   };
@@ -65,53 +81,82 @@ export default function Forgetpass() {
       <View style={styles.container}>
         <View style={styles.formContainer}>
           <View style={styles.headerContainer}>
-            <Image style={{ height: responsiveHeight(25), width: responsiveWidth(46), alignSelf: 'center' }} source={require("../../../Assets/Login_page/FH_logos.png")} resizeMode="stretch" />
+            <Image
+              style={{
+                height: responsiveHeight(25),
+                width: responsiveWidth(46),
+                alignSelf: 'center',
+              }}
+              source={require('../../../Assets/Login_page/FH_logos.png')}
+              resizeMode="stretch"
+            />
           </View>
-          <View style={{ height: responsiveHeight(8), width: responsiveWidth(89), marginBottom: responsiveHeight(2), justifyContent: 'center', alignItems: 'center' }}>
-            <Image style={{ height: responsiveHeight(7), width: responsiveWidth(87) }} source={require('../../../Assets/Login_page/Film_hook.png')} resizeMode="stretch" />
+          <View
+            style={{
+              height: responsiveHeight(8),
+              width: responsiveWidth(89),
+              marginBottom: responsiveHeight(2),
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Image
+              style={{height: responsiveHeight(7), width: responsiveWidth(87)}}
+              source={require('../../../Assets/Login_page/Film_hook.png')}
+              resizeMode="stretch"
+            />
           </View>
           <View style={styles.boxContent}>
-            <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
+            <ImageBackground
+              style={styles.inputContainer}
+              source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+              resizeMode="stretch">
               <TextInput
                 style={styles.input}
                 placeholder="Enter your email"
-                placeholderTextColor='black'
+                placeholderTextColor="black"
                 value={email}
                 onChangeText={validateEmail}
               />
             </ImageBackground>
           </View>
-          <TouchableOpacity style={styles.boxContent1} onPress={handleSendOTP} disabled={!isEmailValid}>
+          <TouchableOpacity
+            style={styles.boxContent1}
+            onPress={handleSendOTP}
+            disabled={!isEmailValid}>
             {/* <ImageBackground style={styles.inputContainer1} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
-            <Text style={styles.input2} >Send</Text>
+            <Text style={styles.input2}>Send</Text>
             {/* </ImageBackground> */}
           </TouchableOpacity>
           {isSendClicked && (
             <>
               <View style={styles.boxContent}>
-                <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
+                <ImageBackground
+                  style={styles.inputContainer}
+                  source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+                  resizeMode="stretch">
                   <TextInput
                     style={styles.input}
                     placeholder="Enter OTP"
-                    placeholderTextColor='black'
+                    placeholderTextColor="black"
                     value={otp}
-                    onChangeText={(text) => setOTP(text)}
+                    onChangeText={text => setOTP(text)}
                   />
                 </ImageBackground>
               </View>
-              <TouchableOpacity style={styles.boxContent1} onPress={handleVerify}>
+              <TouchableOpacity
+                style={styles.boxContent1}
+                onPress={handleVerify}>
                 {/* <ImageBackground style={styles.inputContainer1} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch" > */}
-                <Text style={styles.input2} >Verify</Text>
+                <Text style={styles.input2}>Verify</Text>
                 {/* </ImageBackground> */}
               </TouchableOpacity>
             </>
           )}
-
         </View>
       </View>
     </>
-  )
-};
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -119,11 +164,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   headerContainer: {
     height: responsiveHeight(25),
-    width: responsiveWidth(35)
+    width: responsiveWidth(35),
   },
   boxContent: {
     height: responsiveHeight(8),
@@ -133,7 +178,7 @@ const styles = StyleSheet.create({
     marginBottom: responsiveHeight(1),
     borderRadius: responsiveWidth(3.2),
     borderWidth: responsiveWidth(0.3),
-    color: 'black'
+    color: 'black',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -143,13 +188,13 @@ const styles = StyleSheet.create({
     width: responsiveWidth(86.7),
     margin: responsiveWidth(1),
     color: 'black',
-    resizeMode: 'cover'
+    resizeMode: 'cover',
   },
   header: {
     color: '#3545ec',
     fontFamily: 'Italic-trial',
     fontSize: responsiveFontSize(3),
-    fontWeight: '500'
+    fontWeight: '500',
   },
   input: {
     height: responsiveHeight(6),
@@ -157,7 +202,7 @@ const styles = StyleSheet.create({
     width: '90%',
     fontSize: responsiveFontSize(2),
     color: 'black',
-    fontWeight: '500'
+    fontWeight: '500',
   },
   formContainer: {
     width: '100%',
@@ -171,7 +216,7 @@ const styles = StyleSheet.create({
     color: 'blue',
     fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
-    textDecorationLine: "underline"
+    textDecorationLine: 'underline',
   },
   backTopic: {
     color: 'black',
@@ -193,7 +238,7 @@ const styles = StyleSheet.create({
   resetButtonText: {
     color: 'white',
     fontSize: responsiveFontSize(2.3),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   boxContent1: {
     height: responsiveHeight(4),
@@ -204,7 +249,7 @@ const styles = StyleSheet.create({
     borderRadius: responsiveWidth(2),
     borderWidth: responsiveWidth(0.3),
     color: 'black',
-    backgroundColor: 'black'
+    backgroundColor: 'black',
   },
   inputContainer1: {
     flexDirection: 'row',
@@ -215,7 +260,7 @@ const styles = StyleSheet.create({
     margin: responsiveWidth(1),
     color: 'black',
     resizeMode: 'cover',
-    backgroundColor: 'black'
+    backgroundColor: 'black',
   },
   input2: {
     height: responsiveHeight(6),
@@ -226,6 +271,5 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     top: responsiveHeight(1.5),
     left: responsiveWidth(2),
-
-  }
+  },
 });

@@ -574,7 +574,7 @@ const style = StyleSheet.create({
 // import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 // import { useNavigation } from '@react-navigation/native';
 // import { TextInput } from 'react-native';
-// import axios from 'axios';
+// import PublicAPI from '@/api/publicAPI';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // export default function Biography() {
@@ -610,7 +610,7 @@ const style = StyleSheet.create({
 //                     const userId = parseInt(StoredId);
 
 //                     // If JWT and user ID exist, send them in the request headers and as parameters
-//                     const response = await axios.get(`https://filmhook.annularprojects.com/filmhook-0.0.1/user/getUserByUserId?userId=${userId}`, {
+//                     const response = await axios.get(`/user/getUserByUserId?userId=${userId}`, {
 //                         headers: {
 //                             Authorization: `Bearer ${jwt}`
 //                         }
@@ -654,7 +654,7 @@ const style = StyleSheet.create({
 //             const userId = await AsyncStorage.getItem('id');
 
 //             const response = await axios.put(
-//                 `https://filmhook.annularprojects.com/filmhook-0.0.1/user/updateBiographyDetails`,
+//                 `/user/updateBiographyDetails`,
 //                 {
 //                     userId: userId,
 //                     dob: editedDob,

@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import {ImageBackground, Text, TouchableOpacity} from 'react-native';
 import {Image} from 'react-native';
-import { View, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import {View, TextInput, Button, Alert, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+
+import PublicAPI from '../../api/publicAPI';
 
 import {
   responsiveFontSize,
@@ -11,14 +12,12 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import {useNavigation} from '@react-navigation/native';
-import { nativeViewHandlerName } from 'react-native-gesture-handler/lib/typescript/handlers/NativeViewGestureHandler';
+import {nativeViewHandlerName} from 'react-native-gesture-handler/lib/typescript/handlers/NativeViewGestureHandler';
 const ChangePasswordScreen = () => {
   const navigation = useNavigation();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
-
 
   const handleChangePassword = async () => {
     try {
@@ -39,8 +38,8 @@ const ChangePasswordScreen = () => {
       }
 
       // Make API call to change password
-      const response = await axios.post(
-        'http://18.61.66.68:8080/filmhook-0.0.1/user/changeUserPassword',
+      const response = await PublicAPI.post(
+        '/user/changeUserPassword',
         {
           email: email,
           currentPassword: currentPassword,
@@ -50,19 +49,19 @@ const ChangePasswordScreen = () => {
           headers: {
             Authorization: `Bearer ${jwt}`, // Correct syntax for Authorization header
           },
-        }
+        },
       );
 
       // Log response and show success message
       console.log('Password changed', response.data);
       Alert.alert('Success', 'Password changed successfully.');
-      navigation.navigate('Tabbar')
+      navigation.navigate('Tabbar');
     } catch (error) {
       const jwt = await AsyncStorage.getItem('jwt');
       const email = await AsyncStorage.getItem('email');
       // Handle errors
       console.error('Error:', error);
-      console.log(jwt,email)
+      console.log(jwt, email);
       Alert.alert('Error', 'An error occurred while changing password.');
     }
   };
