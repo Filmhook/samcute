@@ -4,6 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Appnavigator from './components/Screens/appnavigator';
 import Industry_S_One from './components/Screens/UsersLogState/SignUp/I_S_One';
+import Otp_GS from './components/Screens/UsersLogState/SignUp/otp_gs';
+import OTPPage from './components/Screens/UsersLogState/SignUp/otp_gs';
 
 
 
@@ -23,7 +25,9 @@ export default function App() {
       
     
        <Appnavigator/>
-       
+       {/* <NavigationContainer>
+       <OTPPage/>
+       </NavigationContainer> */}
        
     </View>
   );

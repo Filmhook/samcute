@@ -23,6 +23,8 @@ import ChangePasswordScreen from '../SignIn/changePassword';
 
 import SignUp_Login from '../SignIn/signup_login';
 import SignOut_Login from '../SignIn/signout_login';
+import Otp from './otp';
+import Otp_GS from './otp_gs';
 
 const Stack = createNativeStackNavigator();
 
@@ -51,6 +53,8 @@ export default function SignUpRoot() {
                 options={{ headerShown: false }} />
             <Stack.Screen name='SignOutLogin' component={SignOut_Login}
                 options={{ headerShown: false }} />
+            <Stack.Screen name="Otp" component={Otp} options={{ headerShown: false }} />
+            <Stack.Screen name="Otp_GS" component={Otp_GS} options={{ headerShown: false }} />
 
 
             <Stack.Screen name='Forgetpass' component={Forgetpass} options={{ headerShown: false }} />
