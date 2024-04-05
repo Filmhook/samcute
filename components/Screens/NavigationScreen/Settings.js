@@ -108,7 +108,7 @@ export default function Settings() {
   //   // Close the modal
   //   setPassword(false);
   // };
-  
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f6f6f6' }}>
@@ -390,30 +390,30 @@ export default function Settings() {
                   </TouchableOpacity>
                 </View>
               </View>
-              <TouchableOpacity onPress={() => navigation.navigate('changePassword')}>
-              <View style={styles.rowWrapper}>
-                <View style={styles.row}>
-                  
+              <TouchableOpacity onPress={() => navigation.navigate('ChangePasswordScreen')}>
+                <View style={styles.rowWrapper}>
+                  <View style={styles.row}>
 
 
 
-              
-                  <View
-                    style={[styles.rowIcon, { backgroundColor: '#FF6C00' }]}>
-                    <FeatherIcon
-                      color="#fff"
-                      name="lock"
-                      size={20} />
-                  </View>
 
-                
 
-                  <View style={styles.rowSpacer} />
-                  <Text style={styles.rowLabel2}>change password</Text>
+                    <View
+                      style={[styles.rowIcon, { backgroundColor: '#FF6C00' }]}>
+                      <FeatherIcon
+                        color="#fff"
+                        name="lock"
+                        size={20} />
+                    </View>
+
+
+
+                    <View style={styles.rowSpacer} />
+                    <Text style={styles.rowLabel2}>Password</Text>
                     <Text style={styles.rowValue}>*****</Text>
-                
+
+                  </View>
                 </View>
-              </View>
               </TouchableOpacity>
               {/* <View style={styles.rowWrapper}>
                 <View style={styles.row}>
@@ -557,7 +557,7 @@ export default function Settings() {
             </View>
           </View>
 
-          
+
           {/* New section for "Who can see your content" */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Who can see your content</Text>
@@ -599,7 +599,7 @@ export default function Settings() {
                 </View>
               </View> */}
 
-<View style={styles.rowWrapper}>
+              <View style={styles.rowWrapper}>
                 <TouchableOpacity
                   onPress={() => {
                     // handle onPress
@@ -607,7 +607,7 @@ export default function Settings() {
                   style={styles.row}>
                   <View
                     style={[styles.rowIcon, { backgroundColor: '#FE3C30' }]}>
-                   <FeatherIcon
+                    <FeatherIcon
                       color="#fff"
                       name="users"
                       size={20}
@@ -625,7 +625,7 @@ export default function Settings() {
                     name="chevron-right"
                     size={20} />
                 </TouchableOpacity>
-               
+
               </View>
               <View style={styles.rowWrapper}>
                 <View style={styles.row}>
@@ -643,7 +643,7 @@ export default function Settings() {
                     onValueChange={blockedUsers => setForm({ ...form, blockedUsers })}
                     value={form.blockedUsers}
                   /> */}
-                   
+
                 </View>
               </View>
               <View style={styles.rowWrapper}>
@@ -753,35 +753,35 @@ export default function Settings() {
 
           {/* Modal for editing phone number */}
           <Modal
-          isVisible={isPhoneNumber}
-          animationIn="fadeIn"
-          animationOut="fadeOut"
-          onBackdropPress={() =>  setPhoneNumbere(false)}
-        >
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalText}>Edit Phone Number</Text>
-            <TextInput
-              style={styles.input}
-              value={newPhoneNumber}
-              onChangeText={setNewPhoneNumber}
-              placeholder="Enter new phone number"
-            />
-            <View style={styles.modalButtonsContainer}>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={() =>  setPhoneNumbere(false)}
-              >
-                <Text style={styles.modalButtonText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={handleSavePhoneNumber}
-              >
-                <Text style={styles.modalButtonText}>Save</Text>
-              </TouchableOpacity>
+            isVisible={isPhoneNumber}
+            animationIn="fadeIn"
+            animationOut="fadeOut"
+            onBackdropPress={() => setPhoneNumbere(false)}
+          >
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalText}>Edit Phone Number</Text>
+              <TextInput
+                style={styles.input}
+                value={newPhoneNumber}
+                onChangeText={setNewPhoneNumber}
+                placeholder="Enter new phone number"
+              />
+              <View style={styles.modalButtonsContainer}>
+                <TouchableOpacity
+                  style={styles.modalButton}
+                  onPress={() => setPhoneNumbere(false)}
+                >
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalButton}
+                  onPress={handleSavePhoneNumber}
+                >
+                  <Text style={styles.modalButtonText}>Save</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
 
 
 
@@ -937,11 +937,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#000',
   },
-  rowLabel2:{
+  rowLabel2: {
     fontSize: 17,
     fontWeight: '500',
     color: '#000',
-    marginRight:responsiveWidth(51)
+    marginRight: responsiveWidth(51)
   },
   rowSpacer: {
     flexGrow: 1,

@@ -522,7 +522,7 @@ export default function SignUpTwo() {
 
 
 
-            <TouchableOpacity  style={{
+            <TouchableOpacity onPress={()=>navigation.navigate('Otp')} style={{
               // padding: 15,
               borderRadius: responsiveWidth(2),
               justifyContent: 'center',
