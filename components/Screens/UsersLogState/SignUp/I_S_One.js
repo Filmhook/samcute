@@ -154,6 +154,7 @@ export default function Industry_S_One() {
       });
 
       console.log('Registration successful:', response.data);
+      console.log(selected, industrySelected, profession, professionSub)
       navigation.navigate('Industry_S_Confirm');
     } catch (error) {
       console.error('Registration failed:', error);

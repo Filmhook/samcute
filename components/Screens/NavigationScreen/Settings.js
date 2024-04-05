@@ -390,7 +390,7 @@ export default function Settings() {
                   </TouchableOpacity>
                 </View>
               </View>
-              <TouchableOpacity onPress={() => navigation.navigate('ChangePasswordScreen')}>
+              <TouchableOpacity onPress={() => navigation.navigate('changePassword')}>
               <View style={styles.rowWrapper}>
                 <View style={styles.row}>
                   
@@ -409,7 +409,7 @@ export default function Settings() {
                 
 
                   <View style={styles.rowSpacer} />
-                  <Text style={styles.rowLabel2}>Password</Text>
+                  <Text style={styles.rowLabel2}>change password</Text>
                     <Text style={styles.rowValue}>*****</Text>
                 
                 </View>

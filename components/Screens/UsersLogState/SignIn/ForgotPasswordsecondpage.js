@@ -14,6 +14,8 @@ export default function ForgotPasswordsecondpage() {
   };
 
   const handleResetPassword = async () => {
+
+    navigation.navigate('Login')
     // Implement your password reset logic here
     Alert.alert('Password Reset Email Sent', 'Please check your email to reset your password.');
   };
@@ -31,7 +33,7 @@ export default function ForgotPasswordsecondpage() {
         <View style={styles.boxContent}>
           <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
             <TextInput
-              placeholder="Reenter Password"
+              placeholder="New Password"
               maxLength={12}
               placeholderTextColor="black"
               value={Password}
@@ -58,14 +60,9 @@ export default function ForgotPasswordsecondpage() {
           </ImageBackground>
         </View>
       </View>
-      <View style={{ flexDirection: 'row', width: '80%', justifyContent: 'center', alignItems: 'center', top: responsiveHeight(2.2) }}>
-            <Text style={styles.backTopic}>Already have an account </Text>
-            <TouchableOpacity style={styles.signUpButton} onPress={() => navigation.navigate('Login')}>
-              <Text style={styles.signInButtonText}> Login</Text>
-            </TouchableOpacity>
-          </View>
+      
       <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
-            <Text style={styles.resetButtonText}>Reset Password</Text>
+            <Text style={styles.resetButtonText}>Submit</Text>
           </TouchableOpacity>
     </View>
   );

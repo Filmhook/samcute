@@ -17,7 +17,7 @@ export default function Login() {
   const navigation = useNavigation();
 
 
-  const handle_forgotpass = async () => {
+  const handleForgotPassword = async () => {
     console.log("clicked")
     navigation.navigate('Forgetpass')
   }
@@ -76,27 +76,27 @@ export default function Login() {
   //=======================================================================
 
 
-  const handleLogin = () => {
-    const emailRegex = /\S+@\S+\.\S+/; // Regex pattern for a basic email format check
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/; // Regex pattern to check password length (at least 6 characters)
+  // const handleLogin = () => {
+  //   const emailRegex = /\S+@\S+\.\S+/; // Regex pattern for a basic email format check
+  //   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/; // Regex pattern to check password length (at least 6 characters)
 
 
-    if (!emailRegex.test(email.trim())) {
-      alert('Please enter a valid email address');
-      return;
+  //   if (!emailRegex.test(email.trim())) {
+  //     alert('Please enter a valid email address');
+  //     return;
 
-    } else if (!passwordRegex.test(password.trim())) {
-      alert('Password contains "0-9, A-Z, a-z, @-$"');
-      return;
-    }
-    else if (password.trim().length < 8) {
-      alert('password length at least 8 characters')
-    }
-    else {
-      // handleLoginAuth();
-      navigation.navigate('Tabbar');
-    }
-  };
+  //   } else if (!passwordRegex.test(password.trim())) {
+  //     alert('Password contains "0-9, A-Z, a-z, @-$"');
+  //     return;
+  //   }
+  //   else if (password.trim().length < 8) {
+  //     alert('password length at least 8 characters')
+  //   }
+  //   else {
+  //     // handleLoginAuth();
+  //     navigation.navigate('Tabbar');
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
@@ -164,7 +164,7 @@ export default function Login() {
 
 
         <TouchableOpacity style={styles.forgotPasswordButton}
-          onPress={handle_forgotpass} >
+          onPress={handleForgotPassword} >
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.loginButton}
