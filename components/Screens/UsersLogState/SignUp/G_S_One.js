@@ -1,4 +1,4 @@
-
+import { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, Image, Dimensions, ImageBackground, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
