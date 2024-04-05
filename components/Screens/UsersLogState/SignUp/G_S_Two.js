@@ -33,6 +33,7 @@ export default function SignUpTwo() {
   const [countryCode, setCountryCode] = useState('+91');
   const [number, setNumber] = useState('');
   const [show, setShow] = useState(false);
+  const [otp, setOTP] = useState('');
 
   const [checked, setChecked] = useState(false);
   //const [selected, setSelected] = useState('');
@@ -223,7 +224,34 @@ export default function SignUpTwo() {
     return `@FH${nextUserId.toString().padStart(2, '0')}`;
   };
 
-  const commanUser = async () => {
+  // const commanUser = async () => {
+  //   try {
+  //     const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/user/register', {
+  //       name: name,
+  //       email: mail,
+  //       password: Password,
+  //       userType: 'commonUser',
+  //       phoneNumber: phonenumber,
+  //       district: selectedDistrict,
+  //       dob: editedDate,
+  //       gender: selectedGender,
+  //       country: selectedCountry,
+  //       state: selectedState
+  //     });
+
+ 
+
+  //     console.log('Registration successful:', response.data);
+  //     navigation.navigate('Otp');
+
+
+  //   } catch (error) {
+  //     console.error('Registration failed:', error);
+  //     console.log(phonenumber, selectedCountry, selectedDistrict, selectedGender, selectedState, editedDate, mail, name, Password);
+  //     // Handle error as needed
+  //   }
+  // };
+  const submit = async () => {
     try {
       const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/user/register', {
         name: name,
@@ -238,26 +266,10 @@ export default function SignUpTwo() {
         state: selectedState
       });
 
-      const userDetails = response.data.data.userDetails;
-      const userId = userDetails.userId; // Access userId from userDetails
-      const code = response.data.data.verificationCode;
-
-
-      await AsyncStorage.setItem('userId', userId.toString());
-      await AsyncStorage.setItem('code', code)
-
-      // await AsyncStorage.setItem('code', code);
-
-      const storedId = await AsyncStorage.getItem('userId');
-      const storedCode = await AsyncStorage.getItem('code');
-
-
-
-      console.log(storedId);
-      console.log(storedCode)
+    
 
       console.log('Registration successful:', response.data);
-      navigation.navigate('Otp');
+
 
 
     } catch (error) {
@@ -266,47 +278,14 @@ export default function SignUpTwo() {
       // Handle error as needed
     }
   };
-  const registerUser = async () => {
+  const verify = async () => {
     try {
-      const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/user/register', {
-        name: name,
-        email: mail,
-        password: Password,
-        userType: 'commonUser',
-        phoneNumber: phonenumber,
-        district: selectedDistrict,
-        dob: editedDate,
-        gender: selectedGender,
-        country: selectedCountry,
-        state: selectedState
+      const response = await axios.post(`http://18.61.66.68:8080/filmhook-0.0.1/user/verify`, {
+        otp: otp
       });
-
-      const userDetails = response.data.data.userDetails;
-      const userId = userDetails.userId; // Access userId from userDetails
-      const code = response.data.data.verificationCode;
-
-
-      await AsyncStorage.setItem('userId', userId.toString());
-      await AsyncStorage.setItem('code', code)
-
-      // await AsyncStorage.setItem('code', code);
-
-      const storedId = await AsyncStorage.getItem('userId');
-      const storedCode = await AsyncStorage.getItem('code');
-
-
-
-      console.log(storedId);
-      console.log(storedCode)
-
-      console.log('Registration successful:', response.data);
-      navigation.navigate('Otp_GS');
-
-
-    } catch (error) {
-      console.error('Registration failed:', error);
-      console.log(phonenumber, selectedCountry, selectedDistrict, selectedGender, selectedState, editedDate, mail, name, Password);
-      // Handle error as needed
+      console.log("Mobile verified",response.data)
+    } catch {
+      console.log("error",error)
     }
   };
 
@@ -496,10 +475,45 @@ export default function SignUpTwo() {
                 </View>
 
               </View>
-
+              <TouchableOpacity style={{
+                borderRadius: responsiveWidth(2), marginTop: responsiveHeight(1.5), marginLeft: responsiveWidth(2), justifyContent: 'center', alignItems: 'center', backgroundColor: '#2d51c5', height: responsiveHeight(4),
+                width: responsiveWidth(20), borderWidth: responsiveWidth(0)
+              }}>
+                <Text style={{ color: 'white' }} onPress={submit} >SEND OTP</Text>
+              </TouchableOpacity>
 
               {/* OTP TextInput */}
 
+            </View>
+
+
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {number.length == 10 && (
+                <>
+                  <ImageBackground style={styles.otpContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
+                    <TextInput
+                      placeholder="Enter OTP"
+                      value={otp}
+                      placeholderTextColor={'black'}
+                      onChangeText={setOTP}
+                      keyboardType={'numeric'}
+                      style={{
+                        height: responsiveHeight(5),
+                        paddingHorizontal: responsiveWidth(4),
+                        fontSize: responsiveFontSize(1.8),
+                        fontWeight: '500',
+                        // borderWidth:5
+                      }}
+                    />
+                  </ImageBackground>
+                  <TouchableOpacity onPress={verify} style={{
+                    borderRadius: responsiveWidth(2), marginBottom: responsiveHeight(2), marginRight: responsiveWidth(-4), marginLeft: responsiveWidth(-11), justifyContent: 'center', alignItems: 'center', backgroundColor: '#2d51c5', height: responsiveHeight(3),
+                    width: responsiveWidth(15), borderWidth: responsiveWidth(0)
+                  }}>
+                    <Text style={{ color: 'white' }} >Verify</Text>
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
 
 
@@ -507,7 +521,8 @@ export default function SignUpTwo() {
 
 
 
-            <TouchableOpacity onPress={commanUser} style={{
+
+            <TouchableOpacity  style={{
               // padding: 15,
               borderRadius: responsiveWidth(2),
               justifyContent: 'center',
@@ -603,7 +618,7 @@ export default function SignUpTwo() {
                   textAlign: 'center', fontSize: responsiveFontSize(2), height: responsiveHeight(3)
                 }}>Back</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={registerUser} style={styles.nextButton}>
+              <TouchableOpacity style={styles.nextButton} onPress={() => navigation.navigate('Otp_GS')}>
                 <Text style={{
                   color: 'white',
                   fontWeight: 'bold',
