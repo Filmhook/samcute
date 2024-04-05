@@ -33,6 +33,7 @@ export default function SignUpTwo() {
   const [countryCode, setCountryCode] = useState('+91');
   const [number, setNumber] = useState('');
   const [show, setShow] = useState(false);
+  const [otp ,setOTP]=useState('')
 
   const [checked, setChecked] = useState(false);
   //const [selected, setSelected] = useState('');
@@ -309,6 +310,16 @@ export default function SignUpTwo() {
       // Handle error as needed
     }
   };
+  const sendOtp = async () => {
+    try {
+      const response = await axios.post(``, {
+        otp:otp
+      });
+    } catch {
+
+    }
+
+  };
 
 
 
@@ -496,12 +507,46 @@ export default function SignUpTwo() {
                 </View>
 
               </View>
-
+              <TouchableOpacity style={{
+                borderRadius: responsiveWidth(2), marginTop: responsiveHeight(1.5), marginLeft: responsiveWidth(2), justifyContent: 'center', alignItems: 'center', backgroundColor: '#2d51c5', height: responsiveHeight(4),
+                width: responsiveWidth(20), borderWidth: responsiveWidth(0)
+              }}>
+                <Text style={{ color: 'white' }} onPress={sendOtp}>SEND OTP</Text>
+              </TouchableOpacity>
 
               {/* OTP TextInput */}
 
             </View>
 
+
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {number.length == 10 && (
+                <>
+                  <ImageBackground style={styles.otpContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
+                    <TextInput
+                      placeholder="Enter OTP"
+                      value={otp}
+                      placeholderTextColor={'black'}
+                      onChangeText={setOTP}
+                      keyboardType={'numeric'}
+                      style={{
+                        height: responsiveHeight(5),
+                        paddingHorizontal: responsiveWidth(4),
+                        fontSize: responsiveFontSize(1.8),
+                        fontWeight: '500',
+                        // borderWidth:5
+                      }}
+                    />
+                  </ImageBackground>
+                  <TouchableOpacity style={{
+                    borderRadius: responsiveWidth(2), marginBottom: responsiveHeight(2), marginRight: responsiveWidth(-4), marginLeft: responsiveWidth(-11), justifyContent: 'center', alignItems: 'center', backgroundColor: '#2d51c5', height: responsiveHeight(3),
+                    width: responsiveWidth(15), borderWidth: responsiveWidth(0)
+                  }}>
+                    <Text style={{ color: 'white' }} >Verify</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
 
 
 
