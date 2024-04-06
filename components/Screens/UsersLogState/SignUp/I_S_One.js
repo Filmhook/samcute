@@ -160,13 +160,19 @@ export default function Industry_S_One() {
   const handlepressNav = async () => {
     try {
       const id = await AsyncStorage.getItem('userId');
+
+      const mapProfessionName =  profession?.map(p => {
+      const profName = professionData?.find(n => n.value === p)
+      return profName?.label
+      })
+
       const response = await PublicAPI.post(
         '/industryUser/addTemporaryDetails',
         {
           userId: parseInt(id),
           industriesName: selected,
           platformName: industrySelected,
-          professionName: profession,
+          professionName: mapProfessionName,
           subProfessionName: professionSub,
         },
       );
@@ -324,7 +330,9 @@ export default function Industry_S_One() {
               open={isOpenProf}
               setOpen={() => setIsOpenProf(!isOpenProf)}
               value={profession}
-              setValue={val => setProfession(val)}
+              setValue={val => {
+              setProfession(val)
+              }}
               onChangeValue={handleProfessionChange}
               maxHeight={responsiveHeight(22)}
               autoScroll

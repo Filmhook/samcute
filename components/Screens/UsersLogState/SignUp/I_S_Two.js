@@ -12,7 +12,10 @@ export default function Industry_S_Two({ route }) {
 
   const [story, setStory] = useState([]);
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [selectedVideo, setSelectedVideo] = useState([]);
+  const [selectedImages , setSelectedImages] = useState([])
+  const [panAadharImg , setPanAadharImg] = useState(null)
+
 
   const handle_storypost = () => {
     setImagePickerModalVisible(true);
@@ -21,18 +24,21 @@ export default function Industry_S_Two({ route }) {
   const handleImageOption = async (option) => {
     try {
 
-
       if (option === 'camera') {
         const image = await ImagePicker.openCamera({
           cropping: true,
         });
-        updateStory(image);
+        console.log(image)
+//        updateStory(image);
       } else if (option === 'gallery') {
        const image = await DocumentPicker.pick({
           type: [DocumentPicker.types.allFiles],
         
         });
-        setSelectedVideo(image);
+
+        setSelectedImages(p=> {
+        return [...p , image[0]]
+        })
       }
     } catch (error) {
       console.log('Image picker operation canceled or failed:', error);
@@ -57,8 +63,9 @@ export default function Industry_S_Two({ route }) {
 
 
 
-  // for data prop 
-  const { nationality, selected, } = route.params
+  // for data prop
+  const nationality = route.params?.nationality
+  const selected = route.params?.selected
   // for data prop
 
   //=================================================
@@ -86,7 +93,9 @@ export default function Industry_S_Two({ route }) {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.video],
       });
-      setSelectedVideo(res);
+      setSelectedVideo(v => {
+      return [...v , res]
+      });
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker
