@@ -267,9 +267,10 @@ export default function SignUpTwo() {
         country: selectedCountry,
         state: selectedState,
       });
-
+        Alert.alert("Registration successful OTP Send")
       console.log('Registration successful:', response.data);
     } catch (error) {
+    Alert.alert("Registration failed")
       console.error('Registration failed:', error);
       console.log(
         phonenumber,
@@ -290,8 +291,10 @@ export default function SignUpTwo() {
       const response = await PublicAPI.post(`/user/verify`, {
         otp: otp,
       });
+      Alert.alert("Mobile verified")
       console.log('Mobile verified', response.data);
     } catch {
+    Alert.alert("Invalid OTP")
       console.log('error', error);
     }
   };

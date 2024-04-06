@@ -7,29 +7,17 @@ import Industry_S_One from './components/Screens/UsersLogState/SignUp/I_S_One';
 import Otp_GS from './components/Screens/UsersLogState/SignUp/otp_gs';
 import OTPPage from './components/Screens/UsersLogState/SignUp/otp_gs';
 
-
-
-
-
-
-
-
-
-
-
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
  
   return (
+  <SafeAreaProvider>
     <View style={styles.container}>
-      
-    
        <Appnavigator/>
-       {/* <NavigationContainer>
-       <OTPPage/>
-       </NavigationContainer> */}
-       
+
     </View>
+    </SafeAreaProvider>
   );
 }
 

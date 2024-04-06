@@ -231,7 +231,7 @@ export default function Industry_S_One() {
               setOpen={() => setIsOpendata(!isOpendata)}
               value={selected}
               setValue={val => setSelected(val)}
-              maxHeight={responsiveHeight(20)}
+              maxHeight={responsiveHeight(30)}
               autoScroll
               placeholder="Select your Industries"
               searchable={true}
@@ -239,17 +239,18 @@ export default function Industry_S_One() {
               onPress={industryOpen}
               placeholderStyle={{
                 fontSize: responsiveFontSize(2),
-                color: 'black',
+//                color: 'black',
               }}
               dropDownContainerStyle={{
-                backgroundColor: 'gray',
+
                 width: responsiveWidth(86),
+                height : responsiveWidth(400),
                 marginTop: 2,
               }}
               showTickIcon={true}
               showArrowIcon={true}
               dropDownDirection="BOTTOM"
-              theme="LIGHT"
+//              theme="LIGHT"
               multiple={true}
               mode="BADGE"
               badgeColors={['#00d4ff']}
@@ -274,19 +275,20 @@ export default function Industry_S_One() {
               setOpen={() => setIsOpen(!isOpen)}
               value={industrySelected}
               setValue={val => setindustrySelected(val)}
-              maxHeight={responsiveHeight(20)}
+              maxHeight={responsiveHeight(30)}
               autoScroll
               placeholder="Choose your Platforms"
               placeholderStyle={{
                 fontSize: responsiveFontSize(2),
-                color: 'black',
+//                color: 'black',
               }}
               showTickIcon={true}
               showArrowIcon={true}
               dropDownContainerStyle={{
-                backgroundColor: 'gray',
+//                backgroundColor: 'gray',
                 width: responsiveWidth(86),
-                marginTop: responsiveHeight(2),
+
+//                marginTop: responsiveHeight(2),
               }}
               dropDownDirection="BOTTOM"
               searchable={true}
@@ -324,21 +326,21 @@ export default function Industry_S_One() {
               value={profession}
               setValue={val => setProfession(val)}
               onChangeValue={handleProfessionChange}
-              maxHeight={responsiveHeight(20)}
+              maxHeight={responsiveHeight(22)}
               autoScroll
               placeholder="What is your Profession?"
               placeholderStyle={{
                 fontSize: responsiveFontSize(2),
-                color: 'black',
+//                color: 'black',
               }}
               showTickIcon={true}
               showArrowIcon={true}
               searchable={true}
               searchPlaceholderTextColor="search"
               dropDownContainerStyle={{
-                backgroundColor: 'gray',
+//                backgroundColor: 'gray',
                 width: responsiveWidth(86),
-                marginTop: responsiveHeight(2),
+//                marginTop: responsiveHeight(2),
               }}
               dropDownDirection="BOTTOM"
               theme="LIGHT"
@@ -371,18 +373,18 @@ export default function Industry_S_One() {
               setOpen={() => setIsOpenProfSub(!isOpenProfSub)}
               value={professionSub}
               setValue={val => setProfessionSub(val)}
-              maxHeight={responsiveHeight(20)}
+              maxHeight={responsiveHeight(24)}
               placeholder="List is your Sub Profession"
               placeholderStyle={{
                 fontSize: responsiveFontSize(2),
-                color: 'black',
+//                color: 'black',
               }}
               showTickIcon={true}
               showArrowIcon={true}
               dropDownContainerStyle={{
-                backgroundColor: 'gray',
-                width: responsiveWidth(86),
-                marginBottom: responsiveHeight(3),
+//                backgroundColor: 'gray',
+//                width: responsiveWidth(86),
+//                marginBottom: responsiveHeight(3),
               }}
               dropDownDirection="TOP"
               searchable={true}
