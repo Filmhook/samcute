@@ -38,11 +38,6 @@ export default function Login() {
 
   const navigation = useNavigation();
 
-useEffect(() => {
-
-navigation.navigate('SignUpOne')
-} , [])
-
   const handle_forgotpass = async () => {
     console.log('clicked');
     navigation.navigate('Forgetpass');

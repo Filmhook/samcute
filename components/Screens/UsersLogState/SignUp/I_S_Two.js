@@ -6,11 +6,7 @@ import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-lis
 import { responsiveFontSize, responsiveHeight, responsiveScreenHeight, responsiveWidth } from "react-native-responsive-dimensions";
 import Modal from 'react-native-modal';
 import ImagePicker from 'react-native-image-crop-picker';
-
 import DocumentPicker from 'react-native-document-picker';
-
-
-
 
 export default function Industry_S_Two({ route }) {
 
