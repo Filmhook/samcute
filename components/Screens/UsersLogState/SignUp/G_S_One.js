@@ -2309,6 +2309,7 @@ export default function SignUpOne() {
               {showDatePicker && (
                 <DateTimePicker
                   value={selectedDate}
+                  style={{color: "#000"}}
                   mode="date"
                   display="default"
                   onChange={onChange}
@@ -2334,11 +2335,11 @@ export default function SignUpOne() {
                     style={styles.picker}
                     selectedValue={selectedGender}
                     onValueChange={(itemValue) => setSelectedGender(itemValue)}>
-                    <Picker.Item label="Select Gender" value={null} color='black' />
-                    <Picker.Item label="Male" value="male" color='black' />
-                    <Picker.Item label="Female" value="female" color='black' />
+                    <Picker.Item label="Select Gender" value={null}  />
+                    <Picker.Item label="Male" value="male"  />
+                    <Picker.Item label="Female" value="female" />
 
-                    <Picker.Item label="Others" value="others" color='black' />
+                    <Picker.Item label="Others" value="others" />
                   </Picker>
                 </View>
               </ImageBackground>
@@ -2446,7 +2447,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: responsiveHeight(7),
     borderCurve: responsiveWidth(2),
-
+    color : "#333",
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',

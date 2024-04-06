@@ -1,30 +1,15 @@
 import axios from 'axios';
-// import refreshToken from "./refreshToken";
 
 const privateAPI = axios.create({
-  baseURL: '',
+  baseURL: 'https://filmhook.annularprojects.com/filmhook-0.0.1',
 });
 
+//privateAPI.interceptors.request.use(async (config) => {
+//  const appToken = await AsyncStr.getItem("access_token");
+//  if (appToken) {
+//    config.headers.Authorization = `Bearer ${appToken}`;
+//  }
+//  return config;
+//});
+
 export default privateAPI;
-
-// privateAPI.interceptors.response.use(
-//   response => {
-//     return response;
-//   },
-//   async function (error) {
-//     const originalRequest = error.config;
-//     if (error.response.status === 400 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-
-//       const resp = await refreshToken();
-
-//       const access_token = resp?.appData?.refresh_token;
-//       localStorage.setItem('access_token', access_token);
-//       privateAPI.defaults.headers.common[
-//         'Authorization'
-//       ] = `Bearer ${access_token}`;
-//       return privateAPI(originalRequest);
-//     }
-//     return Promise.reject(error);
-//   },
-// );

@@ -29,12 +29,19 @@ import {
 import PublicAPI from '../../../api/publicAPI';
 import {Alert} from 'react-native';
 
+
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState('');
 
+
   const navigation = useNavigation();
+
+useEffect(() => {
+
+navigation.navigate('SignUpOne')
+} , [])
 
   const handle_forgotpass = async () => {
     console.log('clicked');
@@ -57,7 +64,6 @@ export default function Login() {
         password: password,
         userType: 'commonUser',
       });
-
       // Extract JWT token and ID from response data
       const jwt = response.data.jwt;
 
@@ -72,14 +78,14 @@ export default function Login() {
 
       const storedMail = await AsyncStorage.getItem('mail');
       console.log('stored ', storedMail);
-
+//
       Alert.alert('Login Successful');
       console.log('Login successful:', response.data);
       navigation.navigate('Tabbar');
 
       // Handle response as needed
     } catch (error) {
-      Alert.alert(error);
+      Alert.alert("Invalid User Info");
       console.error('Login failed:', error);
       // Handle error as needed
     }
@@ -108,6 +114,7 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
+
       <View style={styles.formContainer}>
         <View style={styles.headerContainer}>
           <Image
@@ -219,6 +226,7 @@ export default function Login() {
           </TouchableOpacity>
         </View>
       </View>
+
     </View>
   );
 }
@@ -226,7 +234,7 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
+     justifyContent: 'center',
     alignItems: 'center',
     // padding: responsiveWidth(3),
     backgroundColor: '#f5f5f5',
@@ -357,3 +365,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+
