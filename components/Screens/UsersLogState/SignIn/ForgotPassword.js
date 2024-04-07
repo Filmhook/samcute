@@ -17,6 +17,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import {useNavigation} from '@react-navigation/native';
 import PublicAPI from '../../../api/publicAPI';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Forgetpass() {
   const navigation = useNavigation();
@@ -50,8 +51,11 @@ export default function Forgetpass() {
       const response = await PublicAPI.post(`/user/verifyForgotOtp`, {
         forgotOtp: otp,
       });
+      const otpNav=otp;
+      await AsyncStorage.setItem('otp', otpNav);
+      
       console.log('Email verified', response.data);
-      navigation.navigate('ForgotPasswordsecondpage');
+      navigation.navigate('ForgotPasswordsecondpage',{otp});
     } catch (error) {
       console.error('Error verifying OTP:', error);
     }

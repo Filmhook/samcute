@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, ImageBackground, TouchableOpacity, Alert } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PublicAPI from '../../../api/publicAPI';
+
 
 export default function ForgotPasswordsecondpage() {
   const navigation = useNavigation();
@@ -11,24 +13,31 @@ export default function ForgotPasswordsecondpage() {
   const [CPassword, setCPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+  
+
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
   const handleResetPassword = async () => {
     try {
-      const response = await axios.post(`http://18.61.66.68:8080/filmhook-0.0.1/user/changePassword`, {
-        password: Password
+      const otp = await AsyncStorage.getItem('otp'); // Retrieve OTP from AsyncStorage
+      const response = await PublicAPI.post(`/user/changePassword`, {
+        forgotOtp: otp, // Use retrieved OTP
+        password: Password // Assuming Password is defined elsewhere
       });
+  
       console.log('Password changed', response.data);
       // Show success message to the user
       Alert.alert('Password Changed', 'Your password has been changed successfully.');
+      navigation.navigate('Login')
     } catch (error) {
       console.error('Error changing password:', error);
       // Show error message to the user
       Alert.alert('Error', 'An error occurred while changing your password. Please try again later.');
     }
   };
+  
 
 
   return (
