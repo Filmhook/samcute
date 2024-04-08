@@ -268,6 +268,8 @@ export default function SignUpTwo() {
         state: selectedState,
       });
         Alert.alert("Registration successful OTP Send")
+        console.log(response.data.data.userDetails.userId)
+        await AsyncStorage.setItem('userId', response.data.data.userDetails.userId?.toString());
       console.log('Registration successful:', response.data);
     } catch (error) {
     Alert.alert("Registration failed")

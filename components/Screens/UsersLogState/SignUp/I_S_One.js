@@ -160,7 +160,7 @@ export default function Industry_S_One() {
   const handlepressNav = async () => {
     try {
       const id = await AsyncStorage.getItem('userId');
-
+console.log(`User Id from IS One ${id}`)
       const mapProfessionName =  profession?.map(p => {
       const profName = professionData?.find(n => n.value === p)
       return profName?.label
