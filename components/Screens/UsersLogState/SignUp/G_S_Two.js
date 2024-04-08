@@ -278,6 +278,8 @@ export default function SignUpTwo() {
  
       
         Alert.alert("Registration successful OTP Send")
+        console.log(response.data.data.userDetails.userId)
+        await AsyncStorage.setItem('userId', response.data.data.userDetails.userId?.toString());
       console.log('Registration successful:', response.data);
       // navigation.navigate('IndustryTwo')
     } catch (error) {

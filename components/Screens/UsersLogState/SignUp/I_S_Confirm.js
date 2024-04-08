@@ -728,12 +728,14 @@ const IndustryPage = ({userId}) => {
     const fetchData = async () => {
       try {
         const id = await AsyncStorage.getItem('userId');
+        console.log(`User Id from ISconfirm ${id}`)
         const response = await PublicAPI.post(
           `/industryUser/getTemporaryDetails`,
           {
             userId: parseInt(id),
           },
         );
+        console.log(response.data)
         setIndustryData(response.data || {});
       } catch (error) {
         console.error('Error fetching data:', error);
