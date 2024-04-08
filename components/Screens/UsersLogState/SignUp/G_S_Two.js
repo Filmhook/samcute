@@ -255,6 +255,7 @@ export default function SignUpTwo() {
   // };
   const submit = async () => {
     try {
+      
       const response = await PublicAPI.post('/user/register', {
         name: name,
         email: mail,
@@ -267,8 +268,18 @@ export default function SignUpTwo() {
         country: selectedCountry,
         state: selectedState,
       });
+      const userDetails = response.data.data.userDetails;
+      const userId = userDetails.userId;
+      await AsyncStorage.setItem('userId', userId.toString());
+      const storedId = await AsyncStorage.getItem('userId');
+      console.log(storedId);
+      
+      
+ 
+      
         Alert.alert("Registration successful OTP Send")
       console.log('Registration successful:', response.data);
+      // navigation.navigate('IndustryTwo')
     } catch (error) {
     Alert.alert("Registration failed")
       console.error('Registration failed:', error);
@@ -284,6 +295,32 @@ export default function SignUpTwo() {
         Password,
       );
       // Handle error as needed
+    }
+  };
+  const emailOtp = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await PublicAPI.post(`/user/emailNotification`, {
+        userId:userId
+      });
+      Alert.alert("Otp sent to your email")
+      console.log("email sent ", response.data)
+      navigation.navigate('Otp_GS')
+    } catch(error) {
+      console.error(error)
+    }
+  };
+  const emailOtpIs = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await PublicAPI.post(`/user/emailNotification`, {
+        userId: userId
+      });
+      Alert.alert("Otp sent to your email")
+      console.log("email sent ", response.data)
+      navigation.navigate('Otp')
+    } catch (error) {
+      console.error(error)
     }
   };
   const verify = async () => {
@@ -604,7 +641,7 @@ export default function SignUpTwo() {
             </View>
 
             <TouchableOpacity
-              onPress={() => navigation.navigate('Otp')}
+              onPress={emailOtpIs}
               style={{
                 // padding: 15,
                 borderRadius: responsiveWidth(2),
@@ -721,7 +758,7 @@ export default function SignUpTwo() {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.nextButton}
-                onPress={() => navigation.navigate('Otp_GS')}>
+                onPress={emailOtp}>
                 <Text
                   style={{
                     color: 'white',
