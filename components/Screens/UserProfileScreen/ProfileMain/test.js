@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import axios from 'axios';
+import PublicAPI from '../../../api/publicAPI';
 
 export default function Professionalinfo() {
   const [expanded, setExpanded] = useState(false);
@@ -28,14 +28,11 @@ export default function Professionalinfo() {
         'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyTmFtZSI6ImpvaG5zLmRvZUBvZXhvYW1wbGUuY29tIiwidXNlclR5cGUiOiJjb21tb25Vc2VyIiwiaWF0IjoxNzExMzcyOTAzLCJleHAiOjE3MTEzNzQxMDN9.F5tWmh1XKBX0kejfT4Dg0IfgANNWMKo-EulAp9f7EkA7U4f_RFxpkfCBBbzdj4-iPRI9AIHSDrhJX8jA74RcdQ';
       if (jwt) {
         // Make API call to fetch user data
-        const response = await axios.get(
-          `https://filmhook.annularprojects.com/filmhook-0.0.1/user/getUserByUserId?userId=1`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwt}`,
-            },
+        const response = await PublicAPI.get(`/user/getUserByUserId?userId=1`, {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
           },
-        );
+        });
         const userData = response.data.data.childrenNames;
         setChildrenNames(userData);
       } else {
@@ -62,8 +59,8 @@ export default function Professionalinfo() {
       // Make API call to update user data
       const jwt = 'your_jwt_token_here';
       if (jwt) {
-        const response = await axios.post(
-          `https://filmhook.annularprojects.com/filmhook-0.0.1/user/updateChildrenNames`,
+        const response = await PublicAPI.post(
+          `/user/updateChildrenNames`,
           {childrenNames: editChildrenNames},
           {
             headers: {

@@ -422,7 +422,7 @@ const TopBar = () => {
     },
     topBar: {
       backgroundColor: 'white',
-      height: responsiveHeight(7.5),
+      height: responsiveHeight(7.8),
       flexDirection:'row',
       columnGap:responsiveWidth(14)
       //borderWidth:1
@@ -557,13 +557,55 @@ const TopBar = () => {
 
       {/* //Film_hook Logo */}
 
-      <View style={{ width: responsiveWidth(60), height: responsiveHeight(5), top: responsiveHeight(1),left:responsiveWidth(1),}}>
+      {/* <View style={{ width: responsiveWidth(60), height: responsiveHeight(5), top: responsiveHeight(1),left:responsiveWidth(1),}}>
         <Image source={require('../Assets/Chats_Icon_And_Fonts/Film_hook.png')} style={{ width: responsiveWidth(60), height: responsiveHeight(5), alignSelf: 'center', justifyContent: 'center',  }} resizeMode='stretch'/>
+      </View> */}
+       <View
+        style={{
+          height: responsiveHeight(7),
+          width: responsiveWidth(60),
+          marginBottom: responsiveHeight(3),
+          flexDirection: 'row',
+          position: 'relative',
+          
+        }}>
+        <Image
+          style={{
+            height: responsiveHeight(6),
+            width: responsiveWidth(16),
+            alignSelf: 'center',
+          }}
+          source={require('../Assets/Login_page/FH_logos.png')}
+          resizeMode="stretch"
+        />
+
+        <Image
+          style={{
+            height: responsiveHeight(5),
+            width: responsiveWidth(48),
+            position: 'absolute',
+             left: responsiveWidth(12),
+             top: responsiveHeight(1.8),
+          }}
+          source={require('../Assets/Login_page/Film_hook_name.png')}
+          resizeMode="stretch"
+        />
+        
+        <Text
+          style={{
+            color: 'blue',
+            fontWeight: 'bold',
+            position: 'absolute',
+            left: responsiveWidth(42),
+           top: responsiveHeight(5.8),
+          }}>
+          Public User
+        </Text>
       </View>
 
       {/* Plus Icon */}
 
-      <View style={{ width: responsiveWidth(25), height: responsiveHeight(6),alignSelf: 'center',flexDirection:'row',columnGap:responsiveWidth(6),}}>
+      <View style={{ width: responsiveWidth(25), height: responsiveHeight(7),flexDirection:'row',columnGap:responsiveWidth(5),  justifyContent:'center',alignItems:'center'}}>
       <TouchableOpacity style={{width: responsiveWidth(9), height: responsiveWidth(9), borderRadius: responsiveWidth(9), elevation: 10, backgroundColor: 'white', alignItems: 'center',justifyContent: 'center', }}>
           <Image source={require('../Assets/UserProfile_Icons_Fonts/211694_bell_icon.png')} style={{width: responsiveWidth(8), height: responsiveHeight(4),  }} resizeMode='stretch'/>
         </TouchableOpacity>

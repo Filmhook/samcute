@@ -34,7 +34,7 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import axios from 'axios';
+import PublicAPI from '../../../api/publicAPI';
 import {Alert} from 'react-native';
 
 const width = Dimensions.get('screen').width;
@@ -99,14 +99,11 @@ export default function SignOut_Login() {
   };
   const loginUser = async () => {
     try {
-      const response = await axios.post(
-        'https://filmhook.annularprojects.com/filmhook-0.0.1/user/login',
-        {
-          email: email,
-          password: password,
-          userType: 'commonUser',
-        },
-      );
+      const response = await PublicAPI.post('/user/login', {
+        email: email,
+        password: password,
+        userType: 'commonUser',
+      });
 
       // Extract JWT token and ID from response data
       const jwt = response.data.jwt;
