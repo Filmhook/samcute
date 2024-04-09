@@ -110,6 +110,7 @@ console.log(toggleCheckBox)
 const handleSave =async () => {
 
 try {
+
       const id = await AsyncStorage.getItem('userId');
 console.log(`User Id from IS Confirm ${id}`)
 
@@ -281,7 +282,7 @@ status={makeActiveCheckbox(industries , platform.platformName, prof?.professionN
                                                                                                             }}
 
                                                                                                              />
-                                                                                                            <Text>{spName}</Text>
+                                                                                                            <Text style={styles.input}>{spName}</Text>
                                                                                                         </View>
 
                                                                                                     </View>
@@ -359,6 +360,7 @@ const styles = StyleSheet.create({
     },
     input: {
         // borderWidth: 1,
+        color : "black",
         borderColor: '#ccc',
         padding: 10,
         top: responsiveHeight(0.6),

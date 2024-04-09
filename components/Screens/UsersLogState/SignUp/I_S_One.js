@@ -263,6 +263,7 @@ console.log(`User Id from IS One ${id}`)
               badgeDotColors={['green', 'red', 'blue', 'yellow']}
               badgeTextStyle={'black'}
               style={{
+
                 marginTop: responsiveHeight(1),
                 marginBottom: responsiveHeight(1),
                 borderWidth: responsiveWidth(0.5),

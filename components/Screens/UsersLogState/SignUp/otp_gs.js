@@ -96,6 +96,7 @@ export default function Otp_GS() {
                 onChangeText={setOTP}
                 keyboardType={'numeric'}
                 style={{
+                color: "black",
                   height: responsiveHeight(5),
                   paddingHorizontal: responsiveWidth(4),
                   fontSize: responsiveFontSize(1.8),
