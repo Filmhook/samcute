@@ -21,6 +21,9 @@ export default function Industry_S_Two({ route }) {
   const [selectedImages, setSelectedImages] = useState([])
   const [panAadharImg, setPanAadharImg] = useState([])
 
+  console.log(`selectedImages ${JSON.stringify(selectedImages)}`)
+  console.log(`selectedVideo ${JSON.stringify(selectedVideo)}`)
+  console.log(`panAadharImg ${JSON.stringify(panAadharImg)}`)
 
   const handle_storypost = () => {
     setImagePickerModalVisible(true);
@@ -28,165 +31,6 @@ export default function Industry_S_Two({ route }) {
 
   const handleImageOptionPan = () => {
     setImagePickerModalVisiblePan(true);
-  };
-
-
-  const sumbitStill = async () => {
-    try {
-      const userId = await AsyncStorage.getItem('userId');
-
-      if (!userId) {
-        throw new Error("User ID not found"); // Throw an error if user ID is not available
-      }
-
-      if (!selectedImages || selectedImages.length === 0) {
-        throw new Error("No image selected"); // Throw an error if no image is selected
-      }
-
-      const formData = new FormData();
-      selectedImages.forEach((image, index) => {
-        formData.append(`selectedImages[${index}]`, {
-          userId,
-          uri: image.uri,
-          name: image.name,
-          type: image.type
-        });
-      });
-
-      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      if (response && response.data) {
-        Alert.alert("Image posted successfully");
-        console.log("Success:", response.data);
-      } else {
-        throw new Error("Failed to upload image");
-      }
-    } catch (error) {
-      let errorMessage = "An unexpected error occurred. Please try again later.";
-
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        errorMessage = `Server responded with status code ${error.response.status}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        errorMessage = "No response received from server";
-      } else {
-        // Something happened in setting up the request that triggered an error
-        errorMessage = error.message;
-      }
-
-      Alert.alert("Error", errorMessage);
-      console.error("Error:", error);
-    }
-  };
-
-  const sumbitVideo_one = async () => {
-    try {
-      const userId = await AsyncStorage.getItem('userId');
-
-      if (!userId) {
-        throw new Error("User ID not found"); // Throw an error if user ID is not available
-      }
-
-      if (!selectedVideo || selectedVideo.length === 0) {
-        throw new Error("No video selected"); // Throw an error if no video is selected
-      }
-
-      const formData = new FormData();
-      selectedVideo.flat().forEach((video, index) => {
-        formData.append(`selectedVideo[${index}]`, {
-          uri: video.uri,
-          name: video.name,
-          type: video.type
-        });
-      });
-
-      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      if (response && response.data) {
-        Alert.alert("Video posted successfully");
-        console.log("Success:", response.data);
-      } else {
-        throw new Error("Failed to upload video");
-      }
-    } catch (error) {
-      let errorMessage = "An unexpected error occurred. Please try again later.";
-
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        errorMessage = `Server responded with status code ${error.response.status}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        errorMessage = "No response received from server";
-      } else {
-        // Something happened in setting up the request that triggered an error
-        errorMessage = error.message;
-      }
-
-      Alert.alert("Error", errorMessage);
-      console.error("Error:", error);
-    }
-  };
-
-  const submitPanAdhar = async () => {
-    try {
-      const userId = await AsyncStorage.getItem('userId');
-
-      if (!userId) {
-        throw new Error("User ID not found"); // Throw an error if user ID is not available
-      }
-
-      if (!panAadharImg || panAadharImg.length === 0) {
-        throw new Error("No image selected"); // Throw an error if no image is selected
-      }
-
-      const formData = new FormData();
-      panAadharImg.forEach((image, index) => {
-        formData.append(`panAadharImg[${index}]`, {
-          userId,
-          uri: image.uri,
-          name: image.name,
-          type: image.type
-        });
-      });
-
-      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      if (response && response.data) {
-        Alert.alert("Image posted successfully");
-        console.log("Success:", response.data);
-      } else {
-        throw new Error("Failed to upload image");
-      }
-    } catch (error) {
-      let errorMessage = "An unexpected error occurred. Please try again later.";
-
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        errorMessage = `Server responded with status code ${error.response.status}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        errorMessage = "No response received from server";
-      } else {
-        // Something happened in setting up the request that triggered an error
-        errorMessage = error.message;
-      }
-
-      Alert.alert("Error", errorMessage);
-      console.error("Error:", error);
-    }
   };
 
   const handleImageOption = async (option) => {
@@ -255,27 +99,6 @@ export default function Industry_S_Two({ route }) {
   // for data prop
   const nationality = route.params?.nationality
   const selected = route.params?.selected
-  // for data prop
-
-  //=================================================
-
-
-  //======================================================================
-  // const handlepressNav = () =>{
-  //   if (selected === '' || nationality === '' || selected === '') {
-  //     alert('CurrentLocation and NativeLocation cannot be empty.');
-  //     }
-  //     else{
-  //     navigation.navigate("IndustryThree",{
-  //       nationality,
-  //       selected,
-  //       current,
-  //       native,
-  //       profession
-  //     })
-  //     }
-
-  // }
 
   const pickVideo = async () => {
     try {
@@ -283,7 +106,7 @@ export default function Industry_S_Two({ route }) {
         type: [DocumentPicker.types.video],
       });
       setSelectedVideo(v => {
-        return [...v, res]
+        return [...v, res[0]]
       });
 
       console.log('video', selectedVideo)
@@ -357,6 +180,34 @@ export default function Industry_S_Two({ route }) {
     }
   };
 
+
+  const handleSubmit = async () => {
+
+    try {
+      const id = await AsyncStorage.getItem('userId');
+      console.log(`User Id from IS Confirm ${id}`)
+      console.log("HITT")
+      let formData = new FormData()
+      formData.append("userId", id);
+      formData.append("images", selectedImages);
+      formData.append("videos", selectedVideo);
+      formData.append("panCard", panAadharImg);
+      formData.append("adharCard", panAadharImg);
+
+      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles`, formData);
+      //      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles` , {
+      //      headers: {
+      //                'Content-Type': 'multipart/form-data',
+      //              }
+      //      }, {images : selectedImages,videos: selectedVideo ,panCard: panAadharImg ,userId: id});
+
+      console.log('Registration successful:', response.data);
+      Alert.alert('Success');
+    } catch (error) {
+      console.error('Registration failed:', error);
+    }
+
+  }
 
 
   //=============================================
@@ -453,11 +304,7 @@ export default function Industry_S_Two({ route }) {
 
               <Image source={require('../../../Assets/Login_page/tickMark.png')} style={{ height: responsiveHeight(2), width: responsiveWidth(8), position: 'absolute', left: responsiveWidth(10), top: responsiveHeight(0.3) }}></Image>
             </View>
-            <View>
-              <TouchableOpacity onPress={sumbitStill} style={{ backgroundColor: '#001adc', borderColor: 'black', opacity: 0.8, borderWidth: responsiveWidth(0.3), width: responsiveWidth(15), height: responsiveHeight(3), borderRadius: responsiveWidth(2), justifyContent: 'center', alignItems: 'center', left: responsiveWidth(2) }}>
-                <Text style={{ color: 'white', fontSize: responsiveFontSize(1.2), fontWeight: 'bold' }}>Submit</Text>
-              </TouchableOpacity>
-            </View>
+
 
           </View>
         </View>
@@ -490,11 +337,7 @@ export default function Industry_S_Two({ route }) {
               <Text style={{ top: responsiveHeight(4) }}>or</Text>
               <Image source={require('../../../Assets/Login_page/PanCardSample.png')} style={{ height: responsiveHeight(9), width: responsiveWidth(30), top: responsiveHeight(1.5) }}></Image>
             </View>
-            <View>
-              <TouchableOpacity onPress={submitPanAdhar} style={{ backgroundColor: '#001adc', borderColor: 'black', opacity: 0.8, borderWidth: responsiveWidth(0.3), width: responsiveWidth(15), height: responsiveHeight(3), borderRadius: responsiveWidth(2), justifyContent: 'center', alignItems: 'center', left: responsiveWidth(2) }}>
-                <Text style={{ color: 'white', fontSize: responsiveFontSize(1.2), fontWeight: 'bold' }}>Submit</Text>
-              </TouchableOpacity>
-            </View>
+
 
           </View>
 
@@ -578,7 +421,7 @@ export default function Industry_S_Two({ route }) {
           <Text style={{ top: responsiveHeight(0.3), left: responsiveWidth(0.8), color: 'black', width: responsiveWidth(85), fontSize: responsiveFontSize(1.7) }}>Your Profile will get verified within 24 hrs. Incase the profile doesn't match any of these, then your profile will be visible as a Public User </Text>
         </View>
 
-        <TouchableOpacity onPress={sumbitVideo_one} style={{ width: responsiveWidth(40), backgroundColor: 'blue', height: responsiveHeight(4), justifyContent: 'center', alignItems: 'center', top: responsiveHeight(4), left: responsiveWidth(25), borderWidth: responsiveWidth(0.5), borderColor: 'black', borderRadius: responsiveWidth(2), opacity: 0.7 }} >
+        <TouchableOpacity onPress={handleSubmit} style={{ width: responsiveWidth(40), backgroundColor: 'blue', height: responsiveHeight(4), justifyContent: 'center', alignItems: 'center', top: responsiveHeight(4), left: responsiveWidth(25), borderWidth: responsiveWidth(0.5), borderColor: 'black', borderRadius: responsiveWidth(2), opacity: 0.7 }} >
           <Text style={{ color: 'white' }}>Apply for Verification</Text>
         </TouchableOpacity>
 
