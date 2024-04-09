@@ -21,9 +21,9 @@ export default function Industry_S_Two({ route }) {
   const [selectedImages, setSelectedImages] = useState([])
   const [panAadharImg, setPanAadharImg] = useState([])
 
-  console.log(`selectedImages ${JSON.stringify(selectedImages)}`)
-  console.log(`selectedVideo ${JSON.stringify(selectedVideo)}`)
-  console.log(`panAadharImg ${JSON.stringify(panAadharImg)}`)
+console.log(`selectedImages ${JSON.stringify(selectedImages)}`)
+console.log(`selectedVideo ${JSON.stringify(selectedVideo)}`)
+console.log(`panAadharImg ${JSON.stringify(panAadharImg)}`)
 
   const handle_storypost = () => {
     setImagePickerModalVisible(true);
@@ -181,33 +181,33 @@ export default function Industry_S_Two({ route }) {
   };
 
 
-  const handleSubmit = async () => {
+const handleSubmit =async () => {
 
-    try {
+try {
       const id = await AsyncStorage.getItem('userId');
-      console.log(`User Id from IS Confirm ${id}`)
-      console.log("HITT")
-      let formData = new FormData()
-      formData.append("userId", id);
-      formData.append("images", selectedImages);
-      formData.append("videos", selectedVideo);
-      formData.append("panCard", panAadharImg);
-      formData.append("adharCard", panAadharImg);
+console.log(`User Id from IS Confirm ${id}`)
+console.log("HITT")
+let formData = new FormData()
+formData.append("userId", id);
+formData.append("images" , selectedImages);
+formData.append("videos", selectedVideo);
+formData.append("panCard", panAadharImg);
+formData.append("adharCard", panAadharImg);
 
-      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles`, formData);
-      //      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles` , {
-      //      headers: {
-      //                'Content-Type': 'multipart/form-data',
-      //              }
-      //      }, {images : selectedImages,videos: selectedVideo ,panCard: panAadharImg ,userId: id});
+      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles`,formData);
+//      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles` , {
+//      headers: {
+//                'Content-Type': 'multipart/form-data',
+//              }
+//      }, {images : selectedImages,videos: selectedVideo ,panCard: panAadharImg ,userId: id});
 
       console.log('Registration successful:', response.data);
-      Alert.alert('Success');
+  Alert.alert('Success');
     } catch (error) {
       console.error('Registration failed:', error);
     }
 
-  }
+}
 
 
   //=============================================
