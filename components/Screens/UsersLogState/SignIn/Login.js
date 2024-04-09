@@ -38,9 +38,7 @@ export default function Login() {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-useEffect(() => {
-navigation.navigate('IndustryTwo');
-}, [])
+
   //======================================================================
 
   const handlePasswordChange = text => {
