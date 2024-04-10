@@ -142,7 +142,6 @@ export default function Industry_S_Five({ route }) {
             onChangeText={setMail}
             style={{
               height: responsiveHeight(5.2),
-
               paddingLeft: responsiveWidth(2),
               width: responsiveWidth(75),
 

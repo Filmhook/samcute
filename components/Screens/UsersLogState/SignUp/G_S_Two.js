@@ -417,6 +417,7 @@ export default function SignUpTwo() {
                   keyboardType="email-address"
                   autoCapitalize="none"
                   style={{
+                    color : "#000",
                     fontWeight: '500',
                     height: responsiveHeight(8.2),
                     width: responsiveWidth(85),
@@ -446,6 +447,7 @@ export default function SignUpTwo() {
 
                   secureTextEntry={!showPassword} // Use secureTextEntry based on showPassword state
                   style={{
+                  color : "#000",
                     fontWeight: '500',
                     height: responsiveHeight(8.4),
                     width: responsiveWidth(86.7),
@@ -458,6 +460,7 @@ export default function SignUpTwo() {
                 <TouchableOpacity
                   onPress={toggleShowPassword}
                   style={{
+                  color : "#000",
                     position: 'absolute',
                     right: responsiveWidth(6),
                     height: responsiveHeight(2),
@@ -499,6 +502,7 @@ export default function SignUpTwo() {
                   onChangeText={setCPassword}
                   secureTextEntry={true}
                   style={{
+                  color : "#000",
                     height: responsiveHeight(8.4),
                     width: responsiveWidth(86.7),
                     // padding: responsiveWidth(1),
@@ -569,6 +573,7 @@ export default function SignUpTwo() {
                       onChangeText={handlePhoneNumberChange}
                       keyboardType={'phone-pad'}
                       style={{
+                      color : "#000",
                         alignSelf: 'center',
                         height: responsiveHeight(6.5),
                         width: responsiveWidth(40),

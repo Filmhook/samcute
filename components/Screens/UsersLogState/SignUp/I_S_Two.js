@@ -185,6 +185,7 @@ const handleSubmit =async () => {
 
 try {
       const id = await AsyncStorage.getItem('userId');
+      navigation.navigate('Login');
 console.log(`User Id from IS Confirm ${id}`)
 console.log("HITT")
 let formData = new FormData()
