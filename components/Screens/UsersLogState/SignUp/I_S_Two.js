@@ -7,7 +7,6 @@ import { responsiveFontSize, responsiveHeight, responsiveScreenHeight, responsiv
 import Modal from 'react-native-modal';
 import ImagePicker from 'react-native-image-crop-picker';
 import DocumentPicker from 'react-native-document-picker';
-import { Axios } from "axios";
 import PublicAPI from "../../../api/publicAPI";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -48,6 +47,7 @@ console.log(`panAadharImg ${JSON.stringify(panAadharImg)}`)
 
         });
 
+        
         setSelectedImages(p => {
           return [...p, image[0]]
         })

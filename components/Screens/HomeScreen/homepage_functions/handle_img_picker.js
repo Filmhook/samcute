@@ -7,6 +7,8 @@ import DocumentPicker from 'react-native-document-picker';
 import { app, database } from '../../../../FirebaseConfig';
 import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/firestore'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import PublicAPI from '../../../api/publicAPI';
 
 // for firebase 
 
@@ -85,7 +87,65 @@ export default function Handle_img_picker() {
       setImagePickerModalVisible(false);
       setPostModalVisible(true);
     }
-  }
+  };
+
+  const handlePost = async () => {
+    try {
+      // Retrieve userId and JWT from AsyncStorage
+      const id = await AsyncStorage.getItem('userId');
+      const jwt = await AsyncStorage.getItem('jwt');
+      console.log(`User Id from IS Confirm ${id}`);
+      console.log(jwt);
+      console.log("HITT");
+      console.log(croppedImage)
+
+      // Check if croppedImage exists and is in the expected format (for images)
+      if (croppedImage && typeof croppedImage === 'object' && croppedImage.hasOwnProperty('path')) {
+        // Create a FormData object and append data
+        let formData = new FormData();
+        formData.append("userId", id);
+        formData.append("category", "Gallery");
+
+        // Extract file name from the image path
+        const fileName = croppedImage.path.split('/').pop();
+
+        // Append the image file to the formData
+        formData.append("file", {
+          uri: croppedImage.path,
+          name: fileName,
+          type: croppedImage.mime, 
+        });
+
+        // Define request configuration with headers
+        const config = {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${jwt}`
+          }
+        };
+
+        // Make a POST request using PublicAPI
+        const response = await PublicAPI.post(
+          `/user/gallery/saveGalleryFiles`,
+          formData,
+          config
+        );
+
+        console.log('posted successful:', response.data);
+        Alert.alert('Posted');
+      } else {
+        // Handle case where no image is selected
+        Alert.alert('Please select an image to post.');
+      }
+    } catch (error) {
+      const fileName = croppedImage.path.split('/').pop();
+      console.log(fileName)
+      console.error(error)
+    }
+  };
+
+
+
 
 
   // function for camera and gallery picker
@@ -119,10 +179,10 @@ export default function Handle_img_picker() {
   const firestore = getFirestore(app)
   const collectionName = 'Homepage-post';
 
-  const postData = async () => {
+  const postDatan = async () => {
     try {
       const docRef = await addDoc(collection(firestore, collectionName), {
-        image: croppedImage,
+        image: croppedImagek,
         caption: caption,
         view_type: postVisibility,
         timestamp: serverTimestamp(),
@@ -155,7 +215,7 @@ export default function Handle_img_picker() {
   //   }
   // };
 //------------------------------------------------------------
-  const handlePost = () => {
+  const handlePosts = () => {
 
     // firestore in firebase func call
     postData()

@@ -1,17 +1,22 @@
 import Slider from '@react-native-community/slider';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
+
 import { View, Text, Image, TouchableOpacity, ScrollView, TextInput, StyleSheet, Button, Modal, Alert } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import the Icon component
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import PublicAPI from '../../../api/publicAPI';
+
 
 
 
 export default function PromoteEdit() {
+
   const navigation = useNavigation();
   const [selectedDays, setSelectedDays] = useState(1);
-  const [inventoryCount, setInventoryCount] = useState(0); // Initial inventory count
+  const [inventoryCount, setInventoryCount] = useState(0); 
   const [textInputValue, setTextInputValue] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleDate, setModalVisibleDate] = useState(false);
@@ -21,6 +26,9 @@ export default function PromoteEdit() {
   const [numberOfPeopleStart, setNumberOfPeopleStart] = useState(0)
 
   const [step, setSteps] = useState();
+
+
+
 
 
   const countriesData = [
@@ -5394,15 +5402,46 @@ export default function PromoteEdit() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const previousIndex = (currentIndex === 0 ? images.length - 1 : (currentIndex - 1));
   const nextIndex = (currentIndex === images.length - 1 ? 0 : (currentIndex + 1));
-  const handlePromote = () => {
-    alert('Promoted Successfull')
-   // navigation.navigate({totalCost, selectedDays,numberOfPeople,numberOfPeopleStart,})
-    navigation.navigate('Homecontents')
-  }
+  const handlePromote = async () => {
+    try {
+      const jwt = await AsyncStorage.getItem('jwt');
+      const response = await PublicAPI.post(
+        `/promote/addPromote`,
+        {
+          amount: inventoryCount,
+          numberOfDays: selectedDays,
+          cgst: gstcalculation,
+          sgst: gstcalculation,
+          price: totalCost,
+          startDate: '24',
+          endDate: '24',
+          country: 'india'
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${jwt}`
+          }
+        }
+      );
+      console.log("posted", response.data);
+      Alert.alert("Promoted");
+      navigation.navigate("Tabbar");
+    } catch (error) {
+      console.error('Error response:', error.response); // Log the error response
+      console.log(inventoryCount, selectedDays, gstcalculation, totalCost);
+      if (error.response) {
+        console.log('Status:', error.response.status);
+        console.log('Data:', error.response.data);
+        console.log('Headers:', error.response.headers);
+      }
+    }
+  };
+
 
   const totalAmount = inventoryCount * selectedDays
   const totalCost = ((totalAmount * 18) / 100) + totalAmount
   const gstcalculation = ((totalAmount * 18) / 100) / 2
+   
   //console.log(gstcalculation)
 
 
@@ -5684,7 +5723,7 @@ export default function PromoteEdit() {
               <Text style={style.rhs}> {inventoryCount}</Text>
               <Text style={style.rhs}> {selectedDays}</Text>
 
-              <Text style={style.rhs}> {inventoryCount * selectedDays}</Text>
+              <Text style={style.rhs}> {totalAmount}</Text>
               <Text style={style.rhs}> 18%</Text>
               <Text style={style.rhs}> {gstcalculation}</Text>
               <Text style={style.rhs}> {gstcalculation}</Text>
