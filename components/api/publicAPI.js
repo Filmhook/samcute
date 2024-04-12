@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const PublicAPI = axios.create({
-  baseURL: 'https://filmhook.annularprojects.com/filmhook-0.0.1',
+  baseURL: 'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT',
 });
 
 export default PublicAPI;

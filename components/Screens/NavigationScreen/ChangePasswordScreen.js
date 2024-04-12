@@ -14,6 +14,8 @@ import {
 } from 'react-native-responsive-dimensions';
 import {useNavigation} from '@react-navigation/native';
 import {nativeViewHandlerName} from 'react-native-gesture-handler/lib/typescript/handlers/NativeViewGestureHandler';
+import { privateDecrypt } from 'crypto';
+import privateAPI from '../../api/privateAPI';
 const ChangePasswordScreen = () => {
   const navigation = useNavigation();
   const [currentPassword, setCurrentPassword] = useState('');
@@ -23,7 +25,6 @@ const ChangePasswordScreen = () => {
   const handleChangePassword = async () => {
     try {
       // Fetch JWT token and email from AsyncStorage
-      const jwt = await AsyncStorage.getItem('jwt');
       const email = await AsyncStorage.getItem('mail');
 
       // Validate current password field
@@ -39,18 +40,14 @@ const ChangePasswordScreen = () => {
       }
 
       // Make API call to change password
-      const response = await PublicAPI.post(
+      const response = await privateAPI.post(
         '/user/changeUserPassword',
         {
           email: email,
           currentPassword: currentPassword,
           newPassword: newPassword,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${jwt}`, // Correct syntax for Authorization header
-          },
-        },
+
       );
 
       // Log response and show success message
@@ -58,11 +55,9 @@ const ChangePasswordScreen = () => {
       Alert.alert('Success', 'Password changed successfully.');
       navigation.navigate('Tabbar');
     } catch (error) {
-      const jwt = await AsyncStorage.getItem('jwt');
-      const email = await AsyncStorage.getItem('email');
+
       // Handle errors
       console.error('Error:', error);
-      console.log(jwt, email);
       Alert.alert('Error', 'An error occurred while changing password.');
     }
   };

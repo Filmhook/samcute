@@ -1,11 +1,11 @@
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from '@react-native-picker/picker';
 import {
   useFocusEffect,
   useIsFocused,
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -125,7 +125,7 @@ export default function Industry_S_One() {
   const SubProfessionOpen = async () => {
     try {
       const requests = selectedProfessionId.map(async id => {
-        const response = await PublicAPI.post('/Film/getProfessionList', {
+        const response = await PublicAPI.post(`/Film/getProfessionList`, {
           filmProfesssionId: id,
         });
         return response.data;
@@ -160,10 +160,10 @@ export default function Industry_S_One() {
   const handlepressNav = async () => {
     try {
       const id = await AsyncStorage.getItem('userId');
-console.log(`User Id from IS One ${id}`)
-      const mapProfessionName =  profession?.map(p => {
-      const profName = professionData?.find(n => n.value === p)
-      return profName?.label
+      console.log(`User Id from IS One ${id}`)
+      const mapProfessionName = profession?.map(p => {
+        const profName = professionData?.find(n => n.value === p)
+        return profName?.label
       })
 
       const response = await PublicAPI.post(
@@ -245,18 +245,18 @@ console.log(`User Id from IS One ${id}`)
               onPress={industryOpen}
               placeholderStyle={{
                 fontSize: responsiveFontSize(2),
-//                color: 'black',
+                //                color: 'black',
               }}
               dropDownContainerStyle={{
 
                 width: responsiveWidth(86),
-                height : responsiveWidth(400),
+                height: responsiveWidth(400),
                 marginTop: 2,
               }}
               showTickIcon={true}
               showArrowIcon={true}
               dropDownDirection="BOTTOM"
-//              theme="LIGHT"
+              //              theme="LIGHT"
               multiple={true}
               mode="BADGE"
               badgeColors={['#00d4ff']}
@@ -287,15 +287,15 @@ console.log(`User Id from IS One ${id}`)
               placeholder="Choose your Platforms"
               placeholderStyle={{
                 fontSize: responsiveFontSize(2),
-//                color: 'black',
+                //                color: 'black',
               }}
               showTickIcon={true}
               showArrowIcon={true}
               dropDownContainerStyle={{
-//                backgroundColor: 'gray',
+                //                backgroundColor: 'gray',
                 width: responsiveWidth(86),
 
-//                marginTop: responsiveHeight(2),
+                //                marginTop: responsiveHeight(2),
               }}
               dropDownDirection="BOTTOM"
               searchable={true}
@@ -315,7 +315,7 @@ console.log(`User Id from IS One ${id}`)
                 borderRadius: responsiveWidth(2),
                 height: responsiveHeight(8),
                 width: responsiveWidth(86),
-                shadowOffset: {width: -3, height: 9},
+                shadowOffset: { width: -3, height: 9 },
                 shadowOpacity: 0.6,
                 shadowRadius: 2,
                 elevation: 1,
@@ -332,7 +332,7 @@ console.log(`User Id from IS One ${id}`)
               setOpen={() => setIsOpenProf(!isOpenProf)}
               value={profession}
               setValue={val => {
-              setProfession(val)
+                setProfession(val)
               }}
               onChangeValue={handleProfessionChange}
               maxHeight={responsiveHeight(22)}
@@ -340,16 +340,16 @@ console.log(`User Id from IS One ${id}`)
               placeholder="What is your Profession?"
               placeholderStyle={{
                 fontSize: responsiveFontSize(2),
-//                color: 'black',
+                //                color: 'black',
               }}
               showTickIcon={true}
               showArrowIcon={true}
               searchable={true}
               searchPlaceholderTextColor="search"
               dropDownContainerStyle={{
-//                backgroundColor: 'gray',
+                //                backgroundColor: 'gray',
                 width: responsiveWidth(86),
-//                marginTop: responsiveHeight(2),
+                //                marginTop: responsiveHeight(2),
               }}
               dropDownDirection="BOTTOM"
               theme="LIGHT"
@@ -386,14 +386,14 @@ console.log(`User Id from IS One ${id}`)
               placeholder="List is your Sub Profession"
               placeholderStyle={{
                 fontSize: responsiveFontSize(2),
-//                color: 'black',
+                //                color: 'black',
               }}
               showTickIcon={true}
               showArrowIcon={true}
               dropDownContainerStyle={{
-//                backgroundColor: 'gray',
-//                width: responsiveWidth(86),
-//                marginBottom: responsiveHeight(3),
+                //                backgroundColor: 'gray',
+                //                width: responsiveWidth(86),
+                //                marginBottom: responsiveHeight(3),
               }}
               dropDownDirection="TOP"
               searchable={true}
@@ -418,9 +418,9 @@ console.log(`User Id from IS One ${id}`)
             />
           </View>
 
-          <View style={{flexDirection: 'row', columnGap: responsiveWidth(18)}}>
+          <View style={{ flexDirection: 'row', columnGap: responsiveWidth(18) }}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('SignUpTwo')}
+              onPress={() => navigation.navigate('Login')}
               style={styles.backButton}>
               <Text
                 style={{

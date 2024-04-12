@@ -1,22 +1,20 @@
-import { View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, Image, FlatList ,Alert} from 'react-native'
 import React, { useState } from 'react'
 import ImagePicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
 import DocumentPicker from 'react-native-document-picker';
-// for firebase 
 import { app, database } from '../../../../FirebaseConfig';
 import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/firestore'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import PublicAPI from '../../../api/publicAPI';
+import privateAPI from '../../../api/privateAPI';
 
-// for firebase 
 
 export default function Handle_img_picker() {
 
   const [visible, setVisible] = useState(false);
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
-  const [croppedImage, setCroppedImage] = useState(null);
+  const [croppedImage, setCroppedImage] = useState([]);
   const [caption, setCaption] = useState('');
   const [postModalVisible, setPostModalVisible] = useState(false);
 
@@ -24,7 +22,8 @@ export default function Handle_img_picker() {
   const [postVisibility, setPostVisibility] = useState('public');
   const [selectedVideo, setSelectedVideo] = useState([]);
 
-  const [profilepic , setProfilepic] = useState();
+  const [profilepic, setProfilepic] = useState();
+  console.log(croppedImage)
 
    const edit_profile_pic=async()=>{
     await ImagePicker.openPicker({
@@ -65,84 +64,57 @@ export default function Handle_img_picker() {
   const handleImageOption = async (option) => {
     try {
       if (option === 'camera') {
-        const image = await ImagePicker.openCamera({
-          cropping: true,
-        });
-
-        setCroppedImage(image);
+        // Open camera and crop image
       } else if (option === 'gallery') {
         const image = await ImagePicker.openPicker({
           cropping: true,
         });
 
-        setCroppedImage(image);
+        // Append the new image to the existing array of cropped images
+        setCroppedImage([image]);
       }
-
-    }
-    catch (error) {
+    } catch (error) {
       console.log('Image picker operation canceled or failed:', error);
-    }
-
-    finally {
+    } finally {
       setImagePickerModalVisible(false);
       setPostModalVisible(true);
     }
   };
 
+
   const handlePost = async () => {
     try {
-      // Retrieve userId and JWT from AsyncStorage
+      // Retrieve userId from AsyncStorage
       const id = await AsyncStorage.getItem('userId');
-      const jwt = await AsyncStorage.getItem('jwt');
-      console.log(`User Id from IS Confirm ${id}`);
-      console.log(jwt);
-      console.log("HITT");
-      console.log(croppedImage)
 
-      // Check if croppedImage exists and is in the expected format (for images)
-      if (croppedImage && typeof croppedImage === 'object' && croppedImage.hasOwnProperty('path')) {
-        // Create a FormData object and append data
-        let formData = new FormData();
-        formData.append("userId", id);
-        formData.append("category", "Gallery");
+      // Check if any cropped images exist
 
-        // Extract file name from the image path
-        const fileName = croppedImage.path.split('/').pop();
+          // Create a FormData object and append data
+          let formData = new FormData();
+          formData.append("userId", id);
+          formData.append("category", "Gallery");
+          formData.append('file', croppedImage);
 
-        // Append the image file to the formData
-        formData.append("file", {
-          uri: croppedImage.path,
-          name: fileName,
-          type: croppedImage.mime, 
-        });
+          // Make a POST request using privateAPI
+          const response = await privateAPI.post(
+            `/user/gallery/saveGalleryFiles`,
+            formData
+          );
 
-        // Define request configuration with headers
-        const config = {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${jwt}`
-          }
-        };
+          console.log('Posted successfully:', response.data);
+        
 
-        // Make a POST request using PublicAPI
-        const response = await PublicAPI.post(
-          `/user/gallery/saveGalleryFiles`,
-          formData,
-          config
-        );
-
-        console.log('posted successful:', response.data);
+        // Show success message after posting all images
         Alert.alert('Posted');
-      } else {
-        // Handle case where no image is selected
-        Alert.alert('Please select an image to post.');
-      }
+
     } catch (error) {
-      const fileName = croppedImage.path.split('/').pop();
-      console.log(fileName)
-      console.error(error)
+      console.error('Error posting:', error);
+      Alert.alert('Error', 'Failed to post image.');
     }
   };
+
+
+
 
 
 
@@ -171,62 +143,8 @@ export default function Handle_img_picker() {
     </TouchableOpacity>
   );
 
-  // public and private dropdown 
 
 
-  // for firebase-firestore  -----
-
-  const firestore = getFirestore(app)
-  const collectionName = 'Homepage-post';
-
-  const postDatan = async () => {
-    try {
-      const docRef = await addDoc(collection(firestore, collectionName), {
-        image: croppedImagek,
-        caption: caption,
-        view_type: postVisibility,
-        timestamp: serverTimestamp(),
-        // Use serverTimestamp to get the server time
-      })
-      alert('Posted Successfull');
-      console.log('Document written with ID: ', docRef.id);
-      console.log('Document written with ID: ', docRef.timestamp);
-    } catch (error) {
-      console.error('Error adding document: ', error);
-    }
-  }
-  // for firebase-firestore  -----   
-//-----API post-------------------------------------------
-  // const postData = async () => {
-  //   try {
-  //     await axios.post('http://10.0.2.2:8000/signup/', {
-  //       croppedImage,caption
-      
-        
-  //     }
-  //     );  
-  //     Alert.alert('Signup Successful');
-  //     navigation.navigate(Login)
-  //     console.log("successful")
-  //   } catch (error) {
-  //     // Alert.alert('Signup Failed');
-  //     console.log(error)
-  
-  //   }
-  // };
-//------------------------------------------------------------
-  const handlePosts = () => {
-
-    // firestore in firebase func call
-    postData()
-    // firestore in firebase func call
-
-    // Reset states
-    setCaption('');
-    setCroppedImage(null);
-    setPostModalVisible(false);
-    setVisible(false);
-  };
 
   const handleCancelPost = () => {
     // Reset states
@@ -279,9 +197,9 @@ export default function Handle_img_picker() {
       {/* Post Input Modal */}
       <Modal isVisible={postModalVisible} onBackdropPress={() => setPostModalVisible(false)}>
         <View style={{ backgroundColor: '#ffffff', padding: responsiveWidth(2), borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', width: responsiveWidth(80), left: responsiveWidth(4) }}>
-          {croppedImage && (
+          {croppedImage && croppedImage.path && ( // Check if croppedImage and its path are both defined
             <Image
-              source={{ uri: croppedImage.path }}
+              source={{ uri: croppedImage.path }} // Use the uri property to specify the image source
               style={{ width: responsiveWidth(75), height: responsiveHeight(30), marginBottom: responsiveHeight(1), borderRadius: responsiveWidth(1) }}
             />
           )}
@@ -315,6 +233,7 @@ export default function Handle_img_picker() {
           </View>
         </View>
       </Modal>
+
 
       {/* Modal for dropdown options */}
 
