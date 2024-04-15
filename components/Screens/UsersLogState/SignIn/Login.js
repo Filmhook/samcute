@@ -181,7 +181,7 @@ export default function Login() {
           <Text style={styles.signupTopic}>I don't have an account?/</Text>
           <TouchableOpacity
 
-            onPress={() => navigation.navigate('SignUpOne')} style={styles.IndustryButton}
+            onPress={() => navigation.navigate('IndustryTwo')} style={styles.IndustryButton}
           >
             <Text style={styles.signUpButtonText}>Create Account</Text>
           </TouchableOpacity>

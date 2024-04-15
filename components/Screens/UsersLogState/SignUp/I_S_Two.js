@@ -7,6 +7,7 @@ import { responsiveFontSize, responsiveHeight, responsiveScreenHeight, responsiv
 import Modal from 'react-native-modal';
 import ImagePicker from 'react-native-image-crop-picker';
 import DocumentPicker from 'react-native-document-picker';
+import { Axios } from "axios";
 import PublicAPI from "../../../api/publicAPI";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -20,9 +21,9 @@ export default function Industry_S_Two({ route }) {
   const [selectedImages, setSelectedImages] = useState([])
   const [panAadharImg, setPanAadharImg] = useState([])
 
-console.log(`selectedImages ${JSON.stringify(selectedImages)}`)
-console.log(`selectedVideo ${JSON.stringify(selectedVideo)}`)
-console.log(`panAadharImg ${JSON.stringify(panAadharImg)}`)
+  console.log(`selectedImages ${JSON.stringify(selectedImages)}`)
+  console.log(`selectedVideo ${JSON.stringify(selectedVideo)}`)
+  console.log(`panAadharImg ${JSON.stringify(panAadharImg)}`)
 
   const handle_storypost = () => {
     setImagePickerModalVisible(true);
@@ -47,7 +48,6 @@ console.log(`panAadharImg ${JSON.stringify(panAadharImg)}`)
 
         });
 
-        
         setSelectedImages(p => {
           return [...p, image[0]]
         })
@@ -181,34 +181,34 @@ console.log(`panAadharImg ${JSON.stringify(panAadharImg)}`)
   };
 
 
-const handleSubmit =async () => {
+  const handleSubmit = async () => {
 
-try {
+    try {
       const id = await AsyncStorage.getItem('userId');
       navigation.navigate('Login');
-console.log(`User Id from IS Confirm ${id}`)
-console.log("HITT")
-let formData = new FormData()
-formData.append("userId", id);
-formData.append("images" , selectedImages);
-formData.append("videos", selectedVideo);
-formData.append("panCard", panAadharImg);
-formData.append("adharCard", panAadharImg);
+      console.log(`User Id from IS Confirm ${id}`)
+      console.log("HITT")
+      let formData = new FormData()
+      formData.append("userId", id);
+      formData.append("images", selectedImages);
+      formData.append("videos", selectedVideo);
+      formData.append("panCard", panAadharImg);
+      formData.append("adharCard", panAadharImg);
 
-      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles`,formData);
-//      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles` , {
-//      headers: {
-//                'Content-Type': 'multipart/form-data',
-//              }
-//      }, {images : selectedImages,videos: selectedVideo ,panCard: panAadharImg ,userId: id});
+      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles`, formData);
+      //      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles` , {
+      //      headers: {
+      //                'Content-Type': 'multipart/form-data',
+      //              }
+      //      }, {images : selectedImages,videos: selectedVideo ,panCard: panAadharImg ,userId: id});
 
       console.log('Registration successful:', response.data);
-  Alert.alert('Success');
+      Alert.alert('Success');
     } catch (error) {
       console.error('Registration failed:', error);
     }
 
-}
+  }
 
 
   //=============================================
