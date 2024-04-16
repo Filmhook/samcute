@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, Image, FlatList ,Alert} from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, Image, FlatList, Alert } from 'react-native'
 import React, { useState } from 'react'
 import ImagePicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
@@ -23,16 +23,16 @@ export default function Handle_img_picker() {
   const [selectedVideo, setSelectedVideo] = useState([]);
 
   const [profilepic, setProfilepic] = useState();
-  console.log(croppedImage)
+//  console.log(croppedImage)
 
-   const edit_profile_pic=async()=>{
+  const edit_profile_pic = async () => {
     await ImagePicker.openPicker({
-     cropping:true
-   }).then( 
-    image => {
-     console.log(image.path)
-     setProfilepic(image.path) 
-   })
+      cropping: true
+    }).then(
+      image => {
+        console.log(image.path)
+        setProfilepic(image.path)
+      })
   }
 
 
@@ -69,7 +69,7 @@ export default function Handle_img_picker() {
         const image = await ImagePicker.openPicker({
           cropping: true,
         });
-
+console.log(`IMG ${JSON.stringify(image)}`)
         // Append the new image to the existing array of cropped images
         setCroppedImage([image]);
       }
@@ -88,24 +88,42 @@ export default function Handle_img_picker() {
       const id = await AsyncStorage.getItem('userId');
 
       // Check if any cropped images exist
+console.log(croppedImage.path , croppedImage.mime , "dfdfdfd.jpg")
+      // Create a FormData object and append data
+//      let formData = new FormData();
+//      formData.append("userId", id);
+//      formData.append("category", "Gallery");
+//      formData.append('file', {
+//      uri : croppedImage
+//      });
 
-          // Create a FormData object and append data
-          let formData = new FormData();
-          formData.append("userId", id);
-          formData.append("category", "Gallery");
-          formData.append('file', croppedImage);
+      // Make a POST request using privateAPI
+//      const response = await privateAPI.post(
+//        `/user/gallery/saveGalleryFiles`,
+//        formData,
+//        {userId : id , category : "Gallery" , file : croppedImage},
+//             { headers: { 'content-type': 'application/x-www-form-urlencoded' }},
+//            );
+//console.log(croppedImage)
+privateAPI({
+    url:'/user/gallery/saveGalleryFiles',
+    method:'POST',
+    headers:{
+      'Content-Type':'application/x-www-form-urlencoded'
+    },
+    formData,
+}).then(d => {
+console.log(d)
+}).catch(e => {
+console.log(e)
+})
 
-          // Make a POST request using privateAPI
-          const response = await privateAPI.post(
-            `/user/gallery/saveGalleryFiles`,
-            formData
-          );
 
-          console.log('Posted successfully:', response.data);
-        
+//      console.log('Posted successfully:', response.data);
 
-        // Show success message after posting all images
-        Alert.alert('Posted');
+
+      // Show success message after posting all images
+      Alert.alert('Posted');
 
     } catch (error) {
       console.error('Error posting:', error);
@@ -189,7 +207,7 @@ export default function Handle_img_picker() {
             onPress={() => setImagePickerModalVisible(false)}>
             <Text>Cancel</Text>
           </TouchableOpacity>
-        
+
         </View>
       </Modal>
 
