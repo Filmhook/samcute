@@ -184,7 +184,7 @@ export default function Industry_S_Two({ route }) {
   const handleSubmit = async () => {
 
     try {
-      const id = await AsyncStorage.getItem('userId');
+      const id = 2;
       navigation.navigate('Login');
       console.log(`User Id from IS Confirm ${id}`)
       console.log("HITT")

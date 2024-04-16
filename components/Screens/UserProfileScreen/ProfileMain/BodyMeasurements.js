@@ -46,14 +46,7 @@ const BodyMeasurement = () => {
     const fetchData = async () => {
       try {
         const userId = await AsyncStorage.getItem('userId');
-        const userIdString = userId.toString(); // Convert to string if needed
-        const jwt = await AsyncStorage.getItem('jwt');
-  
-        const response = await PublicAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
-          headers: {
-            'Authorization': `Bearer ${jwt}`
-          }
-        });
+        const response = await privateAPI.get(`user/getUserByUserId?userId=${userId}` );
   
         // Handle response data as needed
         console.log('User data:', response.data);
@@ -61,7 +54,6 @@ const BodyMeasurement = () => {
        setHeight(response.data.data.height);
        setWeight(response.data.data.weight);
        setSkinTone(response.data.data.skinTone);
-       setChest(response.data.data.chestSize);
        setWaist(response.data.data.waistSize);
        setBiceps(response.data.data.bicepsSize);
        setChest(response.data.data.chestSize);
@@ -84,7 +76,7 @@ const BodyMeasurement = () => {
 
   const handleSave = async () => {
   try {
-    const userId = await AsyncStorage.getItem('id');
+    const userId = await AsyncStorage.getItem('userId');
 
     const response = await privateAPI.put(
       `/user/updateBiologicalDetails`,
