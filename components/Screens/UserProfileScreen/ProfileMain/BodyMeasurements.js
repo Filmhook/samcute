@@ -17,6 +17,7 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PublicAPI from '../../../api/publicAPI';
+import privateAPI from '../../../api/privateAPI';
 const BodyMeasurement = () => {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -41,42 +42,83 @@ const BodyMeasurement = () => {
     setExpanded(!expanded);
   };
 
-  const handleSave = async () => {
-    try {
-      const jwt = await AsyncStorage.getItem('jwt');
-      const userId = await AsyncStorage.getItem('id');
-
-      const response = await PublicAPI.put(
-        `/user/updateBiologicalDetails`,
-        {
-          userId: userId,
-          height: height,
-          weight: weight,
-          skinTone: skinTone,
-          chestSize: chest,
-          waistSize: waist,
-          bicepsSize: biceps,
-        },
-        {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('userId');
+        const userIdString = userId.toString(); // Convert to string if needed
+        const jwt = await AsyncStorage.getItem('jwt');
+  
+        const response = await PublicAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
           headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        },
-      );
-      console.log('data saved successfully', response.data);
+            'Authorization': `Bearer ${jwt}`
+          }
+        });
+  
+        // Handle response data as needed
+        console.log('User data:', response.data);
+       // setHeight(response.data.data.height);
+       setHeight(response.data.data.height);
+       setWeight(response.data.data.weight);
+       setSkinTone(response.data.data.skinTone);
+       setChest(response.data.data.chestSize);
+       setWaist(response.data.data.waistSize);
+       setBiceps(response.data.data.bicepsSize);
+       setChest(response.data.data.chestSize);
 
+       // setDob(response.data.data.dob);
+  
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        // Log additional details
+        if (error.response) {
+          console.error('Response status:', error.response.status);
+          console.error('Response data:', error.response.data);
+        }
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+
+  const handleSave = async () => {
+  try {
+    const userId = await AsyncStorage.getItem('id');
+
+    const response = await privateAPI.put(
+      `/user/updateBiologicalDetails`,
+      {
+        userId: userId,
+        height: height,
+        weight: weight,
+        skinTone: skinTone,
+        chestSize: chest,
+        waistSize: waist,
+        bicepsSize: biceps,
+      },
+
+    );
+
+    console.log('Response:', response.data); // Log the response for debugging
+
+    if (response.data.status === 1) {
+      // Update state with new data if status is 1 (success)
       setHeight(response.data.data.height);
       setWeight(response.data.data.weight);
       setSkinTone(response.data.data.skinTone);
       setChest(response.data.data.chest);
       setWaist(response.data.data.waist);
       setBiceps(response.data.data.biceps);
-
       setIsEditing(false);
-    } catch (error) {
-      console.log(error);
+      console.log('Data saved successfully');
+    } else {
+      console.log('Error:', response.data.message); // Log error message if status is not 1
     }
-  };
+  } catch (error) {
+    console.log('Error:', error); // Log any other errors
+  }
+};
 
   const styles = getStyles(theme);
 
@@ -143,7 +185,7 @@ const BodyMeasurement = () => {
                       }}
                       value={height}
                       onChangeText={setHeight}
-                      placeholder="Enter your dob"
+                      placeholder="Enter your height"
                     />
                   ) : (
                     <Text
@@ -240,7 +282,7 @@ const BodyMeasurement = () => {
                       }}
                       value={skinTone}
                       onChangeText={setSkinTone}
-                      placeholder="Enter your weight"
+                      placeholder="Enter your skinTone"
                     />
                   ) : (
                     <Text
@@ -474,7 +516,7 @@ const getStyles = theme => {
     text: {
       fontSize: responsiveFontSize(2),
       color: '#000000',
-      fontWeight: '500',
+      fontWeight: '500',      
       fontFamily: 'Times New Roman',
       top: responsiveHeight(1),
       left: responsiveWidth(4),

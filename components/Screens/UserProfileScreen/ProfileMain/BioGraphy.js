@@ -7,16 +7,19 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {useNavigation} from '@react-navigation/native';
-import {TextInput} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
+import { TextInput } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker'; // Import DateTimePicker component
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import privateAPI from '../../../api/privateAPI';
+import PublicAPI from '../../../api/publicAPI';
 
 export default function Biography() {
   const navigation = useNavigation();
@@ -31,11 +34,84 @@ export default function Biography() {
   const [dob, setDob] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const handleSave = () => {
-    // Save the edited profile details
-    setIsEditing(false);
-    // You can send the updated profile details to your backend or update the state accordingly
+  const handleSave = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('id');
+
+      const response = await privateAPI.put(
+        `/user/updateBiologicalDetails`,
+        {
+          userId: userId,
+          height: height,
+          weight: weight,
+          skinTone: skinTone,
+          chestSize: chest,
+          waistSize: waist,
+          bicepsSize: biceps,
+        },
+
+      );
+
+      console.log('Response:', response.data); // Log the response for debugging
+
+      if (response.data.status === 1) {
+        // Update state with new data if status is 1 (success)
+        setHeight(response.data.data.height);
+        setWeight(response.data.data.weight);
+        setSkinTone(response.data.data.skinTone);
+        setChest(response.data.data.chest);
+        setWaist(response.data.data.waist);
+        setBiceps(response.data.data.biceps);
+        setIsEditing(false);
+        console.log('Data saved successfully');
+      } else {
+        console.log('Error:', response.data.message); // Log error message if status is not 1
+      }
+    } catch (error) {
+      console.log('Error:', error); // Log any other errors
+    }
   };
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('userId');
+        const userIdString = userId.toString(); // Convert to string if needed
+        const jwt = await AsyncStorage.getItem('jwt');
+
+        const response = await PublicAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
+          headers: {
+            'Authorization': `Bearer ${jwt}`
+          }
+        });
+
+        // Handle response data as needed
+        console.log('User data:', response.data);
+        // setHeight(response.data.data.height);
+        setGender(response.data.data.gender);
+        setCountry(response.data.data.country);
+        setState(response.data.data.state);
+        setDistrict(response.data.data.district)
+        // setDob(response.data.data.dob);
+
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        // Log additional details
+        if (error.response) {
+          console.error('Response status:', error.response.status);
+          console.error('Response data:', error.response.data);
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+
+
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || dob;
     setShowDatePicker(Platform.OS === 'ios');
@@ -84,7 +160,7 @@ export default function Biography() {
               {/* <Text>hhh</Text> */}
               <Image
                 source={require('../../../Assets/Userprofile_And_Fonts/update/edit-btn.png')}
-                style={{width: '100%', height: '100%'}}
+                style={{ width: '100%', height: '100%' }}
                 resizeMode="stretch"
               />
 
@@ -124,7 +200,7 @@ export default function Biography() {
                 }}>
                 <Image
                   source={require('../../../Assets/Userprofile_And_Fonts/update/Dob_Icon.png')}
-                  style={{width: '100%', height: '100%'}}
+                  style={{ width: '100%', height: '100%' }}
                   resizeMode="stretch"
                 />
               </View>
@@ -133,7 +209,7 @@ export default function Biography() {
                 {isEditing ? (
                   <TouchableOpacity
                     onPress={openDatePicker}
-                    style={{top: responsiveHeight(-4.5)}}>
+                    style={{ top: responsiveHeight(-4.5) }}>
                     <TextInput
                       style={{
                         fontSize: responsiveFontSize(2),
@@ -206,7 +282,7 @@ export default function Biography() {
                 }}>
                 <Image
                   source={require('../../../Assets/Userprofile_And_Fonts/update/Gender_Icon.png')}
-                  style={{width: '100%', height: '100%'}}
+                  style={{ width: '100%', height: '100%' }}
                 />
               </View>
               <View
@@ -256,7 +332,7 @@ export default function Biography() {
                 }}>
                 <Image
                   source={require('../../../Assets/Userprofile_And_Fonts/update/Birthplace_icon.png')}
-                  style={{width: '70%', height: '100%'}}
+                  style={{ width: '70%', height: '100%' }}
                 />
               </View>
               <View style={style.bioTextContainer}>
@@ -304,7 +380,7 @@ export default function Biography() {
                 }}>
                 <Image
                   source={require('../../../Assets/Userprofile_And_Fonts/update/Leaving_Place_icon.png')}
-                  style={{width: '70%', height: '100%'}}
+                  style={{ width: '70%', height: '100%' }}
                 />
               </View>
               <View></View>
@@ -352,7 +428,7 @@ export default function Biography() {
                 }}>
                 <Image
                   source={require('../../../Assets/Userprofile_And_Fonts/update/hometown_icon.png')}
-                  style={{width: '100%', height: '100%'}}
+                  style={{ width: '100%', height: '100%' }}
                 />
               </View>
               <View style={style.bioTextContainer}>
@@ -399,7 +475,7 @@ export default function Biography() {
                 }}>
                 <Image
                   source={require('../../../Assets/Userprofile_And_Fonts/update/Work_Exp.png')}
-                  style={{width: '100%', height: '100%'}}
+                  style={{ width: '100%', height: '100%' }}
                 />
               </View>
               <View style={style.bioTextContainer}>
@@ -446,7 +522,7 @@ export default function Biography() {
                 }}>
                 <Image
                   source={require('../../../Assets/Userprofile_And_Fonts/update/Booking.png')}
-                  style={{width: '100%', height: '100%'}}
+                  style={{ width: '100%', height: '100%' }}
                 />
               </View>
               <View style={style.bioTextContainer}>

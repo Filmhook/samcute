@@ -7,7 +7,7 @@ import {
   Image,
   TextInput,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   responsiveFontSize,
@@ -148,7 +148,7 @@ export default function Professionalinfo() {
         )}
 
         {expanded && (
-          <View style={{flexDirection: 'row', marginTop: responsiveHeight(2)}}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
             <View style={style.Lhs}>
               <Text style={style.Lhs_text}> Religion </Text>
             </View>
@@ -192,7 +192,7 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{flexDirection: 'row', marginTop: responsiveHeight(2)}}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
             <View style={style.Lhs}>
               <Text style={style.Lhs_text}> Caste </Text>
             </View>
@@ -236,7 +236,7 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{flexDirection: 'row', marginTop: responsiveHeight(2)}}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
             <View style={style.Lhs}>
               <Text style={style.Lhs_text}> Marital Status </Text>
             </View>
@@ -280,7 +280,7 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{flexDirection: 'row', marginTop: responsiveHeight(2)}}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
             <View style={style.Lhs}>
               <Text style={style.Lhs_text}> Spouse </Text>
             </View>
@@ -323,12 +323,12 @@ export default function Professionalinfo() {
         )}
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{flexDirection: 'row', marginTop: responsiveHeight(2)}}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
             <View style={style.Lhs}>
               <Text style={style.Lhs_text}> Children </Text>
             </View>
 
-            <View style={{rowGap: responsiveHeight(1)}}>
+            <View style={{ rowGap: responsiveHeight(1) }}>
               {dataArray.map((value, index) => (
                 <ImageBackground
                   style={{
@@ -379,7 +379,7 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{flexDirection: 'row', marginTop: responsiveHeight(2)}}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
             <View style={style.Lhs}>
               <Text style={style.Lhs_text}> Mother </Text>
             </View>
@@ -423,7 +423,7 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{flexDirection: 'row', marginTop: responsiveHeight(2)}}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
             <View style={style.Lhs}>
               <Text style={style.Lhs_text}> Father </Text>
             </View>
@@ -467,12 +467,12 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{flexDirection: 'row', marginTop: responsiveHeight(2)}}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
             <View style={style.Lhs}>
               <Text style={style.Lhs_text}> Brother </Text>
             </View>
 
-            <View style={{rowGap: responsiveHeight(1)}}>
+            <View style={{ rowGap: responsiveHeight(1) }}>
               {/* <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
                             <View style={{rowGap:responsiveHeight(1)}}> */}
 
@@ -511,7 +511,7 @@ export default function Professionalinfo() {
         )}
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{flexDirection: 'row', marginTop: responsiveHeight(2)}}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
             <View style={style.Lhs}>
               <Text style={style.Lhs_text}> Sister </Text>
             </View>
