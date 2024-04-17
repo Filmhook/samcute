@@ -66,12 +66,18 @@ export default function Handle_img_picker() {
       if (option === 'camera') {
         // Open camera and crop image
       } else if (option === 'gallery') {
-        const image = await ImagePicker.openPicker({
-          cropping: true,
-        });
-console.log(`IMG ${JSON.stringify(image)}`)
+       ImagePicker.openPicker({cropping : true}).then(image => {
+       console.log(image)
+             let generateName = image.path.split("/")[image.path.split("/")?.length -1]
+
+        setCroppedImage({uri : image.path, type : image.mime , name : generateName });
+        })
+
         // Append the new image to the existing array of cropped images
-        setCroppedImage([image]);
+
+//        let generateName = image.path.split("/")[image.path.split("/")?.length -1]
+//        console.log(generateName?.length)
+//        setCroppedImage({uri : image.uri , type : image.type , name : image.fileName });
       }
     } catch (error) {
       console.log('Image picker operation canceled or failed:', error);
@@ -88,14 +94,12 @@ console.log(`IMG ${JSON.stringify(image)}`)
       const id = await AsyncStorage.getItem('userId');
 
       // Check if any cropped images exist
-console.log(croppedImage.path , croppedImage.mime , "dfdfdfd.jpg")
+//console.log(croppedImage.modificationDate , "dfdfdfd.jpg")
       // Create a FormData object and append data
-//      let formData = new FormData();
-//      formData.append("userId", id);
-//      formData.append("category", "Gallery");
-//      formData.append('file', {
-//      uri : croppedImage
-//      });
+      let formData = new FormData();
+      formData.append("userId", id);
+      formData.append("category", "Gallery");
+      formData.append('file', croppedImage);
 
       // Make a POST request using privateAPI
 //      const response = await privateAPI.post(
@@ -104,26 +108,42 @@ console.log(croppedImage.path , croppedImage.mime , "dfdfdfd.jpg")
 //        {userId : id , category : "Gallery" , file : croppedImage},
 //             { headers: { 'content-type': 'application/x-www-form-urlencoded' }},
 //            );
-//console.log(croppedImage)
-privateAPI({
-    url:'/user/gallery/saveGalleryFiles',
+console.log(croppedImage)
+ const jwt = await AsyncStorage.getItem("jwt");
+fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/saveGalleryFiles', {
     method:'POST',
     headers:{
-      'Content-Type':'application/x-www-form-urlencoded'
+        'Accept':'application/json',
+        'Content-Type': 'multipart/form-data',
+        'Authorization' : 'Bearer' + jwt
     },
-    formData,
-}).then(d => {
-console.log(d)
-}).catch(e => {
-console.log(e)
-})
+    body: formData
+    })
+    .then((response)=>{
+        console.log('Response ==>',response);
+        Alert.alert('Posted Success');
+    })
+    .catch((err)=>{
+    Alert.alert('Posted Error');
+        console.warn(err);
+    });
 
+//privateAPI({
+//    url:'/user/gallery/saveGalleryFiles',
+//    method:'POST',
+//    headers:{
+//      'Accept':'application/json',
+//      'Content-Type': 'multipart/form-data'
+//    },
+//    data :formData,
+//}).then(d => {
+//console.log(d)
 
-//      console.log('Posted successfully:', response.data);
+//}).catch(e => {
+//Alert.alert('Posted Error');
+//console.log(e)
+//})
 
-
-      // Show success message after posting all images
-      Alert.alert('Posted');
 
     } catch (error) {
       console.error('Error posting:', error);

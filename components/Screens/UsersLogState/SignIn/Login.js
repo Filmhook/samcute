@@ -47,6 +47,7 @@ export default function Login() {
     setPassword(text);
   };
   const loginUser = async () => {
+  console.log("Login Clicked")
     try {
       const response = await PublicAPI.post('/user/login', {
         email: email,
