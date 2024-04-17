@@ -23,7 +23,7 @@ export default function Handle_img_picker() {
   const [selectedVideo, setSelectedVideo] = useState([]);
 
   const [profilepic, setProfilepic] = useState();
-//  console.log(croppedImage)
+  //  console.log(croppedImage)
 
   const edit_profile_pic = async () => {
     await ImagePicker.openPicker({
@@ -66,12 +66,18 @@ export default function Handle_img_picker() {
       if (option === 'camera') {
         // Open camera and crop image
       } else if (option === 'gallery') {
-        const image = await ImagePicker.openPicker({
-          cropping: true,
-        });
-console.log(`IMG ${JSON.stringify(image)}`)
+        ImagePicker.openPicker({ cropping: true }).then(image => {
+          console.log(image)
+          let generateName = image.path.split("/")[image.path.split("/")?.length - 1]
+
+          setCroppedImage({ uri: image.path, type: image.mime, name: generateName });
+        })
+
         // Append the new image to the existing array of cropped images
-        setCroppedImage([image]);
+
+        //        let generateName = image.path.split("/")[image.path.split("/")?.length -1]
+        //        console.log(generateName?.length)
+        //        setCroppedImage({uri : image.uri , type : image.type , name : image.fileName });
       }
     } catch (error) {
       console.log('Image picker operation canceled or failed:', error);
@@ -81,57 +87,75 @@ console.log(`IMG ${JSON.stringify(image)}`)
     }
   };
 
-
   const handlePost = async () => {
     try {
+      // Check if croppedImage is defined and has necessary data
+      if (!croppedImage || !croppedImage.uri) {
+        throw new Error("Cropped image data is undefined");
+      }
+
       // Retrieve userId from AsyncStorage
       const id = await AsyncStorage.getItem('userId');
 
-      // Check if any cropped images exist
-console.log(croppedImage.path , croppedImage.mime , "dfdfdfd.jpg")
+      // Create a new Headers object and append the authorization token
+      const myHeaders = new Headers();
+      const jwt = await AsyncStorage.getItem("jwt");
+      myHeaders.append("Authorization", "Bearer " + jwt);
+
       // Create a FormData object and append data
-//      let formData = new FormData();
-//      formData.append("userId", id);
-//      formData.append("category", "Gallery");
-//      formData.append('file', {
-//      uri : croppedImage
-//      });
+      const formData = new FormData();
+      formData.append("userId", id);
+      formData.append("category", "Gallery");
 
-      // Make a POST request using privateAPI
-//      const response = await privateAPI.post(
-//        `/user/gallery/saveGalleryFiles`,
-//        formData,
-//        {userId : id , category : "Gallery" , file : croppedImage},
-//             { headers: { 'content-type': 'application/x-www-form-urlencoded' }},
-//            );
-//console.log(croppedImage)
-privateAPI({
-    url:'/user/gallery/saveGalleryFiles',
-    method:'POST',
-    headers:{
-      'Content-Type':'application/x-www-form-urlencoded'
-    },
-    formData,
-}).then(d => {
-console.log(d)
-}).catch(e => {
-console.log(e)
-})
+      // Append the image file to FormData
+      const imageUriParts = croppedImage.uri.split('.');
+      const fileType = imageUriParts[imageUriParts.length - 1];
+      formData.append("file", {
+        uri: croppedImage.uri,
+        name: `image.${fileType}`,
+        type: `image/${fileType}`
+      });
 
+      // Define requestOptions with method, headers, body, and redirect options
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: formData,
+        redirect: "follow"
+      };
 
-//      console.log('Posted successfully:', response.data);
-
-
-      // Show success message after posting all images
-      Alert.alert('Posted');
-
+      // Make a POST request using fetch
+      fetch("http://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/saveGalleryFiles", requestOptions)
+        .then((response) => response.json()) // Parse response JSON
+        .then((data) => {
+          console.log("Response data:", data);
+          if (data.status === 1) {
+            // Handle successful response
+            const fileId = data.data.fileId;
+            const fileName = data.data.fileName;
+            const filePath = data.data.filePath;
+            // Use fileId, fileName, filePath, etc. as needed
+            Alert.alert('Posted Success', `File ${fileName} saved successfully.`);
+          } else {
+            // Handle unsuccessful response
+            Alert.alert('Posted Error', data.message);
+          }
+        })
+        .catch((error) => {
+        formData.append("file", {
+                uri: croppedImage.uri,
+                name: `image.${fileType}`,
+                type: `image/${fileType}`
+              });
+              console.log(type)
+          console.error(error);
+          Alert.alert('Posted Error', 'Failed to post image.');
+        });
     } catch (error) {
       console.error('Error posting:', error);
-      Alert.alert('Error', 'Failed to post image.');
+      Alert.alert('Error', error.message);
     }
   };
-
-
 
 
 
