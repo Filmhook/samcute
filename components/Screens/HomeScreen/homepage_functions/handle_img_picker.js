@@ -14,7 +14,7 @@ export default function Handle_img_picker() {
 
   const [visible, setVisible] = useState(false);
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
-  const [croppedImage, setCroppedImage] = useState([]);
+  const [croppedImage, setCroppedImage] = useState('');
   const [caption, setCaption] = useState('');
   const [postModalVisible, setPostModalVisible] = useState(false);
 
@@ -86,7 +86,6 @@ export default function Handle_img_picker() {
       setPostModalVisible(true);
     }
   };
-
   const handlePost = async () => {
     try {
       // Check if croppedImage is defined and has necessary data
@@ -107,7 +106,7 @@ export default function Handle_img_picker() {
       formData.append("userId", id);
       formData.append("category", "Gallery");
 
-      // Append the image file to FormData
+      // Append the image file directly to FormData without wrapping it
       const imageUriParts = croppedImage.uri.split('.');
       const fileType = imageUriParts[imageUriParts.length - 1];
       formData.append("file", {
@@ -115,6 +114,9 @@ export default function Handle_img_picker() {
         name: `image.${fileType}`,
         type: `image/${fileType}`
       });
+
+      // Log the data being posted
+      console.log("Data being posted:", formData);
 
       // Define requestOptions with method, headers, body, and redirect options
       const requestOptions = {
@@ -142,12 +144,6 @@ export default function Handle_img_picker() {
           }
         })
         .catch((error) => {
-        formData.append("file", {
-                uri: croppedImage.uri,
-                name: `image.${fileType}`,
-                type: `image/${fileType}`
-              });
-              console.log(type)
           console.error(error);
           Alert.alert('Posted Error', 'Failed to post image.');
         });
@@ -156,6 +152,8 @@ export default function Handle_img_picker() {
       Alert.alert('Error', error.message);
     }
   };
+
+
 
 
 

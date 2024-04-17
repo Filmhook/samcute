@@ -17,9 +17,9 @@ export default function Industry_S_Two({ route }) {
   const [story, setStory] = useState([]);
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
   const [imagePickerModalVisiblePan, setImagePickerModalVisiblePan] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState([]);
-  const [selectedImages, setSelectedImages] = useState([])
-  const [panAadharImg, setPanAadharImg] = useState([])
+  const [selectedVideo, setSelectedVideo] = useState('');
+  const [selectedImages, setSelectedImages] = useState('')
+  const [panAadharImg, setPanAadharImg] = useState('')
 
   console.log(`selectedImages ${JSON.stringify(selectedImages)}`)
   console.log(`selectedVideo ${JSON.stringify(selectedVideo)}`)
@@ -35,84 +35,32 @@ export default function Industry_S_Two({ route }) {
 
   const handleImageOption = async (option) => {
     try {
-
       if (option === 'camera') {
         const image = await ImagePicker.openCamera({
           cropping: true,
         });
-        console.log(image)
-        //        updateStory(image);
+        console.log(image);
+        setSelectedImages(prevImages => [...prevImages, image]);
       } else if (option === 'gallery') {
         const image = await DocumentPicker.pick({
           type: [DocumentPicker.types.allFiles],
-
         });
-
-        setSelectedImages(p => {
-          return [...p, image[0]]
-        })
+        setSelectedImages(prevImages => [...prevImages, image[0]]);
       }
     } catch (error) {
       console.log('Image picker operation canceled or failed:', error);
-    } finally {
-      setImagePickerModalVisible(false);
     }
   };
-
-  const handleImageOptionPanAdhar = async (option) => {
-    try {
-
-      if (option === 'camera') {
-        const image = await ImagePicker.openCamera({
-          cropping: true,
-        });
-        console.log(image)
-        //        updateStory(image);
-      } else if (option === 'gallery') {
-        const image = await DocumentPicker.pick({
-          type: [DocumentPicker.types.allFiles],
-
-        });
-
-        setPanAadharImg(p => {
-          return [...p, image[0]]
-        })
-      }
-    } catch (error) {
-      console.log('Image picker operation canceled or failed:', error);
-    } finally {
-      setImagePickerModalVisiblePan(false);
-    }
-  };
-
-
-
-
-  const handle_postzoom = () => {
-    console.log('clicked');
-  };
-
-
-
-
-
-  // for data prop
-  const nationality = route.params?.nationality
-  const selected = route.params?.selected
 
   const pickVideo = async () => {
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.video],
       });
-      setSelectedVideo(v => {
-        return [...v, res[0]]
-      });
-
-      console.log('video', selectedVideo)
+      setSelectedVideo([...selectedVideo, res[0]]);
+      console.log('video', selectedVideo);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
-        // User cancelled the picker
         console.log('User cancelled');
       } else {
         Alert.alert('Error', 'Error picking video file');
@@ -120,6 +68,24 @@ export default function Industry_S_Two({ route }) {
     }
   };
 
+  const handleImageOptionPanAdhar = async (option) => {
+    try {
+      if (option === 'camera') {
+        const image = await ImagePicker.openCamera({
+          cropping: true,
+        });
+        console.log(image);
+        setPanAadharImg(prevImages => [...prevImages, image]);
+      } else if (option === 'gallery') {
+        const image = await DocumentPicker.pick({
+          type: [DocumentPicker.types.allFiles],
+        });
+        setPanAadharImg(prevImages => [...prevImages, image[0]]);
+      }
+    } catch (error) {
+      console.log('Image picker operation canceled or failed:', error);
+    }
+  };
 
 
   const uploadVideo = async () => {
@@ -182,32 +148,49 @@ export default function Industry_S_Two({ route }) {
 
 
   const handleSubmit = async () => {
-
     try {
-      const id = 2;
-      navigation.navigate('Login');
-      console.log(`User Id from IS Confirm ${id}`)
-      console.log("HITT")
-      let formData = new FormData()
+      const id = 3;
+      let formData = new FormData();
+
+      selectedImages.forEach((image, index) => {
+        const imageUriParts = image.uri.split('.');
+        const fileType = imageUriParts[imageUriParts.length - 1];
+        formData.append(`image_${index}`, {
+          uri: image.uri,
+          name: `image_${index}.${fileType}`,
+          type: `image/${fileType}`
+        });
+      });
+
+      selectedVideo.forEach((video, index) => {
+        const videoUriParts = video.uri.split('.');
+        const fileType = videoUriParts[videoUriParts.length - 1];
+        formData.append(`video_${index}`, {
+          uri: video.uri,
+          name: `video_${index}.${fileType}`,
+          type: `video/${fileType}`
+        });
+      });
+
+      panAadharImg.forEach((img, index) => {
+        const imgUriParts = img.uri.split('.');
+        const fileType = imgUriParts[imgUriParts.length - 1];
+        formData.append(`panAadharImg_${index}`, {
+          uri: img.uri,
+          name: `panAadharImg_${index}.${fileType}`,
+          type: `image/${fileType}`
+        });
+      });
+
       formData.append("userId", id);
-      formData.append("images", selectedImages);
-      formData.append("videos", selectedVideo);
-      formData.append("panCard", panAadharImg);
-      formData.append("adharCard", panAadharImg);
 
       const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles`, formData);
-      //      const response = await PublicAPI.post(`/industryUser/saveIndustryUserFiles` , {
-      //      headers: {
-      //                'Content-Type': 'multipart/form-data',
-      //              }
-      //      }, {images : selectedImages,videos: selectedVideo ,panCard: panAadharImg ,userId: id});
-
-      console.log('Registration successful:', response.data);
+      console.log('Upload successful:', response.data);
       Alert.alert('Success');
     } catch (error) {
-      console.error('Registration failed:', error);
+      console.error('Upload failed:', error);
+      Alert.alert('Error', 'Upload failed');
     }
-
   }
 
 
