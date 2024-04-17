@@ -17,9 +17,9 @@ export default function Industry_S_Two({ route }) {
   const [story, setStory] = useState([]);
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
   const [imagePickerModalVisiblePan, setImagePickerModalVisiblePan] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState('');
-  const [selectedImages, setSelectedImages] = useState('')
-  const [panAadharImg, setPanAadharImg] = useState('')
+  const [selectedVideo, setSelectedVideo] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [panAadharImg, setPanAadharImg] = useState([]);
 
   console.log(`selectedImages ${JSON.stringify(selectedImages)}`)
   console.log(`selectedVideo ${JSON.stringify(selectedVideo)}`)
@@ -42,10 +42,12 @@ export default function Industry_S_Two({ route }) {
         console.log(image);
         setSelectedImages(prevImages => [...prevImages, image]);
       } else if (option === 'gallery') {
-        const image = await DocumentPicker.pick({
-          type: [DocumentPicker.types.allFiles],
-        });
-        setSelectedImages(prevImages => [...prevImages, image[0]]);
+        ImagePicker.openPicker({ cropping: true }).then(image => {
+          console.log(image)
+          let generateName = image.path.split("/")[image.path.split("/")?.length - 1]
+
+          setSelectedImages({ uri: image.path, type: image.mime, name: generateName });
+        })
       }
     } catch (error) {
       console.log('Image picker operation canceled or failed:', error);
@@ -54,19 +56,17 @@ export default function Industry_S_Two({ route }) {
 
   const pickVideo = async () => {
     try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.video],
+      const video = await ImagePicker.openPicker({
+        mediaType: 'video',
       });
-      setSelectedVideo([...selectedVideo, res[0]]);
-      console.log('video', selectedVideo);
-    } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        console.log('User cancelled');
-      } else {
-        Alert.alert('Error', 'Error picking video file');
-      }
+      console.log(video);
+      let generateName = video.path.split("/")[video.path.split("/")?.length - 1];
+      setSelectedVideo({ uri: video.path, type: video.mime, name: generateName });
+    } catch (error) {
+      console.log('Video picker operation canceled or failed:', error);
     }
   };
+
 
   const handleImageOptionPanAdhar = async (option) => {
     try {
@@ -77,10 +77,12 @@ export default function Industry_S_Two({ route }) {
         console.log(image);
         setPanAadharImg(prevImages => [...prevImages, image]);
       } else if (option === 'gallery') {
-        const image = await DocumentPicker.pick({
-          type: [DocumentPicker.types.allFiles],
-        });
-        setPanAadharImg(prevImages => [...prevImages, image[0]]);
+        ImagePicker.openPicker({ cropping: true }).then(image => {
+          console.log(image)
+          let generateName = image.path.split("/")[image.path.split("/")?.length - 1]
+
+          setPanAadharImg({ uri: image.path, type: image.mime, name: generateName });
+        })
       }
     } catch (error) {
       console.log('Image picker operation canceled or failed:', error);
@@ -125,7 +127,7 @@ export default function Industry_S_Two({ route }) {
 
     //  ImagePicker.launchImageLibrary(options, response => {
 
-    ImagePicker.launchImageLibrar(options, response => {
+    ImagePicker.launchImageLibrary(options, response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -192,6 +194,7 @@ export default function Industry_S_Two({ route }) {
       Alert.alert('Error', 'Upload failed');
     }
   }
+
 
 
   //=============================================
