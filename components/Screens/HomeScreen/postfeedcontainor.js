@@ -620,26 +620,26 @@ const ImageView = () => {
   const [imageData, setImageData] = useState(null);
 
   const fetchImage = async () => {
-    try {
-      const jwt = await AsyncStorage.getItem("jwt");
-      const userid = await AsyncStorage.getItem("userId");
-      // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint
-      const response = await fetch(`http://13.238.143.66:8080/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFile?userId=${userid}&category=Gallery&fileId=97a79c2c-2279-4197-9682-80a779b8d23a`, {
-        headers: {
-          Authorization: `Bearer ${jwt}`
-        }
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch image');
+  try {
+    const jwt = await AsyncStorage.getItem("jwt");
+    const userid = await AsyncStorage.getItem("userId");
+    // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint
+    const response = await fetch(`http://13.238.143.66:8080/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFile?userId=${userid}&category=Gallery&fileId=97a79c2c-2279-4197-9682-80a779b8d23a`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`
       }
-      const imageBlob = await response.blob();
-      const base64Data = await blobToBase64(imageBlob);
-      setImageData(base64Data);
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'Failed to fetch image');
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch image');
     }
-  };
+    const imageBlob = await response.blob();
+    const base64Data = await blobToBase64(imageBlob);
+    setImageData(base64Data);
+  } catch (error) {
+    console.error(error);
+    Alert.alert('Error', 'Failed to fetch image');
+  }
+};
 
 
   const blobToBase64 = async (blob) => {

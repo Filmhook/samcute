@@ -7,7 +7,8 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import the Icon component
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import PublicAPI from '../../../api/publicAPI';
+
+import privateAPI from '../../../api/privateAPI';
 
 
 
@@ -5404,23 +5405,18 @@ export default function PromoteEdit() {
   const nextIndex = (currentIndex === images.length - 1 ? 0 : (currentIndex + 1));
   const handlePromote = async () => {
     try {
-      const jwt = await AsyncStorage.getItem('jwt');
-      const response = await PublicAPI.post(
+      const response = await privateAPI.post(
         `/promote/addPromote`,
         {
-          amount: inventoryCount,
-          numberOfDays: selectedDays,
-          cgst: gstcalculation,
-          sgst: gstcalculation,
-          price: totalCost,
-          startDate: '24',
-          endDate: '24',
-          country: 'india'
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${jwt}`
-          }
+          promoteId: 96,
+          amount: inventoryCount, 
+          numberOfDays: selectedDays, 
+          cgst: gstcalculation, 
+          sgst: gstcalculation, 
+          price: totalCost, 
+          startDate: '2024-03-15', 
+          endDate: '2024-03-22', 
+          country: 'mm' 
         }
       );
       console.log("posted", response.data);
@@ -5436,6 +5432,7 @@ export default function PromoteEdit() {
       }
     }
   };
+
 
 
   const totalAmount = inventoryCount * selectedDays
