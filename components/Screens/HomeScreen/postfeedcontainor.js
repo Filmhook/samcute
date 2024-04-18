@@ -434,7 +434,7 @@
 //                   style={styles.commentInput}
 //                   placeholder="Add a Comment..."
 //                   multiline
-                  
+
 //                   value={commentText}
 //                   onChangeText={(text) => setCommentText(text)}
 //                 />
@@ -555,7 +555,7 @@
 //     // alignItems: 'center',
 //     height: 500,
 //     borderWidth: 1,
-   
+
 //   },
 //   commentInput: {
 //     height: 50,
@@ -564,7 +564,7 @@
 //     position: 'absolute',
 //     top: responsiveHeight(50),
 //     marginLeft:responsiveWidth(13),
-  
+
 //     //left: 40,
 //     borderColor: 'gray',
 //     borderWidth: 1,
@@ -591,7 +591,7 @@
 //   },
 //   commentsSection: {
 //    width:responsiveWidth(90),
-    
+
 //    // borderWidth:1
 //   },
 //   // commentsTitle: {
@@ -609,74 +609,58 @@
 //     padding: 10,
 //     backgroundColor: '#f0f0f0',
 //     borderRadius: 8,
-   
+
 //   },
 // })
-import React, { useState, useEffect } from 'react';
-import { View, Image, Text, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from 'react';
+import { View, Image, Text, TouchableOpacity, Alert } from 'react-native';
 
 const ImageView = () => {
-  const [imageUri, setImageUri] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [imageData, setImageData] = useState(null);
 
-  const fetchImageData = async () => {
+  const fetchImage = async () => {
     try {
       const jwt = await AsyncStorage.getItem("jwt");
-      const myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + jwt);
-
-      const response = await fetch('http://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/getGalleryFilesByUserId?userId=3', {
-        headers: myHeaders
+      const userid = await AsyncStorage.getItem("userId");
+      // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint
+      const response = await fetch(`http://13.238.143.66:8080/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFile?userId=${userid}&category=Gallery&fileId=97a79c2c-2279-4197-9682-80a779b8d23a`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`
+        }
       });
-
       if (!response.ok) {
         throw new Error('Failed to fetch image');
       }
-
-      const imageData = await response.json();
-      if (imageData.data.length > 0) {
-        const imageURL = 'http://filmhook.annularprojects.com/' + imageData.data[0].filePath;
-        setImageUri(imageURL);
-      } else {
-        throw new Error('No image found');
-      }
+      const imageBlob = await response.blob();
+      const base64Data = await blobToBase64(imageBlob);
+      setImageData(base64Data);
     } catch (error) {
-      Alert.alert('Error', error.message);
-    } finally {
-      setLoading(false);
+      console.error(error);
+      Alert.alert('Error', 'Failed to fetch image');
     }
   };
 
-  const showImage = async () => {
-    fetchImageData();
-  };
 
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
+  const blobToBase64 = async (blob) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = () => reject(new Error('Failed to convert blob to base64'));
+      reader.readAsDataURL(blob);
+    });
+  };
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <View>
-        {imageUri ? (
-          <TouchableOpacity onPress={showImage}>
-            <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />
-          </TouchableOpacity>
-        ) : (
-          <Text>No image available</Text>
-        )}
-      </View>
-      <TouchableOpacity onPress={showImage}>
+      <TouchableOpacity onPress={fetchImage}>
         <Text>Show Image</Text>
       </TouchableOpacity>
+      {imageData && (
+        <Image source={{ uri: `data:image/jpeg;base64,${imageData}` }} style={{ width: 200, height: 200 }} />
+      )}
     </View>
   );
 };
 
 export default ImageView;
-
