@@ -5405,10 +5405,11 @@ export default function PromoteEdit() {
   const nextIndex = (currentIndex === images.length - 1 ? 0 : (currentIndex + 1));
   const handlePromote = async () => {
     try {
+      const id = await AsyncStorage.getItem('id');
       const response = await privateAPI.post(
         `/promote/addPromote`,
         {
-          promoteId: 96,
+          promoteId: id,
           amount: inventoryCount, 
           numberOfDays: selectedDays, 
           cgst: gstcalculation, 

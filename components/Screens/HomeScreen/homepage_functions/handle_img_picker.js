@@ -96,6 +96,9 @@ export default function Handle_img_picker() {
       // Retrieve userId from AsyncStorage
       const id = await AsyncStorage.getItem('userId');
 
+      
+
+
       // Create a new Headers object and append the authorization token
       const myHeaders = new Headers();
       const jwt = await AsyncStorage.getItem("jwt");
@@ -127,15 +130,21 @@ export default function Handle_img_picker() {
       };
 
       // Make a POST request using fetch
-      fetch("http://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/saveGalleryFiles", requestOptions)
-        .then((response) => response.json()) // Parse response JSON
-        .then((data) => {
+      fetch("https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/saveGalleryFiles", requestOptions)
+        .then(async (response) => {
+          const data = await response.json(); // Parse response JSON
           console.log("Response data:", data);
           if (data.status === 1) {
             // Handle successful response
             const fileId = data.data.fileId;
             const fileName = data.data.fileName;
             const filePath = data.data.filePath;
+            const id = data.data.id;
+
+            // Store fileId in AsyncStorage
+            await AsyncStorage.setItem('fileId', fileId);
+            await AsyncStorage.setItem('id', id.toString());
+
             // Use fileId, fileName, filePath, etc. as needed
             Alert.alert('Posted Success', `File ${fileName} saved successfully.`);
           } else {
@@ -237,9 +246,9 @@ export default function Handle_img_picker() {
       {/* Post Input Modal */}
       <Modal isVisible={postModalVisible} onBackdropPress={() => setPostModalVisible(false)}>
         <View style={{ backgroundColor: '#ffffff', padding: responsiveWidth(2), borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', width: responsiveWidth(80), left: responsiveWidth(4) }}>
-          {croppedImage && croppedImage.path && ( // Check if croppedImage and its path are both defined
+          {croppedImage && (
             <Image
-              source={{ uri: croppedImage.path }} // Use the uri property to specify the image source
+              source={{ uri: croppedImage.uri }}
               style={{ width: responsiveWidth(75), height: responsiveHeight(30), marginBottom: responsiveHeight(1), borderRadius: responsiveWidth(1) }}
             />
           )}
