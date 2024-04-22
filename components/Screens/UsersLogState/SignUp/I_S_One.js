@@ -1,14 +1,40 @@
-import { Picker } from "@react-native-picker/picker";
-import { useFocusEffect, useIsFocused, useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Text, Image, ImageBackground, ScrollView } from "react-native";
-import CountryPicker, { getAllCountries } from 'react-native-country-picker-modal';
-import DropDownPicker from "react-native-dropdown-picker";
-import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
-import { brown100, red100 } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {Picker} from '@react-native-picker/picker';
+import {
+  useFocusEffect,
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  Image,
+  ImageBackground,
+  ScrollView,
+  Alert,
+} from 'react-native';
+import CountryPicker, {
+  getAllCountries,
+} from 'react-native-country-picker-modal';
+import DropDownPicker from 'react-native-dropdown-picker';
+import {
+  MultipleSelectList,
+  SelectList,
+} from 'react-native-dropdown-select-list';
+import {
+  brown100,
+  red100,
+} from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
+import PublicAPI from '../../../api/publicAPI';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Industry_S_One() {
   const [nationality, setNationality] = useState('');
@@ -36,27 +62,20 @@ export default function Industry_S_One() {
   const [professionSub, setProfessionSub] = useState(null);
   const [selectedProfessionId, setSelectedProfessionId] = useState(null);
 
-
-
-
-
-
-
-
-  const handleCountryChange = (countryId) => {
+  const handleCountryChange = countryId => {
     setPlatform(countryId);
     setProfession(null); // Reset state when country changes
     setSubProfession(null); // Reset district when country changes
   };
   const industryOpen = async () => {
     try {
-      const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/industryUser/getDetails', {
-        industries: 1 // Assuming industries = 1 is the flag
+      const response = await PublicAPI.post('/industryUser/getDetails', {
+        industries: 1, // Assuming industries = 1 is the flag
       });
 
       const dropdownData = response.data.industries.map(item => ({
         label: item.industryName,
-        value: item.industryName
+        value: item.industryName,
       }));
 
       setDropdownData(dropdownData);
@@ -67,13 +86,13 @@ export default function Industry_S_One() {
 
   const platformOpen = async () => {
     try {
-      const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/industryUser/getDetails', {
-        platforms: 1 // Assuming platforms = 1 is the flag
+      const response = await PublicAPI.post('/industryUser/getDetails', {
+        platforms: 1, // Assuming platforms = 1 is the flag
       });
 
       const platformData = response.data.platform.map(item => ({
         label: item.platformName,
-        value: item.platformName
+        value: item.platformName,
       }));
 
       setPlatformData(platformData);
@@ -82,21 +101,23 @@ export default function Industry_S_One() {
     }
   };
 
-
   const ProfessionOpen = async () => {
     try {
-      const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/Film/getProfessionMapList', {});
+      const response = await PublicAPI.post('/Film/getProfessionMapList', {});
 
       if (response.status === 200) {
         const professions = response.data.professionMapList.map(item => ({
           label: item.professionName,
-          value: item.filmProfessionId // Store profession ID as value
+          value: item.filmProfessionId, // Store profession ID as value
         }));
         setProfessionData(professions);
         console.log('Profession Data:', professions);
-        console.log(selectedProfessionId)
+        console.log(selectedProfessionId);
       } else {
-        console.error('Error fetching dropdown data: Invalid status code', response.status);
+        console.error(
+          'Error fetching dropdown data: Invalid status code',
+          response.status,
+        );
       }
     } catch (error) {
       console.error('Error fetching dropdown data:', error);
@@ -105,7 +126,7 @@ export default function Industry_S_One() {
   const SubProfessionOpen = async () => {
     try {
       const requests = selectedProfessionId.map(async id => {
-        const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/Film/getProfessionList', {
+        const response = await PublicAPI.post('/Film/getProfessionList', {
           filmProfesssionId: id,
         });
         return response.data;
@@ -113,10 +134,12 @@ export default function Industry_S_One() {
       const responses = await Promise.all(requests);
       const newSubProfessions = responses.reduce((acc, curr) => {
         if (curr.status) {
-          const subProfessionsForId = curr.subProfessionName.map(subProfession => ({
-            label: subProfession,
-            value: subProfession,
-          }));
+          const subProfessionsForId = curr.subProfessionName.map(
+            subProfession => ({
+              label: subProfession,
+              value: subProfession,
+            }),
+          );
           acc = [...acc, ...subProfessionsForId];
         } else {
           console.error('Error fetching data');
@@ -130,57 +153,92 @@ export default function Industry_S_One() {
   };
   // empty dependency array to ensure useEffect runs only once
 
-
-
-
-
-  const handleProfessionChange = (selectedProfessionId) => {
+  const handleProfessionChange = selectedProfessionId => {
     setSelectedProfessionId(selectedProfessionId);
     SubProfessionOpen(selectedProfessionId); // Fetch sub-professions when profession changes
   };
 
-
-
-
   const handlepressNav = async () => {
     try {
       const id = await AsyncStorage.getItem('userId');
-      const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/industryUser/addTemporaryDetails', {
-        userId: parseInt(id),
-        industriesName: selected,
-        platformName: industrySelected,
-        professionName: profession,
-        subProfessionName: professionSub
+      console.log(`User Id from IS One ${id}`);
+  
+      // Check if any of the required fields are empty
+      if (!selected || !industrySelected || !profession || !professionSub) {
+        Alert.alert('Error','Please fill in all required fields');
+        return;
+      }
+  
+      // Map profession names
+      const mapProfessionName =  profession?.map(p => {
+        const profName = professionData?.find(n => n.value === p)
+        return profName?.label
       });
-
+  
+      // Add temporary details
+      const response = await PublicAPI.post(
+        '/industryUser/addTemporaryDetails',
+        {
+          userId: parseInt(id),
+          industriesName: selected,
+          platformName: industrySelected,
+          professionName: mapProfessionName,
+          subProfessionName: professionSub,
+        },
+      );
+  
       console.log('Registration successful:', response.data);
+      console.log(selected, industrySelected, profession, professionSub);
       navigation.navigate('Industry_S_Confirm');
     } catch (error) {
       console.error('Registration failed:', error);
     }
   };
-
-
+  
   return (
     <View style={styles.container}>
-
       <ScrollView>
         <View style={styles.formContainer}>
+          <View
+            style={{
+              height: responsiveHeight(14),
+              width: responsiveWidth(89),
+              marginBottom: responsiveHeight(3),
+              flexDirection: 'row',
+              position: 'relative',
+            }}>
+            <Image
+              style={{
+                height: responsiveHeight(15.2),
+                width: responsiveWidth(30),
+                alignSelf: 'center',
+              }}
+              source={require('../../../Assets/Login_page/FH_logos.png')}
+              resizeMode="stretch"
+            />
 
-          <View style={{ height: responsiveHeight(14), width: responsiveWidth(89), marginBottom: responsiveHeight(3), flexDirection: 'row', position: 'relative', }}>
-
-            <Image style={{
-              height: responsiveHeight(15.2),
-              width: responsiveWidth(30), alignSelf: 'center',
-            }} source={require("../../../Assets/Login_page/FH_logos.png")} resizeMode="stretch" />
-
-            <Image style={{ height: responsiveHeight(6.2), width: responsiveWidth(65), position: 'absolute', left: responsiveWidth(15), top: responsiveHeight(8) }} source={require('../../../Assets/Login_page/Film_hook_name.png')} resizeMode="stretch" />
-            <Text style={{ color: 'blue', fontWeight: 'bold', position: 'absolute', left: responsiveWidth(58), top: responsiveHeight(14) }}>Industry User</Text>
-
-
+            <Image
+              style={{
+                height: responsiveHeight(6.2),
+                width: responsiveWidth(65),
+                position: 'absolute',
+                left: responsiveWidth(15),
+                top: responsiveHeight(8),
+              }}
+              source={require('../../../Assets/Login_page/Film_hook_name.png')}
+              resizeMode="stretch"
+            />
+            <Text
+              style={{
+                color: 'blue',
+                fontWeight: 'bold',
+                position: 'absolute',
+                left: responsiveWidth(58),
+                top: responsiveHeight(14),
+              }}>
+              Industry User
+            </Text>
           </View>
-
-
 
           <View style={{}}>
             <DropDownPicker
@@ -188,25 +246,34 @@ export default function Industry_S_One() {
               open={isOpendata}
               setOpen={() => setIsOpendata(!isOpendata)}
               value={selected}
-              setValue={(val) => setSelected(val)}
-              maxHeight={responsiveHeight(20)}
+              setValue={val => setSelected(val)}
+              maxHeight={responsiveHeight(30)}
               autoScroll
               placeholder="Select your Industries"
               searchable={true}
               searchPlaceholderTextColor="search"
               onPress={industryOpen}
-              placeholderStyle={{ fontSize: responsiveFontSize(2), color: 'black' }}
-              dropDownContainerStyle={{ backgroundColor: 'gray', width: responsiveWidth(86), marginTop: 2 }}
+              placeholderStyle={{
+                fontSize: responsiveFontSize(2),
+//                color: 'black',
+              }}
+              dropDownContainerStyle={{
+
+                width: responsiveWidth(86),
+                height : responsiveWidth(400),
+                marginTop: 2,
+              }}
               showTickIcon={true}
               showArrowIcon={true}
               dropDownDirection="BOTTOM"
-              theme="LIGHT"
+//              theme="LIGHT"
               multiple={true}
               mode="BADGE"
               badgeColors={['#00d4ff']}
               badgeDotColors={['green', 'red', 'blue', 'yellow']}
               badgeTextStyle={'black'}
               style={{
+
                 marginTop: responsiveHeight(1),
                 marginBottom: responsiveHeight(1),
                 borderWidth: responsiveWidth(0.5),
@@ -214,7 +281,7 @@ export default function Industry_S_One() {
                 borderRadius: responsiveWidth(2),
                 height: responsiveHeight(8),
                 width: responsiveWidth(86),
-                zIndex: 3
+                zIndex: 3,
               }}
             />
           </View>
@@ -224,14 +291,22 @@ export default function Industry_S_One() {
               open={isOpen}
               setOpen={() => setIsOpen(!isOpen)}
               value={industrySelected}
-              setValue={(val) => setindustrySelected(val)}
-              maxHeight={responsiveHeight(20)}
+              setValue={val => setindustrySelected(val)}
+              maxHeight={responsiveHeight(30)}
               autoScroll
               placeholder="Choose your Platforms"
-              placeholderStyle={{ fontSize: responsiveFontSize(2), color: 'black' }}
+              placeholderStyle={{
+                fontSize: responsiveFontSize(2),
+//                color: 'black',
+              }}
               showTickIcon={true}
               showArrowIcon={true}
-              dropDownContainerStyle={{ backgroundColor: 'gray', width: responsiveWidth(86), marginTop: responsiveHeight(2) }}
+              dropDownContainerStyle={{
+//                backgroundColor: 'gray',
+                width: responsiveWidth(86),
+
+//                marginTop: responsiveHeight(2),
+              }}
               dropDownDirection="BOTTOM"
               searchable={true}
               searchPlaceholderTextColor="search"
@@ -250,35 +325,45 @@ export default function Industry_S_One() {
                 borderRadius: responsiveWidth(2),
                 height: responsiveHeight(8),
                 width: responsiveWidth(86),
-                shadowOffset: { width: -3, height: 9 },
+                shadowOffset: {width: -3, height: 9},
                 shadowOpacity: 0.6,
                 shadowRadius: 2,
                 elevation: 1,
                 shadowColor: 'gray',
-                zIndex: 2
+                zIndex: 2,
               }}
             />
           </View>
 
-
           <View>
-            <DropDownPicker items={professionData} open={isOpenProf} setOpen={() => setIsOpenProf(!isOpenProf)} value={profession}
-              setValue={(val) => setProfession(val)}
+            <DropDownPicker
+              items={professionData}
+              open={isOpenProf}
+              setOpen={() => setIsOpenProf(!isOpenProf)}
+              value={profession}
+              setValue={val => {
+              setProfession(val)
+              }}
               onChangeValue={handleProfessionChange}
-              maxHeight={responsiveHeight(20)}
+              maxHeight={responsiveHeight(22)}
               autoScroll
-
               placeholder="What is your Profession?"
-              placeholderStyle={{ fontSize: responsiveFontSize(2), color: 'black' }}
+              placeholderStyle={{
+                fontSize: responsiveFontSize(2),
+//                color: 'black',
+              }}
               showTickIcon={true}
               showArrowIcon={true}
               searchable={true}
               searchPlaceholderTextColor="search"
-              dropDownContainerStyle={{ backgroundColor: 'gray', width: responsiveWidth(86), marginTop: responsiveHeight(2) }}
+              dropDownContainerStyle={{
+//                backgroundColor: 'gray',
+                width: responsiveWidth(86),
+//                marginTop: responsiveHeight(2),
+              }}
               dropDownDirection="BOTTOM"
               theme="LIGHT"
               onPress={ProfessionOpen}
-
               multiple={true}
               mode="BADGE"
               badgeColors={['#00d4ff']}
@@ -293,13 +378,11 @@ export default function Industry_S_One() {
                 height: responsiveHeight(8),
                 width: responsiveWidth(86),
                 // left: responsiveWidth(3),
-                zIndex: 1
+                zIndex: 1,
 
                 // borderColor: 'black',
                 // margin: responsiveWidth(1),
               }}
-
-
             />
           </View>
           <View style={{}}>
@@ -308,13 +391,20 @@ export default function Industry_S_One() {
               open={isOpenProfSub}
               setOpen={() => setIsOpenProfSub(!isOpenProfSub)}
               value={professionSub}
-              setValue={(val) => setProfessionSub(val)}
-              maxHeight={responsiveHeight(20)}
+              setValue={val => setProfessionSub(val)}
+              maxHeight={responsiveHeight(24)}
               placeholder="List is your Sub Profession"
-              placeholderStyle={{ fontSize: responsiveFontSize(2), color: 'black' }}
+              placeholderStyle={{
+                fontSize: responsiveFontSize(2),
+//                color: 'black',
+              }}
               showTickIcon={true}
               showArrowIcon={true}
-              dropDownContainerStyle={{ backgroundColor: 'gray', width: responsiveWidth(86), marginBottom: responsiveHeight(3) }}
+              dropDownContainerStyle={{
+//                backgroundColor: 'gray',
+//                width: responsiveWidth(86),
+//                marginBottom: responsiveHeight(3),
+              }}
               dropDownDirection="TOP"
               searchable={true}
               searchPlaceholderTextColor="search"
@@ -333,25 +423,39 @@ export default function Industry_S_One() {
                 borderRadius: responsiveWidth(2),
                 height: responsiveHeight(8),
                 width: responsiveWidth(86),
-                zIndex: 2
+                zIndex: 2,
               }}
             />
           </View>
 
-
-
-          <View style={{ flexDirection: 'row', columnGap: responsiveWidth(18), }}>
-            <TouchableOpacity onPress={() => navigation.navigate('SignUpTwo')} style={styles.backButton}>
-              <Text style={{ color: 'white', fontWeight: 'bold', fontSize: responsiveFontSize(2) }}>Back</Text>
+          <View style={{flexDirection: 'row', columnGap: responsiveWidth(18)}}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Login')}
+              style={styles.backButton}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: responsiveFontSize(2),
+                }}>
+                Back
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handlepressNav} style={styles.nextButton}>
-              <Text style={{ color: 'white', fontWeight: 'bold', fontSize: responsiveFontSize(2) }}>Confirm</Text>
+            <TouchableOpacity
+              onPress={handlepressNav}
+              style={styles.nextButton}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: responsiveFontSize(2),
+                }}>
+                Confirm
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
-
-
     </View>
   );
 }
@@ -365,7 +469,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
 
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
 
   // inputContainer: {
@@ -389,9 +493,6 @@ const styles = StyleSheet.create({
     // borderWidth: responsiveWidth(0.3),
     color: 'black',
     margin: 1,
-
-
-
   },
   picker: {
     width: responsiveWidth(87),
@@ -402,9 +503,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: responsiveHeight(2)
+    marginTop: responsiveHeight(2),
     // backgroundColor:'red',
-
   },
   inputContainer: {
     flexDirection: 'row',
@@ -415,8 +515,7 @@ const styles = StyleSheet.create({
     margin: responsiveWidth(1),
     color: 'black',
     resizeMode: 'contain',
-    zIndex: -1
-
+    zIndex: -1,
   },
   formContainer: {
     width: '100%',
@@ -427,8 +526,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: responsiveHeight(3),
-
-
   },
   countryPickerContainer: {
     flexDirection: 'row',
@@ -442,9 +539,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(8.2),
     width: responsiveWidth(86),
     borderColor: 'black',
-    margin: responsiveWidth(1)
-
-
+    margin: responsiveWidth(1),
   },
   selectContainer: {
     marginBottom: 20,
@@ -457,21 +552,19 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: responsiveFontSize(2),
     top: responsiveHeight(1),
-    borderWidth: 1
-
+    borderWidth: 1,
   },
   header: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: 'black'
+    color: 'black',
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
-
   },
   backButton: {
     backgroundColor: 'black',
@@ -483,7 +576,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(6),
     width: responsiveWidth(30),
     borderWidth: responsiveWidth(0.6),
-    borderColor: 'black'
+    borderColor: 'black',
   },
   nextButton: {
     backgroundColor: '#616161',
@@ -496,6 +589,6 @@ const styles = StyleSheet.create({
     width: responsiveWidth(30),
     //bottom: responsiveHeight(1.5)
     borderWidth: responsiveWidth(0.6),
-    borderColor: 'black'
+    borderColor: 'black',
   },
 });

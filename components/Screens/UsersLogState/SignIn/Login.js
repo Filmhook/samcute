@@ -1,100 +1,148 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, Button, TouchableOpacity, Dimensions, Text, StyleSheet, ImageBackground, Image, } from 'react-native';
+import {
+  View,
+  TextInput,
+  Button,
+  TouchableOpacity,
+  Dimensions,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  Image,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import app from '../../../../FirebaseConfig';
-import { collection, doc, documentId, getDoc, getFirestore } from 'firebase/firestore';
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
 
-import axios from 'axios';
+import PublicAPI from '../../../api/publicAPI';
 import { Alert } from 'react-native';
+
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState('');
 
+
   const navigation = useNavigation();
 
-
   const handle_forgotpass = async () => {
-    console.log("clicked")
-    navigation.navigate('Forgetpass')
-  }
+    console.log('clicked');
+    navigation.navigate('Forgetpass');
+  };
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
-  }
+  };
+
 
 
   //======================================================================
 
-
-  const handlePasswordChange = (text) => {
+  const handlePasswordChange = text => {
     setPassword(text);
   };
+
+//   useEffect(() => {
+// navigation.navigate('IndustryTwo')
+//   } , [])
+  // const loginUser = async () => {
+
+
+
+  //   try {
+  //     const response = await PublicAPI.post('/user/login', {
+  //       email: email,
+  //       password: password,
+  //       userType: 'commonUser',
+  //     });
+
+    
+  //     // Extract JWT token and ID from response data
+  //     const jwt = response.data.jwt;
+  //     const emailId = response.data.email;
+  //     const userId= response.data.id;
+
+
+
+  //     // Store JWT token and ID in AsyncStorage
+  //     await AsyncStorage.setItem('jwt', jwt);
+
+  //     await AsyncStorage.setItem('mail', emailId);
+  //     await AsyncStorage.setItem('userId', userId.toString());
+
+  //     // Log stored values for verification
+
+  //     const storedMail = await AsyncStorage.getItem('mail');
+  //     console.log('stored ', storedMail);
+  //     //
+  //     Alert.alert('Success', 'Login Successful');
+  //     navigation.navigate('Tabbar');
+
+  //     // Handle response as needed
+  //   } catch (error) {
+  //     Alert.alert('Error', "Invalid User Info");
+  //     console.error('Login failed:', error);
+  //     // Handle error as needed
+  //   }
+  // };
+
   const loginUser = async () => {
     try {
-      const response = await axios.post('http://18.61.66.68:8080/filmhook-0.0.1/user/login', {
+      const response = await PublicAPI.post('/user/login', {
         email: email,
         password: password,
-        userType: 'commonUser'
+        userType: 'commonUser',
       });
-
+  
       // Extract JWT token and ID from response data
       const jwt = response.data.jwt;
-      const id = response.data.id;
-
+      const emailId = response.data.email;
+      const userId = response.data.id;
+  
       // Store JWT token and ID in AsyncStorage
       await AsyncStorage.setItem('jwt', jwt);
-      await AsyncStorage.setItem('id', id.toString());
-
+      await AsyncStorage.setItem('mail', emailId);
+      await AsyncStorage.setItem('userId', userId.toString()); // Convert userId to string
+  
       // Log stored values for verification
-      const storedJwt = await AsyncStorage.getItem('jwt');
-      const storedId = await AsyncStorage.getItem('id');
-      console.log('Stored JWT token:', storedJwt);
-      console.log('Stored ID:', storedId);
-
-      Alert.alert('Login Successful');
-      console.log('Login successful:', response.data);
+      const storedMail = await AsyncStorage.getItem('mail');
+      console.log('stored ', storedMail);
+  
+      Alert.alert('Success', 'Login Successful');
       navigation.navigate('Tabbar');
-
-      // Handle response as needed
     } catch (error) {
-      Alert.alert(error)
+      Alert.alert('Error', "Invalid User Info");
       console.error('Login failed:', error);
-      // Handle error as needed
     }
   };
-
-
-
+  
   //=======================================================================
-
 
   const handleLogin = () => {
     const emailRegex = /\S+@\S+\.\S+/; // Regex pattern for a basic email format check
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/; // Regex pattern to check password length (at least 6 characters)
-
-
-    if (!emailRegex.test(email.trim())) {
-      alert('Please enter a valid email address');
+   
+    if (!email.trim()) {
+      Alert.alert('Error', 'Please enter email');
+      return;
+    } else if (!emailRegex.test(email.trim())) {
+      Alert.alert('Error', 'Please enter a valid email address');
+      return;
+    } else if (!password.trim()) {
+      Alert.alert('Error', 'Please enter password');
       return;
 
-    } else if (!passwordRegex.test(password.trim())) {
-      alert('Password contains "0-9, A-Z, a-z, @-$"');
-      return;
-    }
-    else if (password.trim().length < 8) {
-      alert('password length at least 8 characters')
-    }
-    else {
-      // handleLoginAuth();
-      navigation.navigate('Tabbar');
+    } else {
+      loginUser();
     }
   };
-
+  
   return (
+
     <View style={styles.container}>
       <View style={styles.formContainer}>
 
@@ -132,12 +180,12 @@ export default function Login() {
             {/* <Icon name="lock" size={20} color="gray" style={styles.icon} /> */}
 
             {/* <TextInput
-              placeholder="Password"
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              secureTextEntry={!showPassword}
-              style={styles.input}
-            /> */}
+        placeholder="Password"
+        value={password}
+        onChangeText={(text) => setPassword(text)}
+        secureTextEntry={!showPassword}
+        style={styles.input}
+      /> */}
             <TextInput
               placeholder="Password"
               value={password}
@@ -164,11 +212,11 @@ export default function Login() {
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.loginButton}
-          onPress={loginUser}>
+          onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
 
-        <View style={{ flexDirection: 'row', top: responsiveHeight(20) }}> 
+        <View style={{ flexDirection: 'row', top: responsiveHeight(20) }}>
 
           <Text style={styles.signupTopic}>I don't have an account?/</Text>
           <TouchableOpacity
@@ -343,5 +391,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
 
   }
-
 });

@@ -1,42 +1,62 @@
 import { useNavigation } from "@react-navigation/native";
 import { Verify } from "crypto";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity, Text, TextInput, Image, ScrollView, Alert } from "react-native";
 import { SelectList, MultipleSelectList } from 'react-native-dropdown-select-list';
 import { responsiveFontSize, responsiveHeight, responsiveScreenHeight, responsiveWidth } from "react-native-responsive-dimensions";
 import Modal from 'react-native-modal';
 import ImagePicker from 'react-native-image-crop-picker';
-
 import DocumentPicker from 'react-native-document-picker';
-
-
+import { Axios } from "axios";
+import PublicAPI from "../../../api/publicAPI";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Industry_S_Two({ route }) {
 
   const [story, setStory] = useState([]);
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [imagePickerModalVisiblePan, setImagePickerModalVisiblePan] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([])
+  const [panAadharImg, setPanAadharImg] = useState([])
+
+console.log(`selectedImages ${JSON.stringify(selectedImages)}`)
+console.log(`selectedVideo ${JSON.stringify(selectedVideo)}`)
+console.log(`panAadharImg ${JSON.stringify(panAadharImg)}`)
 
   const handle_storypost = () => {
     setImagePickerModalVisible(true);
   };
 
+  const handleImageOptionPan = () => {
+    setImagePickerModalVisiblePan(true);
+  };
+
+//  useEffect(() => {
+//  setSelectedImages([]);
+//  setSelectedVideo([]);
+//  setPanAadharImg([]);
+//  }, [])
+
   const handleImageOption = async (option) => {
     try {
-
 
       if (option === 'camera') {
         const image = await ImagePicker.openCamera({
           cropping: true,
         });
-        updateStory(image);
+        console.log(image)
+        //        updateStory(image);
       } else if (option === 'gallery') {
-       const image = await DocumentPicker.pick({
+        const image = await DocumentPicker.pick({
           type: [DocumentPicker.types.allFiles],
-        
+
         });
-        setSelectedVideo(image);
+
+        setSelectedImages(p => {
+          return [...p, image[0]]
+        })
       }
     } catch (error) {
       console.log('Image picker operation canceled or failed:', error);
@@ -45,11 +65,32 @@ export default function Industry_S_Two({ route }) {
     }
   };
 
-  const updateStory = (image) => {
-    // Assuming each image is a new story
-    setStory([...story, { ...image }]);
-    setImagePickerModalVisible(false); // Close modal after selecting an image
+  const handleImageOptionPanAdhar = async (option) => {
+    try {
+
+      if (option === 'camera') {
+        const image = await ImagePicker.openCamera({
+          cropping: true,
+        });
+        console.log(image)
+        //        updateStory(image);
+      } else if (option === 'gallery') {
+        const image = await DocumentPicker.pick({
+          type: [DocumentPicker.types.allFiles],
+
+        });
+
+        setPanAadharImg(p => {
+          return [...p, image[0]]
+        })
+      }
+    } catch (error) {
+      console.log('Image picker operation canceled or failed:', error);
+    } finally {
+      setImagePickerModalVisiblePan(false);
+    }
   };
+
 
 
 
@@ -61,36 +102,20 @@ export default function Industry_S_Two({ route }) {
 
 
 
-  // for data prop 
-  const { nationality, selected, } = route.params
   // for data prop
-
-  //=================================================
-
-
-  //======================================================================
-  // const handlepressNav = () =>{
-  //   if (selected === '' || nationality === '' || selected === '') {
-  //     alert('CurrentLocation and NativeLocation cannot be empty.');
-  //     }
-  //     else{
-  //     navigation.navigate("IndustryThree",{
-  //       nationality,
-  //       selected,
-  //       current,
-  //       native,
-  //       profession
-  //     })
-  //     }
-
-  // }
+  const nationality = route.params?.nationality
+  const selected = route.params?.selected
 
   const pickVideo = async () => {
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.video],
       });
-      setSelectedVideo(res);
+      setSelectedVideo(v => {
+        return [...v, res[0]]
+      });
+
+      console.log('video', selectedVideo)
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker
@@ -100,6 +125,8 @@ export default function Industry_S_Two({ route }) {
       }
     }
   };
+
+
 
   const uploadVideo = async () => {
     if (selectedVideo === null) {
@@ -138,7 +165,7 @@ export default function Industry_S_Two({ route }) {
 
     //  ImagePicker.launchImageLibrary(options, response => {
 
-   ImagePicker.launchImageLibrar(options,response=>{
+    ImagePicker.launchImageLibrar(options, response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -148,7 +175,7 @@ export default function Industry_S_Two({ route }) {
       }
     });
   };
-  
+
   const handleUploadMedia = () => {
     // Implement your upload logic here
     if (selectedMedia) {
@@ -159,6 +186,62 @@ export default function Industry_S_Two({ route }) {
     }
   };
 
+
+const handleSubmit =async () => {
+
+try {
+      const id = await AsyncStorage.getItem('userId');
+
+console.log(`User Id from IS Confirm ${id}`)
+console.log("HITT")
+let formData = new FormData()
+formData.append("userId", id);
+formData.append("images" , selectedImages[0]);
+formData.append("videos", selectedVideo[0]);
+formData.append("panCard", panAadharImg[0]);
+formData.append("adharCard", panAadharImg[0]);
+
+console.log("Data being posted:", formData);
+const myHeaders = new Headers();
+      const jwt = await AsyncStorage.getItem("jwt");
+      myHeaders.append("Authorization", "Bearer " + jwt);
+      // Define requestOptions with method, headers, body, and redirect options
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: formData,
+        redirect: "follow"
+      };
+
+      // Make a POST request using fetch
+      fetch("https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/industryUser/saveIndustryUserFiles", requestOptions)
+        .then((response) => response.json()) // Parse response JSON
+        .then((data) => {
+          console.log("Response data:", data);
+          if (data.status === 1) {
+            // Handle successful response
+            const fileId = data.data.fileId;
+            const fileName = data.data.fileName;
+            const filePath = data.data.filePath;
+            // Use fileId, fileName, filePath, etc. as needed
+            Alert.alert('Posted Success', `File ${fileName} saved successfully.`);
+                  navigation.navigate('Login');
+          } else {
+            // Handle unsuccessful response
+            Alert.alert('Posted Error', data.message);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          Alert.alert('Posted Error', 'Failed to post image.');
+        });
+
+//  Alert.alert('Success');
+    } catch (error) {
+      console.error('Registration failed:', error);
+    }
+
+}
 
 
   //=============================================
@@ -202,14 +285,14 @@ export default function Industry_S_Two({ route }) {
 
 
 
-        <View style={{ height: responsiveHeight(8), width: responsiveWidth(100), flexDirection: 'row',bottom:responsiveHeight(1)}}>
+        <View style={{ height: responsiveHeight(8), width: responsiveWidth(100), flexDirection: 'row', bottom: responsiveHeight(1) }}>
 
           <Image style={{
             height: responsiveHeight(8),
-            width: responsiveWidth(15),margin:0, padding:0,bottom:responsiveWidth(2),right:responsiveWidth(2)
+            width: responsiveWidth(15), margin: 0, padding: 0, bottom: responsiveWidth(2), right: responsiveWidth(2)
           }} source={require("../../../Assets/Login_page/FH_logos.png")} />
 
-          <Image style={{ height: responsiveHeight(3.2), width: responsiveWidth(45), position: 'absolute', left: responsiveWidth(8), top:responsiveHeight(3) }} source={require('../../../Assets/Login_page/Film_hook_name.png')} />
+          <Image style={{ height: responsiveHeight(3.2), width: responsiveWidth(45), position: 'absolute', left: responsiveWidth(8), top: responsiveHeight(3) }} source={require('../../../Assets/Login_page/Film_hook_name.png')} />
           <Text style={{ color: 'blue', fontWeight: 'bold', position: 'absolute', left: responsiveWidth(32), top: responsiveHeight(6) }}>Industry User</Text>
 
 
@@ -242,23 +325,20 @@ export default function Industry_S_Two({ route }) {
             <Text style={{ color: 'white', fontWeight: '700', fontSize: responsiveFontSize(1.5), left: responsiveWidth(1) }}>Upload video</Text>
           </TouchableOpacity>
 
-          <View style={{ flexDirection: 'row', height: responsiveHeight(11), justifyContent: 'center', alignItems: 'center',
-         }}>
-            <View style={{ width: responsiveWidth(60), flexDirection: 'row', left: responsiveWidth(2),columnGap:responsiveWidth(2) }}>
+          <View style={{
+            flexDirection: 'row', height: responsiveHeight(11), justifyContent: 'center', alignItems: 'center',
+          }}>
+            <View style={{ width: responsiveWidth(60), flexDirection: 'row', left: responsiveWidth(2), columnGap: responsiveWidth(2) }}>
 
-              <Image source={require('../../../Assets/Login_page/video_shooting.gif')} style={{ height: responsiveHeight(10), width: responsiveWidth(17),borderColor:'black',borderWidth:responsiveWidth(0.4) }}></Image>
-              <Image source={require('../../../Assets/Login_page/Img_shooting_dont.jpg')} style={{ height: responsiveHeight(10), width: responsiveWidth(17),borderColor:'black',borderWidth:responsiveWidth(0.4) }}></Image>
-              <Image source={require('../../../Assets/Login_page/FH_UnionSample.png')} style={{ height: responsiveHeight(10), width: responsiveWidth(20),borderColor:'black',borderWidth:responsiveWidth(0.4) }}></Image>
+              <Image source={require('../../../Assets/Login_page/video_shooting.gif')} style={{ height: responsiveHeight(10), width: responsiveWidth(17), borderColor: 'black', borderWidth: responsiveWidth(0.4) }}></Image>
+              <Image source={require('../../../Assets/Login_page/Img_shooting_dont.jpg')} style={{ height: responsiveHeight(10), width: responsiveWidth(17), borderColor: 'black', borderWidth: responsiveWidth(0.4) }}></Image>
+              <Image source={require('../../../Assets/Login_page/FH_UnionSample.png')} style={{ height: responsiveHeight(10), width: responsiveWidth(20), borderColor: 'black', borderWidth: responsiveWidth(0.4) }}></Image>
 
 
-             
-              <Image source={require('../../../Assets/Login_page/tickMark.png')} style={{ height: responsiveHeight(2), width: responsiveWidth(8), position: 'absolute', left: responsiveWidth(10),top:responsiveHeight(0.3) }}></Image>
+
+              <Image source={require('../../../Assets/Login_page/tickMark.png')} style={{ height: responsiveHeight(2), width: responsiveWidth(8), position: 'absolute', left: responsiveWidth(10), top: responsiveHeight(0.3) }}></Image>
             </View>
-            <View>
-              <TouchableOpacity style={{ backgroundColor: '#001adc', borderColor: 'black', opacity: 0.8, borderWidth: responsiveWidth(0.3), width: responsiveWidth(15), height: responsiveHeight(3), borderRadius: responsiveWidth(2), justifyContent: 'center', alignItems: 'center', left:responsiveWidth(2)}}>
-                <Text style={{ color: 'white', fontSize: responsiveFontSize(1.2), fontWeight: 'bold' }}>Submit</Text>
-              </TouchableOpacity>
-            </View>
+
 
           </View>
         </View>
@@ -276,7 +356,7 @@ export default function Industry_S_Two({ route }) {
 
 
 
-            <TouchableOpacity onPress={handle_storypost} style={{ backgroundColor: '#424242', height: responsiveHeight(3), width: responsiveWidth(18), borderRadius: responsiveWidth(2), justifyContent: 'center', alignItems: 'center', top: responsiveHeight(4), left: responsiveWidth(8.9), borderWidth: responsiveWidth(0.5), borderColor: 'black' }}>
+            <TouchableOpacity onPress={handleImageOptionPan} style={{ backgroundColor: '#424242', height: responsiveHeight(3), width: responsiveWidth(18), borderRadius: responsiveWidth(2), justifyContent: 'center', alignItems: 'center', top: responsiveHeight(4), left: responsiveWidth(8.9), borderWidth: responsiveWidth(0.5), borderColor: 'black' }}>
               <Image style={{ height: responsiveHeight(1.5), width: responsiveWidth(3.5), position: 'absolute', right: responsiveWidth(13) }} source={require('../../../Assets/Login_page/FH_Upload.png')}></Image>
 
               <Text style={{ color: 'white', fontWeight: '700', fontSize: responsiveFontSize(1.5), left: responsiveWidth(1) }}>Upload</Text>
@@ -291,11 +371,7 @@ export default function Industry_S_Two({ route }) {
               <Text style={{ top: responsiveHeight(4) }}>or</Text>
               <Image source={require('../../../Assets/Login_page/PanCardSample.png')} style={{ height: responsiveHeight(9), width: responsiveWidth(30), top: responsiveHeight(1.5) }}></Image>
             </View>
-            <View>
-              <TouchableOpacity style={{ backgroundColor: '#001adc', borderColor: 'black', opacity: 0.8, borderWidth: responsiveWidth(0.3), width: responsiveWidth(15), height: responsiveHeight(3), borderRadius: responsiveWidth(2), justifyContent: 'center', alignItems: 'center',left:responsiveWidth(2) }}>
-                <Text style={{ color: 'white', fontSize: responsiveFontSize(1.2), fontWeight: 'bold' }}>Submit</Text>
-              </TouchableOpacity>
-            </View>
+
 
           </View>
 
@@ -309,6 +385,20 @@ export default function Industry_S_Two({ route }) {
                 <Text>Choose from Gallery</Text>
               </TouchableOpacity>
               <TouchableOpacity style={{ padding: 10 }} onPress={() => setImagePickerModalVisible(false)}>
+                <Text>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+
+          <Modal
+            isVisible={imagePickerModalVisiblePan}
+            onBackdropPress={() => setImagePickerModalVisiblePan(false)}>
+            <View style={{ backgroundColor: '#ffffff', padding: 10, borderRadius: 10 }}>
+
+              <TouchableOpacity style={{ padding: 10 }} onPress={() => handleImageOptionPanAdhar('gallery')}>
+                <Text>Choose from Gallery</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ padding: 10 }} onPress={() => setImagePickerModalVisiblePan(false)}>
                 <Text>Cancel</Text>
               </TouchableOpacity>
             </View>
@@ -365,7 +455,7 @@ export default function Industry_S_Two({ route }) {
           <Text style={{ top: responsiveHeight(0.3), left: responsiveWidth(0.8), color: 'black', width: responsiveWidth(85), fontSize: responsiveFontSize(1.7) }}>Your Profile will get verified within 24 hrs. Incase the profile doesn't match any of these, then your profile will be visible as a Public User </Text>
         </View>
 
-        <TouchableOpacity style={{ width: responsiveWidth(40), backgroundColor: 'blue', height: responsiveHeight(4), justifyContent: 'center', alignItems: 'center', top: responsiveHeight(4), left: responsiveWidth(25), borderWidth: responsiveWidth(0.5), borderColor: 'black', borderRadius: responsiveWidth(2), opacity: 0.7 }} >
+        <TouchableOpacity onPress={handleSubmit} style={{ width: responsiveWidth(40), backgroundColor: 'blue', height: responsiveHeight(4), justifyContent: 'center', alignItems: 'center', top: responsiveHeight(4), left: responsiveWidth(25), borderWidth: responsiveWidth(0.5), borderColor: 'black', borderRadius: responsiveWidth(2), opacity: 0.7 }} >
           <Text style={{ color: 'white' }}>Apply for Verification</Text>
         </TouchableOpacity>
 

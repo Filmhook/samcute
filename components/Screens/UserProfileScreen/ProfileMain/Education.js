@@ -1,15 +1,94 @@
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import PublicAPI from '../../../api/publicAPI';
+import { TextInput } from 'react-native';
 export default function Education() {
     const [expanded, setExpanded] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+
+    const [school, setSchool] = useState();
+    const [collage, setCollege] = useState();
+    const [qualification, setQualification] = useState();
 
     const toggleExpanded = () => {
         setExpanded(!expanded);
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const userId = await AsyncStorage.getItem('userId');
+                const userIdString = userId.toString(); // Convert to string if needed
+                const jwt = await AsyncStorage.getItem('jwt');
+
+                console.log('idddd', userIdString)
+
+                const response = await PublicAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
+                    headers: {
+                        'Authorization': `Bearer ${jwt}`
+                    }
+                });
+
+                // Handle response data as needed
+                console.log('User data:', response.data);
+                // setHeight(response.data.data.height);
+                setSchool(response.data.data.schoolName);
+                setCollege(response.data.data.collegeName);
+                setQualification(response.data.data.qualification);
+
+
+
+
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                // Log additional details
+                if (error.response) {
+                    console.error('Response status:', error.response.status);
+                    console.error('Response data:', error.response.data);
+                }
+            }
+        };
+
+        fetchData();
+    }, []);
+
+
+    const handleSave = async () => {
+        try {
+            const jwt = await AsyncStorage.getItem('jwt');
+            const userId = await AsyncStorage.getItem('userId');
+            const userIdString = userId.toString();
+
+            console.log('save', userId)
+
+            const response = await PublicAPI.put(
+                `/user/updateEducationInfo`,
+                {
+                    userId: userIdString,
+                    schoolName: school,
+                    collegeName: collage,
+                    qualification: qualification
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${jwt}`,
+                    },
+                },
+            );
+            console.log('data saved successfully', response.data);
+
+
+
+            setIsEditing(false);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
 
     return (
         <>
@@ -18,7 +97,7 @@ export default function Education() {
                 <View style={style.bio_title}>
                     <TouchableOpacity style={style.bio_title} onPress={toggleExpanded}>
                         <Text style={style.bio_title_text}>
-                            Education
+                                EDUCATION
                         </Text>
 
                         <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
@@ -29,7 +108,26 @@ export default function Education() {
                         </View>
                     </TouchableOpacity>
                 </View>
+
                 {expanded && (
+                    <View>
+                        {isEditing ? null : (
+                            <TouchableOpacity onPress={() => setIsEditing(true)}>
+                                <Text style={style.editButton}>Edit</Text>
+                            </TouchableOpacity>
+                        )}
+
+                        {isEditing && (
+                            <TouchableOpacity onPress={handleSave}>
+                                <Text style={style.editButton}>Save</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                )}
+
+                {expanded && (
+
+
                     <View style={{ flexDirection: "row", marginTop: 15 }}>
 
                         <View style={style.Lhs}>
@@ -40,7 +138,26 @@ export default function Education() {
 
                         <View style={style.Rhs}>
                             <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                                <Text style={style.Rhs_text}>St.Columbia's School</Text>
+
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    {isEditing ? (<TextInput
+                                        style={{
+                                            fontSize: responsiveFontSize(2),
+                                            color: '#000000',
+                                            fontWeight: '500',
+                                            fontFamily: "Times New Roman",
+                                            textAlign: 'center'
+                                        }}
+                                        value={school}
+                                        onChangeText={setSchool}
+                                        placeholder="Enter your school"
+                                    />
+                                    ) :
+
+                                        <Text style={style.Rhs_text}>{school}</Text>
+
+                                    }
+                                </View>
                             </ImageBackground>
                         </View>
 
@@ -59,7 +176,26 @@ export default function Education() {
 
                         <View style={style.Rhs}>
                             <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                                <Text style={style.Rhs_text}>NA</Text>
+
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    {isEditing ? (<TextInput
+                                        style={{
+                                            fontSize: responsiveFontSize(2),
+                                            color: '#000000',
+                                            fontWeight: '500',
+                                            fontFamily: "Times New Roman",
+                                            textAlign: 'center'
+                                        }}
+                                        value={collage}
+                                        onChangeText={setCollege}
+                                        placeholder="Enter your college"
+                                    />
+                                    ) :
+
+                                        <Text style={style.Rhs_text}>{collage}</Text>
+
+                                    }
+                                </View>
                             </ImageBackground>
                         </View>
 
@@ -77,7 +213,26 @@ export default function Education() {
 
                         <View style={style.Rhs}>
                             <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                                <Text style={style.Rhs_text}>MA, BA</Text>
+
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    {isEditing ? (<TextInput
+                                        style={{
+                                            fontSize: responsiveFontSize(2),
+                                            color: '#000000',
+                                            fontWeight: '500',
+                                            fontFamily: "Times New Roman",
+                                            textAlign: 'center'
+                                        }}
+                                        value={qualification}
+                                        onChangeText={setQualification}
+                                        placeholder="Your qualification"
+                                    />
+                                    ) :
+
+                                        <Text style={style.Rhs_text}>{qualification}</Text>
+
+                                    }
+                                </View>
                             </ImageBackground>
                         </View>
 
@@ -156,7 +311,8 @@ const style = StyleSheet.create({
     },
     inputContainer: {
 
-
+        justifyContent: 'center',
+        alignItems: 'center',
         width: '101%',
         height: '100%',
     },
@@ -165,12 +321,19 @@ const style = StyleSheet.create({
         color: '#000000',
         fontWeight: '500',
         fontFamily: "Times New Roman",
-        right: responsiveWidth(-5),
-        bottom: -6
+        // borderWidth: 1
     },
     hr_tag: {
         borderBottomWidth: 4,
         borderBottomColor: '#D7D7D7',
         marginVertical: responsiveHeight(1),
-    }
+    },
+    editButton: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textDecorationLine: 'underline',
+        alignSelf: 'flex-end',
+        paddingRight: responsiveWidth(3),
+    },
 })

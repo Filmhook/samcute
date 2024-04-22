@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, ImageBackground, TouchableOpacity, Alert } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import PublicAPI from '../../../api/publicAPI';
 
-export default function ForgotPasswordsecondpage() {
-    const navigation = useNavigation();
-  const [Password, setPassword] = useState('');
-  const [CPassword, setCPassword] = useState('');
+
+export default function ForgotPasswordSecondPage() {
+  const navigation = useNavigation();
+  const [password, setPassword] = useState('');
+  const [cPassword, setCPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => {
@@ -14,9 +18,53 @@ export default function ForgotPasswordsecondpage() {
   };
 
   const handleResetPassword = async () => {
-    // Implement your password reset logic here
-    Alert.alert('Password Reset Email Sent', 'Please check your email to reset your password.');
+    try {
+      const otp = await AsyncStorage.getItem('otp'); // Retrieve OTP from AsyncStorage
+      
+      // Check if password fields are empty
+      if (!password || !cPassword) {
+        Alert.alert('Error', 'Please enter the password.');
+        return;
+      }
+      
+      // Check if passwords match
+      if (password !== cPassword) {
+        Alert.alert('Error', "Passwords don't match.");
+        return;
+      }
+      
+      const response = await PublicAPI.post(`/user/changePassword`, {
+        forgotOtp: otp, // Use retrieved OTP
+        password: password
+      });
+  
+      console.log('Password changed', response.data);
+      // Show success message to the user
+      Alert.alert('Password Changed', 'Your password has been changed successfully.');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error changing password:', error);
+      // Show error message to the user
+      Alert.alert('Error', 'An error occurred while changing your password. Please try again later.');
+    }
   };
+  
+
+  const validatePassword = input => {
+    let newSuggestions = [];
+
+    if (input.length < 8) {
+      newSuggestions.push('-Password contains "0-9, A-Z, a-z, @-$"');
+    }
+   
+
+    setSuggestions(newSuggestions);
+
+   
+  };
+
+  const [suggestions, setSuggestions] = useState([]);
+
 
   return (
     <View style={styles.container}>
@@ -31,11 +79,15 @@ export default function ForgotPasswordsecondpage() {
         <View style={styles.boxContent}>
           <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
             <TextInput
-              placeholder="Reenter Password"
+              placeholder="Password"
               maxLength={12}
               placeholderTextColor="black"
-              value={Password}
-              onChangeText={(text) => setPassword(text)}
+              value={password}
+              onChangeText={text => {
+                //setPassword(text);
+                setPassword(text);
+                validatePassword(text);
+              }}
               secureTextEntry={!showPassword}
               style={styles.input}
             />
@@ -44,12 +96,21 @@ export default function ForgotPasswordsecondpage() {
             </TouchableOpacity>
           </ImageBackground>
         </View>
+        
+        <Text style={styles.suggestionsText}>
+              {suggestions.map((suggestion, index) => (
+                <Text key={index}>
+                  {suggestion}
+                  {'\n'}
+                </Text>
+              ))}
+            </Text>
 
         <View style={styles.boxContent}>
           <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
             <TextInput
               placeholder="Confirm Password"
-              value={CPassword}
+              value={cPassword}
               placeholderTextColor="black"
               onChangeText={(text) => setCPassword(text)}
               secureTextEntry={true}
@@ -58,15 +119,10 @@ export default function ForgotPasswordsecondpage() {
           </ImageBackground>
         </View>
       </View>
-      <View style={{ flexDirection: 'row', width: '80%', justifyContent: 'center', alignItems: 'center', top: responsiveHeight(2.2) }}>
-            <Text style={styles.backTopic}>Already have an account </Text>
-            <TouchableOpacity style={styles.signUpButton} onPress={() => navigation.navigate('Login')}>
-              <Text style={styles.signInButtonText}> Login</Text>
-            </TouchableOpacity>
-          </View>
+    
       <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
-            <Text style={styles.resetButtonText}>Reset Password</Text>
-          </TouchableOpacity>
+        <Text style={styles.resetButtonText}>Reset Password</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -156,5 +212,11 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: responsiveFontSize(2),
     fontWeight: '500',
+  },
+  suggestionsText: {
+    color: 'red',
+    right:responsiveWidth(12),
+    //left: responsiveWidth(1.3),
+     bottom: responsiveHeight(1)
   },
 });

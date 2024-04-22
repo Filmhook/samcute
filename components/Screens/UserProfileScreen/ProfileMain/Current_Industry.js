@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, Image, ImageBackground, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 
 export default function CurrentIndustry() {
@@ -8,6 +8,45 @@ export default function CurrentIndustry() {
     // const industries = user.Industry || [];
     //console.log('industries:',industries);
     const [expanded, setExpanded] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const userId = await AsyncStorage.getItem('userId');
+            const userIdString = userId.toString(); // Convert to string if needed
+            const jwt = await AsyncStorage.getItem('jwt');
+      
+            const response = await PublicAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
+              headers: {
+                'Authorization': `Bearer ${jwt}`
+              }
+            });
+      
+            // Handle response data as needed
+            console.log('User data:', response.data);
+           // setHeight(response.data.data.height);
+           setHeight(response.data.data.height);
+           setWeight(response.data.data.weight);
+           setSkinTone(response.data.data.skinTone);
+           setChest(response.data.data.chestSize);
+           setWaist(response.data.data.waistSize);
+           setBiceps(response.data.data.bicepsSize);
+           setChest(response.data.data.chestSize);
+    
+           // setDob(response.data.data.dob);
+      
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+            // Log additional details
+            if (error.response) {
+              console.error('Response status:', error.response.status);
+              console.error('Response data:', error.response.data);
+            }
+          }
+        };
+      
+        fetchData();
+      }, []);
 
     const toggleExpanded = () => {
         setExpanded(!expanded);

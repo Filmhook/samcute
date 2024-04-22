@@ -45,6 +45,9 @@ import ProfileRoot from './UserProfileScreen/ProfileMain/ProfileRoot';
 import PersonalRoot from '../PersonalRoot';
 import Profilepic_edit_page from './UserProfileScreen/ProfileEdit/ProfilePic';
 import BiographyEdit from './UserProfileScreen/ProfileMain/BiographyEdit';
+import ChangePasswordScreen from './NavigationScreen/ChangePasswordScreen';
+import Biography from './UserProfileScreen/ProfileMain/BioGraphy';
+
 
 
 
@@ -54,34 +57,41 @@ const Stack = createNativeStackNavigator();
 export default function Appnavigator() {
   return (
     <>
-    <NavigationContainer>
-          <Stack.Navigator >
-                <Stack.Screen component={SignUpRoot}  name='SearchRoot'options={{headerShown:false}}/>
-                <Stack.Screen  component={Tabbar} name='Tabbar' options={{headerShown:false}}/>
-                <Stack.Screen component={Logout} name='Logout' options={{headerShown:false}}/>
-                <Stack.Screen component={PinnedProfile} name='PinnedProfile' options={{headerShown:false}} />
-                <Stack.Screen component={BlockedProfiles} name='BlockedProfiles' options={{headerShown:false}}/>
-                <Stack.Screen component={Neartome} name='Neartome' options={{headerShown:false}}/>
-                <Stack.Screen component={HelpAndSupport} name='HelpAndSupport' options={{headerShown:false}}/>
-                <Stack.Screen component={Settings} name='Settings'
-                options={{headerShown:false}}/>
-                <Stack.Screen component={ProfileEditPage} name='ProfileEditPage' options={{headerShown:false}}/>
-                <Stack.Screen component={BioRoot} name='BioRoot' options={{headerShown:false}}/>
-                <Stack.Screen component={ProfileRoot} name='ProfileRoot' options={{headerShown:false}}/>
-                <Stack.Screen component={PersonalRoot} name='PersonalRoot' options={{headerShown:false}}/>
-                <Stack.Screen component={Profilepic_edit_page} name='Profilepic_edit_page' options={{headerShown:false}}/>
+      <NavigationContainer>
+        
+        <Stack.Navigator >
+          <Stack.Screen component={SignUpRoot} name='SearchRoot' options={{ headerShown: false }} />
+          <Stack.Screen component={Tabbar} name='Tabbar' options={{ headerShown: false }} />
+          <Stack.Screen component={Logout} name='Logout' options={{ headerShown: false }} />
+          <Stack.Screen component={PinnedProfile} name='PinnedProfile' options={{ headerShown: false }} />
+          <Stack.Screen component={BlockedProfiles} name='BlockedProfiles' options={{ headerShown: false }} />
+          <Stack.Screen component={Neartome} name='Neartome' options={{ headerShown: false }} />
+          <Stack.Screen component={HelpAndSupport} name='HelpAndSupport' options={{ headerShown: false }} />
+          <Stack.Screen component={Settings} name='Settings'
+            options={{ headerShown: false }} />
+          <Stack.Screen component={ProfileEditPage} name='ProfileEditPage' options={{ headerShown: false }} />
+          <Stack.Screen component={BioRoot} name='BioRoot' options={{ headerShown: false }} />
+          <Stack.Screen component={ProfileRoot} name='ProfileRoot' options={{ headerShown: false }} />
+          <Stack.Screen component={PersonalRoot} name='PersonalRoot' options={{ headerShown: false }} />
+          <Stack.Screen component={Profilepic_edit_page} name='Profilepic_edit_page' options={{ headerShown: false }} />
 
-                <Stack.Screen component={BiographyEdit} name='BiographyEdit' options={{headerShown:false}}/>
+          <Stack.Screen component={BiographyEdit} name='BiographyEdit' options={{ headerShown: false }} />
+
+          <Stack.Screen component={ChangePasswordScreen} name='ChangePasswordScreen' options={{ headerShown: false }} />
+
+          <Stack.Screen component={Biography} name='Biography' options={{ headerShown: false }} />
 
 
 
-                
-                
-              
 
 
-          </Stack.Navigator> 
-     </NavigationContainer>
+
+
+
+        </Stack.Navigator>
+      </NavigationContainer>
+       
+  
     </>
   )
 }

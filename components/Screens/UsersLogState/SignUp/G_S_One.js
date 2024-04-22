@@ -17,29 +17,15 @@ import { Picker } from '@react-native-picker/picker';
 export default function SignUpOne() {
   const [name, setName] = useState('');
   const [dob, setDob] = useState(new Date());
-
-  const [selected, setSelected] = useState('');
-  const [nationality, setNationality] = useState(null);
-
-  const [birthcity, setbirthcity] = useState('');
-  const [isOpen, setIsOpen] = useState(false)
   const [selectedGender, setSelectedGender] = useState(null);
-
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-  const [startDates, setStartDate] = useState();
-  const [endDates, setEndDate] = useState();
-
   const navigation = useNavigation();
 
-  const data = [
-
-    { key: '1', value: 'Male' },
-    { key: '2', value: 'Female' },
-    { key: '3', value: 'Transgender' },
-    { key: '4', value: 'Others' },
-  ];
-
+  const [nameError, setNameError] = useState('');
+  const [dobError, setDobError] = useState('');
+  const [genderError, setGenderError] = useState('');
+  const [countryError, setCountryError] = useState('');
+  const [stateError, setStateError] = useState('');
+  const [districtError, setDistrictError] = useState('');
 
   const capitalizeFirstLetter = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -48,38 +34,7 @@ export default function SignUpOne() {
     setName(capitalizeFirstLetter(text));
   };
 
-  const onDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || dob;
-    setShowDatePicker(false);
-    setDob(currentDate);
-  };
 
-  const showStartDatePickers = () => {
-    setShowStartDatePicker(true);
-  };
-
-  const showEndDatePickers = () => {
-    setShowEndDatePicker(true);
-  };
-
-  const hideStartDatePicker = () => {
-    setShowStartDatePicker(false);
-  };
-
-  const hideEndDatePicker = () => {
-    setShowEndDatePicker(false);
-  };
-
-  const handleStartDateSelect = (date) => {
-    setStartDate(date.dateString);
-    hideStartDatePicker();
-  };
-
-  const handleEndDateSelect = (date) => {
-    setEndDate(date.dateString);
-
-    hideEndDatePicker();
-  };
 
   const countries = [
     {
@@ -2205,17 +2160,81 @@ export default function SignUpOne() {
 
   //-------------------------------------------------------------------------  
 
-  const dropdownOptions = ['Industry User'];
+  // const handlepressNav = () => {
+  //   if (name.trim() === '' || dob === '' || selectedGender === null || selectedCountry === null || selectedState === null || selectedDistrict === null) {
+  //     alert('Name, Date Of Birth, Gender, Country and state cannot be empty.');
+  //   }
+  //   else {
+  //     navigation.navigate("SignUpTwo", { name, editedDate, selectedGender, selectedCountry, selectedState, selectedDistrict, })
+  //   }
 
-  const handlepressNav = () => {
-    if (name.trim() === '' || dob === '' || selectedGender === null || selectedCountry === null || selectedState === null || selectedDistrict === null) {
-      alert('Name, Date Of Birth, Gender, Country and state cannot be empty.');
-    }
-    else {
-      navigation.navigate("SignUpTwo", { name, editedDate, selectedGender, selectedCountry, selectedState, selectedDistrict, })
+  // }
+
+  const handlePressNav = () => {
+    let isError = false;
+
+    // Validation for name
+    if (name.trim() === '') {
+      setNameError('Name cannot be empty.');
+      isError = true;
+    } else {
+      isError = false;
+      setNameError('');
+      
     }
 
-  }
+    // Validation for date of birth
+    if (editedDate === '') {
+      setDobError('Date of Birth cannot be empty.');
+      isError = true;
+    } else {
+      setDobError('');
+    }
+
+    // Validation for gender
+    if (selectedGender === null) {
+      setGenderError('Please select a gender.');
+      isError = true;
+    } else {
+      setGenderError('');
+    }
+
+    // Validation for country
+    if (selectedCountry === null) {
+      setCountryError('Please select a country.');
+      isError = true;
+    } else {
+      setCountryError('');
+    }
+
+    // Validation for state
+    if (selectedState === null) {
+      setStateError('Please select a state.');
+      isError = true;
+    } else {
+      setStateError('');
+    }
+
+    // Validation for district
+    if (selectedDistrict === null) {
+      setDistrictError('Please select a district.');
+      isError = true;
+    } else {
+      setDistrictError('');
+    }
+
+    // Navigate to next screen if there are no errors
+    if (!isError) {
+      navigation.navigate('SignUpTwo', {
+        name,
+        editedDate,
+        selectedGender,
+        selectedCountry,
+        selectedState,
+        selectedDistrict,
+      });
+    }
+  };
 
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -2240,6 +2259,8 @@ export default function SignUpOne() {
     return `${year}-${month}-${day}`;
   };
 
+  console.log('date format ', editedDate)
+
   const onEditedDateChange = (text) => {
     // Extract year, month, and day from the edited date string
     const [year, month, day] = text.split('-').map(Number);
@@ -2249,17 +2270,9 @@ export default function SignUpOne() {
     }
   };
 
-
+  console.log('erroe dob', dobError)
 
   console.log(selectedCountry)
-
-
-
-
-  // console.log(editedDate)
-
-  // console.log('select '+ selectedDate)
-
   return (
     <View style={styles.container}>
 
@@ -2286,8 +2299,8 @@ export default function SignUpOne() {
 
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                 <TextInput
-                  placeholder="What is your name?"
-                  placeholderTextColor="black"
+                  placeholder="WHAT IS YOUR NAME?"
+                 // placeholderTextColor="black"
                   value={name}
                   onChangeText={handleTextChange}
                   style={styles.input}
@@ -2296,6 +2309,7 @@ export default function SignUpOne() {
                 />
               </ImageBackground>
             </View>
+            {nameError ? <Text style={styles.errorMessage}>{nameError}</Text> : null}
 
             <View style={{ flexDirection: 'row', height: responsiveHeight(8.3), alignItems: 'center', justifyContent: 'center', columnGap: responsiveWidth(6.2), marginBottom: responsiveHeight(1.2) }}>
 
@@ -2309,6 +2323,7 @@ export default function SignUpOne() {
               {showDatePicker && (
                 <DateTimePicker
                   value={selectedDate}
+                  style={{color: "#000"}}
                   mode="date"
                   display="default"
                   onChange={onChange}
@@ -2326,6 +2341,8 @@ export default function SignUpOne() {
                 </ImageBackground>
               </View>
             </View>
+            {dobError ? <Text style={styles.errorMessage}>{dobError}</Text> : null}
+
 
             <View style={styles.boxContent2}>
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
@@ -2334,15 +2351,18 @@ export default function SignUpOne() {
                     style={styles.picker}
                     selectedValue={selectedGender}
                     onValueChange={(itemValue) => setSelectedGender(itemValue)}>
-                    <Picker.Item label="Select Gender" value={null} color='black' />
-                    <Picker.Item label="Male" value="male" color='black' />
-                    <Picker.Item label="Female" value="female" color='black' />
+                    <Picker.Item label="SELECT GENDER" value={null}  />
+                    <Picker.Item label="Male" value="male"  />
+                    <Picker.Item label="Female" value="female" />
 
-                    <Picker.Item label="Others" value="others" color='black' />
+                    <Picker.Item label="Others" value="others" />
                   </Picker>
                 </View>
               </ImageBackground>
             </View>
+            {genderError ? <Text style={styles.errorMessage}>{genderError}</Text> : null}
+
+
 
             <View style={styles.boxContent2}>
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
@@ -2352,7 +2372,7 @@ export default function SignUpOne() {
                     style={styles.picker}
                     selectedValue={selectedCountry}
                     onValueChange={(itemValue) => handleCountryChange(itemValue)}>
-                    <Picker.Item label="Select Country" value={null} />
+                    <Picker.Item label="SELECT COUNTRY" value={null} />
                     {countries.map(country => (
                       <Picker.Item key={country.id} label={country.name} value={country.name} />
                     ))}
@@ -2360,6 +2380,8 @@ export default function SignUpOne() {
                 </View>
               </ImageBackground>
             </View>
+
+            {countryError ? <Text style={styles.errorMessage}>{countryError}</Text> : null}
             <View style={styles.boxContent2}>
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                 {selectedCountry && (
@@ -2369,7 +2391,7 @@ export default function SignUpOne() {
                       style={styles.picker}
                       selectedValue={selectedState}
                       onValueChange={(itemValue) => setSelectedState(itemValue)}>
-                      <Picker.Item label="Select State" value={null} />
+                      <Picker.Item label="SELECT STATE" value={null} />
                       {countries.find(country => country.name === selectedCountry).states.map((state, index) => (
                         <Picker.Item key={index} label={state.name} value={state.name} />
                       ))}
@@ -2379,6 +2401,7 @@ export default function SignUpOne() {
                 )}
               </ImageBackground>
             </View>
+            {stateError ? <Text style={styles.errorMessage}>{stateError}</Text> : null}
 
             <View style={styles.boxContent2}>
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
@@ -2390,7 +2413,7 @@ export default function SignUpOne() {
 
                       selectedValue={selectedDistrict}
                       onValueChange={(itemValue) => setSelectedDistrict(itemValue)}>
-                      <Picker.Item label="Select District" value={null} />
+                      <Picker.Item label="SELECT DISTRICT" value={null} />
                       {countries.find(country => country.name === selectedCountry).states.find(state => state.name === selectedState).districts.map((district, index) => (
                         <Picker.Item key={index} label={district} value={district} />
                       ))}
@@ -2399,6 +2422,7 @@ export default function SignUpOne() {
                 )}
               </ImageBackground>
             </View>
+            {districtError ? <Text style={styles.errorMessage}>{districtError}</Text> : null}
 
             {selectedDistrict && (
               <View style={styles.selectContainer}>
@@ -2412,7 +2436,7 @@ export default function SignUpOne() {
               <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.backButton}>
                 <Text style={{ color: 'white', fontWeight: 'bold', fontSize: responsiveFontSize(2) }}>Back</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handlepressNav} style={styles.nextButton}>
+              <TouchableOpacity onPress={handlePressNav} style={styles.nextButton}>
                 <Text style={{ color: 'white', fontWeight: 'bold', fontSize: responsiveFontSize(2) }}>STEP 2</Text>
               </TouchableOpacity>
             </View>
@@ -2438,6 +2462,13 @@ const styles = StyleSheet.create({
 
 
   },
+  errorMessage: {
+    color: 'red',
+    right:responsiveWidth(20),
+    bottom:responsiveHeight(1.8),
+   
+  //  marginBottom: 5,
+  },
   selectContainer: {
     marginBottom: 20,
   },
@@ -2446,7 +2477,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: responsiveHeight(7),
     borderCurve: responsiveWidth(2),
-
+    color : "#333",
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',

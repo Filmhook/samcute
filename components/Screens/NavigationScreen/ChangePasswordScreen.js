@@ -1,7 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect ,useState} from 'react';
 import {ImageBackground, Text, TouchableOpacity} from 'react-native';
 import {Image} from 'react-native';
 import {View, TextInput, Button, Alert, StyleSheet} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+import PublicAPI from '../../api/publicAPI';
 
 import {
   responsiveFontSize,
@@ -9,46 +13,60 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import {useNavigation} from '@react-navigation/native';
+import {nativeViewHandlerName} from 'react-native-gesture-handler/lib/typescript/handlers/NativeViewGestureHandler';
 const ChangePasswordScreen = () => {
   const navigation = useNavigation();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleChangePassword = async () => {
+const handleChangePassword = async () => {
     try {
-      // Validate if new password matches confirm password
-      if (newPassword !== confirmPassword) {
-        throw new Error('New password and confirm password do not match');
+      // Fetch JWT token and email from AsyncStorage
+      const jwt = await AsyncStorage.getItem('jwt');
+      const email = await AsyncStorage.getItem('mail');
+
+      // Validate current password field
+      if (!currentPassword) {
+        Alert.alert('Error', 'Please enter your current password.');
+        return;
       }
 
-      const response = await fetch(
-        'https://filmhook.annularprojects.com/DemoProject-0.0.1-SNAPSHOT/user/changeUserPassword',
+      // Check if new password and confirm password match
+      if (newPassword !== confirmPassword) {
+        Alert.alert('Error', 'New password and confirm password do not match.');
+        return;
+      }
+
+      // Make API call to change password
+      const response = await PublicAPI.post(
+        '/user/changeUserPassword',
         {
-          method: 'POST',
+          email: email,
+          currentPassword: currentPassword,
+          newPassword: newPassword,
+        },
+        {
           headers: {
-            'Content-Type': 'application/json',
-            Authorization:
-              'Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyTmFtZSI6IkpvaG4gRG9lIiwidXNlclR5cGUiOiJjb21tb25Vc2VyIiwiaWF0IjoxNzEwMzMwMjkzLCJleHAiOjE3MTAzMzExOTN9.Ko_mw5RzwyX9Jnn2sfRgEx3iNg8zeKMlryDjVuHJZ6e2STcSFlv-EW51Idv9GwYrAdN5hjAcvuIsu42o9T-emw',
+            Authorization: `Bearer ${jwt}`, // Correct syntax for Authorization header
           },
-          body: JSON.stringify({
-            currentPassword: currentPassword,
-            newPassword: newPassword,
-            confirmPassword: confirmPassword,
-          }),
         },
       );
 
-      if (!response.ok) {
-        throw new Error('Failed to change password');
-      }
-
-      // Password changed successfully
-      Alert.alert('Success', 'Password changed successfully');
+      // Log response and show success message
+      console.log('Password changed', response.data);
+      Alert.alert('Success', 'Password changed successfully.');
+      navigation.navigate('Tabbar');
     } catch (error) {
-      Alert.alert('Error', error.message);
+      const jwt = await AsyncStorage.getItem('jwt');
+      const email = await AsyncStorage.getItem('email');
+      // Handle errors
+      console.error('Error:', error);
+      console.log(jwt, email);
+      Alert.alert('Error', 'An error occurred while changing password.');
     }
-  };
+};
+
 
   return (
     <>

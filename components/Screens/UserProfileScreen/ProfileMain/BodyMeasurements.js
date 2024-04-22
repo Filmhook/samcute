@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,15 +8,16 @@ import {
   TextInput,
   ImageBackground,
   Appearance,
+  Alert,
 } from 'react-native';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import PublicAPI from '../../../api/publicAPI';
 const BodyMeasurement = () => {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -29,7 +30,7 @@ const BodyMeasurement = () => {
   const [theme, setTheme] = useState(Appearance.getColorScheme());
 
   useEffect(() => {
-    const subscription = Appearance.addChangeListener(({colorScheme}) => {
+    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
       setTheme(colorScheme);
     });
     return () => {
@@ -41,40 +42,118 @@ const BodyMeasurement = () => {
     setExpanded(!expanded);
   };
 
-  const handleSave = async () => {
-    try {
-      const jwt = await AsyncStorage.getItem('jwt');
-      const userId = await AsyncStorage.getItem('id');
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('userId');
+        const userIdString = userId.toString(); // Convert to string if needed
+        const jwt = await AsyncStorage.getItem('jwt');
 
-      const response = await axios.put(
-        `https://filmhook.annularprojects.com/filmhook-0.0.1/user/updateBiologicalDetails`,
-        {
-          userId: userId,
+        console.log('bdym id', userId)
+
+        const response = await PublicAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
+          headers: {
+            'Authorization': `Bearer ${jwt}`
+          }
+        });
+
+        // Handle response data as needed
+        console.log('User data:', response.data);
+        // setHeight(response.data.data.height);
+        setHeight(response.data.data.height);
+        setWeight(response.data.data.weight);
+        setSkinTone(response.data.data.skinTone);
+        setChest(response.data.data.chestSize);
+        setWaist(response.data.data.waistSize);
+        setBiceps(response.data.data.bicepsSize);
+        setChest(response.data.data.chestSize);
+
+        // setDob(response.data.data.dob);
+
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        // Log additional details
+        if (error.response) {
+          console.error('Response status:', error.response.status);
+          console.error('Response data:', error.response.data);
+        }
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+  // const handleSave = async () => {
+  //   try {
+  //     const userId = await AsyncStorage.getItem('userId');
+  //     const userIdString = userId.toString(); 
+  //     const jwt = await AsyncStorage.getItem('jwt');
+
+    
+  //     const response = await PublicAPI.put(
+  //       `/user/updateBiologicalDetails`,
+  //       {
+  //         userId: userIdString,
+  //         height: height,
+  //         weight: weight,
+  //         skinTone: skinTone,
+  //         chestSize: chest,
+  //         waistSize: waist,
+  //         bicepsSize: biceps,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${jwt}`,
+  //         },
+  //       },
+  //     );
+  //     console.log('data saved successfully', response.data);
+
+  //     setIsEditing(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const handleUpdatePersonalInfo = async () => {
+   
+
+    const userId = await AsyncStorage.getItem('userId');
+    const jwt = await AsyncStorage.getItem('jwt');
+
+    const url = 'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/updateBiologicalDetails';
+    const requestBody = {
+      userId: userId,
           height: height,
           weight: weight,
           skinTone: skinTone,
           chestSize: chest,
           waistSize: waist,
           bicepsSize: biceps,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        },
-      );
-      console.log('data saved successfully', response.data);
+    };
 
-      setHeight(response.data.data.height);
-      setWeight(response.data.data.weight);
-      setSkinTone(response.data.data.skinTone);
-      setChest(response.data.data.chest);
-      setWaist(response.data.data.waist);
-      setBiceps(response.data.data.biceps);
+    
+    try {
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwt}` // Include the JWT token in the Authorization header
+        },
+        body: JSON.stringify(requestBody),
+      });
 
-      setIsEditing(false);
+      if (!response.ok) {
+        throw new Error('Failed to update personal info');
+      }
+
+     
+      setIsEditing(false)
+      Alert.alert('Success', 'Personal info updated successfully');
     } catch (error) {
-      console.log(error);
+      
+      Alert.alert('Error', error.message);
     }
   };
 
@@ -85,8 +164,8 @@ const BodyMeasurement = () => {
       <View style={styles.container}>
         <View style={styles.bio_title}>
           <TouchableOpacity style={styles.bio_title} onPress={toggleExpanded}>
-            <Text style={styles.bio_title_text}>Body Measurement</Text>
-            <View
+            <Text style={styles.bio_title_text}>BODY MEASUREMENT</Text>
+            <View   
               style={{
                 width: responsiveWidth(6),
                 height: responsiveHeight(4),
@@ -109,7 +188,7 @@ const BodyMeasurement = () => {
             )}
 
             {isEditing && (
-              <TouchableOpacity onPress={handleSave}>
+              <TouchableOpacity onPress={handleUpdatePersonalInfo}>
                 <Text style={styles.editButton}>Save</Text>
               </TouchableOpacity>
             )}
@@ -127,7 +206,7 @@ const BodyMeasurement = () => {
                   }}>
                   <Image
                     source={require('../../../Assets/Userprofile_And_Fonts/update/Dob_Icon.png')}
-                    style={{width: '100%', height: '100%'}}
+                    style={{ width: '100%', height: '100%' }}
                   />
                 </View>
                 <View style={styles.bioTextContainer}>
@@ -143,7 +222,7 @@ const BodyMeasurement = () => {
                       }}
                       value={height}
                       onChangeText={setHeight}
-                      placeholder="Enter your dob"
+                      placeholder={`Your height (${height} cm)`}
                     />
                   ) : (
                     <Text
@@ -155,7 +234,7 @@ const BodyMeasurement = () => {
                         top: responsiveHeight(-3.5),
                         left: responsiveWidth(15),
                       }}>
-                      {height}
+                      {height} cm
                     </Text>
                   )}
                 </View>
@@ -176,7 +255,7 @@ const BodyMeasurement = () => {
                   }}>
                   <Image
                     source={require('../../../../components/Assets/Userprofile_And_Fonts/update/Weight_icon.png')}
-                    style={{width: '100%', height: '100%'}}
+                    style={{ width: '100%', height: '100%' }}
                   />
                 </View>
                 <View style={styles.bioTextContainer}>
@@ -192,7 +271,7 @@ const BodyMeasurement = () => {
                       }}
                       value={weight}
                       onChangeText={setWeight}
-                      placeholder="Enter your weight"
+                      placeholder="Your weight in kg"
                     />
                   ) : (
                     <Text
@@ -204,7 +283,7 @@ const BodyMeasurement = () => {
                         top: responsiveHeight(-3.5),
                         left: responsiveWidth(15),
                       }}>
-                      {weight}
+                      {weight} kg
                     </Text>
                   )}
                 </View>
@@ -224,7 +303,7 @@ const BodyMeasurement = () => {
                   }}>
                   <Image
                     source={require('../../../../components/Assets/Userprofile_And_Fonts/update/Weight_icon.png')}
-                    style={{width: '100%', height: '100%'}}
+                    style={{ width: '100%', height: '100%' }}
                   />
                 </View>
                 <View style={styles.bioTextContainer}>
@@ -240,7 +319,7 @@ const BodyMeasurement = () => {
                       }}
                       value={skinTone}
                       onChangeText={setSkinTone}
-                      placeholder="Enter your weight"
+                      placeholder="Enter your skinTone"
                     />
                   ) : (
                     <Text
@@ -259,7 +338,7 @@ const BodyMeasurement = () => {
               </ImageBackground>
             </View>
 
-            <View style={{flexDirection: 'column', flex: 1}}>
+            <View style={{ flexDirection: 'column', flex: 1 }}>
               <View
                 style={{
                   width: responsiveWidth(19),
@@ -267,7 +346,7 @@ const BodyMeasurement = () => {
                   borderRadius: responsiveWidth(2.5),
                 }}>
                 <ImageBackground
-                  style={{width: '99.5%', height: '98.7%'}}
+                  style={{ width: '99.5%', height: '98.7%' }}
                   source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
                   resizeMode="stretch">
                   <Image
@@ -285,39 +364,47 @@ const BodyMeasurement = () => {
                 style={{
                   width: responsiveWidth(31.8),
                   height: responsiveHeight(5.5),
-                  borderRadius: responsiveWidth(2),
+                  //  borderRadius: responsiveWidth(2),
                   left: responsiveWidth(20.8),
                   top: responsiveHeight(-6),
+
+
                 }}>
                 <ImageBackground
-                  style={{width: '100%', height: '100%'}}
+                  style={{ width: '100%', height: '100%' }}
                   source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
                   resizeMode="stretch">
-                  <View style={styles.bioTextContainer}>
+                  <View style={{
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}>
                     {isEditing ? (
                       <TextInput
                         style={{
-                          fontSize: responsiveFontSize(1.8),
+                          fontSize: responsiveFontSize(2),
                           color: '#000000',
                           fontWeight: '500',
                           fontFamily: 'Times New Roman',
-                          // left: responsiveWidth(12)
+                          textAlign:'center'
+                        //  left: responsiveWidth(10)
+
                         }}
                         value={chest}
                         onChangeText={setChest}
-                        placeholder="Enter your Chest"
+                        placeholder="Set Chest in In"
                       />
                     ) : (
                       <Text
                         style={{
+                          fontSize: responsiveFontSize(2),
+                          color: '#000000',
                           fontWeight: '500',
-                          fontSize: responsiveFontSize(1.8),
-                          color: '#323232',
-                          textAlign: 'center',
                           fontFamily: 'Times New Roman',
-                          letterSpacing: 1,
+                          top: responsiveHeight(1)
+
+
                         }}>
-                        {chest}
+                        {chest} Inch
                       </Text>
                     )}
                   </View>
@@ -333,33 +420,35 @@ const BodyMeasurement = () => {
                   top: responsiveHeight(-5),
                 }}>
                 <ImageBackground
-                  style={{width: '100%', height: '100%'}}
+                  style={{ width: '100%', height: '100%' }}
                   source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
                   resizeMode="stretch">
-                  <View style={styles.bioTextContainer}>
+                  <View style={{justifyContent:'center',alignItems:'center'}}>
                     {isEditing ? (
                       <TextInput
                         style={{
-                          fontSize: responsiveFontSize(1.8),
+                          fontSize: responsiveFontSize(2),
                           color: '#000000',
                           fontWeight: '500',
                           fontFamily: 'Times New Roman',
-                          // left: responsiveWidth(12)
+                          textAlign:'center'
                         }}
                         value={waist}
                         onChangeText={setWaist}
-                        placeholder="Enter your Waist"
+                        placeholder="Set waist in In"
                       />
                     ) : (
                       <Text
                         style={{
+                          fontSize: responsiveFontSize(2),
+                          color: '#000000',
                           fontWeight: '500',
-                          fontSize: responsiveFontSize(1.8),
-                          textAlign: 'center',
                           fontFamily: 'Times New Roman',
-                          letterSpacing: 1,
+                          top: responsiveHeight(1),
+                        //  left:responsiveWidth(12)
+
                         }}>
-                        {waist}
+                        {waist} Inch
                       </Text>
                     )}
                   </View>
@@ -375,34 +464,36 @@ const BodyMeasurement = () => {
                   top: responsiveHeight(-4),
                 }}>
                 <ImageBackground
-                  style={{width: '100%', height: '100%'}}
+                  style={{ width: '100%', height: '100%' }}
                   source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
                   resizeMode="stretch">
-                  <View style={styles.bioTextContainer}>
+                  <View style={{justifyContent:'center',alignItems:'center'}}>
                     {isEditing ? (
                       <TextInput
                         style={{
-                          fontSize: responsiveFontSize(1.8),
+                          fontSize: responsiveFontSize(2),
                           color: '#000000',
                           fontWeight: '500',
                           fontFamily: 'Times New Roman',
-                          // left: responsiveWidth(12)
+                          textAlign:'center'
                         }}
                         value={biceps}
                         onChangeText={setBiceps}
-                        placeholder="Enter your Biceps"
+                        placeholder="Set biceps in In"
                       />
                     ) : (
                       <Text
                         style={{
+                          fontSize: responsiveFontSize(2),
+                          color: '#000000',
                           fontWeight: '500',
-                          fontSize: responsiveFontSize(1.8),
-                          color: '#323232',
-                          textAlign: 'center',
                           fontFamily: 'Times New Roman',
-                          letterSpacing: 1,
+                          top: responsiveHeight(1),
+                         // left:responsiveWidth(12),
+                          flexWrap:'wrap'
+
                         }}>
-                        {biceps}
+                        {biceps} Inch
                       </Text>
                     )}
                   </View>
@@ -458,6 +549,7 @@ const getStyles = theme => {
       textDecorationLine: 'underline',
       alignSelf: 'flex-end',
       paddingRight: responsiveWidth(3),
+      color:'black'
     },
     bio_content_section: {
       flexDirection: 'row',
