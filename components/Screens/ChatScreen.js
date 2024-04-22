@@ -29,7 +29,7 @@ import { useRoute } from '@react-navigation/native'; // Import useRoute hook
 import privateAPI from '../api/privateAPI';
 
 
-const loginedUserToken = '007eJxTYNgVsbfgs0/41lNCm7Qys3Mb/jYanPrHsO7m+pTKZVkxxdsVGCwSU81NTc2AhJGFSUpysoWBoYlFokmqmaGZiZmJuWn7XKW0hkBGhuz4b8yMDKwMjEAI4qswpKYYppoaJRvopqWaJeoaGqam6lqamSbrmpuaJBsZJptaGicaAgD4UihU';
+//const loginedUserToken = '007eJxTYNgVsbfgs0/41lNCm7Qys3Mb/jYanPrHsO7m+pTKZVkxxdsVGCwSU81NTc2AhJGFSUpysoWBoYlFokmqmaGZiZmJuWn7XKW0hkBGhuz4b8yMDKwMjEAI4qswpKYYppoaJRvopqWaJeoaGqam6lqamSbrmpuaJBsZJptaGicaAgD4UihU';
 // const Ruby = '007eJxTYHjW6TRh1r5tN37v2XDj8P9vjc/2BxZ45x3Qf5695vGuyHOHFBgsElPNTU3NgISRhUlKcrKFgaGJRaJJqpmhmYmZibnp/p+KaQ2BjAxV/DVMjAysDIxACOKrMBgZGKSYpqQZ6KYlpxjrGhqmpuomWqak6CaZGpiZpyUlJwNlAca+LSI=';
 
 const ChatScreen = (navigation) => {
@@ -45,7 +45,7 @@ const ChatScreen = (navigation) => {
   // Replaces <your userId> with your user ID.
   const username = data.userId// userid
   // Replaces <your agoraToken> with your Agora token.
-  const [chatToken, setChatToken] = React.useState(loginedUserToken);
+  const [chatToken, setChatToken] = React.useState(null);
   const [targetId, setTargetId] = React.useState(3);
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
