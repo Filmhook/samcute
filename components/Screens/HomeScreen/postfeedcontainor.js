@@ -3,121 +3,119 @@ import React, { useState, useEffect } from 'react'
 import Modal from 'react-native-modal'
 import ImagePicker from 'react-native-image-crop-picker'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
+import privateApi from "../../api/privateAPI"
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Postfeedcontainor() {
-  const [postData, setPostData] = useState([]);
-
-  //-------------------------------------------
-  const LongTextComponent = ({ text }) => {
-    const [showFullText, setShowFullText] = useState(false);
-
-    const toggleTextVisibility = () => {
-      setShowFullText(!showFullText);
-    };
-
-    const handleSeeLess = () => {
-      setShowFullText(false);
-    };
-
-    return (
-      <View style={{
-        width: responsiveWidth(94), padding: responsiveWidth(1), left: responsiveWidth(2)
-      }}>
-        <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: "400", lineHeight: responsiveHeight(2.5), color: "#000000", textAlign: 'justify', flexDirection: 'row' }} numberOfLines={showFullText ? undefined : 3}>
-          {text}
-        </Text>
-
-        <View>
-          {showFullText ? (
-            <TouchableOpacity onPress={handleSeeLess}>
-              <Text style={{ color: 'blue' }}>See Less</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity onPress={toggleTextVisibility}>
-              <Text style={{ color: 'blue' }}>See More</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-
-      </View>
-    );
-  };
-
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const openModal = (item) => {
-    setSelectedItem(item);
-    setModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-  };
+const [userPost , setUserPost] = useState([])
 
 
+useEffect(() => {
 
-  useEffect(() => {
-    fetchImage();
-  }, []);
+const fetchUserPost = async () => {
 
-  const fetchImage = async () => {
-    try {
-      const jwt = await AsyncStorage.getItem("jwt");
-      const response = await fetch(`http://13.238.143.66:8080/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFiles?userId=3&category=Gallery`, {
-        headers: {
-          Authorization: `Bearer ${jwt}`
-        }
-      });
+try{
+const posts = await privateApi.get("user/gallery/getGalleryFilesByUserId?userId=3");
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch images');
-      }
+setUserPost(posts.data.data)
+console.log("Fetched User Post")
 
-      const imageBlob = await response.blob();
+}catch(e){
+console.log("Fetching Failed in user post" , e)
+}
 
-      const base64Data = await blobToBase64(imageBlob);
+}
 
-      // Assuming you receive multiple images as base64 data separated by a delimiter
-      const base64Images = base64Data.split('delimiter');
+fetchUserPost()
 
-      // Convert base64Images array to postData format
-      const postData = base64Images.map((image, index) => ({
-        id: index + 1,
-        image: image
-      }));
+} , [])
 
-      setPostData(postData);
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'Failed to fetch images');
+
+  const data = [
+    {
+      id: 1,
+      profilepic: require('../../../components/Assets/app_logo/8641606.jpg'),
+      name: "SharukKhan",
+      profession: 'actor',
+      place: 'New York , United States',
+      time: '10h',
+      view_type: 'public',
+      views: '5.2k',
+      caption: 'It is a long established fact that a reader will be distracted by the the the  readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
+      image: require('../../../components/Assets/app_logo/8641612.jpg'),
+    }, {
+      id: 2,
+      profilepic: require('../../../components/Assets/app_logo/deepika.jpg'),
+      name: "Dheepika",
+      profession: 'actor',
+      place: 'New York , United States',
+      time: '10h',
+      view_type: 'industry',
+      views: '5.2k',
+      caption: 'It is a long established fact that a reader will be distracted by the the the  readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
+      image: require('../../../components/Assets/app_logo/8641602.jpg'),
+    }, {
+      id: 3,
+      profilepic: require('../../../components/Assets/app_logo/salman-Khan-header-1.jpg'),
+      name: "SalmonKhan",
+      profession: 'actor',
+      place: 'New York , United States',
+      time: '10h',
+      view_type: 'public',
+      views: '5.2k',
+      caption: 'It is a long established fact that a reader will be distracted by the the the  readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
+      image: require('../../../components/Assets/app_logo/8641615.jpg'),
     }
-  };
-
-  const blobToBase64 = async (blob) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(',')[1]);
-      reader.onerror = () => reject(new Error('Failed to convert blob to base64'));
-      reader.readAsDataURL(blob);
-    });
-  };
-  const renderItem = ({ item }) => (
-    <ImageItem {...item} />
-  );
-
-  // ImageItem component
-  const ImageItem = ({ id, image }) => (
-    <View key={id} style={{ padding: 10 }}>
-      <Image source={{ uri: `data:image/jpeg;base64,${image}` }} style={{ width: '100%', height: 200 }} />
-    </View>
-  );
+  ]
 
   //renderitem lists
-  const Datas = ({ id, profilepic, name, profession, place, caption, image, view_type }) => {
+  const Datas = ({item}) => {
+const [imageUrl , setImageUrl] = useState("")
+  const blobToBase64 = async (blob) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = () => reject(new Error('Failed to convert blob to base64'));
+        reader.readAsDataURL(blob);
+      });
+    };
 
+      const fetchImage = async () => {
+        try {
+          const jwt = await AsyncStorage.getItem("jwt");
+          const response = await fetch(`http://13.238.143.66:8080/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFiles?userId=3&category=Gallery`, {
+            headers: {
+              Authorization: `Bearer ${jwt}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch images');
+          }
+
+          const imageBlob = await response.blob();
+
+          const base64Data = await blobToBase64(imageBlob);
+
+          // Assuming you receive multiple images as base64 data separated by a delimiter
+          const base64Images = base64Data.split('delimiter');
+
+
+          console.log(base64Images)
+          console.log("Blob fetching...")
+          setImageUrl(base64Images)
+        } catch (error) {
+          console.error(error);
+          Alert.alert('Error', 'Failed to fetch images');
+        }
+      };
     // for number format functions
+
+    useEffect(() => {
+
+    fetchImage()
+
+    } , [])
 
     const options = {
       notation: 'compact',
@@ -214,20 +212,6 @@ export default function Postfeedcontainor() {
         console.error('Error sharing post:', error.message);
       }
     }
-    // for share option
-
-
-    // const onCommentPress=(id)=>{
-    //    console.log(id);
-    //    alert(`you clicked ${name}`)
-    // }
-
-    //   const onSharePress=(id)=>{
-    //     console.log(id);
-    //     alert(`you clicked ${name}`)
-    //  }
-
-    // for see more modal
 
     const [visible, setVisible] = useState(false)
 
@@ -235,37 +219,190 @@ export default function Postfeedcontainor() {
       setVisible(!visible)
     }
     return (
-      <ScrollView>
-        {postData.map((item) => (
-          <ImageItem key={item.id} {...item} />
-        ))}
-      </ScrollView>
-    );
+      <View>
+        <View style={{ padding: responsiveWidth(0.8) }}>
+          <View>
+            <TouchableOpacity>
+              <View
+                style={{ borderColor: "grey", width: responsiveWidth(100), height: responsiveHeight(50), }}>
+                <Image source={{ uri: `data:image/jpeg;base64,${imageUrl}` }}
+                  style={{ width: "100%", height: '100%' }} />
+              </View>
+            </TouchableOpacity>
+
+            <View
+              style={{ height: responsiveHeight(7), width: responsiveWidth(98), flexDirection: "row", justifyContent: "space-between", top: responsiveHeight(0.5), left: responsiveWidth(2.5) }}>
+              <View>
+
+                {/* like button */}
+                <Text
+                  style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000" }}>{`${formatCmpctNumber(like)} Likes`}</Text>
+                <TouchableOpacity
+                  //  {`${formatCmpctNumber(like)} Likes`}
+                  onPress={() => onLikePress(id)}
+                  style={{ width: responsiveWidth(30), height: responsiveHeight(4.5), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
+                  <View
+                    style={{ width: responsiveWidth(7), height: responsiveHeight(4), right: responsiveWidth(2) }}>
+                    {hitlike && hitlike ?
+                      <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/Like_after_Icon.png')} style={{ width: "100%", height: "100%", }} resizeMode='stretch' />
+
+                      :
+                      <Image source={require('../../Assets/Home_Icon_And_Fonts/Like_icon.png')}
+                        style={{ width: "100%", height: "98%", }} resizeMode='stretch'
+                      />
+                    }
+                  </View>
+                  <Text
+                    style={{ alignSelf: "center", fontSize: responsiveFontSize(1.9), fontWeight: "500", color: "#000000" }}>Like</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* comments button */}
+              <View >
+                <Text
+                  style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", right: responsiveWidth(2.1) }}>{`${formatCmpctNumber(comments.length)} comments`}</Text>
+                <TouchableOpacity
+                  onPress={() => onCommentPress(id)}
+                  style={{ width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', right: responsiveWidth(2) }}>
+                  <View
+                    style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
+                    <Image source={require('../../Assets/Home_Icon_And_Fonts/comment.png')}
+                      style={{ width: "100%", height: "100%" }} resizeMode='stretch'
+                    />
+                  </View>
+                  <Text
+                    style={{ alignSelf: "center", fontSize: responsiveFontSize(1.9), fontWeight: "500", color: "#000000" }}>Comments</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* shares button */}
+              <View>
+                <Text style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", right: responsiveWidth(5) }}>0 Share</Text>
+                <TouchableOpacity
+                  onPress={() => onSharePress(id)}
+                  style={{ width: responsiveWidth(20), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', right: responsiveWidth(4.8) }}>
+                  <View
+                    style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
+                    <Image source={require('../../Assets/Home_Icon_And_Fonts/share_icon.png')}
+                      style={{ width: "100%", height: "95%", }} resizeMode='stretch'
+                    />
+                  </View>
+                  <Text
+                    style={{ alignSelf: "center", fontSize: responsiveFontSize(1.9), fontWeight: "500", color: "#000000" }}>Share</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+          </View>
+          {/* Comment Modal */}
+          <View style={styles.container}>
+            <Modal
+              isVisible={isCommentVisible}
+              onBackdropPress={closeCommentModal}
+              onBackButtonPress={closeCommentModal}
+              onSwipeComplete={closeCommentModal}
+              swipeDirection={'down'} // Disable swipe-down-to-close
+              animationIn="slideInUp"  // Slide in from bottom
+              animationOut="slideOutDown"  // Slide out to bottom
+              animationOutTiming={300}
+              backdropOpacity={0.2}
+              style={styles.modal}
+            >
+
+              <View style={styles.modalContainer}>
+              <TouchableOpacity
+                              style={{ width: responsiveWidth(10), height: responsiveWidth(10), borderRadius: responsiveWidth(8), top: responsiveHeight(48),borderWidth:responsiveWidth(0.3),borderColor:'black',right:responsiveWidth(3)  }}>
+                              <Image source={require('../../../components/Assets/app_logo/8641606.jpg')}
+                                style={{ width: responsiveWidth(10), height: responsiveWidth(10),borderRadius: responsiveWidth(8),borderWidth:responsiveWidth(0.3),borderColor:'black'  }} />
+
+                            </TouchableOpacity>
+
+                {/* Comment Input */}
+                <TextInput
+                  style={styles.commentInput}
+                  placeholder="Add a Comment..."
+                  multiline
+
+                  value={commentText}
+                  onChangeText={(text) => setCommentText(text)}
+                />
+
+                {/* Submit Button */}
+                <TouchableOpacity style={styles.submitButton} onPress={handleCommentSubmit}>
+                  <Text style={styles.submitButtonText}>Post</Text>
+                </TouchableOpacity>
+
+                {/* Display Existing Comments */}
+                <View style={styles.commentsSection}>
+                  {/* <Text style={styles.commentsTitle}>Comments</Text> */}
+                  {(comments.length) ? (
+                    <ScrollView style={styles.commentsScrollView}>
+                      {comments.map((item) => (
+                        <View key={item.id} style={styles.commentItem}>
+                          <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity
+                              style={{ width: responsiveWidth(8), height: responsiveWidth(8),borderColor: '#000000', borderRadius: responsiveWidth(8), }}>
+                              <Image source={require('../../../components/Assets/app_logo/8641606.jpg')}
+                                style={{ width: responsiveWidth(8), height: responsiveWidth(8),borderRadius: responsiveWidth(8),  }} />
+
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={{ left: 3 }}>
+                              <Text style={{ fontSize: 10, color: '#000000', fontWeight: '700' }}>User name</Text>
+                            </TouchableOpacity>
+                            <Text style={{ fontSize: 10, color: '#000000', height: 15, fontWeight: '400', top: 13, left: -45 }}>1w</Text>
+                            <TouchableOpacity
+                              onPress={() => handle_cmnt_dlt(item.id)}
+                              style={{ width: responsiveWidth(5), height: responsiveWidth(5), borderRadius: responsiveWidth(5), left: responsiveWidth(55), top: 2, backgroundColor: '#ffffff', borderWidth: 1 }}>
+                              <Image source={require('../../Assets/Home_Icon_And_Fonts/link_icon.png')}
+                                style={{ width: '100%', height: '100%' }} />
+                            </TouchableOpacity>
+                          </View>
+                          <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: '700' ,color:'black'}}>{item.text}</Text>
+                        </View>
+                      ))}
+                    </ScrollView>
+                  ) : (
+
+                    <Text
+                      style={{ textAlign: 'center', top: 60, letterSpacing: 1, fontSize: 15 }}>No Comments Yet</Text>
+
+                  )}
+                </View>
+
+              </View>
+
+            </Modal>
+          </View>
+
+          {/* Comment Modal */}
+        </View>
+        <View style={{
+          borderBottomWidth: 10,
+          borderBottomColor: '#D7D7D7',
+          marginVertical: 5
+        }} />
+        {/* ------------------------------------ */}
+
+      </View>
+    )
   }
+  //renderitem lists
   return (
     <>
       <FlatList
-        data={postData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        data={userPost}
+        style={{ padding: 0, margin: 0 }}
+        renderItem={({ item }) => (
+          <Datas  item={item} />
+        )}
+        keyExtractor={(item) => item.id}
       />
-
-      {/* Modal for detailed view */}
-      <Modal visible={modalVisible} animationType="slide" onRequestClose={closeModal}>
-        <View style={styles.modalContainer}>
-          <Image source={{ uri: selectedItem?.image }} style={styles.modalImage} />
-          <Text style={styles.profileText}>
-            {selectedItem?.profile.name} - {selectedItem?.profile.bio}
-          </Text>
-          <Text style={styles.contentText}>{selectedItem?.content}</Text>
-          <TouchableOpacity onPress={closeModal}>
-            <Text style={styles.closeButton}>Close</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
     </>
   )
-} const styles = StyleSheet.create({
+}
+
+const styles = StyleSheet.create({
   // container: {
   //   flex: 1,
   //   justifyContent: 'center',
@@ -292,7 +429,7 @@ export default function Postfeedcontainor() {
     width: responsiveWidth(63.5),
     position: 'absolute',
     top: responsiveHeight(50),
-    marginLeft: responsiveWidth(13),
+    marginLeft:responsiveWidth(13),
 
     //left: 40,
     borderColor: 'gray',
@@ -319,9 +456,9 @@ export default function Postfeedcontainor() {
     color: 'white',
   },
   commentsSection: {
-    width: responsiveWidth(90),
+   width:responsiveWidth(90),
 
-    // borderWidth:1
+   // borderWidth:1
   },
   // commentsTitle: {
   //   fontSize: 16,
@@ -329,8 +466,8 @@ export default function Postfeedcontainor() {
   //   marginBottom: 10,
   // },
   commentsScrollView: {
-    maxHeight: 380,
-    //  borderWidth:3
+    maxHeight:380,
+  //  borderWidth:3
 
   },
   commentItem: {
