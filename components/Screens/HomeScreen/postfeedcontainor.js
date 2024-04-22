@@ -9,7 +9,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 export default function Postfeedcontainor() {
 const [userPost , setUserPost] = useState([])
 
-
 useEffect(() => {
 
 const fetchUserPost = async () => {
@@ -30,60 +29,23 @@ fetchUserPost()
 
 } , [])
 
-
-  const data = [
-    {
-      id: 1,
-      profilepic: require('../../../components/Assets/app_logo/8641606.jpg'),
-      name: "SharukKhan",
-      profession: 'actor',
-      place: 'New York , United States',
-      time: '10h',
-      view_type: 'public',
-      views: '5.2k',
-      caption: 'It is a long established fact that a reader will be distracted by the the the  readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-      image: require('../../../components/Assets/app_logo/8641612.jpg'),
-    }, {
-      id: 2,
-      profilepic: require('../../../components/Assets/app_logo/deepika.jpg'),
-      name: "Dheepika",
-      profession: 'actor',
-      place: 'New York , United States',
-      time: '10h',
-      view_type: 'industry',
-      views: '5.2k',
-      caption: 'It is a long established fact that a reader will be distracted by the the the  readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-      image: require('../../../components/Assets/app_logo/8641602.jpg'),
-    }, {
-      id: 3,
-      profilepic: require('../../../components/Assets/app_logo/salman-Khan-header-1.jpg'),
-      name: "SalmonKhan",
-      profession: 'actor',
-      place: 'New York , United States',
-      time: '10h',
-      view_type: 'public',
-      views: '5.2k',
-      caption: 'It is a long established fact that a reader will be distracted by the the the  readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
-      image: require('../../../components/Assets/app_logo/8641615.jpg'),
-    }
-  ]
-
   //renderitem lists
   const Datas = ({item}) => {
 const [imageUrl , setImageUrl] = useState("")
-  const blobToBase64 = async (blob) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = () => reject(new Error('Failed to convert blob to base64'));
-        reader.readAsDataURL(blob);
-      });
-    };
+      const blobToBase64 = async (blob) => {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = () => reject(new Error('Failed to convert blob to base64'));
+            reader.readAsDataURL(blob);
+          });
+        };
 
-      const fetchImage = async () => {
+      const fetchImage = async (fileId) => {
         try {
+        console.log(`Fetching File id - ${fileId}`)
           const jwt = await AsyncStorage.getItem("jwt");
-          const response = await fetch(`http://13.238.143.66:8080/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFiles?userId=3&category=Gallery`, {
+          const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFile?userId=3&category=Gallery&fileId=${fileId}`, {
             headers: {
               Authorization: `Bearer ${jwt}`
             }
@@ -112,9 +74,7 @@ const [imageUrl , setImageUrl] = useState("")
     // for number format functions
 
     useEffect(() => {
-
-    fetchImage()
-
+    fetchImage(item.fileId)
     } , [])
 
     const options = {
@@ -189,11 +149,6 @@ const [imageUrl , setImageUrl] = useState("")
       const cmt_lists = comments.filter((item) => item.id !== id)
       setComments(cmt_lists)
     }
-    // for comment section
-
-
-    //===========================================================
-    // for share option
     const onSharePress = async (id) => {
       console.log(id);
       const options = {
@@ -212,7 +167,6 @@ const [imageUrl , setImageUrl] = useState("")
         console.error('Error sharing post:', error.message);
       }
     }
-
     const [visible, setVisible] = useState(false)
 
     const handle_seemoreicon = () => {
