@@ -14,12 +14,16 @@ export default function Chatheadder({search,setSearch,items}) {
   return (   
        <>   
               <View style={style.chat_headder}>
-                          <Userprofile/>
+                          {/* <Userprofile/> */}
+
+                         
                             <Chatinput 
+                            
                               search={search}
                               setSearch={setSearch}
                               items={items}
                             />
+                            
                             <Chatcompose/>
                             <Chatcamera />
               </View>
@@ -31,8 +35,10 @@ const style = StyleSheet.create({
     chat_headder:{
         flexDirection:"row",
         backgroundColor:"whitesmoke",
+        
         height:60,
         width:"100%",
+       
        
     }
 })

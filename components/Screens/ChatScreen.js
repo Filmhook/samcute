@@ -53,7 +53,7 @@ const ChatScreen = (navigation) => {
   const chatManager = chatClient.chatManager;
   const [chatMessageStatusm, setChatMessageStatus] = React.useState([]);
 
-  console.log(username)
+ // console.log(username)
   // Outputs console logs.
   useEffect(() => {
 
@@ -294,7 +294,7 @@ const ChatScreen = (navigation) => {
 
                 borderTopRightRadius: item.chatReceiverId === username ? 0 : 10,
                 borderTopLeftRadius: item.chatReceiverId === username ? 10 : 0
-                , backgroundColor: item.chatReceiverId === username ? 'lightgrey' : 'lightblue'
+                , backgroundColor: item.chatReceiverId === username ? '#a2a2a6' : 'lightblue'
               }]}  >{item.message}</Text>
             </View>
           ))}
@@ -324,6 +324,8 @@ const ChatScreen = (navigation) => {
 const styles = StyleSheet.create({
   WholeScreen: {
     flex: 1,
+  //  borderWidth:1,
+    marginTop:6
   },
   WholeContentView: {
     flex: 1,
@@ -342,19 +344,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+   // borderWidth:1
   },
   MessageInput: {
     color: 'black',
     fontSize: 15,
-    borderColor: 'blue',
+    borderColor: 'gray',
+    borderEndEndRadius:4,
     borderWidth: 1,
     width: '85%',
-    borderRadius: 5,
+    borderRadius: 15,
     paddingLeft: 15
   },
   SendBTN: {
-    backgroundColor: 'blue',
+    backgroundColor: '#5e5ec6',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -371,6 +375,8 @@ const styles = StyleSheet.create({
   MessageTextView: {
     flexDirection: 'row',
     width: '100%',
+    marginTop:1,
+   
   },
   MessageText: {
     color: 'black',

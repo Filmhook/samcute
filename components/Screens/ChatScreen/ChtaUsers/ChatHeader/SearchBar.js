@@ -24,7 +24,7 @@ export default function Chatinput({search,setSearch}) {
 
 const style = StyleSheet.create({
     input_field:{
-        width:"55%",
+        width:"70%",
         height:100,
         position:"relative",
         marginTop:-4
