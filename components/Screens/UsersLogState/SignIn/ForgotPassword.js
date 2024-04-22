@@ -66,12 +66,12 @@ export default function Forgetpass() {
     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text);
     setIsEmailValid(isValid);
     setEmail(text);
-  
+
     // Check if the email is not valid, then show an alert
-    
+
   };
-  
-  
+
+
 
   const sendOTP = async () => {
     try {

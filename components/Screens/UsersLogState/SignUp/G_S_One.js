@@ -2158,7 +2158,7 @@ export default function SignUpOne() {
   //------------------------------------------------------------
 
 
-  //-------------------------------------------------------------------------  
+  //-------------------------------------------------------------------------
 
   // const handlepressNav = () => {
   //   if (name.trim() === '' || dob === '' || selectedGender === null || selectedCountry === null || selectedState === null || selectedDistrict === null) {
@@ -2180,7 +2180,7 @@ export default function SignUpOne() {
     } else {
       isError = false;
       setNameError('');
-      
+
     }
 
     // Validation for date of birth
@@ -2466,7 +2466,7 @@ const styles = StyleSheet.create({
     color: 'red',
     right:responsiveWidth(20),
     bottom:responsiveHeight(1.8),
-   
+
   //  marginBottom: 5,
   },
   selectContainer: {

@@ -58,7 +58,7 @@ export default function Appnavigator() {
   return (
     <>
       <NavigationContainer>
-        
+
         <Stack.Navigator >
           <Stack.Screen component={SignUpRoot} name='SearchRoot' options={{ headerShown: false }} />
           <Stack.Screen component={Tabbar} name='Tabbar' options={{ headerShown: false }} />
@@ -90,8 +90,8 @@ export default function Appnavigator() {
 
         </Stack.Navigator>
       </NavigationContainer>
-       
-  
+
+
     </>
   )
 }

@@ -235,7 +235,7 @@ export default function Biography() {
                     is24Hour={true}
                     display="default"
                     onChange={handleDateChange}
-                    maximumDate={new Date()} 
+                    maximumDate={new Date()}
                   />
                 )} */}
                 {isEditing ? (
@@ -270,7 +270,7 @@ export default function Biography() {
               </View>
             </ImageBackground>
           </View>
-         
+
           <View style={style.bio_content_section}>
             <ImageBackground
               style={style.inputContainer}
@@ -306,7 +306,7 @@ export default function Biography() {
                     onValueChange={(itemValue, itemIndex) =>
                       setGender(itemValue)
 
-                      
+
                     }
                     //style={{width:100,borderWidth:1,height:responsiveHeight(6)}}
                     >
@@ -409,7 +409,7 @@ export default function Biography() {
                       fontFamily: 'Times New Roman',
                       top: responsiveHeight(-4.5),
                       textAlign:'center'
-              
+
                     }}
                     value={state}
                     onChangeText={setState}

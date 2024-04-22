@@ -162,19 +162,19 @@ export default function Industry_S_One() {
     try {
       const id = await AsyncStorage.getItem('userId');
       console.log(`User Id from IS One ${id}`);
-  
+
       // Check if any of the required fields are empty
       if (!selected || !industrySelected || !profession || !professionSub) {
         Alert.alert('Error','Please fill in all required fields');
         return;
       }
-  
+
       // Map profession names
       const mapProfessionName =  profession?.map(p => {
         const profName = professionData?.find(n => n.value === p)
         return profName?.label
       });
-  
+
       // Add temporary details
       const response = await PublicAPI.post(
         '/industryUser/addTemporaryDetails',
@@ -186,7 +186,7 @@ export default function Industry_S_One() {
           subProfessionName: professionSub,
         },
       );
-  
+
       console.log('Registration successful:', response.data);
       console.log(selected, industrySelected, profession, professionSub);
       navigation.navigate('Industry_S_Confirm');
@@ -194,7 +194,7 @@ export default function Industry_S_One() {
       console.error('Registration failed:', error);
     }
   };
-  
+
   return (
     <View style={styles.container}>
       <ScrollView>

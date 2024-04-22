@@ -61,7 +61,7 @@ export default function Login() {
   //       userType: 'commonUser',
   //     });
 
-    
+
   //     // Extract JWT token and ID from response data
   //     const jwt = response.data.jwt;
   //     const emailId = response.data.email;
@@ -98,21 +98,21 @@ export default function Login() {
         password: password,
         userType: 'commonUser',
       });
-  
+
       // Extract JWT token and ID from response data
       const jwt = response.data.jwt;
       const emailId = response.data.email;
       const userId = response.data.id;
-  
+
       // Store JWT token and ID in AsyncStorage
       await AsyncStorage.setItem('jwt', jwt);
       await AsyncStorage.setItem('mail', emailId);
       await AsyncStorage.setItem('userId', userId.toString()); // Convert userId to string
-  
+
       // Log stored values for verification
       const storedMail = await AsyncStorage.getItem('mail');
       console.log('stored ', storedMail);
-  
+
       Alert.alert('Success', 'Login Successful');
       navigation.navigate('Tabbar');
     } catch (error) {
@@ -120,12 +120,12 @@ export default function Login() {
       console.error('Login failed:', error);
     }
   };
-  
+
   //=======================================================================
 
   const handleLogin = () => {
     const emailRegex = /\S+@\S+\.\S+/; // Regex pattern for a basic email format check
-   
+
     if (!email.trim()) {
       Alert.alert('Error', 'Please enter email');
       return;
@@ -140,7 +140,7 @@ export default function Login() {
       loginUser();
     }
   };
-  
+
   return (
 
     <View style={styles.container}>

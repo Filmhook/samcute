@@ -20,24 +20,24 @@ export default function ForgotPasswordSecondPage() {
   const handleResetPassword = async () => {
     try {
       const otp = await AsyncStorage.getItem('otp'); // Retrieve OTP from AsyncStorage
-      
+
       // Check if password fields are empty
       if (!password || !cPassword) {
         Alert.alert('Error', 'Please enter the password.');
         return;
       }
-      
+
       // Check if passwords match
       if (password !== cPassword) {
         Alert.alert('Error', "Passwords don't match.");
         return;
       }
-      
+
       const response = await PublicAPI.post(`/user/changePassword`, {
         forgotOtp: otp, // Use retrieved OTP
         password: password
       });
-  
+
       console.log('Password changed', response.data);
       // Show success message to the user
       Alert.alert('Password Changed', 'Your password has been changed successfully.');
@@ -48,7 +48,7 @@ export default function ForgotPasswordSecondPage() {
       Alert.alert('Error', 'An error occurred while changing your password. Please try again later.');
     }
   };
-  
+
 
   const validatePassword = input => {
     let newSuggestions = [];
@@ -56,11 +56,11 @@ export default function ForgotPasswordSecondPage() {
     if (input.length < 8) {
       newSuggestions.push('-Password contains "0-9, A-Z, a-z, @-$"');
     }
-   
+
 
     setSuggestions(newSuggestions);
 
-   
+
   };
 
   const [suggestions, setSuggestions] = useState([]);
@@ -96,7 +96,7 @@ export default function ForgotPasswordSecondPage() {
             </TouchableOpacity>
           </ImageBackground>
         </View>
-        
+
         <Text style={styles.suggestionsText}>
               {suggestions.map((suggestion, index) => (
                 <Text key={index}>
@@ -119,7 +119,7 @@ export default function ForgotPasswordSecondPage() {
           </ImageBackground>
         </View>
       </View>
-    
+
       <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
         <Text style={styles.resetButtonText}>Reset Password</Text>
       </TouchableOpacity>

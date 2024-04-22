@@ -117,10 +117,15 @@ const ChatScreen = (navigation) => {
   }
   const GetAllMessages = async () => {
     try {
-      const res = await privateAPI.post('/chat/getMessageByUserId', {});
+        const senderId = await AsyncStorage.getItem("userId")
+      const res = await privateAPI.post('/chat/getMessageByUserId', {
+      chatReceiverId:username
+      });
       console.log(res.data)
+      console.log("fetching msg")
       setChatMessageStatus(res.data)
     } catch (error) {
+    console.log("error during fetch msg")
       console.error(error)
     }
 
@@ -132,6 +137,7 @@ const ChatScreen = (navigation) => {
     const setMessageListener = () => {
       let msgListener = {
         onMessagesReceived(messages) {
+        console.log(messages)
           for (let index = 0; index < messages.length; index++) {
 
             rollLog('received msgId: ' + JSON.stringify(messages[index].body.content));
@@ -272,14 +278,14 @@ const ChatScreen = (navigation) => {
         rollLog('send fail: ' + JSON.stringify(reason));
       });
   };
+
   // Renders the UI.
   return (
     <View style={styles.WholeScreen}>
 
       <View style={styles.WholeContentView}>
         <ScrollView style={styles.ScrollView}>
-
-          {Object.values(chatMessageStatusm).map((item,) => (
+          {chatMessageStatusm?.data?.userChat?.map((item,) => (
             <View key={item.chatId} style={[styles.MessageTextView, {
               justifyContent: item.chatReceiverId === username ? 'flex-end' : 'flex-start',
             }]}>

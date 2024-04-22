@@ -28,14 +28,14 @@ export default function Otp() {
 
   useEffect(() => {
     const retrieveMail = async () => {
- 
+
         const mailId = await AsyncStorage.getItem('mail');
         if (mailId !== null) {
           setMail(mailId)
 
         }
     };
-  
+
     // Call the async function inside useEffect
     retrieveMail();
   }, []);
@@ -102,7 +102,7 @@ export default function Otp() {
               <Text style={{fontSize:responsiveFontSize(2.2), fontWeight:'bold', color:'black'}}>OTP sent to {mail}</Text>
             </View>
           <View>
-          
+
             <ImageBackground
               style={styles.otpContainer}
               source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}

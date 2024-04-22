@@ -87,10 +87,10 @@ const BodyMeasurement = () => {
   // const handleSave = async () => {
   //   try {
   //     const userId = await AsyncStorage.getItem('userId');
-  //     const userIdString = userId.toString(); 
+  //     const userIdString = userId.toString();
   //     const jwt = await AsyncStorage.getItem('jwt');
 
-    
+
   //     const response = await PublicAPI.put(
   //       `/user/updateBiologicalDetails`,
   //       {
@@ -117,7 +117,7 @@ const BodyMeasurement = () => {
   // };
 
   const handleUpdatePersonalInfo = async () => {
-   
+
 
     const userId = await AsyncStorage.getItem('userId');
     const jwt = await AsyncStorage.getItem('jwt');
@@ -133,7 +133,7 @@ const BodyMeasurement = () => {
           bicepsSize: biceps,
     };
 
-    
+
     try {
       const response = await fetch(url, {
         method: 'PUT',
@@ -148,11 +148,11 @@ const BodyMeasurement = () => {
         throw new Error('Failed to update personal info');
       }
 
-     
+
       setIsEditing(false)
       Alert.alert('Success', 'Personal info updated successfully');
     } catch (error) {
-      
+
       Alert.alert('Error', error.message);
     }
   };
@@ -165,7 +165,7 @@ const BodyMeasurement = () => {
         <View style={styles.bio_title}>
           <TouchableOpacity style={styles.bio_title} onPress={toggleExpanded}>
             <Text style={styles.bio_title_text}>BODY MEASUREMENT</Text>
-            <View   
+            <View
               style={{
                 width: responsiveWidth(6),
                 height: responsiveHeight(4),
