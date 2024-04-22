@@ -65,7 +65,7 @@ export default function Postfeedcontainor() {
   const fetchImage = async () => {
     try {
       const jwt = await AsyncStorage.getItem("jwt");
-      const response = await fetch(`http://13.238.143.66:8080/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFiles?userId=3&category=Gallery`, {
+      const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFiles?userId=3&category=Gallery`, {
         headers: {
           Authorization: `Bearer ${jwt}`
         }
@@ -191,11 +191,6 @@ export default function Postfeedcontainor() {
       const cmt_lists = comments.filter((item) => item.id !== id)
       setComments(cmt_lists)
     }
-    // for comment section
-
-
-    //===========================================================
-    // for share option
     const onSharePress = async (id) => {
       console.log(id);
       const options = {
@@ -214,21 +209,6 @@ export default function Postfeedcontainor() {
         console.error('Error sharing post:', error.message);
       }
     }
-    // for share option
-
-
-    // const onCommentPress=(id)=>{
-    //    console.log(id);
-    //    alert(`you clicked ${name}`)
-    // }
-
-    //   const onSharePress=(id)=>{
-    //     console.log(id);
-    //     alert(`you clicked ${name}`)
-    //  }
-
-    // for see more modal
-
     const [visible, setVisible] = useState(false)
 
     const handle_seemoreicon = () => {
