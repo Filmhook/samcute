@@ -26,6 +26,9 @@ export default function Otp() {
 
   const [mail,setMail]=useState('');
 
+
+  
+
   useEffect(() => {
     const retrieveMail = async () => {
 
@@ -48,7 +51,7 @@ export default function Otp() {
 
       console.log('success', response.data);
       Alert.alert('Email number Verified successfully');
-      navigation.navigate('IndustryOne');
+      navigation.navigate('IndustryTwo');
     } catch (error) {
       console.error('Error while verifying OTP:', error);
 

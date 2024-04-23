@@ -2297,21 +2297,21 @@ export default function SignUpOne() {
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             <View style={styles.boxContent}>
 
-              <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
+              {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
                 <TextInput
                   placeholder="WHAT IS YOUR NAME?"
-                 // placeholderTextColor="black"
+                  placeholderTextColor="black"
                   value={name}
                   onChangeText={handleTextChange}
                   style={styles.input}
 
 
                 />
-              </ImageBackground>
+              {/* </ImageBackground> */}
             </View>
             {nameError ? <Text style={styles.errorMessage}>{nameError}</Text> : null}
 
-            <View style={{ flexDirection: 'row', height: responsiveHeight(8.3), alignItems: 'center', justifyContent: 'center', columnGap: responsiveWidth(6.2), marginBottom: responsiveHeight(1.2) }}>
+            <View style={{ flexDirection: 'row', height: responsiveHeight(8.3), alignItems: 'center', justifyContent: 'center', columnGap: responsiveWidth(5.9), marginBottom: responsiveHeight(1.2) }}>
 
               <TouchableOpacity
                 onPress={openDatePicker}
@@ -2332,20 +2332,20 @@ export default function SignUpOne() {
               )}
 
               <View style={styles.selectedDateContainer}>
-                <ImageBackground style={styles.changeinputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
+                {/* <ImageBackground style={styles.changeinputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
                   <TextInput style={styles.selectedDateText}
                     value={editedDate}
                     placeholder='YYYY-MM-DD'
                     onChangeText={onEditedDateChange} // Update editedDate when TextInput changes
                   />
-                </ImageBackground>
+                {/* </ImageBackground> */}
               </View>
             </View>
             {dobError ? <Text style={styles.errorMessage}>{dobError}</Text> : null}
 
 
             <View style={styles.boxContent2}>
-              <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
+              {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
                 <View style={styles.selectContainer}>
                   <Picker
                     style={styles.picker}
@@ -2358,14 +2358,14 @@ export default function SignUpOne() {
                     <Picker.Item label="Others" value="others" />
                   </Picker>
                 </View>
-              </ImageBackground>
+              {/* </ImageBackground> */}
             </View>
             {genderError ? <Text style={styles.errorMessage}>{genderError}</Text> : null}
 
 
 
             <View style={styles.boxContent2}>
-              <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
+              {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
                 <View style={styles.selectContainer}>
                   {/* <Text>Select Country:</Text> */}
                   <Picker
@@ -2378,12 +2378,12 @@ export default function SignUpOne() {
                     ))}
                   </Picker>
                 </View>
-              </ImageBackground>
+              {/* </ImageBackground> */}
             </View>
 
             {countryError ? <Text style={styles.errorMessage}>{countryError}</Text> : null}
             <View style={styles.boxContent2}>
-              <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
+              {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
                 {selectedCountry && (
                   <View style={styles.selectContainer}>
                     {/* <Text>Select State:</Text> */}
@@ -2399,12 +2399,12 @@ export default function SignUpOne() {
                   </View>
 
                 )}
-              </ImageBackground>
+              {/* </ImageBackground> */}
             </View>
             {stateError ? <Text style={styles.errorMessage}>{stateError}</Text> : null}
 
             <View style={styles.boxContent2}>
-              <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
+              {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
                 {selectedState && (
                   <View style={styles.selectContainer}>
                     {/* <Text>Select District:</Text> */}
@@ -2420,7 +2420,7 @@ export default function SignUpOne() {
                     </Picker>
                   </View>
                 )}
-              </ImageBackground>
+              {/* </ImageBackground> */}
             </View>
             {districtError ? <Text style={styles.errorMessage}>{districtError}</Text> : null}
 
@@ -2455,7 +2455,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     alignItems: 'center',
     // padding: responsiveWidth(3),
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F0F0F0',
 
     width: '100%',
     height: '100%'
@@ -2492,7 +2492,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: responsiveHeight(2),
     borderRadius: responsiveWidth(3.2),
-    // borderWidth: responsiveWidth(0.3),
+    borderWidth: responsiveWidth(0.3),
     color: 'black',
     margin: 1,
 
@@ -2506,7 +2506,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: responsiveHeight(2),
     borderRadius: responsiveWidth(3.2),
-    // borderWidth: responsiveWidth(0.3),
+     borderWidth: responsiveWidth(0.3),
     color: 'black',
     margin: 1,
 
@@ -2557,7 +2557,7 @@ const styles = StyleSheet.create({
     width: '100%',
 
     // padding: responsiveWidth(3),
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F0F0F0',
     borderRadius: responsiveWidth(5),
     justifyContent: 'center',
     alignItems: 'center',
@@ -2643,10 +2643,10 @@ const styles = StyleSheet.create({
 
     justifyContent: 'center',
     alignItems: 'center',
-    //borderWidth: responsiveWidth(0.3),
-    borderRadius: responsiveWidth(2),
+    borderWidth: responsiveWidth(0.3),
+    borderRadius: responsiveWidth(3.2),
     height: responsiveHeight(6),
-    width: responsiveWidth(46),
+    width: responsiveWidth(43),
 
     // shadowOffset: { width: 1, height: 4 }, // Shadow offset
     // shadowOpacity: 0.6, // Shadow opacity
@@ -2657,7 +2657,8 @@ const styles = StyleSheet.create({
   },
   selectedDateText: {
     fontSize: responsiveFontSize(2.1),
-    color: "black"
+    color: "black",
+   
   },
 
   nextButton: {

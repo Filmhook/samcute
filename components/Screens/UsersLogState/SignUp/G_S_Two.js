@@ -435,10 +435,10 @@ export default function SignUpTwo() {
               marginTop: responsiveHeight(3),
             }}>
             <View style={styles.boxContent}>
-              <ImageBackground
+              {/* <ImageBackground
                 style={styles.inputContainer}
                 source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-                resizeMode="stretch">
+                resizeMode="stretch"> */}
                 <TextInput
                   placeholder="ENTER YOUR EMAIL ID"
                   value={mail}
@@ -453,19 +453,21 @@ export default function SignUpTwo() {
                     width: responsiveWidth(85),
                     fontSize: responsiveFontSize(2),
                     paddingHorizontal: responsiveWidth(4),
+                    borderWidth:1,
+                    borderRadius:responsiveWidth(3.2)
                   }}
                 />
-              </ImageBackground>
+              {/* </ImageBackground> */}
             </View>
 
             <View style={styles.boxContent}>
-              <ImageBackground
+              {/* <ImageBackground
                 style={styles.inputContainer}
                 source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-                resizeMode="stretch">
+                resizeMode="stretch"> */}
                 <TextInput
                   placeholder="PASSWORD"
-                  maxLength={12}
+                  maxLength={30}
                   placeholderTextColor="black"
                   value={Password}
                   onChangeText={text => {
@@ -479,11 +481,12 @@ export default function SignUpTwo() {
                   style={{
                     color: "#000",
                     fontWeight: '500',
-                    height: responsiveHeight(8.4),
-                    width: responsiveWidth(86.7),
+                    height: responsiveHeight(8.2),
+                    width: responsiveWidth(85),
                     fontSize: responsiveFontSize(2),
                     paddingHorizontal: responsiveWidth(4),
-                    //  borderWidth:1
+                    borderWidth:1,
+                    borderRadius:responsiveWidth(3.2)
                   }}
                 />
 
@@ -508,7 +511,7 @@ export default function SignUpTwo() {
                     />
                   )} */}
                 </TouchableOpacity>
-              </ImageBackground>
+              {/* </ImageBackground> */}
             </View>
 
             <Text style={styles.suggestionsText}>
@@ -521,10 +524,10 @@ export default function SignUpTwo() {
             </Text>
 
             <View style={styles.boxContent}>
-              <ImageBackground
+              {/* <ImageBackground
                 style={styles.inputContainer}
                 source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-                resizeMode="stretch">
+                resizeMode="stretch"> */}
                 <TextInput
                   placeholder="CONFIRM PASSWORD"
                   value={CPassword}
@@ -534,18 +537,18 @@ export default function SignUpTwo() {
                   secureTextEntry={!showPassword}
                   style={{
                     color: "#000",
-                    height: responsiveHeight(8.4),
-                    width: responsiveWidth(86.7),
-                    // padding: responsiveWidth(1),
-                    // left: responsiveWidth(2),
-                    fontSize: responsiveFontSize(2),
                     fontWeight: '500',
+                    height: responsiveHeight(8.2),
+                    width: responsiveWidth(85),
+                    fontSize: responsiveFontSize(2),
                     paddingHorizontal: responsiveWidth(4),
+                    borderWidth:1,
+                    borderRadius:responsiveWidth(3.2)
                   }}
                 />
-              </ImageBackground>
+              {/* </ImageBackground> */}
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', right:responsiveWidth(25) }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', right:responsiveWidth(22) }}>
               <CheckBox
                 value={showPassword}
                 onValueChange={toggleShowPassword}
@@ -558,7 +561,8 @@ export default function SignUpTwo() {
                 flexDirection: 'row',
                 marginTop: responsiveHeight(2.2),
                 width: responsiveWidth(86.7),
-                columnGap: responsiveWidth(5),
+                columnGap: responsiveWidth(3),
+                paddingHorizontal:2
               }}>
               {/* <ImageBackground style={styles.inputContainerPhn} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}> */}
 
@@ -567,11 +571,11 @@ export default function SignUpTwo() {
               <TouchableOpacity
                 onPress={() => setShow(true)}
                 style={{
-                  width: responsiveWidth(25),
+                  width: responsiveWidth(20),
                   height: responsiveHeight(7),
                   //  padding: responsiveWidth(1),
                   borderWidth: responsiveWidth(0.5),
-                  borderColor: 'white',
+                  borderColor: 'gray',
                   justifyContent: 'center',
                   alignItems: 'center',
                   //  bottom:responsiveHeight(7),
@@ -582,10 +586,10 @@ export default function SignUpTwo() {
                   // elevation: 1,
                   // shadowColor: 'gray',
                 }}>
-                <ImageBackground
+                {/* <ImageBackground
                   style={styles.changeinputContainer}
                   source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-                  resizeMode="stretch">
+                  resizeMode="stretch"> */}
                   <Text
                     style={{
                       color: 'gray',
@@ -596,14 +600,15 @@ export default function SignUpTwo() {
                     }}>
                     {countryCode || `+${countryCode}`}
                   </Text>
-                </ImageBackground>
+                {/* </ImageBackground> */}
               </TouchableOpacity>
-              <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+              <View style={{ flexDirection: 'column', alignItems: 'center',borderWidth:1,  height: responsiveHeight(6.5),
+                        width: responsiveWidth(40), borderRadius:responsiveWidth(3.2) }}>
                 <View style={styles.inputContainerPhn}>
-                  <ImageBackground
+                  {/* <ImageBackground
                     style={styles.changenumber}
                     source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-                    resizeMode="stretch">
+                    resizeMode="stretch"> */}
                     <TextInput
                       placeholder="PHONE NUMBER"
                       value={number}
@@ -620,14 +625,14 @@ export default function SignUpTwo() {
                         fontWeight: '500',
                       }}
                     />
-                  </ImageBackground>
+                  {/* </ImageBackground> */}
                 </View>
               </View>
               <TouchableOpacity
                 style={{
                   borderRadius: responsiveWidth(2),
                   marginTop: responsiveHeight(1.5),
-                  marginLeft: responsiveWidth(2),
+                //  marginLeft: responsiveWidth(2),
                   justifyContent: 'center',
                   alignItems: 'center',
                   backgroundColor: '#2d51c5',
@@ -838,7 +843,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     alignItems: 'center',
     // padding: responsiveWidth(3),
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F0F0F0',
 
     width: '100%',
     height: '100%',
@@ -886,10 +891,9 @@ const styles = StyleSheet.create({
     // justifyContent:'center',
     alignItems: 'center',
 
-    // borderWidth: responsiveWidth(0.4),
-    // paddingHorizontal: responsiveWidth(8),
+    
     borderRadius: responsiveWidth(2),
-    height: responsiveHeight(7),
+    height: responsiveHeight(6),
     width: responsiveWidth(30),
 
     // shadowOffset: { width: 1, height: 4 }, // Shadow offset
@@ -902,7 +906,7 @@ const styles = StyleSheet.create({
   },
   changeinputContainer: {
     height: responsiveHeight(6),
-    width: responsiveWidth(24),
+    width: responsiveWidth(29),
 
     borderRadius: responsiveWidth(1),
     overflow: 'hidden',
@@ -989,6 +993,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     width: '100%',
+    backgroundColor: '#F0F0F0',
     // height:'100%',
 
     padding: responsiveWidth(3),

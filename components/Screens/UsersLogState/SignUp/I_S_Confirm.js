@@ -48,6 +48,7 @@ const Industry_S_Confirm = () => {
         setTempData(prevInd)
     }
 
+
     const makeActiveProfessions = (indKey, status, platformInx, prefesInx) => {
         let prevInd = { ...tempData };
         prevInd[indKey].platforms[platformInx].professions[prefesInx].active = status;
@@ -135,7 +136,7 @@ const Industry_S_Confirm = () => {
         <ScrollView>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: responsiveHeight(6) }}>
 
-                <View style={{ height: responsiveHeight(14), width: responsiveWidth(89), marginBottom: responsiveHeight(2), flexDirection: 'row', position: 'relative', }}>
+                <View style={{ height: responsiveHeight(14), width: responsiveWidth(89), marginBottom: responsiveHeight(5), flexDirection: 'row', position: 'relative', }}>
 
                     <Image style={{
                         height: responsiveHeight(15.2),
@@ -143,7 +144,7 @@ const Industry_S_Confirm = () => {
                     }} source={require("../../../Assets/Login_page/FH_logos.png")} resizeMode="stretch" />
 
                     <Image style={{ height: responsiveHeight(6.2), width: responsiveWidth(65), position: 'absolute', left: responsiveWidth(15), top: responsiveHeight(8) }} source={require('../../../Assets/Login_page/Film_hook_name.png')} resizeMode="stretch" />
-                    <Text style={{ color: 'blue', fontWeight: 'bold', position: 'absolute', left: responsiveWidth(60), top: responsiveHeight(14) }}> Industry User</Text>
+                    <Text style={{ color: 'blue', fontWeight: 'bold', position: 'absolute', left: responsiveWidth(60), top: responsiveHeight(14),}}> Industry User</Text>
 
 
                 </View>
@@ -152,11 +153,13 @@ const Industry_S_Confirm = () => {
                     Object.keys(tempData).map((industries) => (
                         <>
                             <View style={styles.searchBox}>
+                            <Text style={styles.industries}>Industry</Text>
                                 <ImageBackground
                                     style={styles.inputContainernew}
                                     source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
                                     resizeMode="stretch"
                                 >
+                                    
                                     <Text style={styles.input}>{industries}</Text>
                                     <TouchableOpacity
                                         style={{
@@ -170,9 +173,8 @@ const Industry_S_Confirm = () => {
                                             alignItems: 'center',
                                             left: responsiveWidth(2)
                                         }}
-                                        onPress={(e) => {
-                                            makeActiveInd(industries, !tempData[industries].inductryActive)
-                                        }}
+                                        onPress={() => makeActiveInd(industries, !tempData[industries].inductryActive)}
+                                       
                                     >
                                         {
                                             tempData[industries]?.inductryActive && <View
@@ -193,6 +195,7 @@ const Industry_S_Confirm = () => {
                             {tempData[industries]?.inductryActive && tempData[industries].platforms.map((platform, platformInx) => (
                                 <>
                                     <View style={styles.searchBox}>
+                                        <Text style={styles.platform}>Platform</Text>
                                         <ImageBackground
                                             style={styles.inputContainernew}
                                             source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
@@ -232,7 +235,7 @@ const Industry_S_Confirm = () => {
                                     {tempData[industries].platforms[platformInx].active && tempData[industries].platforms[platformInx].professions.map((prof, profInx) => (
                                         <>
                                             <View style={styles.searchBox}>
-
+                                            <Text style={styles.Profession}>Profession</Text>
                                                 <ImageBackground
                                                     style={styles.inputContainernew}
                                                     source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
@@ -273,6 +276,10 @@ const Industry_S_Confirm = () => {
                                             </View>
                                             {tempData[industries].platforms[platformInx].professions[profInx].active && prof.subProfessionName?.map(spName => (
                                                 <View style={{ flexDirection: "row", flexWrap: 'wrap' }}>
+                                                    <View>
+                                                    <Text style={styles.subProfession}>SubProfession</Text>
+                                                    </View>
+                                                    
                                                     <View style={styles.checkboxContainer}>
                                                         <Checkbox
                                                             status={makeActiveCheckbox(industries, platform.platformName, prof?.professionName, spName)}
@@ -282,7 +289,7 @@ const Industry_S_Confirm = () => {
                                                             }}
 
                                                         />
-                                                        <Text style={styles.input}>{spName}</Text>
+                                                        <Text style={styles.inputcheckbox}>{spName}</Text>
                                                     </View>
 
                                                 </View>
@@ -350,6 +357,8 @@ const styles = StyleSheet.create({
         width: '100%',
         marginBottom: 10,
         position: 'relative',
+        left:responsiveWidth(1),
+       
     },
 
     inputContainernew: {
@@ -364,15 +373,22 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         padding: 10,
         top: responsiveHeight(0.6),
-        left: responsiveWidth(5)
+        left: responsiveWidth(7)
+    },
+    inputcheckbox:{
+      flexDirection:'row',
+      flexWrap:'wrap',
+      color: "black",
+      borderColor: '#ccc',
+      padding: 10,
     },
     checkboxContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginLeft: responsiveWidth(5),
+        marginLeft: responsiveWidth(2),
         marginBottom: 10,
         borderWidth: responsiveWidth(0.5),
-        width: responsiveWidth(44),
+        width: responsiveWidth(60),
     },
     backButton: {
         backgroundColor: 'black',
@@ -399,4 +415,22 @@ const styles = StyleSheet.create({
         borderWidth: responsiveWidth(0.6),
         borderColor: 'black'
     },
+    industries:{
+        left:responsiveWidth(2),
+        color: 'black'
+    },
+    platform:{
+        left:responsiveWidth(2),
+        color: 'black'
+    },
+    Profession:{
+        left:responsiveWidth(2),
+        color: 'black'
+    },
+    subProfession:{
+   
+       color:'black',
+       top:responsiveHeight(1)
+    }
+
 });

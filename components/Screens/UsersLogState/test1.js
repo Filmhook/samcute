@@ -1,132 +1,73 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { View, TextInput, TouchableOpacity, Image, StyleSheet, Keyboard } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import moment from 'moment';
-import PublicAPI from '../../api/publicAPI';
 
-
-export default function Biography() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [gender, setGender] = useState('');
-  const [country, setCountry] = useState('');
-  const [state, setState] = useState('');
-  const [district, setDistrict] = useState('');
-  const [dob, setDob] = useState(new Date());
+export default function MyComponent() {
+  const [dob, setDob] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userId = await AsyncStorage.getItem('userId');
-        const jwt = await AsyncStorage.getItem('jwt');
-
-        const response = await PublicAPI.get(`user/getUserByUserId?userId=${userId}`, {
-          headers: {
-            'Authorization': `Bearer ${jwt}`
-          }
-        });
-
-        const user = response.data.data;
-        setDob(user.dob ? moment(user.dob).toDate() : new Date());
-        setGender(user.gender || '');
-        setCountry(user.country || '');
-        setState(user.state || '');
-        setDistrict(user.district || '');
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        if (error.response) {
-          console.error('Response status:', error.response.status);
-          console.error('Response data:', error.response.data);
-        }
-      }
-    };
-
-    fetchData();
-  }, []);
-
   const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || dob;
     setShowDatePicker(Platform.OS === 'ios');
-    setDob(currentDate);
-  };
-
-  const openDatePicker = () => {
-    setShowDatePicker(true);
-  };
-
-  const handleUpdatePersonalInfo = async () => {
-    const userId = await AsyncStorage.getItem('userId');
-    const jwt = await AsyncStorage.getItem('jwt');
-    const url = 'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/updateBiographyDetails';
-
-    const requestBody = {
-      userId: userId,
-      dob: moment(dob).format('YYYY-MM-DD'), // Format dob as 'yyyy-mm-dd'
-      gender: gender,
-      country: country,
-      state: state,
-      district: district,
-    };
-
-    try {
-      const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${jwt}`
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update personal info');
-      }
-
-      setIsEditing(false);
-      Alert.alert('Success', 'Personal info updated successfully');
-    } catch (error) {
-      Alert.alert('Error', error.message);
+    if (selectedDate) {
+      // Format the selected date as YYYY-MM-DD
+      const formattedDate = selectedDate.toISOString().split('T')[0];
+      setDob(formattedDate);
     }
+    Keyboard.dismiss(); // Hide the keyboard after selecting a date
+  };
+
+  const showDatePickerModal = () => {
+    setShowDatePicker(true);
+    Keyboard.dismiss(); // Hide the keyboard when date picker is shown
   };
 
   return (
-    <View>
-      <View style={{ flexDirection: 'row' }}>
-        <Text>BIOGRAPHY</Text>
-        <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
-          <Text>{isEditing ? 'Save' : 'Edit'}</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View>
-        {isEditing ? (
-          <TouchableOpacity onPress={openDatePicker}>
-            <TextInput
-              style={{ fontSize: 16, color: '#000000', fontWeight: '500', fontFamily: 'Times New Roman' }}
-              value={moment(dob).format('YYYY-MM-DD')}
-              editable={false}
-            />
-          </TouchableOpacity>
-        ) : (
-          <Text>{moment(dob).format('YYYY-MM-DD')}</Text>
-        )}
-        {showDatePicker && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={dob}
-            mode="date"
-            is24Hour={true}
-            display="default"
-            onChange={handleDateChange}
-            maximumDate={new Date()}
-          />
-        )}
-      </View>
-
-      <TouchableOpacity onPress={handleUpdatePersonalInfo}>
-        <Text>Update Personal Info</Text>
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.inputContainer} onPress={showDatePickerModal}>
+        <TextInput
+          value={dob}
+          placeholder="YYYY-MM-DD"
+          style={styles.input}
+          editable={false} // Disable direct text editing
+        />
+        <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Booking.png')} style={styles.calendarIcon} />
       </TouchableOpacity>
+      {showDatePicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={dob ? new Date(dob) : new Date()}
+          mode="date"
+          maximumDate={new Date()} // Set maximum date to today
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    paddingHorizontal: 10,
+  },
+  calendarIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+  },
+});

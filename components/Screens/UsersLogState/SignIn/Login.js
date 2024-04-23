@@ -48,7 +48,7 @@ export default function Login() {
   };
 
 //   useEffect(() => {
-// navigation.navigate('IndustryTwo')
+// navigation.navigate('Otp')
 //   } , [])
   // const loginUser = async () => {
 
@@ -141,6 +141,9 @@ export default function Login() {
     }
   };
 
+ 
+
+   
   return (
 
     <View style={styles.container}>
@@ -160,23 +163,24 @@ export default function Login() {
 
         <View style={styles.boxContent}>
           {/* <Icon name="envelope" size={responsiveFontSize(5)} color="gray" style={styles.icon} /> */}
-          <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/newBoxImage.png')} resizeMode="stretch">
+          {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/newBoxImage.png')} resizeMode="stretch"> */}
             <TextInput
               placeholder="Email Address"
               value={email}
               onChangeText={(text) => setEmail(text)}
               style={styles.input}
               placeholderTextColor="black"
+
               // placeholderTextColor={'black'}
               keyboardType='email-address'
               autoCapitalize='none'
             //onLongPress={handlePaste}
             />
-          </ImageBackground>
+          {/* </ImageBackground> */}
 
         </View>
         <View style={styles.boxContent}>
-          <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/newBoxImage.png')} resizeMode="stretch">
+          {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/newBoxImage.png')} resizeMode="stretch"> */}
             {/* <Icon name="lock" size={20} color="gray" style={styles.icon} /> */}
 
             {/* <TextInput
@@ -203,7 +207,7 @@ export default function Login() {
               {showPassword ? <Image source={require("../../../Assets/SignIn&Up_And_Font/password_eye_show.png")} style={{ width: "100%", height: "100%" }} /> : <Image source={require("../../../Assets/SignIn&Up_And_Font/eye.png")} style={{ width: "100%", height: "100%" }} />}
             </TouchableOpacity>
 
-          </ImageBackground>
+          {/* </ImageBackground> */}
         </View>
 
 
@@ -239,7 +243,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     alignItems: 'center',
     // padding: responsiveWidth(3),
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F0F0F0',
 
 
     width: '100%',
@@ -295,7 +299,7 @@ const styles = StyleSheet.create({
     width: '100%',
 
     // padding: responsiveWidth(3),
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F0F0F0',
     borderRadius: responsiveWidth(5),
     justifyContent: 'center',
     alignItems: 'center',
@@ -340,7 +344,9 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2),
     // right: responsiveWidth(2),
     color: 'black',
+   
     fontWeight: '500',
+    
     //backgroundColor: 'rgba(162,161,151,0.18)'
 
 

@@ -8,6 +8,7 @@ import Otp_GS from './components/Screens/UsersLogState/SignUp/otp_gs';
 import OTPPage from './components/Screens/UsersLogState/SignUp/otp_gs';
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import MyComponent from './components/Screens/UsersLogState/test1';
 
 export default function App() {
  
@@ -15,6 +16,7 @@ export default function App() {
   <SafeAreaProvider>
     <View style={styles.container}>
        <Appnavigator/>
+       {/* <MyComponent/> */}
 
     </View>
     </SafeAreaProvider>

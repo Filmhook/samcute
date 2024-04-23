@@ -18,9 +18,9 @@ export default function Profession() {
 
 
       <View style={style.bio_title}>
-      <TouchableOpacity style={style.bio_title} onPress={toggleExpanded}>
-        <Text style={style.bio_title_text}>PROFESSION</Text>
-       
+        <TouchableOpacity style={style.bio_title} onPress={toggleExpanded}>
+          <Text style={style.bio_title_text}>PROFESSION</Text>
+
           <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
             <Image
               source={require("../../../Assets/Userprofile_And_Fonts/update/down-arrow.png")}
@@ -251,138 +251,138 @@ export default function Profession() {
 
       <View style={style.container}>
         {expanded && (
-        <View style={{ flex: 0.8 }}>
-          <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), marginLeft: 10, justifyContent: 'center', alignItems: 'center', }}>
-            <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-              <Image source={require("../../../Assets/AllSearch_Icon_And_Fonts/Update/FH_tv_drama.png")} style={{ width: responsiveHeight(8.5), height: responsiveHeight(10), right: -28, top: 4 }} />
-            </ImageBackground>
+          <View style={{ flex: 0.8 }}>
+            <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), marginLeft: 10, justifyContent: 'center', alignItems: 'center', }}>
+              <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                <Image source={require("../../../Assets/AllSearch_Icon_And_Fonts/Update/FH_tv_drama.png")} style={{ width: responsiveHeight(8.5), height: responsiveHeight(10), right: -28, top: 4 }} />
+              </ImageBackground>
+            </View>
           </View>
-        </View>
         )}
 
-          {expanded && (
+        {expanded && (
 
-        <View style={style.bio_content}>
-          {/* ///////////////////////////////////////////////*/}
-          <View style={style.bio_content_section}>
-            <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-              <Image source={require("../../../Assets/Userprofile_And_Fonts/drama_icon.png")}
-                style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
+          <View style={style.bio_content}>
+            {/* ///////////////////////////////////////////////*/}
+            <View style={style.bio_content_section}>
+              <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                <Image source={require("../../../Assets/Userprofile_And_Fonts/drama_icon.png")}
+                  style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
 
-              <Text style={{
-                fontSize: responsiveFontSize(2),
-                color: '#000000',
-                fontWeight: '500',
-                fontFamily: "Times New Roman",
-                top: responsiveHeight(-3.7),
-                left: responsiveWidth(12)
-              }}>
-                Actor
-              </Text>
-            </ImageBackground>
-          </View>
-          <View style={style.bio_content_section_Hero}>
-            {/* <Image source={require("../../../Assets/Userprofile_And_Fonts/drama_icon.png")} 
-               style={{width:responsiveWidth(7.2),height:responsiveHeight(4),marginLeft:responsiveWidth(1),marginTop:responsiveHeight(0.5),left:responsiveWidth(1)}}/> */}
-            <ImageBackground style={{ width: "90%", height: "88%", top: 1, right: -5 }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-              <Text style={{
-                fontSize: responsiveFontSize(2),
-                color: '#000000',
-                fontWeight: '500',
-                fontFamily: "Times New Roman",
-                top: responsiveHeight(0.7),
-                left: responsiveWidth(3),
-
-                //  width:responsiveWidth(15)
-              }}>
-                Music
-
-              </Text>
-            </ImageBackground>
-
-            <Text style={{
-              fontSize: responsiveFontSize(1.55),
-              color: '#000000',
-              fontWeight: '500',
-              fontFamily: "Times New Roman",
-              top: responsiveHeight(1.5),
-              left: responsiveWidth(4),
-
-            }}>
-              1998 - present
-            </Text>
-          </View>
-
-          {/* ///////////////////////////////////////////////*/}
-          <View style={style.bio_content_section}>
-            <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-              <Image source={require("../../../Assets/Userprofile_And_Fonts/producer_icon.png")}
-                style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
-              <Text style={{
-                fontSize: responsiveFontSize(2),
-                color: '#000000',
-                fontWeight: '500',
-                fontFamily: "Times New Roman",
-                top: responsiveHeight(-3),
-                left: responsiveWidth(12),
-
-              }}>
-                Producer
-              </Text>
-            </ImageBackground>
-            <Text style={{
-              fontSize: responsiveFontSize(1.55),
-              color: '#000000',
-              fontWeight: '500',
-              fontFamily: "Times New Roman",
-              top: responsiveHeight(8),
-              left: responsiveWidth(-25),
-            }}>
-              2013 - 2023
-            </Text>
-          </View>
-          <View style={style.bio_content_section_Producer}>
-            {/* <Image source={require("../../../Assets/  Userprofile_And_Fonts/producer_icon.png")} 
-               style={{width:responsiveWidth(7.2),height:responsiveHeight(4),marginLeft:responsiveWidth(1),marginTop:responsiveHeight(0.5),left:responsiveWidth(1)}}/> */}
-            <ImageBackground style={{ width: "93%", height: "88%", top: 1, right: -5 }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-              <Text style={{
-                fontSize: responsiveFontSize(2),
-                color: '#000000',
-                fontWeight: '500',
-                fontFamily: "Times New Roman",
-                top: responsiveHeight(0.6),
-                left: responsiveWidth(3),
-                // borderWidth:1
-              }}>
-                Producer
-              </Text>
-            </ImageBackground>
-          </View>
-          {/* ////////////////////////////////////////////*/}
-          <View style={style.bio_content_section}>
-
-            <View style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1), }}>
-              <Image source={require("../../../Assets//AllSearch_Icon_And_Fonts/Update/FH_Movies.png")}
-                style={{ width: responsiveWidth(6.5), height: responsiveHeight(4), }} />
+                <Text style={{
+                  fontSize: responsiveFontSize(2),
+                  color: '#000000',
+                  fontWeight: '500',
+                  fontFamily: "Times New Roman",
+                  top: responsiveHeight(-3.7),
+                  left: responsiveWidth(12)
+                }}>
+                  Actor
+                </Text>
+              </ImageBackground>
             </View>
-            <ImageBackground style={{ width: "100%", height: "100%", right: 34 }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+            <View style={style.bio_content_section_Hero}>
+              {/* <Image source={require("../../../Assets/Userprofile_And_Fonts/drama_icon.png")} 
+               style={{width:responsiveWidth(7.2),height:responsiveHeight(4),marginLeft:responsiveWidth(1),marginTop:responsiveHeight(0.5),left:responsiveWidth(1)}}/> */}
+              <ImageBackground style={{ width: "90%", height: "88%", top: 1, right: -5 }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                <Text style={{
+                  fontSize: responsiveFontSize(2),
+                  color: '#000000',
+                  fontWeight: '500',
+                  fontFamily: "Times New Roman",
+                  top: responsiveHeight(0.7),
+                  left: responsiveWidth(3),
+
+                  //  width:responsiveWidth(15)
+                }}>
+                  Music
+
+                </Text>
+              </ImageBackground>
+
               <Text style={{
-                fontSize: responsiveFontSize(2),
+                fontSize: responsiveFontSize(1.55),
                 color: '#000000',
                 fontWeight: '500',
                 fontFamily: "Times New Roman",
-                top: responsiveHeight(0.7),
-                left: responsiveWidth(12)
+                top: responsiveHeight(1.5),
+                left: responsiveWidth(4),
+
               }}>
-                105 Films
+                1998 - present
               </Text>
-            </ImageBackground>
+            </View>
+
+            {/* ///////////////////////////////////////////////*/}
+            <View style={style.bio_content_section}>
+              <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                <Image source={require("../../../Assets/Userprofile_And_Fonts/producer_icon.png")}
+                  style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
+                <Text style={{
+                  fontSize: responsiveFontSize(2),
+                  color: '#000000',
+                  fontWeight: '500',
+                  fontFamily: "Times New Roman",
+                  top: responsiveHeight(-3),
+                  left: responsiveWidth(12),
+
+                }}>
+                  Producer
+                </Text>
+              </ImageBackground>
+              <Text style={{
+                fontSize: responsiveFontSize(1.55),
+                color: '#000000',
+                fontWeight: '500',
+                fontFamily: "Times New Roman",
+                top: responsiveHeight(8),
+                left: responsiveWidth(-25),
+              }}>
+                2013 - 2023
+              </Text>
+            </View>
+            <View style={style.bio_content_section_Producer}>
+              {/* <Image source={require("../../../Assets/  Userprofile_And_Fonts/producer_icon.png")} 
+               style={{width:responsiveWidth(7.2),height:responsiveHeight(4),marginLeft:responsiveWidth(1),marginTop:responsiveHeight(0.5),left:responsiveWidth(1)}}/> */}
+              <ImageBackground style={{ width: "93%", height: "88%", top: 1, right: -5 }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                <Text style={{
+                  fontSize: responsiveFontSize(2),
+                  color: '#000000',
+                  fontWeight: '500',
+                  fontFamily: "Times New Roman",
+                  top: responsiveHeight(0.6),
+                  left: responsiveWidth(3),
+                  // borderWidth:1
+                }}>
+                  Producer
+                </Text>
+              </ImageBackground>
+            </View>
+            {/* ////////////////////////////////////////////*/}
+            <View style={style.bio_content_section}>
+
+              <View style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1), }}>
+                <Image source={require("../../../Assets//AllSearch_Icon_And_Fonts/Update/FH_Movies.png")}
+                  style={{ width: responsiveWidth(6.5), height: responsiveHeight(4), }} />
+              </View>
+              <ImageBackground style={{ width: "100%", height: "100%", right: 34 }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                <Text style={{
+                  fontSize: responsiveFontSize(2),
+                  color: '#000000',
+                  fontWeight: '500',
+                  fontFamily: "Times New Roman",
+                  top: responsiveHeight(0.7),
+                  left: responsiveWidth(12)
+                }}>
+                  105 Films
+                </Text>
+              </ImageBackground>
+            </View>
+
+            {/* ///////////////////////////////////////////////*/}
+
+            {/* ///////////////////////////////////////////////*/}
           </View>
-
-          {/* ///////////////////////////////////////////////*/}
-
-          {/* ///////////////////////////////////////////////*/}
-        </View>
         )}
       </View>
       {expanded && (
@@ -399,6 +399,7 @@ export default function Profession() {
 const style = StyleSheet.create({
   container: {
     flexDirection: "row",
+   // borderWidth:1
     // marginTop:20,
   },
   bio_title: {
@@ -407,7 +408,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     columnGap: responsiveWidth(20),
     marginTop: responsiveHeight(1),
-    marginBottom:responsiveHeight(2)
+    marginBottom: responsiveHeight(2)
 
   },
 
