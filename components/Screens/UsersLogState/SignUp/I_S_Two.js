@@ -196,8 +196,14 @@ console.log(`User Id from IS Confirm ${id}`)
 console.log("HITT")
 let formData = new FormData()
 formData.append("userId", id);
-formData.append("images" , selectedImages[0]);
-formData.append("videos", selectedVideo[0]);
+[...selectedImages].forEach(img => {
+formData.append("images" , img)
+});
+//formData.append("images" , selectedImages[0]);
+[...selectedVideo].forEach(vid => {
+formData.append("videos" , vid)
+});
+//formData.append("videos", selectedVideo[0]);
 formData.append("panCard", panAadharImg[0]);
 formData.append("adharCard", panAadharImg[0]);
 
@@ -458,21 +464,6 @@ const myHeaders = new Headers();
         <TouchableOpacity onPress={handleSubmit} style={{ width: responsiveWidth(40), backgroundColor: 'blue', height: responsiveHeight(4), justifyContent: 'center', alignItems: 'center', top: responsiveHeight(4), left: responsiveWidth(25), borderWidth: responsiveWidth(0.5), borderColor: 'black', borderRadius: responsiveWidth(2), opacity: 0.7 }} >
           <Text style={{ color: 'white' }}>Apply for Verification</Text>
         </TouchableOpacity>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         {/* <View style={{ flexDirection: 'row', margin: responsiveHeight(4), columnGap: responsiveWidth(18) }}>

@@ -47,9 +47,9 @@ export default function Login() {
     setPassword(text);
   };
 
-//   useEffect(() => {
-// navigation.navigate('IndustryTwo')
-//   } , [])
+   useEffect(() => {
+ navigation.navigate('IndustryTwo')
+   } , [])
   // const loginUser = async () => {
 
 
