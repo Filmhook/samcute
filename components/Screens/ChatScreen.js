@@ -53,6 +53,22 @@ const ChatScreen = (navigation) => {
   const chatManager = chatClient.chatManager;
   const [chatMessageStatusm, setChatMessageStatus] = React.useState([]);
 
+
+    useEffect(() => {
+        const fetchUserToken = async () => {
+        try{
+    console.log("Generate Token")
+         const senderId = await AsyncStorage.getItem("userId")
+        const token = await privateAPI.get(`chat/app/token?userId=${senderId}`)
+        console.log(`Fetching token - ${JSON.stringify(token.data)}`)
+        setChatToken(token.data)
+        }catch(e){
+        console.log(`error occurs` , e)
+        }
+        }
+        fetchUserToken()
+        }, [])
+
  // console.log(username)
   // Outputs console logs.
   useEffect(() => {
