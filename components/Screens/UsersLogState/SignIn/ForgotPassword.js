@@ -75,7 +75,7 @@ export default function Forgetpass() {
 
   const sendOTP = async () => {
     try {
-      const response = await PublicAPI.post(`/user/forgotPassword`, {
+      const response = await PublicAPI.post(`user/forgotPassword`, {
         email: email,
       });
       console.log('Code sent to email', response.data);
@@ -129,21 +129,21 @@ export default function Forgetpass() {
             </ImageBackground>
           </View>
           <TouchableOpacity
-  style={styles.boxContent1}
-  onPress={() => {
-    console.log(isEmailValid)
-    if (!isEmailValid) {
-      Alert.alert('Invalid Email', 'Please enter a valid email address');
-    } else {
-      handleSendOTP();
-    }
-  }}
-  //disabled={!isEmailValid}
-  >
-  {/* <ImageBackground style={styles.inputContainer1} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
-  <Text style={styles.input2}>Send</Text>
-  {/* </ImageBackground> */}
-</TouchableOpacity>
+            style={styles.boxContent1}
+            onPress={() => {
+              console.log(isEmailValid)
+              if (!isEmailValid) {
+                Alert.alert('Invalid Email', 'Please enter a valid email address');
+              } else {
+                handleSendOTP();
+              }
+            }}
+          //disabled={!isEmailValid}
+          >
+            {/* <ImageBackground style={styles.inputContainer1} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
+            <Text style={styles.input2}>Send</Text>
+            {/* </ImageBackground> */}
+          </TouchableOpacity>
 
 
           {isSendClicked && (

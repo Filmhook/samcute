@@ -51,7 +51,7 @@ export default function Otp() {
 
       console.log('success', response.data);
       Alert.alert('Email number Verified successfully');
-      navigation.navigate('IndustryTwo');
+      navigation.navigate('IndustryOne');
     } catch (error) {
       console.error('Error while verifying OTP:', error);
 
