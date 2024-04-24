@@ -2295,21 +2295,27 @@ export default function SignUpOne() {
 
           </View>
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+
+
             <View style={styles.boxContent}>
 
               {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
-                <TextInput
-                  placeholder="WHAT IS YOUR NAME?"
-                  placeholderTextColor="black"
-                  value={name}
-                  onChangeText={handleTextChange}
-                  style={styles.input}
+              <TextInput
+                placeholder="FIRST NAME"
+                placeholderTextColor="black"
+                value={name}
+                onChangeText={handleTextChange}
+                style={styles.input}
 
 
-                />
+              />
               {/* </ImageBackground> */}
             </View>
             {nameError ? <Text style={styles.errorMessage}>{nameError}</Text> : null}
+
+           
+
+
 
             <View style={{ flexDirection: 'row', height: responsiveHeight(8.3), alignItems: 'center', justifyContent: 'center', columnGap: responsiveWidth(5.9), marginBottom: responsiveHeight(1.2) }}>
 
@@ -2323,7 +2329,7 @@ export default function SignUpOne() {
               {showDatePicker && (
                 <DateTimePicker
                   value={selectedDate}
-                  style={{color: "#000"}}
+                  style={{ color: "#000" }}
                   mode="date"
                   display="default"
                   onChange={onChange}
@@ -2333,11 +2339,11 @@ export default function SignUpOne() {
 
               <View style={styles.selectedDateContainer}>
                 {/* <ImageBackground style={styles.changeinputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
-                  <TextInput style={styles.selectedDateText}
-                    value={editedDate}
-                    placeholder='YYYY-MM-DD'
-                    onChangeText={onEditedDateChange} // Update editedDate when TextInput changes
-                  />
+                <TextInput style={styles.selectedDateText}
+                  value={editedDate}
+                  placeholder='YYYY-MM-DD'
+                  onChangeText={onEditedDateChange} // Update editedDate when TextInput changes
+                />
                 {/* </ImageBackground> */}
               </View>
             </View>
@@ -2346,18 +2352,18 @@ export default function SignUpOne() {
 
             <View style={styles.boxContent2}>
               {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
-                <View style={styles.selectContainer}>
-                  <Picker
-                    style={styles.picker}
-                    selectedValue={selectedGender}
-                    onValueChange={(itemValue) => setSelectedGender(itemValue)}>
-                    <Picker.Item label="SELECT GENDER" value={null}  />
-                    <Picker.Item label="Male" value="male"  />
-                    <Picker.Item label="Female" value="female" />
+              <View style={styles.selectContainer}>
+                <Picker
+                  style={styles.picker}
+                  selectedValue={selectedGender}
+                  onValueChange={(itemValue) => setSelectedGender(itemValue)}>
+                  <Picker.Item label="SELECT GENDER" value={null} />
+                  <Picker.Item label="Male" value="male" />
+                  <Picker.Item label="Female" value="female" />
 
-                    <Picker.Item label="Others" value="others" />
-                  </Picker>
-                </View>
+                  <Picker.Item label="Others" value="others" />
+                </Picker>
+              </View>
               {/* </ImageBackground> */}
             </View>
             {genderError ? <Text style={styles.errorMessage}>{genderError}</Text> : null}
@@ -2366,60 +2372,60 @@ export default function SignUpOne() {
 
             <View style={styles.boxContent2}>
               {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
-                <View style={styles.selectContainer}>
-                  {/* <Text>Select Country:</Text> */}
-                  <Picker
-                    style={styles.picker}
-                    selectedValue={selectedCountry}
-                    onValueChange={(itemValue) => handleCountryChange(itemValue)}>
-                    <Picker.Item label="SELECT COUNTRY" value={null} />
-                    {countries.map(country => (
-                      <Picker.Item key={country.id} label={country.name} value={country.name} />
-                    ))}
-                  </Picker>
-                </View>
+              <View style={styles.selectContainer}>
+                {/* <Text>Select Country:</Text> */}
+                <Picker
+                  style={styles.picker}
+                  selectedValue={selectedCountry}
+                  onValueChange={(itemValue) => handleCountryChange(itemValue)}>
+                  <Picker.Item label="SELECT COUNTRY" value={null} />
+                  {countries.map(country => (
+                    <Picker.Item key={country.id} label={country.name} value={country.name} />
+                  ))}
+                </Picker>
+              </View>
               {/* </ImageBackground> */}
             </View>
 
             {countryError ? <Text style={styles.errorMessage}>{countryError}</Text> : null}
             <View style={styles.boxContent2}>
               {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
-                {selectedCountry && (
-                  <View style={styles.selectContainer}>
-                    {/* <Text>Select State:</Text> */}
-                    <Picker
-                      style={styles.picker}
-                      selectedValue={selectedState}
-                      onValueChange={(itemValue) => setSelectedState(itemValue)}>
-                      <Picker.Item label="SELECT STATE" value={null} />
-                      {countries.find(country => country.name === selectedCountry).states.map((state, index) => (
-                        <Picker.Item key={index} label={state.name} value={state.name} />
-                      ))}
-                    </Picker>
-                  </View>
+              {selectedCountry && (
+                <View style={styles.selectContainer}>
+                  {/* <Text>Select State:</Text> */}
+                  <Picker
+                    style={styles.picker}
+                    selectedValue={selectedState}
+                    onValueChange={(itemValue) => setSelectedState(itemValue)}>
+                    <Picker.Item label="SELECT STATE" value={null} />
+                    {countries.find(country => country.name === selectedCountry).states.map((state, index) => (
+                      <Picker.Item key={index} label={state.name} value={state.name} />
+                    ))}
+                  </Picker>
+                </View>
 
-                )}
+              )}
               {/* </ImageBackground> */}
             </View>
             {stateError ? <Text style={styles.errorMessage}>{stateError}</Text> : null}
 
             <View style={styles.boxContent2}>
               {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
-                {selectedState && (
-                  <View style={styles.selectContainer}>
-                    {/* <Text>Select District:</Text> */}
-                    <Picker
-                      style={styles.picker}
+              {selectedState && (
+                <View style={styles.selectContainer}>
+                  {/* <Text>Select District:</Text> */}
+                  <Picker
+                    style={styles.picker}
 
-                      selectedValue={selectedDistrict}
-                      onValueChange={(itemValue) => setSelectedDistrict(itemValue)}>
-                      <Picker.Item label="SELECT DISTRICT" value={null} />
-                      {countries.find(country => country.name === selectedCountry).states.find(state => state.name === selectedState).districts.map((district, index) => (
-                        <Picker.Item key={index} label={district} value={district} />
-                      ))}
-                    </Picker>
-                  </View>
-                )}
+                    selectedValue={selectedDistrict}
+                    onValueChange={(itemValue) => setSelectedDistrict(itemValue)}>
+                    <Picker.Item label="SELECT DISTRICT" value={null} />
+                    {countries.find(country => country.name === selectedCountry).states.find(state => state.name === selectedState).districts.map((district, index) => (
+                      <Picker.Item key={index} label={district} value={district} />
+                    ))}
+                  </Picker>
+                </View>
+              )}
               {/* </ImageBackground> */}
             </View>
             {districtError ? <Text style={styles.errorMessage}>{districtError}</Text> : null}
@@ -2464,10 +2470,10 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: 'red',
-    right:responsiveWidth(20),
-    bottom:responsiveHeight(1.8),
+    right: responsiveWidth(20),
+    bottom: responsiveHeight(1.8),
 
-  //  marginBottom: 5,
+    //  marginBottom: 5,
   },
   selectContainer: {
     marginBottom: 20,
@@ -2477,7 +2483,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: responsiveHeight(7),
     borderCurve: responsiveWidth(2),
-    color : "#333",
+    color: "#333",
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -2506,7 +2512,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: responsiveHeight(2),
     borderRadius: responsiveWidth(3.2),
-     borderWidth: responsiveWidth(0.3),
+    borderWidth: responsiveWidth(0.3),
     color: 'black',
     margin: 1,
 
@@ -2658,7 +2664,7 @@ const styles = StyleSheet.create({
   selectedDateText: {
     fontSize: responsiveFontSize(2.1),
     color: "black",
-   
+
   },
 
   nextButton: {

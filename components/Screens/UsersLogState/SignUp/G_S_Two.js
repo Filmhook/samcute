@@ -276,7 +276,7 @@ export default function SignUpTwo() {
       const userId = userDetails.userId;
       await AsyncStorage.setItem('userId', userId.toString());
       const storedId = await AsyncStorage.getItem('userId');
-      console.log(storedId);
+      console.log("idddddddd", storedId);
 
       const mailId = userDetails.email;
       await AsyncStorage.setItem('mail', mailId)

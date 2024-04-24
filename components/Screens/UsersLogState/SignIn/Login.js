@@ -91,6 +91,13 @@ export default function Login() {
   //   }
   // };
 
+  // useEffect(()=>{
+  //  const clearAssync = async ()=>{
+  //   await AsyncStorage.clear()
+  //  }
+  //  clearAssync()
+  // },[])
+
   const loginUser = async () => {
     try {
       const response = await PublicAPI.post('/user/login', {
