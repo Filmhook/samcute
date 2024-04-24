@@ -157,7 +157,7 @@ console.log('dddd', selectedDate)
 
 
                         <View style={{ width: responsiveWidth(83), marginBottom: responsiveHeight(1.5) }}>
-                            <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: '600', color: 'black' }}>What is Sex?</Text>
+                            <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: '600', color: 'black' }}>What your Sex?</Text>
 
                         </View>
 

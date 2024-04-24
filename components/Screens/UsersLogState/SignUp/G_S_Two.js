@@ -170,7 +170,7 @@ export default function SignUpTwo() {
       );
     }
 
-    
+
     else if (!emailRegex.test(mail.trim())) {
       alert('Please enter a valid email address');
       return;
@@ -189,16 +189,17 @@ export default function SignUpTwo() {
     }
   };
 
-console.log('names ', name,
-selectedDate,
-selectedGender,
-selectedCountry,
-selectedState,
-selectedDistrict,
-middleName,
-lastName,)
+  console.log('names ', name,
+    selectedDate,
+    selectedGender,
+    selectedCountry,
+    selectedState,
+    selectedDistrict,
+    middleName,
+    lastName,)
 
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loadingVerify, setLoadingVerify] = useState(false);
 
   const getNextUserId = async () => {
     const usersQuery = query(
@@ -242,8 +243,8 @@ const [loading, setLoading] = useState(false);
     try {
       const response = await PublicAPI.post('/user/register', {
         firstName: name,
-        lastName:lastName,
-        middleName:middleName,
+        lastName: lastName,
+        middleName: middleName,
         email: mail,
         password: Password,
         userType: 'commonUser',
@@ -317,6 +318,8 @@ const [loading, setLoading] = useState(false);
 
 
   const verify = async () => {
+
+   
     try {
       const response = await PublicAPI.post(`/user/verify`, {
         otp: otp,
@@ -328,6 +331,8 @@ const [loading, setLoading] = useState(false);
       Alert.alert("Invalid OTP")
       console.error('Error', error);
     }
+   
+    
   };
 
 
@@ -423,8 +428,8 @@ const [loading, setLoading] = useState(false);
                     width: responsiveWidth(85),
                     fontSize: responsiveFontSize(2),
                     paddingHorizontal: responsiveWidth(4),
-                   // borderWidth:1,
-                    borderRadius:responsiveWidth(3.2)
+                    // borderWidth:1,
+                    borderRadius: responsiveWidth(3.2)
                   }}
                 />
               </ImageBackground>
@@ -455,8 +460,8 @@ const [loading, setLoading] = useState(false);
                     width: responsiveWidth(85),
                     fontSize: responsiveFontSize(2),
                     paddingHorizontal: responsiveWidth(4),
-              
-                    borderRadius:responsiveWidth(3.2)
+
+                    borderRadius: responsiveWidth(3.2)
                   }}
                 />
 
@@ -512,18 +517,18 @@ const [loading, setLoading] = useState(false);
                     width: responsiveWidth(85),
                     fontSize: responsiveFontSize(2),
                     paddingHorizontal: responsiveWidth(4),
-                  
-                    borderRadius:responsiveWidth(3.2)
+
+                    borderRadius: responsiveWidth(3.2)
                   }}
                 />
               </ImageBackground>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', right:responsiveWidth(22) }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', right: responsiveWidth(22) }}>
               <CheckBox
                 value={showPassword}
                 onValueChange={toggleShowPassword}
               />
-              <Text style={{fontSize:responsiveFontSize(2), color:'black' }}>Show Password</Text>
+              <Text style={{ fontSize: responsiveFontSize(2), color: 'black' }}>Show Password</Text>
             </View>
 
             <View
@@ -532,7 +537,7 @@ const [loading, setLoading] = useState(false);
                 marginTop: responsiveHeight(2.2),
                 width: responsiveWidth(86.7),
                 columnGap: responsiveWidth(3),
-                paddingHorizontal:2
+                paddingHorizontal: 2
               }}>
               {/* <ImageBackground style={styles.inputContainerPhn} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}> */}
 
@@ -544,7 +549,7 @@ const [loading, setLoading] = useState(false);
                   width: responsiveWidth(20),
                   height: responsiveHeight(7),
                   //  padding: responsiveWidth(1),
-                 
+
                   justifyContent: 'center',
                   alignItems: 'center',
                   //  bottom:responsiveHeight(7),
@@ -563,7 +568,7 @@ const [loading, setLoading] = useState(false);
                     style={{
                       color: 'gray',
                       fontSize: responsiveFontSize(2),
-                     
+
                       alignSelf: 'center',
                       fontWeight: '500',
                     }}>
@@ -571,8 +576,10 @@ const [loading, setLoading] = useState(false);
                   </Text>
                 </ImageBackground>
               </TouchableOpacity>
-              <View style={{ flexDirection: 'column', alignItems: 'center',  height: responsiveHeight(6.5),
-                        width: responsiveWidth(40), borderRadius:responsiveWidth(3.2) }}>
+              <View style={{
+                flexDirection: 'column', alignItems: 'center', height: responsiveHeight(6.5),
+                width: responsiveWidth(40), borderRadius: responsiveWidth(3.2)
+              }}>
                 <View style={styles.inputContainerPhn}>
                   <ImageBackground
                     style={styles.changenumber}
@@ -599,26 +606,26 @@ const [loading, setLoading] = useState(false);
               </View>
 
               {loading ? (
-        <ActivityIndicator style={styles.loadingIndicator} size="large" color="#0000ff" />
-      ) :(
+                <ActivityIndicator style={styles.loadingIndicator} size="large" color="#0000ff" />
+              ) : (
 
-              <TouchableOpacity
-                style={{
-                  borderRadius: responsiveWidth(2),
-                  marginTop: responsiveHeight(1.5),
-                //  marginLeft: responsiveWidth(2),
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#2d51c5',
-                  height: responsiveHeight(4),
-                  width: responsiveWidth(20),
-                  borderWidth: responsiveWidth(0),
-                }}>
-                <Text style={{ color: 'white' }} onPress={handlePressNav}>
-                  SEND OTP
-                </Text>
-              </TouchableOpacity>
-      )}
+                <TouchableOpacity
+                  style={{
+                    borderRadius: responsiveWidth(2),
+                    marginTop: responsiveHeight(1.5),
+                    //  marginLeft: responsiveWidth(2),
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#2d51c5',
+                    height: responsiveHeight(4),
+                    width: responsiveWidth(20),
+                    borderWidth: responsiveWidth(0),
+                  }}>
+                  <Text style={{ color: 'white' }} onPress={handlePressNav}>
+                    SEND OTP
+                  </Text>
+                </TouchableOpacity>
+              )}
               {/* OTP TextInput */}
             </View>
 
@@ -645,15 +652,17 @@ const [loading, setLoading] = useState(false);
                     />
                   </ImageBackground>
 
-                  
-                  <TouchableOpacity
-                    onPress={verify}
-                    disabled={!isOtpEntered || isMobileVerified}
-                    style={
 
-                      [styles.verifyButton, !isOtpEntered && styles.disabledButton]}>
-                    <Text style={{ color: 'white' }}>Verify</Text>
-                  </TouchableOpacity>
+                  
+                    <TouchableOpacity
+                      onPress={verify}
+                      disabled={!isOtpEntered || isMobileVerified}
+                      style={
+
+                        [styles.verifyButton, !isOtpEntered && styles.disabledButton]}>
+                      <Text style={{ color: 'white' }}>Verify</Text>
+                    </TouchableOpacity>
+                
                 </>
               )}
             </View>
@@ -876,7 +885,7 @@ const styles = StyleSheet.create({
     // justifyContent:'center',
     alignItems: 'center',
 
-    
+
     borderRadius: responsiveWidth(2),
     height: responsiveHeight(6),
     width: responsiveWidth(30),
@@ -893,8 +902,8 @@ const styles = StyleSheet.create({
     height: responsiveHeight(6),
     width: responsiveWidth(20),
 
-    
-  
+
+
     justifyContent: 'center',
     alignItems: 'center',
   },

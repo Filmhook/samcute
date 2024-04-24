@@ -2201,14 +2201,14 @@ export default function SignUpOne() {
     }
 
     // Validation for gender
-   
+
     // Navigate to next screen if there are no errors
     if (!isError) {
       navigation.navigate('SignUpDob', {
         name,
         middleName,
         lastName,
-       
+
       });
     }
   };
@@ -2236,7 +2236,7 @@ export default function SignUpOne() {
     return `${year}-${month}-${day}`;
   };
 
- 
+
 
   const onEditedDateChange = (text) => {
     // Extract year, month, and day from the edited date string
@@ -2247,7 +2247,7 @@ export default function SignUpOne() {
     }
   };
 
- 
+
 
 
   return (
@@ -2277,57 +2277,59 @@ export default function SignUpOne() {
               <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: '600', color: 'black' }}>What is your Name?</Text>
 
             </View>
-
-
-
+            {/* <View style={{ width: responsiveWidth(82), top: 8 }}>
+              <Text style={{ color: 'red', fontSize: responsiveFontSize(2.4) }}>*</Text>
+            </View> */}
             <View style={styles.boxContent}>
 
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
-              <TextInput
-                placeholder="FIRST NAME"
-                placeholderTextColor="black"
-                value={name}
-                onChangeText={handleTextChange}
-                style={styles.input}
+                <TextInput
+                  placeholder="FIRST NAME(Required)"
+                //  placeholderTextColor="black"
+                  value={name}
+                  onChangeText={handleTextChange}
+                  style={styles.input}
 
 
-              />
+                />
               </ImageBackground>
             </View>
             {nameError ? <Text style={styles.errorMessage}>{nameError}</Text> : null}
-           
+
 
             <View style={styles.boxContent}>
 
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
-              <TextInput
-                placeholder="MIDDLE NAME"
-                placeholderTextColor="black"
-                value={middleName}
-                onChangeText={setMiddleName}
-                style={styles.input}
+                <TextInput
+                  placeholder="MIDDLE NAME(Optional)"
+                  //placeholderTextColor="black"
+                  value={middleName}
+                  onChangeText={setMiddleName}
+                  style={styles.input}
 
 
-              />
+                />
               </ImageBackground>
             </View>
-
+            {/* <View style={{ width: responsiveWidth(82), top: 8 }}>
+              <Text style={{ color: 'red', fontSize: responsiveFontSize(2.4) }}>*</Text>
+            </View> */}
             <View style={styles.boxContent}>
 
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
-              <TextInput
-                placeholder="LAST NAME"
-                placeholderTextColor="black"
-                value={lastName}
-                onChangeText={setLastName}
-                style={styles.input}
+                <TextInput
+                  placeholder="LAST NAME(Required)"
+                  //placeholderTextColor="black"
+                  value={lastName}
+                  onChangeText={setLastName}
+                  style={styles.input}
 
 
-              />
+                />
               </ImageBackground>
             </View>
             {lastnameError ? <Text style={styles.errorMessage}>{lastnameError}</Text> : null}
-             
+
 
 
 
