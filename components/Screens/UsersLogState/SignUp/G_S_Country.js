@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, Image, Dimensions, ImageBackground, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
@@ -14,20 +14,26 @@ import { Calendar } from 'react-native-calendars';
 import { Picker } from '@react-native-picker/picker';
 
 
-export default function SignUpOne() {
-  const [name, setName] = useState('');
-  const [dob, setDob] = useState(new Date());
-  const [selectedGender, setSelectedGender] = useState(null);
-  const navigation = useNavigation();
+export default function SignUpCountry() {
+  
+ 
+  const navigation = useNavigation();         
 
-  const [nameError, setNameError] = useState('');
-
-  const [lastnameError, setLastNameError] = useState('');
-  const [dobError, setDobError] = useState('');
-  const [genderError, setGenderError] = useState('');
+ 
+ 
   const [countryError, setCountryError] = useState('');
   const [stateError, setStateError] = useState('');
   const [districtError, setDistrictError] = useState('');
+
+  const route = useRoute();
+  const {
+    name,
+    selectedDate,
+    selectedGender,
+    middleName,
+    lastName,
+
+  } = route.params;
 
   const capitalizeFirstLetter = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -35,8 +41,6 @@ export default function SignUpOne() {
   const handleTextChange = (text) => {
     setName(capitalizeFirstLetter(text));
   };
-
-
 
 
 
@@ -2154,9 +2158,6 @@ export default function SignUpOne() {
   const [selectedState, setSelectedState] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
 
-  const [middleName, setMiddleName] = useState('')
-  const [lastName, setLastName] = useState('')
-
   const handleCountryChange = (countryId) => {
     setSelectedCountry(countryId);
     setSelectedState(null); // Reset state when country changes
@@ -2165,7 +2166,7 @@ export default function SignUpOne() {
   //------------------------------------------------------------
 
 
-  //-------------------------------------------------------------------------
+  //-------------------------------------------------------------------------  
 
   // const handlepressNav = () => {
   //   if (name.trim() === '' || dob === '' || selectedGender === null || selectedCountry === null || selectedState === null || selectedDistrict === null) {
@@ -2181,71 +2182,61 @@ export default function SignUpOne() {
     let isError = false;
 
     // Validation for name
-    if (name.trim() === '') {
-      setNameError('First Name cannot be empty.');
-      isError = true;
-    } else {
-      isError = false;
-      setNameError('');
-
-    }
-
-    // Validation for date of birth
-    if (lastName === '') {
-      setLastNameError('Last name cannot be empty.');
-      isError = true;
-    } else {
-
-      isError = false;
-      setLastNameError('');
-    }
-
-    // Validation for gender
    
+
+    // Validation for country
+    if (selectedCountry === null) {
+      setCountryError('Please select a country.');
+      isError = true;
+    } else {
+      setCountryError('');
+    }
+
+    // Validation for state
+    if (selectedState === null) {
+      setStateError('Please select a state.');
+      isError = true;
+    } else {
+      setStateError('');
+    }
+
+    // Validation for district
+    if (selectedDistrict === null) {
+      setDistrictError('Please select a district.');
+      isError = true;
+    } else {
+      setDistrictError('');
+    }
+
     // Navigate to next screen if there are no errors
     if (!isError) {
-      navigation.navigate('SignUpDob', {
+      navigation.navigate('SignUpTwo', {
         name,
+        selectedDate,
+        selectedGender,
+        selectedCountry,
+        selectedState,
+        selectedDistrict,
         middleName,
         lastName,
-       
       });
     }
   };
 
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [editedDate, setEditedDate] = useState('');
+  console.log(name,
+    selectedDate,
+    selectedGender,
+    selectedCountry,
+    selectedState,
+    selectedDistrict,
+    middleName,
+    lastName,)
 
-  const openDatePicker = () => {
-    setShowDatePicker(true);
-  };
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || selectedDate;
-    setShowDatePicker(false);
-    setSelectedDate(currentDate);
-    setEditedDate(formatDate(currentDate)); // Update the edited date
-  };
 
-  const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
 
  
-
-  const onEditedDateChange = (text) => {
-    // Extract year, month, and day from the edited date string
-    const [year, month, day] = text.split('-').map(Number);
-    // Check if month is below 12 and day is below 31
-    if (month <= 12 && day <= 31) {
-      setEditedDate(text);
-    }
-  };
 
  
 
@@ -2272,73 +2263,88 @@ export default function SignUpOne() {
 
           </View>
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-
-            <View style={{ width: responsiveWidth(83), marginBottom: responsiveHeight(2) }}>
-              <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: '600', color: 'black' }}>What is your Name?</Text>
-
-            </View>
+            
 
 
 
-            <View style={styles.boxContent}>
-
+            <View style={styles.boxContent2}>
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
-              <TextInput
-                placeholder="FIRST NAME"
-                placeholderTextColor="black"
-                value={name}
-                onChangeText={handleTextChange}
-                style={styles.input}
-
-
-              />
-              </ImageBackground>
-            </View>
-            {nameError ? <Text style={styles.errorMessage}>{nameError}</Text> : null}
-           
-
-            <View style={styles.boxContent}>
-
-              <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
-              <TextInput
-                placeholder="MIDDLE NAME"
-                placeholderTextColor="black"
-                value={middleName}
-                onChangeText={setMiddleName}
-                style={styles.input}
-
-
-              />
+                <View style={styles.selectContainer}>
+                  {/* <Text>Select Country:</Text> */}
+                  <Picker
+                    style={styles.picker}
+                    selectedValue={selectedCountry}
+                    onValueChange={(itemValue) => handleCountryChange(itemValue)}>
+                    <Picker.Item label="SELECT COUNTRY" value={null} />
+                    {countries.map(country => (
+                      <Picker.Item key={country.id} label={country.name} value={country.name} />
+                    ))}
+                  </Picker>
+                </View>
               </ImageBackground>
             </View>
 
-            <View style={styles.boxContent}>
-
+            {countryError ? <Text style={styles.errorMessage}>{countryError}</Text> : null}
+            <View style={styles.boxContent2}>
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
-              <TextInput
-                placeholder="LAST NAME"
-                placeholderTextColor="black"
-                value={lastName}
-                onChangeText={setLastName}
-                style={styles.input}
+                {selectedCountry && (
+                  <View style={styles.selectContainer}>
+                    {/* <Text>Select State:</Text> */}
+                    <Picker
+                      style={styles.picker}
+                      selectedValue={selectedState}
+                      onValueChange={(itemValue) => setSelectedState(itemValue)}>
+                      <Picker.Item label="SELECT STATE" value={null} />
+                      {countries.find(country => country.name === selectedCountry).states.map((state, index) => (
+                        <Picker.Item key={index} label={state.name} value={state.name} />
+                      ))}
+                    </Picker>
+                  </View>
 
-
-              />
+                )}
               </ImageBackground>
             </View>
-            {lastnameError ? <Text style={styles.errorMessage}>{lastnameError}</Text> : null}
-             
+            {stateError ? <Text style={styles.errorMessage}>{stateError}</Text> : null}
 
+            <View style={styles.boxContent2}>
+              <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
+                {selectedState && (
+                  <View style={styles.selectContainer}>
+                    {/* <Text>Select District:</Text> */}
+                    <Picker
+                      style={styles.picker}
 
+                      selectedValue={selectedDistrict}
+                      onValueChange={(itemValue) => setSelectedDistrict(itemValue)}>
+                      <Picker.Item label="SELECT DISTRICT" value={null} />
+                      {countries.find(country => country.name === selectedCountry).states.find(state => state.name === selectedState).districts.map((district, index) => (
+                        <Picker.Item key={index} label={district} value={district} />
+                      ))}
+                    </Picker>
+                  </View>
+                )}
+              </ImageBackground>
+            </View>
+            {districtError ? <Text style={styles.errorMessage}>{districtError}</Text> : null}
 
-
+            {selectedDistrict && (
+              <View style={styles.selectContainer}>
+                {/* <Text>Selected Country: {countries.find(country => country.id === selectedCountry).name}</Text>
+                <Text>Selected State: {selectedState}</Text>
+                <Text>Selected District: {selectedDistrict}</Text> */}
+              </View>
+            )}
 
             <View style={{ flexDirection: 'row', margin: responsiveHeight(4), columnGap: responsiveWidth(23), marginTop: responsiveHeight(3) }}>
-              <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.backButton}>
+              <TouchableOpacity onPress={() => navigation.navigate('SignUpDob', { name,
+   selectedDate,
+    selectedGender,
+    middleName,
+    lastName})} style={styles.backButton}>
                 <Text style={{ color: 'white', fontWeight: 'bold', fontSize: responsiveFontSize(2) }}>Back</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={handlePressNav} style={styles.nextButton}>
-                <Text style={{ color: 'white', fontWeight: 'bold', fontSize: responsiveFontSize(2) }}>STEP 2 OF 4</Text>
+                <Text style={{ color: 'white', fontWeight: 'bold', fontSize: responsiveFontSize(2) }}>STEP 4 OF 4</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -2356,7 +2362,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     alignItems: 'center',
     // padding: responsiveWidth(3),
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#f5f5f5',
 
     width: '100%',
     height: '100%'
@@ -2365,10 +2371,10 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: 'red',
-    right: responsiveWidth(20),
-    bottom: responsiveHeight(1),
-
-    //  marginBottom: 5,
+    right:responsiveWidth(20),
+    bottom:responsiveHeight(1.8),
+   
+  //  marginBottom: 5,
   },
   selectContainer: {
     marginBottom: 20,
@@ -2378,7 +2384,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: responsiveHeight(7),
     borderCurve: responsiveWidth(2),
-    color: "#333",
+    color : "#333",
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -2393,7 +2399,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: responsiveHeight(2),
     borderRadius: responsiveWidth(3.2),
-    borderWidth: responsiveWidth(0.3),
+    // borderWidth: responsiveWidth(0.3),
     color: 'black',
     margin: 1,
 
@@ -2401,15 +2407,15 @@ const styles = StyleSheet.create({
 
   },
   boxContent: {
-    height: responsiveHeight(7),
+    height: responsiveHeight(8.3),
     width: responsiveWidth(86),
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: responsiveHeight(2),
     borderRadius: responsiveWidth(3.2),
-    borderWidth: responsiveWidth(0.3),
+    // borderWidth: responsiveWidth(0.3),
     color: 'black',
-    margin: responsiveHeight(1),
+    margin: 1,
 
 
 
@@ -2458,7 +2464,7 @@ const styles = StyleSheet.create({
     width: '100%',
 
     // padding: responsiveWidth(3),
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#f5f5f5',
     borderRadius: responsiveWidth(5),
     justifyContent: 'center',
     alignItems: 'center',
@@ -2544,10 +2550,10 @@ const styles = StyleSheet.create({
 
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: responsiveWidth(0.3),
-    borderRadius: responsiveWidth(3.2),
+    //borderWidth: responsiveWidth(0.3),
+    borderRadius: responsiveWidth(2),
     height: responsiveHeight(6),
-    width: responsiveWidth(43),
+    width: responsiveWidth(46),
 
     // shadowOffset: { width: 1, height: 4 }, // Shadow offset
     // shadowOpacity: 0.6, // Shadow opacity
@@ -2558,8 +2564,7 @@ const styles = StyleSheet.create({
   },
   selectedDateText: {
     fontSize: responsiveFontSize(2.1),
-    color: "black",
-
+    color: "black"
   },
 
   nextButton: {
