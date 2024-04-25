@@ -2285,7 +2285,7 @@ export default function SignUpOne() {
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                 <TextInput
                   placeholder="FIRST NAME(Required)"
-                //  placeholderTextColor="black"
+                  placeholderTextColor="black"
                   value={name}
                   onChangeText={handleTextChange}
                   style={styles.input}
@@ -2302,7 +2302,7 @@ export default function SignUpOne() {
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                 <TextInput
                   placeholder="MIDDLE NAME(Optional)"
-                  //placeholderTextColor="black"
+                  placeholderTextColor="black"
                   value={middleName}
                   onChangeText={setMiddleName}
                   style={styles.input}
@@ -2319,7 +2319,7 @@ export default function SignUpOne() {
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                 <TextInput
                   placeholder="LAST NAME(Required)"
-                  //placeholderTextColor="black"
+                  placeholderTextColor="black"
                   value={lastName}
                   onChangeText={setLastName}
                   style={styles.input}
@@ -2509,7 +2509,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2),
     // right: responsiveWidth(2),
     color: 'black',
-    fontWeight: '500'
+    fontWeight: '400'
   },
 
   // inputBirth: {

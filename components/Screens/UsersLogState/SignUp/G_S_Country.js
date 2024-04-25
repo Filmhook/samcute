@@ -2264,9 +2264,12 @@ export default function SignUpCountry() {
           </View>
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             
+          <View style={{ width: responsiveWidth(83), }}>
+              <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: '600', color: 'black' }}>Which country your Belongs to?</Text>
 
+            </View>
 
-
+           
             <View style={styles.boxContent2}>
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                 <View style={styles.selectContainer}>
@@ -2285,6 +2288,12 @@ export default function SignUpCountry() {
             </View>
 
             {countryError ? <Text style={styles.errorMessage}>{countryError}</Text> : null}
+
+
+            <View style={{ width: responsiveWidth(83), }}>
+              <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: '600', color: 'black' }}>May I know your state?</Text>
+
+            </View>
             <View style={styles.boxContent2}>
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                 {selectedCountry && (
@@ -2306,6 +2315,10 @@ export default function SignUpCountry() {
             </View>
             {stateError ? <Text style={styles.errorMessage}>{stateError}</Text> : null}
 
+            <View style={{ width: responsiveWidth(83), }}>
+              <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: '600', color: 'black' }}>Select your city?</Text>
+
+            </View>
             <View style={styles.boxContent2}>
               <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                 {selectedState && (

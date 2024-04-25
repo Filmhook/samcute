@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         paddingVertical: 10,
         paddingHorizontal: 20,
+        color:'black'
        
       },
     errorMessage: {

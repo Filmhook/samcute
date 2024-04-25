@@ -50,7 +50,7 @@ export default function Otp_GS() {
 
       console.log('success', response.data);
       Alert.alert('Email number Verified successfully');
-      navigation.navigate('Login');
+      navigation.navigate('Tabbar');
     } catch (error) {
       console.log(error);
       console.log('Input OTP:', otp);

@@ -12,6 +12,10 @@ import MyComponent from './components/Screens/UsersLogState/test1';
 import SignUpDob from './components/Screens/UsersLogState/SignUp/G_S_Dob';
 import SignUpCountry from './components/Screens/UsersLogState/SignUp/G_S_Country';
 import ModernDatePicker from './components/Screens/UsersLogState/test1';
+import Postfeedcontainor from './components/Screens/UsersLogState/test1';
+import ShareFile from './components/Screens/UsersLogState/test1';
+
+
 
 export default function App() {
  
@@ -19,6 +23,8 @@ export default function App() {
   <SafeAreaProvider>
     <View style={styles.container}>
        <Appnavigator/>
+{/* <ShareFile/> */}
+       {/* <Postfeedcontainor/> */}
       
 
     </View>
