@@ -36,17 +36,22 @@ export default function Handle_img_picker() {
   }
 
 
-  // for open option modal
+  // for open option modal 
   const handleImagePicker = () => {
     setImagePickerModalVisible(true);
   };
-  // for open option modal
+  // for open option modal 
   const pickVideo = async () => {
     try {
       const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.allFiles],
+        type: [DocumentPicker.types.video],
       });
-      setSelectedVideo([...selectedVideo, res]);
+      setSelectedVideo(v => {
+        return [...v, res[0]]
+      });
+
+      console.log('video', selectedVideo)
+      setPostModalVisible(true);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker
@@ -54,10 +59,6 @@ export default function Handle_img_picker() {
       } else {
         Alert.alert('Error', 'Error picking video file');
       }
-    }
-    finally {
-      setPostModalVisible(true);
-      setImagePickerModalVisible(false)
     }
   };
   // function for camera and gallery picker
@@ -88,38 +89,52 @@ export default function Handle_img_picker() {
   };
   const handlePost = async () => {
     try {
-      // Check if croppedImage is defined and has necessary data
-      if (!croppedImage || !croppedImage.uri) {
-        throw new Error("Cropped image data is undefined");
+      // Check if either croppedImage or selectedVideo is defined
+      if (!croppedImage && selectedVideo.length === 0) {
+        throw new Error("No media selected");
       }
 
       // Retrieve userId from AsyncStorage
       const id = await AsyncStorage.getItem('userId');
-
-
-
 
       // Create a new Headers object and append the authorization token
       const myHeaders = new Headers();
       const jwt = await AsyncStorage.getItem("jwt");
       myHeaders.append("Authorization", "Bearer " + jwt);
 
-      // Create a FormData object and append data
+      // Create a FormData object and append data based on media type
       const formData = new FormData();
       formData.append("userId", id);
-      formData.append("category", "Gallery");
+      formData.append("description",caption)
+      if (croppedImage) {
+        formData.append("category", "galleryImage");
+      }
 
-      // Append the image file directly to FormData without wrapping it
-      const imageUriParts = croppedImage.uri.split('.');
-      const fileType = imageUriParts[imageUriParts.length - 1];
-      formData.append("file", {
-        uri: croppedImage.uri,
-        name: `image.${fileType}`,
-        type: `image/${fileType}`
-      });
+      else {
+        formData.append("category", "galleryVideo");
+      }
+
+      // If croppedImage is defined, it's an image; append it to FormData
+      if (croppedImage) {
+        const imageUriParts = croppedImage.uri.split('.');
+        const fileType = imageUriParts[imageUriParts.length - 1];
+        formData.append("file", {
+          uri: croppedImage.uri,
+          name: `image.${fileType}`,
+          type: `image/${fileType}`
+        });
+      }
+
+      // If selectedVideo array has items, append each video to FormData
+      if (selectedVideo.length > 0) {
+        [...selectedVideo].forEach(vid => {
+          formData.append("file", vid)
+        });
+      }
 
       // Log the data being posted
       console.log("Data being posted:", formData);
+      console.log("caption posted",caption)
 
       // Define requestOptions with method, headers, body, and redirect options
       const requestOptions = {
@@ -130,49 +145,27 @@ export default function Handle_img_picker() {
       };
 
       // Make a POST request using fetch
-      fetch("https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/saveGalleryFiles", requestOptions)
+      fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/saveGalleryFiles`, requestOptions)
         .then(async (response) => {
           const data = await response.json(); // Parse response JSON
           console.log("Response data:", data);
           if (data.status === 1) {
-            // Handle successful response
-            const fileId = data.data.fileId;
-            const fileName = data.data.fileName;
-            const filePath = data.data.filePath;
-            const id = data.data.id;
-
-            // Store fileId in AsyncStorage
-            await AsyncStorage.setItem('fileId', fileId);
-            await AsyncStorage.setItem('id', id.toString());
-
-            // Use fileId, fileName, filePath, etc. as needed
-            Alert.alert('Posted Success', `File ${fileName} saved successfully.`);
+            Alert.alert("Posted")
+            setPostModalVisible(false);
           } else {
             // Handle unsuccessful response
-            Alert.alert('Posted Error', data.message);
+            // ...
           }
         })
         .catch((error) => {
-        console.log("error occurs in gallery post")
           console.error(error);
-          Alert.alert('Posted Error', 'Failed to post image.');
+          Alert.alert('Posted Error', 'Failed to post media.');
         });
     } catch (error) {
       console.error('Error posting:', error);
       Alert.alert('Error', error.message);
     }
   };
-
-
-
-
-
-
-
-
-  // function for camera and gallery picker
-
-  // public and private dropdown
 
   const showDropdown = () => {
     setIsDropdownVisible(true);
@@ -247,10 +240,17 @@ export default function Handle_img_picker() {
       {/* Post Input Modal */}
       <Modal isVisible={postModalVisible} onBackdropPress={() => setPostModalVisible(false)}>
         <View style={{ backgroundColor: '#ffffff', padding: responsiveWidth(2), borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', width: responsiveWidth(80), left: responsiveWidth(4) }}>
-          {croppedImage && (
+          {croppedImage && !selectedVideo.length && (
             <Image
               source={{ uri: croppedImage.uri }}
               style={{ width: responsiveWidth(75), height: responsiveHeight(30), marginBottom: responsiveHeight(1), borderRadius: responsiveWidth(1) }}
+            />
+          )}
+          {selectedVideo.length === 1 && !croppedImage && (
+            <Image
+              source={{ uri: selectedVideo[0].uri }}
+              style={{ width: responsiveWidth(75), height: responsiveHeight(30), marginBottom: responsiveHeight(1), borderRadius: responsiveWidth(1) }}
+              controls
             />
           )}
 

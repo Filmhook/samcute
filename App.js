@@ -14,6 +14,8 @@ import SignUpCountry from './components/Screens/UsersLogState/SignUp/G_S_Country
 import ModernDatePicker from './components/Screens/UsersLogState/test1';
 import Postfeedcontainor from './components/Screens/UsersLogState/test1';
 import ShareFile from './components/Screens/UsersLogState/test1';
+import YourComponent from './components/Screens/UsersLogState/test1';
+import Profession from './components/Screens/UserProfileScreen/ProfileMain/Profession';
 
 
 
@@ -23,7 +25,9 @@ export default function App() {
   <SafeAreaProvider>
     <View style={styles.container}>
        <Appnavigator/>
-{/* <ShareFile/> */}
+
+       {/* <Profession/> */}
+{/* <YourComponent/> */}
        {/* <Postfeedcontainor/> */}
       
 

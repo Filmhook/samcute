@@ -34,8 +34,14 @@ export default function Postfeedcontainor() {
   //renderitem lists
   const Datas = ({ item }) => {
     const [imageUrl, setImageUrl] = useState("");
+    const [caption, setCaption] = useState("");
+
     const [like, setLike] = useState(item.likes || 0); // Initialize likes with the value from the item
     const [hitlike, setHitlike] = useState(false);
+
+    useEffect(() => {
+      setCaption(item.description);
+    }, [item.description]);
 
 
 
@@ -82,7 +88,9 @@ export default function Postfeedcontainor() {
 
     useEffect(() => {
       fetchImage(item.fileId)
-    }, [])
+    }, []);
+
+
 
     const options = {
       notation: 'compact',
@@ -135,10 +143,16 @@ export default function Postfeedcontainor() {
 
 
     const [postId, setPostId] = useState(null); // Add postId state
+    const [userId, setUserId] = useState(null);
 
     useEffect(() => {
       setPostId(item.id); // Set postId when item changes
     }, [item.id]);
+
+    useEffect(() => {
+      setUserId(item.userId);
+    }, [item.userId]);
+
 
 
     // Handle comment press function
@@ -306,7 +320,7 @@ export default function Postfeedcontainor() {
     //   }
     // };
 
-    const onSharePress = async (postId, userId) => {
+    const onSharePress = async () => {
       console.log(postId, userId);
       const options = {
         // Your default message
@@ -340,11 +354,11 @@ export default function Postfeedcontainor() {
         <View style={{}}>
           <View>
 
-            <View style={{ flexDirection: "row",alignItems: 'center' }}>
+            <View style={{ flexDirection: "row", alignItems: 'center' }}>
 
               {/* <LongTextComponent  text={caption}/> */}
 
-              <View style={{  width: responsiveWidth(18), justifyContent: 'center', alignContent: 'center',paddingHorizontal:responsiveWidth(1) }}>
+              <View style={{ width: responsiveWidth(18), justifyContent: 'center', alignContent: 'center', paddingHorizontal: responsiveWidth(1) }}>
                 <TouchableOpacity
                   style={{
                     width: responsiveWidth(14),
@@ -369,7 +383,7 @@ export default function Postfeedcontainor() {
               </View>
 
               <View
-                style={{ width: responsiveWidth(43),bottom:responsiveHeight(1.5) }}
+                style={{ width: responsiveWidth(43), bottom: responsiveHeight(1.5) }}
               >
                 <Text
                   style={{ fontSize: responsiveFontSize(1.8), fontWeight: "900", color: "#000000", letterSpacing: 0.5 }}>
@@ -382,9 +396,9 @@ export default function Postfeedcontainor() {
                   Actor
                 </Text>
                 <View
-                  style={{ width: responsiveWidth(30), height: responsiveHeight(2), top: responsiveHeight(0.6), flexDirection: 'row',right:responsiveWidth(1)}}>
+                  style={{ width: responsiveWidth(30), height: responsiveHeight(2), top: responsiveHeight(0.6), flexDirection: 'row', right: responsiveWidth(1) }}>
                   <Image source={require('../../Assets/Home_Icon_And_Fonts/postfeed_loc.png')}
-                    style={{ width: '20%', height: '100%' ,}} resizeMode='stretch' />
+                    style={{ width: '20%', height: '100%', }} resizeMode='stretch' />
 
                   <Text
                     style={{ fontSize: responsiveFontSize(1.4), color: "black", fontWeight: '500' }}>
@@ -397,7 +411,7 @@ export default function Postfeedcontainor() {
               </View>
 
               <View
-                style={{ flexDirection: "row", width: responsiveWidth(32), justifyContent: "space-evenly", alignItems: "center", left: responsiveWidth(7.2),bottom:responsiveHeight(2) }}>
+                style={{ flexDirection: "row", width: responsiveWidth(32), justifyContent: "space-evenly", alignItems: "center", left: responsiveWidth(7.2), bottom: responsiveHeight(2) }}>
                 <Text style={{ fontWeight: "bold", color: "#000000" }} >10h</Text>
                 {/* <View
                   style={{ width: responsiveWidth(5), height: responsiveWidth(5), borderRadius: responsiveWidth(5) }}>
@@ -453,7 +467,11 @@ export default function Postfeedcontainor() {
                 style={{
 
                 }}>
-                <LongTextComponent text='It is a long established fact that a reader will be distracted by the the the  readable content of a page when looking at its layout.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.' />
+                {/* <LongTextComponent > */}
+                <Text>
+                  {caption}
+                </Text>
+                {/* </LongTextComponent> */}
               </Text>
             </View>
 
@@ -467,7 +485,7 @@ export default function Postfeedcontainor() {
             </TouchableOpacity>
 
             <View
-              style={{ height: responsiveHeight(7), width: responsiveWidth(100), flexDirection: "row", justifyContent: "space-between", top: responsiveHeight(0.5),paddingHorizontal:responsiveWidth(2)}}>
+              style={{ height: responsiveHeight(7), width: responsiveWidth(100), flexDirection: "row", justifyContent: "space-between", top: responsiveHeight(0.5), paddingHorizontal: responsiveWidth(2) }}>
               <View>
 
                 {/* like button */}
@@ -478,7 +496,7 @@ export default function Postfeedcontainor() {
                   onPress={() => handleLikePress(item.id)} // Call onLikePress with fileId
                   style={{ width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', }}>
                   <View
-                    style={{  width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
+                    style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
                     {hitlike && hitlike ?
                       <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/Like_after_Icon.png')} style={{ width: "100%", height: "100%", }} resizeMode='stretch' />
 
@@ -516,7 +534,7 @@ export default function Postfeedcontainor() {
                 <Text style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", right: responsiveWidth(5) }}>0 Share</Text>
                 <TouchableOpacity
                   onPress={() => onSharePress(item.postId, item.userId)}
-                  style={{width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', right: responsiveWidth(2) }}>
+                  style={{ width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', right: responsiveWidth(2) }}>
                   <View
                     style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
                     <Image source={require('../../Assets/Home_Icon_And_Fonts/share_icon.png')}
@@ -635,6 +653,7 @@ export default function Postfeedcontainor() {
         )}
         keyExtractor={(item) => item.id.toString()}
       />
+
 
     </>
   )
