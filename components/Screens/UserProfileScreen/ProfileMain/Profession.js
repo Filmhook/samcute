@@ -1087,9 +1087,9 @@ export default function Profession() {
               <View key={index} style={styles.platformContainer}>
                 <View style={{
                   flexDirection: 'row', columnGap: responsiveWidth(7),
-                  borderWidth:2, borderColor:'green', width:responsiveWidth(100),padding:responsiveWidth(1)
+                  width:responsiveWidth(100),padding:responsiveWidth(1)
                 }}>
-                  <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', borderWidth:1 }}>
+                  <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center',  }}>
                     <ImageBackground style={{
                       width: '102%',
                       height: '102%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
@@ -1097,7 +1097,7 @@ export default function Profession() {
                       <Text style={[styles.platformName, styles.border]}>{platform.platformName}</Text>
                     </ImageBackground>
                   </View>
-                  <View style={{  width: responsiveWidth(54) ,borderWidth:2}}>
+                  <View style={{  width: responsiveWidth(54) }}>
                     <View style={styles.industriesContainer}>
                       {platform.industries.map((industry, index) => (
                         <ImageBackground key={index} style={{ width: responsiveWidth(45), marginBottom: responsiveHeight(1), height: responsiveHeight(5.5), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
@@ -1137,8 +1137,7 @@ const styles = StyleSheet.create({
   containers: {
     alignItems: 'center',
     justifyContent: 'center',
-   borderWidth:1,
-   borderColor:'red',
+  
    
   },
   downArrow: {
@@ -1173,7 +1172,7 @@ const styles = StyleSheet.create({
     
   },
   bottomLine: {
-    borderBottomWidth: 2,
+    borderBottomWidth: 6,
     borderBottomColor: 'red',
     marginBottom:responsiveHeight(1)
   },
