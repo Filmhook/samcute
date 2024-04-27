@@ -1006,18 +1006,18 @@ export default function Profession() {
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const toggleExpanded = () => {
-    setExpanded(!expanded);
-    if (!expanded) {
-       // Set loading to true when expanding
-      fetchData(); // Fetch data when expanding
-    }
-  };
+  // const toggleExpanded = () => {
+  //   setExpanded(!expanded);
+  //   if (!expanded) {
+  //     setLoading(true)// Set loading to true when expanding
+  //     fetchData(); // Fetch data when expanding
+  //   }
+  // };
 
   useEffect(() => {
-    if (expanded) {
+   
       fetchData(); // Fetch data initially when component mounts if expanded
-    }
+    
   }, []);
 
   const fetchData = async () => {
@@ -1066,27 +1066,30 @@ export default function Profession() {
   // Render JSX based on fetched data
   return (
     <View style={styles.containers}>
-      <TouchableOpacity style={styles.bio_title} onPress={toggleExpanded}>
+      <TouchableOpacity style={styles.bio_title} >
         <Text style={styles.bio_title_text}>PROFESSION</Text>
+       
         <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
           <Image
             source={require("../../../Assets/Userprofile_And_Fonts/update/down-arrow.png")}
             style={styles.downArrow}
           />
         </View>
+        
       </TouchableOpacity>
-
-      {expanded && (
-        <ScrollView style={{ flex: 1 }}> 
+     
+     
+        <ScrollView style={{width:responsiveWidth(100),}}> 
           {loading ? (
             <Text>Loading...</Text>
           ) : (
             platformData.map((platform, index) => (
               <View key={index} style={styles.platformContainer}>
                 <View style={{
-                  flexDirection: 'row', flexWrap: 'wrap', padding: responsiveWidth(1), columnGap: responsiveWidth(7)
+                  flexDirection: 'row', columnGap: responsiveWidth(7),
+                  borderWidth:2, borderColor:'green', width:responsiveWidth(100),padding:responsiveWidth(1)
                 }}>
-                  <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', }}>
+                  <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', borderWidth:1 }}>
                     <ImageBackground style={{
                       width: '102%',
                       height: '102%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
@@ -1094,7 +1097,7 @@ export default function Profession() {
                       <Text style={[styles.platformName, styles.border]}>{platform.platformName}</Text>
                     </ImageBackground>
                   </View>
-                  <View style={{  width: responsiveWidth(50) }}>
+                  <View style={{  width: responsiveWidth(54) ,borderWidth:2}}>
                     <View style={styles.industriesContainer}>
                       {platform.industries.map((industry, index) => (
                         <ImageBackground key={index} style={{ width: responsiveWidth(45), marginBottom: responsiveHeight(1), height: responsiveHeight(5.5), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
@@ -1125,7 +1128,7 @@ export default function Profession() {
             ))
           )}
         </ScrollView>
-      )}
+      
     </View>
   );
 }
@@ -1134,8 +1137,9 @@ const styles = StyleSheet.create({
   containers: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
-    flex: 1,
+   borderWidth:1,
+   borderColor:'red',
+   
   },
   downArrow: {
     width: 20,
@@ -1162,12 +1166,15 @@ const styles = StyleSheet.create({
     marginBottom: responsiveHeight(2)
   },
   platformContainer: {
-    flex: 1
+    flex: 1,
+   
+    alignItems:'center'
+    
     
   },
   bottomLine: {
     borderBottomWidth: 2,
-    borderBottomColor: 'gray',
+    borderBottomColor: 'red',
     marginBottom:responsiveHeight(1)
   },
   platformName: {
@@ -1175,7 +1182,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   industriesContainer: {
-    marginLeft: 20,
+    marginLeft: responsiveWidth(2),
     marginBottom: 5,
   
   },
@@ -1183,7 +1190,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   professionsContainer: {
-    marginLeft: 20,
+    marginLeft: responsiveWidth(2),
   },
   professionContainer: {
     marginBottom: 5,
@@ -1192,12 +1199,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   subProfession: {
-    marginLeft: 10,
+   // marginLeft: 10,
   },
   border: {
    
     borderColor: 'black',
     // padding: 5,
-    marginVertical: 5,
+   // marginVertical: 5,
   },
 });
