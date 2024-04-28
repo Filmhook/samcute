@@ -104,8 +104,8 @@ export default function StatusPost() {
   //=====
   const handleGoLive = () => {
     // Implement logic to go live
-    console.log('Go Live');
-  };
+ navigation.navigate('GoLive')
+   };
 
   const handleAddLink = () => {
     // Implement logic to add a link

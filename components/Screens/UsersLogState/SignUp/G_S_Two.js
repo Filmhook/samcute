@@ -221,6 +221,7 @@ export default function SignUpTwo() {
   // };
   const submit = async () => {
     try {
+    console.log("Sumbit email and password")
       // if (
       //   mail.trim() === '' ||
       //   Password.trim() === '' ||

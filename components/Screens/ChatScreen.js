@@ -19,8 +19,8 @@ import {
 
 } from 'react-native-agora-chat';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 // Defines the App object.
@@ -29,11 +29,11 @@ import { useRoute } from '@react-navigation/native'; // Import useRoute hook
 import privateAPI from '../api/privateAPI';
 
 
-//const loginedUserToken = '007eJxTYNgVsbfgs0/41lNCm7Qys3Mb/jYanPrHsO7m+pTKZVkxxdsVGCwSU81NTc2AhJGFSUpysoWBoYlFokmqmaGZiZmJuWn7XKW0hkBGhuz4b8yMDKwMjEAI4qswpKYYppoaJRvopqWaJeoaGqam6lqamSbrmpuaJBsZJptaGicaAgD4UihU';
+const loginedUserToken = '007eJxTYNgVsbfgs0/41lNCm7Qys3Mb/jYanPrHsO7m+pTKZVkxxdsVGCwSU81NTc2AhJGFSUpysoWBoYlFokmqmaGZiZmJuWn7XKW0hkBGhuz4b8yMDKwMjEAI4qswpKYYppoaJRvopqWaJeoaGqam6lqamSbrmpuaJBsZJptaGicaAgD4UihU';
 // const Ruby = '007eJxTYHjW6TRh1r5tN37v2XDj8P9vjc/2BxZ45x3Qf5695vGuyHOHFBgsElPNTU3NgISRhUlKcrKFgaGJRaJJqpmhmYmZibnp/p+KaQ2BjAxV/DVMjAysDIxACOKrMBgZGKSYpqQZ6KYlpxjrGhqmpuomWqak6CaZGpiZpyUlJwNlAca+LSI=';
 
-const ChatScreen = (navigation) => {
-  
+const ChatScreen = ({ navigation }) => {
+
 
 
   const route = useRoute();
@@ -45,7 +45,7 @@ const ChatScreen = (navigation) => {
   // Replaces <your userId> with your user ID.
   const username = data.userId// userid
   // Replaces <your agoraToken> with your Agora token.
-  const [chatToken, setChatToken] = React.useState(null);
+  const [chatToken, setChatToken] = React.useState(loginedUserToken);
   const [targetId, setTargetId] = React.useState(3);
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
@@ -54,22 +54,7 @@ const ChatScreen = (navigation) => {
   const [chatMessageStatusm, setChatMessageStatus] = React.useState([]);
 
 
-    useEffect(() => {
-        const fetchUserToken = async () => {
-        try{
-    console.log("Generate Token")
-         const senderId = await AsyncStorage.getItem("userId")
-        const token = await privateAPI.get(`chat/app/token?userId=${senderId}`)
-        console.log(`Fetching token - ${JSON.stringify(token.data)}`)
-        setChatToken(token.data)
-        }catch(e){
-        console.log(`error occurs` , e)
-        }
-        }
-        fetchUserToken()
-        }, [])
 
- // console.log(username)
   // Outputs console logs.
   useEffect(() => {
 
@@ -83,6 +68,13 @@ const ChatScreen = (navigation) => {
 
   }, [logText]);
 
+
+  const [uid, setUid] = useState(null);
+
+  const GETAsuncStorage = async () => {
+    const UID = await AsyncStorage.getItem('id');
+    setUid(parseInt(UID))
+  }
 
 
   // Outputs UI logs.
@@ -103,7 +95,6 @@ const ChatScreen = (navigation) => {
       return newLogText;
     });
   };
-
 
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -133,27 +124,22 @@ const ChatScreen = (navigation) => {
   }
   const GetAllMessages = async () => {
     try {
-        const senderId = await AsyncStorage.getItem("userId")
-      const res = await privateAPI.post('/chat/getMessageByUserId', {
-      chatReceiverId:username
-      });
+      const res = await privateAPI.post('/chat/getMessageByUserId', {});
       console.log(res.data)
-      console.log("fetching msg")
       setChatMessageStatus(res.data)
     } catch (error) {
-    console.log("error during fetch msg")
       console.error(error)
     }
 
   }
   useEffect(() => {
+    GETAsuncStorage()
     GetAllMessages()
     login()
     // Registers listeners for messaging.
     const setMessageListener = () => {
       let msgListener = {
         onMessagesReceived(messages) {
-        console.log(messages)
           for (let index = 0; index < messages.length; index++) {
 
             rollLog('received msgId: ' + JSON.stringify(messages[index].body.content));
@@ -294,58 +280,101 @@ const ChatScreen = (navigation) => {
         rollLog('send fail: ' + JSON.stringify(reason));
       });
   };
-
   // Renders the UI.
-  return (
-    <View style={styles.WholeScreen}>
 
-      <View style={styles.WholeContentView}>
-        <ScrollView style={styles.ScrollView}>
-          {chatMessageStatusm?.data?.userChat?.map((item,) => (
-            <View key={item.chatId} style={[styles.MessageTextView, {
-              justifyContent: item.chatReceiverId === username ? 'flex-end' : 'flex-start',
-            }]}>
+  const GotoVoiceCall = () => {
+    navigation.navigate('VoiceCalling', {
+      remoteUserId: data.userId,
+      userName: data.userName,
+      loggedUserId: uid
+    })
+  }
+  const GoToVideoCalling = () => {
+    navigation.navigate('VideoCallingScreen', {
+      remoteUserId: data.userId,
+      userName: data.userName,
+      loggedUserId: uid
 
-              <Text style={[styles.MessageText, {
+    })
+  }
 
-                borderTopRightRadius: item.chatReceiverId === username ? 0 : 10,
-                borderTopLeftRadius: item.chatReceiverId === username ? 10 : 0
-                , backgroundColor: item.chatReceiverId === username ? '#a2a2a6' : 'lightblue'
-              }]}  >{item.message}</Text>
+  if (uid) {
+
+    return (
+      <View style={styles.WholeScreen}>
+
+        <View style={styles.WholeContentView}>
+          <View style={styles.TopBar}>
+            <Text style={styles.UsernameText}>{data.userName}</Text>
+            <View style={styles.TopBarRightIcons}>
+              <Ionicons name="call-outline" size={27} style={{ marginRight: 15 }} color="blue" onPress={GotoVoiceCall} />
+              <AntDesign name="videocamera" size={27} color="blue" onPress={GoToVideoCalling} />
             </View>
-          ))}
-        </ScrollView>
+          </View>
+          <ScrollView style={styles.ScrollView}>
+
+            {Object.values(chatMessageStatusm).map((item,) => (
+              <View key={item.chatId} style={[styles.MessageTextView, {
+                justifyContent: item.chatReceiverId === username ? 'flex-end' : 'flex-start',
+              }]}>
+
+                <Text style={[styles.MessageText, {
+
+                  borderTopRightRadius: item.chatReceiverId === username ? 0 : 10,
+                  borderTopLeftRadius: item.chatReceiverId === username ? 10 : 0
+                  , backgroundColor: item.chatReceiverId === username ? 'lightgrey' : 'lightblue'
+                }]}  >{item.message}</Text>
+              </View>
+            ))}
+          </ScrollView>
 
 
-        <View style={styles.MessageEnteringView}>
+          <View style={styles.MessageEnteringView}>
 
-          <TextInput
-            multiline
-            style={styles.MessageInput}
-            placeholder="Message"
-            placeholderTextColor={'grey'}
-            onChangeText={text => setContent(text)}
-            value={content}
-          />
-          <TouchableOpacity style={styles.SendBTN} onPress={SaveMessages}  >
-            <FontAwesome name="send" size={20} color="white" />
-          </TouchableOpacity>
-        </View>
+            <TextInput
+              multiline
+              style={styles.MessageInput}
+              placeholder="Message"
+              placeholderTextColor={'grey'}
+              onChangeText={text => setContent(text)}
+              value={content}
+            />
+            <TouchableOpacity style={styles.SendBTN} onPress={SaveMessages}  >
+              <FontAwesome name="send" size={20} color="white" />
+            </TouchableOpacity>
+          </View>
+        </View >
+
       </View >
-
-    </View >
-  );
+    );
+  }
 };
 // Sets UI styles.
 const styles = StyleSheet.create({
   WholeScreen: {
     flex: 1,
-  //  borderWidth:1,
-    marginTop:6
   },
   WholeContentView: {
     flex: 1,
     justifyContent: 'center'
+  },
+  TopBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: 'rgba(173, 216, 230, 0.5)',
+    paddingVertical: 10,
+    marginTop: 5
+  },
+  TopBarRightIcons: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  UsernameText: {
+    color: 'black',
+    fontSize: 15
   },
   ScrollView: {
     flex: 1,
@@ -360,21 +389,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
-   // borderWidth:1
+    paddingHorizontal: 10
   },
   MessageInput: {
     color: 'black',
     fontSize: 15,
-    borderColor: 'gray',
-    borderEndEndRadius:4,
+    borderColor: 'blue',
     borderWidth: 1,
     width: '85%',
-    borderRadius: 15,
+    borderRadius: 5,
     paddingLeft: 15
   },
   SendBTN: {
-    backgroundColor: '#5e5ec6',
+    backgroundColor: 'blue',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -391,8 +418,6 @@ const styles = StyleSheet.create({
   MessageTextView: {
     flexDirection: 'row',
     width: '100%',
-    marginTop:1,
-   
   },
   MessageText: {
     color: 'black',

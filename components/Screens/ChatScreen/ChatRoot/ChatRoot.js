@@ -4,6 +4,8 @@ import Chatinputscreen from "./InboxRoot";
 import ProfileRoot from "../../UserProfileScreen/ProfileMain/ProfileRoot";
 import ChatScreen from "../../ChatScreen";
 import ChatuserRoot from "./ChatUserRoot";
+import VideoCallingScreen from "../VideoCallingScreen";
+import VoiceCalling from "../VoiceCalling";
 
 
 const Stack = createNativeStackNavigator();
@@ -18,6 +20,9 @@ export default function ChatRoot() {
          <Stack.Screen name="ChatScreen" component={ChatScreen} options={{ headerShown: false }} />
          <Stack.Screen name="chatinbox" component={Chatinputscreen} options={{ headerShown: false }} />
          <Stack.Screen name="userprofile" component={ProfileRoot} options={{ headerShown: false }} />
+         <Stack.Screen name="VideoCallingScreen" component={VideoCallingScreen} options={{ headerShown: false }} />
+         <Stack.Screen name="VoiceCalling" component={VoiceCalling} options={{ headerShown: false }} />
+
       </Stack.Navigator>
    )
 }

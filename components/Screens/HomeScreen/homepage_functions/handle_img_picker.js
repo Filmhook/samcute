@@ -112,14 +112,15 @@ export default function Handle_img_picker() {
       // Append the image file directly to FormData without wrapping it
       const imageUriParts = croppedImage.uri.split('.');
       const fileType = imageUriParts[imageUriParts.length - 1];
+      let mapImageTime = Math.floor((Math.random() * 9999999) + 1);
       formData.append("file", {
         uri: croppedImage.uri,
-        name: `image.${fileType}`,
+        name: `image-${mapImageTime}.${fileType}`,
         type: `image/${fileType}`
       });
 
       // Log the data being posted
-      console.log("Data being posted:", formData);
+      console.log("Data being posted:" + JSON.stringify(formData));
 
       // Define requestOptions with method, headers, body, and redirect options
       const requestOptions = {

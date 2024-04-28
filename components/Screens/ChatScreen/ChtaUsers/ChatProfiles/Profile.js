@@ -17,7 +17,7 @@ export default function Chatprofiles({ items }) {
   return (
 
     <FlatList
-      style={{ marginTop: 16, marginBottom: 60 , backgroundColor: '#e8e8f2'}}
+      style={{ marginTop: 10, marginBottom: 60 }}
       data={items}
       renderItem={({ item, }) => (
         <TouchableOpacity key={item.id} onPress={() => navigation.navigate('ChatScreen', {
@@ -29,12 +29,12 @@ export default function Chatprofiles({ items }) {
                 source={require("../../../../../components/Assets/Chats_Icon_And_Fonts/userprofile.png")}
                 style={style.Chatprofiles_photo} />
               <View style={style.Chatprofiles_name_ProView}>
-                <Text style={style.Chatprofiles_name}>{item.userId === 2 ? 'Jacky' : item.userName}</Text>
-                <Text style={style.Chatprofiles_profession}> {item.Profession} </Text>
+                <Text style={style.Chatprofiles_name}>{item.userName}</Text>
+                {/* <Text style={style.Chatprofiles_profession}> {item.Profession} </Text> */}
               </View>
             </View>
-            <Text style={style.Chatprofiles_message}>{item.Message} </Text>
-            <Text style={style.Chatprofiles_time}>{item.Time}</Text>
+            {/* <Text style={style.Chatprofiles_message}>{item.Message} </Text> */}
+            {/* <Text style={style.Chatprofiles_time}>{item.Time}</Text> */}
 
           </View>
         </TouchableOpacity>
@@ -53,7 +53,7 @@ const style = StyleSheet.create({
     borderRadius: 20,
     marginBottom: 10,
     marginLeft: 20,
-   // borderWidth: 1,
+    borderWidth: 1,
     borderColor: "black",
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -66,17 +66,17 @@ const style = StyleSheet.create({
     flexDirection: 'row'
   },
   Chatprofiles_name_ProView: {
-    marginLeft: 18
+    marginLeft: 10
   },
   Chatprofiles_name: {
-    fontSize: 24,
-    fontWeight: "600",
+    fontSize: 20,
+    fontWeight: "900",
     color: "black",
   },
 
   Chatprofiles_profession: {
 
-    fontSize: 60,
+    fontSize: 15,
     color: 'grey',
     fontSize: 13,
 
@@ -84,7 +84,7 @@ const style = StyleSheet.create({
   Chatprofiles_message: {
 
     fontSize: 21,
-    color: 'black',
+    color: 'grey',
     fontSize: 13,
 
 
@@ -98,10 +98,9 @@ const style = StyleSheet.create({
 
   },
   Chatprofiles_photo: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    
+    width: 35,
+    height: 35,
+    borderRadius: 40,
 
 
   }
