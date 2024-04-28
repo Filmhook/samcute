@@ -7,7 +7,7 @@ import privateApi from "../../api/privateAPI"
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Postfeedcontainor() {
-  const [userPost, setUserPost] = useState([])
+  const [userPost, setUserPost] = useState([]);
 
   useEffect(() => {
 
@@ -18,7 +18,7 @@ export default function Postfeedcontainor() {
 
         setUserPost(posts.data.data)
         console.log("Fetched User Post")
-        console.log(posts.data)
+        console.log('post dataaa', posts.data)
 
 
       } catch (e) {
@@ -34,8 +34,16 @@ export default function Postfeedcontainor() {
   //renderitem lists
   const Datas = ({ item }) => {
     const [imageUrl, setImageUrl] = useState("");
+    const [caption, setCaption] = useState("");
+
     const [like, setLike] = useState(item.likes || 0); // Initialize likes with the value from the item
     const [hitlike, setHitlike] = useState(false);
+
+    useEffect(() => {
+      setCaption(item.description);
+    }, [item.description]);
+
+
 
     const blobToBase64 = async (blob) => {
       return new Promise((resolve, reject) => {
@@ -50,7 +58,7 @@ export default function Postfeedcontainor() {
       try {
         console.log(`Fetching File id - ${fileId}`)
         const jwt = await AsyncStorage.getItem("jwt");
-        const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFile?userId=3&category=Gallery&fileId=${fileId}`, {
+        const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFile?userId=3&category=galleryImage&fileId=${fileId}`, {
           headers: {
             Authorization: `Bearer ${jwt}`
           }
@@ -80,7 +88,9 @@ export default function Postfeedcontainor() {
 
     useEffect(() => {
       fetchImage(item.fileId)
-    }, [])
+    }, []);
+
+
 
     const options = {
       notation: 'compact',
@@ -133,10 +143,16 @@ export default function Postfeedcontainor() {
 
 
     const [postId, setPostId] = useState(null); // Add postId state
+    const [userId, setUserId] = useState(null);
 
     useEffect(() => {
       setPostId(item.id); // Set postId when item changes
     }, [item.id]);
+
+    useEffect(() => {
+      setUserId(item.userId);
+    }, [item.userId]);
+
 
 
     // Handle comment press function
@@ -248,29 +264,86 @@ export default function Postfeedcontainor() {
     };
 
 
+    const LongTextComponent = ({ text }) => {
+      const [showFullText, setShowFullText] = useState(false);
+
+      const toggleTextVisibility = () => {
+        setShowFullText(!showFullText);
+      };
+
+      const handleSeeLess = () => {
+        setShowFullText(false);
+      };
+
+      return (
+        <View style={{
+          width: responsiveWidth(94), padding: responsiveWidth(1), left: responsiveWidth(2)
+        }}>
+          <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: "400", lineHeight: responsiveHeight(2.5), color: "#000000", textAlign: 'justify', flexDirection: 'row' }} numberOfLines={showFullText ? undefined : 3}>
+            {text}
+          </Text>
+          {text.length > 3 && (
+            <View>
+              {showFullText ? (
+                <TouchableOpacity onPress={handleSeeLess}>
+                  <Text style={{ color: 'blue' }}>See Less</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={toggleTextVisibility}>
+                  <Text style={{ color: 'blue' }}>See More</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+        </View>
+      );
+    };
 
 
 
 
+    // const onSharePress = async (postId, userId) => {
+    //   console.log(postId, userId);
+    //   try {
+    //     const response = await privateApi.post('action/addShare', {
+    //       userId: userId,
+    //       postId: postId
+    //     });
+    //     console.log(response.data);
+    //     if (response.status === 200) {
+    //       console.log('Post shared successfully');
+    //     } else {
+    //       console.log('Share failed');
+    //     }
+    //   } catch (error) {
+    //     console.error('Error sharing post:', error.message);
+    //   }
+    // };
 
-    const onSharePress = async (id) => {
-      console.log(id);
+    const onSharePress = async () => {
+      console.log(postId, userId);
       const options = {
         // Your default message
-        //message:`${item.caption} `,
+        // message: `${item.caption} `,
         message: 'Share Your Link'
-      }
+      };
       try {
         const result = await Share.share(options);
         if (result.action === Share.sharedAction) {
           console.log('Post shared successfully');
+          // Assuming you want to share the file after sharing via Share API
+          await privateApi.post('action/addShare', {
+            userId: userId,
+            postId: postId
+          });
+          console.log('File shared via API successfully');
         } else if (result.action === Share.dismissedAction) {
           console.log('Share dismissed');
         }
       } catch (error) {
         console.error('Error sharing post:', error.message);
       }
-    }
+    };
     const [visible, setVisible] = useState(false)
 
     const handle_seemoreicon = () => {
@@ -278,8 +351,131 @@ export default function Postfeedcontainor() {
     }
     return (
       <View>
-        <View style={{ padding: responsiveWidth(0.8) }}>
+        <View style={{}}>
           <View>
+
+            <View style={{ flexDirection: "row", alignItems: 'center' }}>
+
+              {/* <LongTextComponent  text={caption}/> */}
+
+              <View style={{ width: responsiveWidth(18), justifyContent: 'center', alignContent: 'center', paddingHorizontal: responsiveWidth(1) }}>
+                <TouchableOpacity
+                  style={{
+                    width: responsiveWidth(14),
+                    height: responsiveWidth(14),
+                    // borderWidth: responsiveWidth(0.4),
+                    borderRadius: responsiveWidth(14),
+                  }}>
+                  <Image source={require('../../../components/Assets/app_logo/8641606.jpg')}
+                    style={{ width: '100%', height: '100%', borderRadius: 50, }} resizeMode='stretch'
+                  />
+                </TouchableOpacity>
+                <View style={{ width: responsiveWidth(9), height: responsiveHeight(2.4), borderRadius: responsiveWidth(2), borderWidth: 1, top: responsiveHeight(-1.8), left: responsiveWidth(2.5), backgroundColor: "#000000" }}>
+                  <Text
+                    style={{ color: "#ffffff", fontSize: responsiveFontSize(1.5), fontWeight: '800', left: responsiveWidth(0.2) }}>9.4</Text>
+                  <View
+                    style={{ width: responsiveWidth(2), height: responsiveHeight(2), left: responsiveWidth(5.5), bottom: responsiveHeight(2) }}>
+                    <Image source={require('../../Assets/Userprofile_And_Fonts/star.png')}
+                      style={{ width: "100%", height: "100%" }} resizeMode='stretch' />
+                  </View>
+                </View>
+
+              </View>
+
+              <View
+                style={{ width: responsiveWidth(43), bottom: responsiveHeight(1.5) }}
+              >
+                <Text
+                  style={{ fontSize: responsiveFontSize(1.8), fontWeight: "900", color: "#000000", letterSpacing: 0.5 }}>
+                  {/* {name} */}
+                  Deepaa
+                </Text>
+                <Text
+                  style={{ fontWeight: "500", color: "black", fontSize: responsiveFontSize(1.4), top: 2 }}>
+                  {/* {profession} */}
+                  Actor
+                </Text>
+                <View
+                  style={{ width: responsiveWidth(30), height: responsiveHeight(2), top: responsiveHeight(0.6), flexDirection: 'row', right: responsiveWidth(1) }}>
+                  <Image source={require('../../Assets/Home_Icon_And_Fonts/postfeed_loc.png')}
+                    style={{ width: '20%', height: '100%', }} resizeMode='stretch' />
+
+                  <Text
+                    style={{ fontSize: responsiveFontSize(1.4), color: "black", fontWeight: '500' }}>
+                    {/* {place} */}
+                    Chennai
+                  </Text>
+                </View>
+
+
+              </View>
+
+              <View
+                style={{ flexDirection: "row", width: responsiveWidth(32), justifyContent: "space-evenly", alignItems: "center", left: responsiveWidth(7.2), bottom: responsiveHeight(2) }}>
+                <Text style={{ fontWeight: "bold", color: "#000000" }} >10h</Text>
+                {/* <View
+                  style={{ width: responsiveWidth(5), height: responsiveWidth(5), borderRadius: responsiveWidth(5) }}>
+                  {view_type === 'public' ?
+                    <Image source={require('../../Assets/Home_Icon_And_Fonts/lock_icon.png')} style={{ width: "90%", height: '90%' }} resizeMode='stretch' />
+                    :
+                    <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/public_earth.png')} style={{ width: "90%", height: '90%' }} resizeMode='stretch' />
+                  }
+                </View> */}
+                <Text
+                  style={{ fontWeight: "bold", color: "#000000" }}>
+                  5.2K</Text>
+                <View>
+                  <View>
+                    <TouchableOpacity
+                      onPress={handle_seemoreicon}
+                      style={{ width: responsiveWidth(7), height: responsiveHeight(3.5), justifyContent: "center" }}>
+                      {visible ? (
+                        <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/see_more_icon.png')}
+                          style={{ width: '100%', height: '80%', backgroundColor: '#d3d3d3' }} />
+                      ) : <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/see_more_icon.png')}
+                        style={{ width: '100%', height: '80%' }} resizeMode='stretch' />}
+                    </TouchableOpacity>
+                    {visible ? (
+                      <View
+                        style={{ position: "absolute", marginTop: responsiveHeight(4), right: responsiveWidth(2.2), width: responsiveWidth(35), height: responsiveHeight(10), backgroundColor: "#666666", borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', rowGap: responsiveHeight(1.1), zIndex: 3 }}>
+                        <TouchableOpacity
+                          style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }}>
+                          <Image style={{ height: responsiveHeight(3), width: responsiveWidth(3), tintColor: 'white', zIndex: 3 }} source={require('../../Assets/Home_Icon_And_Fonts/pin_icon.png')} resizeMode='stretch'></Image>
+                          <Text
+                            style={{ color: '#ffffff' }}>Pin Post</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), justifyContent: 'center', borderColor: 'white', alignItems: 'center', borderWidth: responsiveWidth(0.3) }}
+                        >
+                          <Text
+                            style={{ color: '#ffffff' }}
+                          >Report Post</Text>
+                        </TouchableOpacity>
+                      </View>
+                    ) : null}
+                  </View>
+                </View>
+              </View>
+
+            </View>
+
+            <View
+              style={{
+
+              }}>
+              <Text
+                style={{
+
+                }}>
+                {/* <LongTextComponent > */}
+                <Text>
+                  {caption}
+                </Text>
+                {/* </LongTextComponent> */}
+              </Text>
+            </View>
+
+
             <TouchableOpacity>
               <View
                 style={{ borderColor: "grey", width: responsiveWidth(100), height: responsiveHeight(50), }}>
@@ -289,7 +485,7 @@ export default function Postfeedcontainor() {
             </TouchableOpacity>
 
             <View
-              style={{ height: responsiveHeight(7), width: responsiveWidth(98), flexDirection: "row", justifyContent: "space-between", top: responsiveHeight(0.5), left: responsiveWidth(2.5) }}>
+              style={{ height: responsiveHeight(7), width: responsiveWidth(100), flexDirection: "row", justifyContent: "space-between", top: responsiveHeight(0.5), paddingHorizontal: responsiveWidth(2) }}>
               <View>
 
                 {/* like button */}
@@ -298,9 +494,9 @@ export default function Postfeedcontainor() {
                 <TouchableOpacity
                   //  {`${formatCmpctNumber(like)} Likes`}
                   onPress={() => handleLikePress(item.id)} // Call onLikePress with fileId
-                  style={{ width: responsiveWidth(30), height: responsiveHeight(4.5), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
+                  style={{ width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', }}>
                   <View
-                    style={{ width: responsiveWidth(7), height: responsiveHeight(4), right: responsiveWidth(2) }}>
+                    style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
                     {hitlike && hitlike ?
                       <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/Like_after_Icon.png')} style={{ width: "100%", height: "100%", }} resizeMode='stretch' />
 
@@ -337,8 +533,8 @@ export default function Postfeedcontainor() {
               <View>
                 <Text style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", right: responsiveWidth(5) }}>0 Share</Text>
                 <TouchableOpacity
-                  onPress={() => onSharePress(id)}
-                  style={{ width: responsiveWidth(20), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', right: responsiveWidth(4.8) }}>
+                  onPress={() => onSharePress(item.postId, item.userId)}
+                  style={{ width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', right: responsiveWidth(2) }}>
                   <View
                     style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
                     <Image source={require('../../Assets/Home_Icon_And_Fonts/share_icon.png')}
@@ -457,6 +653,7 @@ export default function Postfeedcontainor() {
         )}
         keyExtractor={(item) => item.id.toString()}
       />
+
 
     </>
   )

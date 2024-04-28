@@ -848,7 +848,7 @@ const myHeaders = new Headers();
             const filePath = data.data.filePath;
             // Use fileId, fileName, filePath, etc. as needed
             Alert.alert('Posted Success', `File ${fileName} saved successfully.`);
-                  navigation.navigate('Login');
+                  navigation.navigate('Tabbar');
           } else {
             // Handle unsuccessful response
             Alert.alert('Posted Error', data.message);

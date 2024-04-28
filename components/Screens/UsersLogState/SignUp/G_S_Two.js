@@ -33,19 +33,22 @@ import {
 import { getFirestore } from 'firebase/firestore';
 import PublicAPI from '../../../api/publicAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ActivityIndicator } from 'react-native';
 
 export default function SignUpTwo() {
   const route = useRoute();
   const {
     name,
-    editedDate,
+    selectedDate,
     selectedGender,
     selectedCountry,
     selectedState,
     selectedDistrict,
+    middleName,
+    lastName,
   } = route.params;
   // const { checked } = route.params;
-  console.log('editedDate', editedDate)
+
   const [mail, setMail] = useState('');
   const [showPassword, setShowPassword] = useState('');
   const [current, setCurrent] = useState('');
@@ -165,7 +168,10 @@ export default function SignUpTwo() {
       alert(
         'Mail, Password, Confirm Password and Mobile Number cannot be empty',
       );
-    } else if (!emailRegex.test(mail.trim())) {
+    }
+
+
+    else if (!emailRegex.test(mail.trim())) {
       alert('Please enter a valid email address');
       return;
     } else if (!passwordRegex.test(Password.trim())) {
@@ -182,6 +188,19 @@ export default function SignUpTwo() {
         : alert('Password does not match the Confirm Password');
     }
   };
+
+  console.log('names ', name,
+    selectedDate,
+    selectedGender,
+    selectedCountry,
+    selectedState,
+    selectedDistrict,
+    middleName,
+    lastName,)
+
+  const [loading, setLoading] = useState(false);
+  const [loadingVerify, setLoadingVerify] = useState(false);
+
   const getNextUserId = async () => {
     const usersQuery = query(
       collection(firestore, collectionName),
@@ -220,71 +239,32 @@ export default function SignUpTwo() {
   //   }
   // };
   const submit = async () => {
+    setLoading(true); // Set loading state to true when submitting
     try {
-    console.log("Sumbit email and password")
-      // if (
-      //   mail.trim() === '' ||
-      //   Password.trim() === '' ||
-      //   CPassword.trim() === '' ||
-      //   number.trim() === ''
-      // ) {
-      //   Alert.alert('Error','Email, Password, Confirm Password, and Phone Number are required');
-      //   return;
-      // }
-
-      // const emailRegex = /\S+@\S+\.\S+/;
-      // const passwordRegex =
-      //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
-
-      // if (!emailRegex.test(mail.trim())) {
-      //   Alert.alert('Error','Please enter a valid email address');
-      //   return;
-      // }
-
-      // if (!passwordRegex.test(Password.trim())) {
-      //   Alert.alert('Error','Password contains "0-9, A-Z, a-z, @-$"');
-      //   return;
-      // }
-
-      // if (Password.trim().length < 8) {
-      //   Alert.alert('Error','Password length must be at least 8 characters');
-      //   return;
-      // }
-
-      // if (Password !== CPassword) {
-      //   Alert.alert('Error','Password does not match the Confirm Password');
-      //   return;
-      // }
-
-      // Other validation checks if needed...
-
-      // Proceed with OTP generation and submission
       const response = await PublicAPI.post('/user/register', {
-        name: name,
+        firstName: name,
+        lastName: lastName,
+        middleName: middleName,
         email: mail,
         password: Password,
         userType: 'commonUser',
         phoneNumber: phonenumber,
         district: selectedDistrict,
-        dob: editedDate,
+        dob: selectedDate,
         gender: selectedGender,
         country: selectedCountry,
         state: selectedState,
       });
       const userDetails = response.data.data.userDetails;
-
       console.log('submit', userDetails)
       const userId = userDetails.userId;
       await AsyncStorage.setItem('userId', userId.toString());
       const storedId = await AsyncStorage.getItem('userId');
       console.log("idddddddd", storedId);
-
       const mailId = userDetails.email;
       await AsyncStorage.setItem('mail', mailId)
-
       const strmail = await AsyncStorage.getItem('mail')
       console.log(strmail)
-
       Alert.alert('Registration successful OTP Sent');
       console.log(response.data.data.userDetails.userId);
       await AsyncStorage.setItem('userId', response.data.data.userDetails.userId?.toString());
@@ -293,18 +273,8 @@ export default function SignUpTwo() {
     } catch (error) {
       Alert.alert('Registration failed');
       console.error('Registration failed:', error);
-      console.log(
-        phonenumber,
-        selectedCountry,
-        selectedDistrict,
-        selectedGender,
-        selectedState,
-        editedDate,
-        mail,
-        name,
-        Password,
-      );
-      // Handle error as needed
+    } finally {
+      setLoading(false); // Set loading state to false after response received
     }
   };
 
@@ -348,6 +318,8 @@ export default function SignUpTwo() {
 
 
   const verify = async () => {
+
+   
     try {
       const response = await PublicAPI.post(`/user/verify`, {
         otp: otp,
@@ -359,6 +331,8 @@ export default function SignUpTwo() {
       Alert.alert("Invalid OTP")
       console.error('Error', error);
     }
+   
+    
   };
 
 
@@ -436,10 +410,10 @@ export default function SignUpTwo() {
               marginTop: responsiveHeight(3),
             }}>
             <View style={styles.boxContent}>
-              {/* <ImageBackground
+              <ImageBackground
                 style={styles.inputContainer}
                 source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-                resizeMode="stretch"> */}
+                resizeMode="stretch">
                 <TextInput
                   placeholder="ENTER YOUR EMAIL ID"
                   value={mail}
@@ -454,18 +428,18 @@ export default function SignUpTwo() {
                     width: responsiveWidth(85),
                     fontSize: responsiveFontSize(2),
                     paddingHorizontal: responsiveWidth(4),
-                    borderWidth:1,
-                    borderRadius:responsiveWidth(3.2)
+                    // borderWidth:1,
+                    borderRadius: responsiveWidth(3.2)
                   }}
                 />
-              {/* </ImageBackground> */}
+              </ImageBackground>
             </View>
 
             <View style={styles.boxContent}>
-              {/* <ImageBackground
+              <ImageBackground
                 style={styles.inputContainer}
                 source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-                resizeMode="stretch"> */}
+                resizeMode="stretch">
                 <TextInput
                   placeholder="PASSWORD"
                   maxLength={30}
@@ -486,8 +460,8 @@ export default function SignUpTwo() {
                     width: responsiveWidth(85),
                     fontSize: responsiveFontSize(2),
                     paddingHorizontal: responsiveWidth(4),
-                    borderWidth:1,
-                    borderRadius:responsiveWidth(3.2)
+
+                    borderRadius: responsiveWidth(3.2)
                   }}
                 />
 
@@ -512,7 +486,7 @@ export default function SignUpTwo() {
                     />
                   )} */}
                 </TouchableOpacity>
-              {/* </ImageBackground> */}
+              </ImageBackground>
             </View>
 
             <Text style={styles.suggestionsText}>
@@ -525,10 +499,10 @@ export default function SignUpTwo() {
             </Text>
 
             <View style={styles.boxContent}>
-              {/* <ImageBackground
+              <ImageBackground
                 style={styles.inputContainer}
                 source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-                resizeMode="stretch"> */}
+                resizeMode="stretch">
                 <TextInput
                   placeholder="CONFIRM PASSWORD"
                   value={CPassword}
@@ -543,18 +517,18 @@ export default function SignUpTwo() {
                     width: responsiveWidth(85),
                     fontSize: responsiveFontSize(2),
                     paddingHorizontal: responsiveWidth(4),
-                    borderWidth:1,
-                    borderRadius:responsiveWidth(3.2)
+
+                    borderRadius: responsiveWidth(3.2)
                   }}
                 />
-              {/* </ImageBackground> */}
+              </ImageBackground>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', right:responsiveWidth(22) }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', right: responsiveWidth(22) }}>
               <CheckBox
                 value={showPassword}
                 onValueChange={toggleShowPassword}
               />
-              <Text style={{fontSize:responsiveFontSize(2), color:'black' }}>Show Password</Text>
+              <Text style={{ fontSize: responsiveFontSize(2), color: 'black' }}>Show Password</Text>
             </View>
 
             <View
@@ -563,7 +537,7 @@ export default function SignUpTwo() {
                 marginTop: responsiveHeight(2.2),
                 width: responsiveWidth(86.7),
                 columnGap: responsiveWidth(3),
-                paddingHorizontal:2
+                paddingHorizontal: 2
               }}>
               {/* <ImageBackground style={styles.inputContainerPhn} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}> */}
 
@@ -575,8 +549,7 @@ export default function SignUpTwo() {
                   width: responsiveWidth(20),
                   height: responsiveHeight(7),
                   //  padding: responsiveWidth(1),
-                  borderWidth: responsiveWidth(0.5),
-                  borderColor: 'gray',
+
                   justifyContent: 'center',
                   alignItems: 'center',
                   //  bottom:responsiveHeight(7),
@@ -587,29 +560,31 @@ export default function SignUpTwo() {
                   // elevation: 1,
                   // shadowColor: 'gray',
                 }}>
-                {/* <ImageBackground
+                <ImageBackground
                   style={styles.changeinputContainer}
                   source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-                  resizeMode="stretch"> */}
+                  resizeMode="stretch">
                   <Text
                     style={{
                       color: 'gray',
                       fontSize: responsiveFontSize(2),
-                      borderRadius: 20,
+
                       alignSelf: 'center',
                       fontWeight: '500',
                     }}>
                     {countryCode || `+${countryCode}`}
                   </Text>
-                {/* </ImageBackground> */}
+                </ImageBackground>
               </TouchableOpacity>
-              <View style={{ flexDirection: 'column', alignItems: 'center',borderWidth:1,  height: responsiveHeight(6.5),
-                        width: responsiveWidth(40), borderRadius:responsiveWidth(3.2) }}>
+              <View style={{
+                flexDirection: 'column', alignItems: 'center', height: responsiveHeight(6.5),
+                width: responsiveWidth(40), borderRadius: responsiveWidth(3.2)
+              }}>
                 <View style={styles.inputContainerPhn}>
-                  {/* <ImageBackground
+                  <ImageBackground
                     style={styles.changenumber}
                     source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-                    resizeMode="stretch"> */}
+                    resizeMode="stretch">
                     <TextInput
                       placeholder="PHONE NUMBER"
                       value={number}
@@ -626,26 +601,31 @@ export default function SignUpTwo() {
                         fontWeight: '500',
                       }}
                     />
-                  {/* </ImageBackground> */}
+                  </ImageBackground>
                 </View>
               </View>
-              <TouchableOpacity
-                style={{
-                  borderRadius: responsiveWidth(2),
-                  marginTop: responsiveHeight(1.5),
-                //  marginLeft: responsiveWidth(2),
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#2d51c5',
-                  height: responsiveHeight(4),
-                  width: responsiveWidth(20),
-                  borderWidth: responsiveWidth(0),
-                }}>
-                <Text style={{ color: 'white' }} onPress={handlePressNav}>
-                  SEND OTP
-                </Text>
-              </TouchableOpacity>
 
+              {loading ? (
+                <ActivityIndicator style={styles.loadingIndicator} size="large" color="#0000ff" />
+              ) : (
+
+                <TouchableOpacity
+                  style={{
+                    borderRadius: responsiveWidth(2),
+                    marginTop: responsiveHeight(1.5),
+                    //  marginLeft: responsiveWidth(2),
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#2d51c5',
+                    height: responsiveHeight(4),
+                    width: responsiveWidth(20),
+                    borderWidth: responsiveWidth(0),
+                  }}>
+                  <Text style={{ color: 'white' }} onPress={handlePressNav}>
+                    SEND OTP
+                  </Text>
+                </TouchableOpacity>
+              )}
               {/* OTP TextInput */}
             </View>
 
@@ -671,14 +651,18 @@ export default function SignUpTwo() {
                       }}
                     />
                   </ImageBackground>
-                  <TouchableOpacity
-                    onPress={verify}
-                    disabled={!isOtpEntered || isMobileVerified}
-                    style={
 
-                      [styles.verifyButton, !isOtpEntered && styles.disabledButton]}>
-                    <Text style={{ color: 'white' }}>Verify</Text>
-                  </TouchableOpacity>
+
+                  
+                    <TouchableOpacity
+                      onPress={verify}
+                      disabled={!isOtpEntered || isMobileVerified}
+                      style={
+
+                        [styles.verifyButton, !isOtpEntered && styles.disabledButton]}>
+                      <Text style={{ color: 'white' }}>Verify</Text>
+                    </TouchableOpacity>
+                
                 </>
               )}
             </View>
@@ -776,7 +760,16 @@ export default function SignUpTwo() {
                 marginTop: responsiveHeight(3),
               }}>
               <TouchableOpacity
-                onPress={() => navigation.navigate('SignUpOne')}
+                onPress={() => navigation.navigate('SignUpCountry', {
+                  name,
+                  selectedDate,
+                  selectedGender,
+                  selectedCountry,
+                  selectedState,
+                  selectedDistrict,
+                  middleName,
+                  lastName,
+                })}
                 style={{
                   // padding: 15,
                   borderRadius: responsiveWidth(2),
@@ -892,7 +885,7 @@ const styles = StyleSheet.create({
     // justifyContent:'center',
     alignItems: 'center',
 
-    
+
     borderRadius: responsiveWidth(2),
     height: responsiveHeight(6),
     width: responsiveWidth(30),
@@ -907,10 +900,10 @@ const styles = StyleSheet.create({
   },
   changeinputContainer: {
     height: responsiveHeight(6),
-    width: responsiveWidth(29),
+    width: responsiveWidth(20),
 
-    borderRadius: responsiveWidth(1),
-    overflow: 'hidden',
+
+
     justifyContent: 'center',
     alignItems: 'center',
   },

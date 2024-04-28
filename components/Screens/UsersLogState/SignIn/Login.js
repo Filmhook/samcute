@@ -171,7 +171,7 @@ export default function Login() {
 
         <View style={styles.boxContent}>
           {/* <Icon name="envelope" size={responsiveFontSize(5)} color="gray" style={styles.icon} /> */}
-          {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/newBoxImage.png')} resizeMode="stretch"> */}
+          <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/newBoxImage.png')} resizeMode="stretch">
             <TextInput
               placeholder="Email Address"
               value={email}
@@ -184,11 +184,11 @@ export default function Login() {
               autoCapitalize='none'
             //onLongPress={handlePaste}
             />
-          {/* </ImageBackground> */}
+          </ImageBackground>
 
         </View>
         <View style={styles.boxContent}>
-          {/* <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/newBoxImage.png')} resizeMode="stretch"> */}
+          <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/newBoxImage.png')} resizeMode="stretch">
             {/* <Icon name="lock" size={20} color="gray" style={styles.icon} /> */}
 
             {/* <TextInput
@@ -215,7 +215,7 @@ export default function Login() {
               {showPassword ? <Image source={require("../../../Assets/SignIn&Up_And_Font/password_eye_show.png")} style={{ width: "100%", height: "100%" }} /> : <Image source={require("../../../Assets/SignIn&Up_And_Font/eye.png")} style={{ width: "100%", height: "100%" }} />}
             </TouchableOpacity>
 
-          {/* </ImageBackground> */}
+          </ImageBackground>
         </View>
 
 
