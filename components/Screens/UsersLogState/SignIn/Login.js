@@ -23,8 +23,8 @@ import { Alert } from 'react-native';
 
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("yaswanthshankar2705@gmail.com");
+  const [password, setPassword] = useState("maninew");
   const [showPassword, setShowPassword] = useState('');
 
 
@@ -48,7 +48,7 @@ export default function Login() {
   };
 
 //   useEffect(() => {
-// navigation.navigate('Otp')
+// navigation.navigate('IndustryTwo')
 //   } , [])
   // const loginUser = async () => {
 
@@ -91,12 +91,12 @@ export default function Login() {
   //   }
   // };
 
-  // useEffect(()=>{
-  //  const clearAssync = async ()=>{
-  //   await AsyncStorage.clear()
-  //  }
-  //  clearAssync()
-  // },[])
+//   useEffect(()=>{
+//    const clearAssync = async ()=>{
+//     await AsyncStorage.clear()
+//    }
+//    clearAssync()
+//   },[])
 
   const loginUser = async () => {
     try {
@@ -115,6 +115,7 @@ export default function Login() {
       await AsyncStorage.setItem('jwt', jwt);
       await AsyncStorage.setItem('mail', emailId);
       await AsyncStorage.setItem('userId', userId.toString()); // Convert userId to string
+      await AsyncStorage.setItem('id', userId.toString()); // Convert userId to string
 
       // Log stored values for verification
       const storedMail = await AsyncStorage.getItem('mail');

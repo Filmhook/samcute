@@ -824,10 +824,10 @@ formData.append("videos" , vid)
 formData.append("panCard", panAadharImg[0]);
 formData.append("adharCard", panAadharImg[0]);
 
-console.log("Data being posted:", formData);
+console.log("Data being posted:", JSON.stringify(formData));
 const myHeaders = new Headers();
       const jwt = await AsyncStorage.getItem("jwt");
-      myHeaders.append("Authorization", "Bearer " + jwt);
+//      myHeaders.append("Authorization", "Bearer " + jwt);
       // Define requestOptions with method, headers, body, and redirect options
       const requestOptions = {
         method: "POST",

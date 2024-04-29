@@ -36,11 +36,11 @@ export default function Handle_img_picker() {
   }
 
 
-  // for open option modal 
+  // for open option modal
   const handleImagePicker = () => {
     setImagePickerModalVisible(true);
   };
-  // for open option modal 
+  // for open option modal
   const pickVideo = async () => {
     try {
       const res = await DocumentPicker.pick({

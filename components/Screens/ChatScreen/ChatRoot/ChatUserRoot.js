@@ -8,29 +8,22 @@ export default function ChatuserRoot() {
 
   useEffect(() => {
 
-    const fetchUsers = async () => {
-      try {
-        const res = await privateAPI.post('/chat/getAllUser', {});
-        setItems(res.data)
-      } catch (error) {
-        console.error(error)
-      }
+      const fetchUsers = async () => {
+        try {
+          const res = await privateAPI.post('/chat/getAllUser', {});
+          setItems(res.data)
+        } catch (error) {
+          console.error(error)
+        }
 
-    }
-    fetchUsers()
+      }
+      fetchUsers()
   }, [])
   const [items, setItems] = useState([]);
+
   // const [items, setItems] = useState([
-  //   { id: 1, name: 'Raj' , Profession:"Actor" , Message:"prev message..." , Time:"today"},
-  //   { id: 2, name: 'Ram', Profession:"Actor" , Message:"prev message...", Time:"today"},
-  //   { id: 3, name: 'Nagesh', Profession:"Actor", Message:"prev message...", Time:"today"},
-  //   { id: 4, name: 'Shreya', Profession:"Actor", Message:"prev message...", Time:"today"},
-  //   { id: 5, name:"Bala", Profession:"Actor", Message:"prev message...", Time:"today"},
-  //   { id: 6, name:"Trisha", Profession:"Actor", Message:"prev message...", Time:"today"},
-  //   { id: 7, name:"Karthi", Profession:"Actor", Message:"prev message...", Time:"today"},
-  //   { id: 8, name:" Mani", Profession:"Actor", Message:"prev message...", Time:"today"},
-  //   { id: 9, name:"Vijay", Profession:"Actor", Message:"prev message...", Time:"today"},
-  //   { id: 10, name:"Surya", Profession:"Actor", Message:"prev message...", Time:"today"}
+  //   { userId: 0, userName: 'Ram', },
+  //   { userId: 1, userName: 'Jero', },
   // ]);
 
   const [search, setSearch] = useState("");

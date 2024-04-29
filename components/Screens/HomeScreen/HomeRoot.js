@@ -9,7 +9,7 @@ import Link from './homepage_functions/Link';
 import PromoteEdit from './homepage_functions/PromoteEdit'
 import Promote from './homepage_functions/Promote';
 import Postfeedcontainor from './postfeedcontainor';
-import Golive from './homepage_functions/GoLive';
+import GoLive from './homepage_functions/GoLive';
 import Status from './homepage_functions/Status';
 
 // import { ScrollView } from 'react-native-gesture-handler';
@@ -26,7 +26,7 @@ export default function HomeRoot() {
                 <Stack.Screen name='homecontents' component={Homecontents} options={{headerShown:false}}/>
                 <Stack.Screen  name='Posts' component={Posts}  options={{headerShown:false}}/>
                 <Stack.Screen name='profilepage' component={ProfileRoot} options={{headerShown:false}} />
-                <Stack.Screen name='Golive' component={Golive} options={{headerShown:false}}/>
+                <Stack.Screen name='GoLive' component={GoLive} options={{headerShown:false}}/>
                 <Stack.Screen name='PromoteEdit' component={PromoteEdit} options={{headerShown:false}} />
                 <Stack.Screen name='Promote' component={Promote} options={{headerShown:false}} />
                 <Stack.Screen name='Link' component={Link} options={{headerShown:false}}/>
