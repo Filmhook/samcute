@@ -9,12 +9,6 @@ import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimen
 
 
 
-
-
-
-
-
-
 export default function Homecontents() {
   return (
    <> 
@@ -25,7 +19,7 @@ export default function Homecontents() {
                <StatusPost/>
 
                <View style={{borderBottomWidth: responsiveWidth(2),
-              borderBottomColor: '#D7D7D7',
+              borderBottomColor: '#D7D7D7', 
               marginVertical: responsiveHeight(1)}}/>
 
         {/* Story_containor */}

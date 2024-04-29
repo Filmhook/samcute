@@ -103,7 +103,7 @@ export default function Login() {
       const response = await PublicAPI.post('/user/login', {
         email: email,
         password: password,
-        userType: 'commonUser',
+       // userType: 'commonUser',
       });
 
       // Extract JWT token and ID from response data
