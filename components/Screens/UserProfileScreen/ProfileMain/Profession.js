@@ -1,1010 +1,24 @@
-// import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native'
-// import React, { useState } from 'react'
-// import Profession_project from './Projects'
-// import Profession_tv_drama_project from './Tv_Drama_Projects'
-// import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 
-
-
-
-
-// export default function Profession() {
-
-//   const [expanded, setExpanded] = useState(false);
-
-
-
-//   const toggleExpanded = () => {
-//     setExpanded(!expanded);
-//   };
-
-
-//   return (
-//     <>
-
-
-//       <View style={style.bio_title}>
-//         <TouchableOpacity style={style.bio_title} onPress={toggleExpanded}>
-//           <Text style={style.bio_title_text}>PROFESSION</Text>
-
-//           <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
-//             <Image
-//               source={require("../../../Assets/Userprofile_And_Fonts/update/down-arrow.png")}
-//               style={style.downArrow}
-//             />
-//           </View>
-//         </TouchableOpacity>
-//       </View>
-
-//       {expanded && (
-
-//         <View style={style.container}>
-//           <View style={{ flex: 0.8 }}>
-
-//             <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', }}>
-//               <ImageBackground style={{
-//                 width: '102%',
-//                 height: '102%', right: -10
-//               }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets//AllSearch_Icon_And_Fonts/Update/FH_Movies.png")} style={{ width: responsiveHeight(8.5), height: responsiveHeight(10), right: -28, top: 4 }} />
-//               </ImageBackground>
-//             </View>
-
-//           </View>
-//           <View style={style.bio_content}>
-//             {/* ///////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/Userprofile_And_Fonts/drama_icon.png")}
-//                   style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.8),
-//                   left: responsiveWidth(12)
-//                 }}>
-//                   Actor
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             <View style={style.bio_content_section_Hero}>
-//               {/* <Image source={require("../../../Assets/Userprofile_And_Fonts/drama_icon.png")} 
-//                style={{width:responsiveWidth(7.2),height:responsiveHeight(4),marginLeft:responsiveWidth(1),marginTop:responsiveHeight(0.5),left:responsiveWidth(1)}}/> */}
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(0.7),
-//                   left: responsiveWidth(7),
-//                 }}>
-//                   Hero
-//                 </Text>
-//               </ImageBackground>
-//               <Text style={{
-//                 fontSize: responsiveFontSize(1.55),
-//                 color: '#000000',
-//                 fontWeight: '500',
-//                 fontFamily: "Times New Roman",
-//                 top: responsiveHeight(1.5),
-//                 left: responsiveWidth(3),
-//               }}>
-//                 1993 - present
-//               </Text>
-//             </View>
-
-//             {/* ///////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/Userprofile_And_Fonts/producer_icon.png")}
-//                   style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
-
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.8),
-//                   left: responsiveWidth(12)
-//                 }}>
-//                   Producer
-//                 </Text>
-//               </ImageBackground>
-//               <Text style={{
-//                 fontSize: responsiveFontSize(1.55),
-//                 color: '#000000',
-//                 fontWeight: '500',
-//                 fontFamily: "Times New Roman",
-//                 top: responsiveHeight(8),
-//                 left: responsiveWidth(-24),
-//               }}>
-//                 2013 - 2023
-//               </Text>
-//             </View>
-//             <View style={style.bio_content_section_Producer}>
-//               {/* <Image source={require("../../../Assets/  Userprofile_And_Fonts/producer_icon.png")} 
-//                style={{width:responsiveWidth(7.2),height:responsiveHeight(4),marginLeft:responsiveWidth(1),marginTop:responsiveHeight(0.5),left:responsiveWidth(1)}}/> */}
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(0.8),
-//                   left: responsiveWidth(3)
-//                 }}>
-//                   Producer
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             {/* ////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-
-//               <View style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1), }}>
-
-//                 <ImageBackground style={{ width: "270%", height: "119%", right: 9, marginTop: responsiveHeight(-1) }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                   <Image source={require("../../../Assets//AllSearch_Icon_And_Fonts/Update/FH_Movies.png")}
-//                     style={{ width: responsiveWidth(6.5), height: responsiveHeight(4), }} />
-//                 </ImageBackground>
-//               </View>
-
-//               <Text style={{
-//                 fontSize: responsiveFontSize(2),
-//                 color: '#000000',
-//                 fontWeight: '500',
-//                 fontFamily: "Times New Roman",
-//                 top: responsiveHeight(0.7),
-//                 left: responsiveWidth(12)
-//               }}>
-//                 105 Films
-//               </Text>
-//             </View>
-//             {/* ///////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/Userprofile_And_Fonts/Cash_icon.png")}
-//                   style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
-
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.6),
-//                   left: responsiveWidth(12)
-//                 }}>
-//                   Rs.1.75Cr/Day
-
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             {/* ///////////////////////////////////////////////*/}
-//             {/* ///////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/Userprofile_And_Fonts/Net_worth_icon.png")}
-//                   style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.6),
-//                   left: responsiveWidth(12)
-//                 }}>
-//                   Rs.6281 Cr
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require(".../../../components/Assets/AllSearch_Icon_And_Fonts/country/Filmhook-maharashtra-PhotoRoom.png")}
-//                   style={{
-//                     width: responsiveWidth(7.8), height: responsiveHeight(4),
-//                     marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1),
-//                     backgroundColor: '#B1B4C7',
-//                     borderRadius: responsiveWidth(4)
-//                   }} />
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.6),
-//                   left: responsiveWidth(13)
-//                 }}>
-//                   BOLLYWOOD
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("..../../../components/Assets/AllSearch_Icon_And_Fonts/country/FH_TN.png")}
-//                   style={{
-//                     width: responsiveWidth(7.8), height: responsiveHeight(4),
-//                     marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1),
-//                     backgroundColor: '#B1B4C7',
-//                     borderRadius: responsiveWidth(4)
-//                   }} />
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.6),
-//                   left: responsiveWidth(11)
-//                 }}>
-//                   KOLLYWOOD
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             {/* ///////////////////////////////////////////////*/}
-//           </View>
-//         </View>
-//       )}
-//       {/* ////////////////////////////////////////////*/}
-//       {/* <View  style={style.hr_tag}/> */}
-//       {expanded && (
-//         <View>
-//           <Profession_project />
-//         </View>
-//       )}
-
-//       <View style={{ width: responsiveWidth(100), borderWidth: responsiveWidth(0.1), marginBottom: responsiveHeight(1) }} />
-
-//       <View style={style.container}>
-//         {expanded && (
-//           <View style={{ flex: 0.8 }}>
-//             <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), marginLeft: 10, justifyContent: 'center', alignItems: 'center', }}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/AllSearch_Icon_And_Fonts/Update/FH_tv_drama.png")} style={{ width: responsiveHeight(8.5), height: responsiveHeight(10), right: -28, top: 4 }} />
-//               </ImageBackground>
-//             </View>
-//           </View>
-//         )}
-
-//         {expanded && (
-
-//           <View style={style.bio_content}>
-//             {/* ///////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/Userprofile_And_Fonts/drama_icon.png")}
-//                   style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
-
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.7),
-//                   left: responsiveWidth(12)
-//                 }}>
-//                   Actor
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             <View style={style.bio_content_section_Hero}>
-//               {/* <Image source={require("../../../Assets/Userprofile_And_Fonts/drama_icon.png")} 
-//                style={{width:responsiveWidth(7.2),height:responsiveHeight(4),marginLeft:responsiveWidth(1),marginTop:responsiveHeight(0.5),left:responsiveWidth(1)}}/> */}
-//               <ImageBackground style={{ width: "90%", height: "88%", top: 1, right: -5 }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(0.7),
-//                   left: responsiveWidth(3),
-
-//                   //  width:responsiveWidth(15)
-//                 }}>
-//                   Music
-
-//                 </Text>
-//               </ImageBackground>
-
-//               <Text style={{
-//                 fontSize: responsiveFontSize(1.55),
-//                 color: '#000000',
-//                 fontWeight: '500',
-//                 fontFamily: "Times New Roman",
-//                 top: responsiveHeight(1.5),
-//                 left: responsiveWidth(4),
-
-//               }}>
-//                 1998 - present
-//               </Text>
-//             </View>
-
-//             {/* ///////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/Userprofile_And_Fonts/producer_icon.png")}
-//                   style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3),
-//                   left: responsiveWidth(12),
-
-//                 }}>
-//                   Producer
-//                 </Text>
-//               </ImageBackground>
-//               <Text style={{
-//                 fontSize: responsiveFontSize(1.55),
-//                 color: '#000000',
-//                 fontWeight: '500',
-//                 fontFamily: "Times New Roman",
-//                 top: responsiveHeight(8),
-//                 left: responsiveWidth(-25),
-//               }}>
-//                 2013 - 2023
-//               </Text>
-//             </View>
-//             <View style={style.bio_content_section_Producer}>
-//               {/* <Image source={require("../../../Assets/  Userprofile_And_Fonts/producer_icon.png")} 
-//                style={{width:responsiveWidth(7.2),height:responsiveHeight(4),marginLeft:responsiveWidth(1),marginTop:responsiveHeight(0.5),left:responsiveWidth(1)}}/> */}
-//               <ImageBackground style={{ width: "93%", height: "88%", top: 1, right: -5 }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(0.6),
-//                   left: responsiveWidth(3),
-//                   // borderWidth:1
-//                 }}>
-//                   Producer
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             {/* ////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-
-//               <View style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1), }}>
-//                 <Image source={require("../../../Assets//AllSearch_Icon_And_Fonts/Update/FH_Movies.png")}
-//                   style={{ width: responsiveWidth(6.5), height: responsiveHeight(4), }} />
-//               </View>
-//               <ImageBackground style={{ width: "100%", height: "100%", right: 34 }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(0.7),
-//                   left: responsiveWidth(12)
-//                 }}>
-//                   105 Films
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-
-//             {/* ///////////////////////////////////////////////*/}
-
-//             {/* ///////////////////////////////////////////////*/}
-//           </View>
-//         )}
-//       </View>
-//       {expanded && (
-//         <Profession_project />
-//       )}
-//       {/* <View style={style.hr_tag} /> */}
-
-//       {/* <Profession_tv_drama_project /> */}
-
-//     </>
-//   )
-// }
-
-// const style = StyleSheet.create({
-//   container: {
-//     flexDirection: "row",
-//    // borderWidth:1
-//     // marginTop:20,
-//   },
-//   bio_title: {
-//     flex: responsiveWidth(0.2),
-//     width: '100%',
-//     flexDirection: 'row',
-//     columnGap: responsiveWidth(20),
-//     marginTop: responsiveHeight(1),
-//     marginBottom: responsiveHeight(2)
-
-//   },
-
-//   downArrow: {
-//     width: 20,
-//     height: 20,
-//     marginRight: responsiveWidth(2),
-//     // Add styles for your down arrow icon
-//   },
-//   bio_title_text: {
-//     fontWeight: "bold",
-//     fontSize: responsiveFontSize(2.2),
-//     color: "black",
-//     marginLeft: responsiveWidth(2),
-//     fontFamily: 'Cochin',
-//     // textDecorationLine: "underline",
-//     //  borderWidth:1,
-//     width: responsiveWidth(70)
-
-//   },
-//   bio_content: {
-//     flex: 1,
-//   },
-//   inputContainer: {
-
-
-//     width: '101%',
-//     height: '100%',
-//   },
-
-//   bio_content_section: {
-//     flexDirection: "row",
-//     width: responsiveWidth(52),
-//     height: responsiveHeight(5.5),
-//     // borderWidth: responsiveWidth(0.3),
-//     borderRadius: responsiveWidth(2),
-//     marginBottom: responsiveHeight(1),
-//   },
-//   hr_tag: {
-//     borderBottomWidth: 1,
-//     borderBottomColor: '#D7D7D7',
-//     marginVertical: 5,
-//   },
-//   bio_content_section_Hero: {
-//     flexDirection: "row",
-//     width: responsiveWidth(25),
-//     height: responsiveHeight(5.5),
-//     // borderWidth: responsiveWidth(0.3),
-//     borderRadius: responsiveWidth(2),
-//     marginBottom: responsiveHeight(1.5),
-//   },
-//   bio_content_section_Producer: {
-//     flexDirection: "row",
-//     width: responsiveWidth(25),
-//     height: responsiveHeight(5.5),
-//     // borderWidth: responsiveWidth(0.3),
-//     borderRadius: responsiveWidth(2),
-//     marginBottom: responsiveHeight(1.5),
-//   },
-// })
-//=================================================================================
-
-// import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity } from 'react-native'
-// import React, { useEffect, useState } from 'react'
-// import Profession_project from './Projects'
-// import Profession_tv_drama_project from './Tv_Drama_Projects'
-// import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
-// import privateAPI from '../../../api/privateAPI'
-
-
-
-// export default function Profession() {
-
-//   const [expanded, setExpanded] = useState(false);
-//   const [platformName, setPlatformName] = useState(null);
-//   const [loading, setLoading] = useState(true);
-//   const [industriesName, setIndustriesName] = useState(null);
-//   const [professionName, setProfessionName] = useState(null);
-//   const [platformIcon, setPlatformIcon] = useState(null);
-
-//   const toggleExpanded = () => {
-//     setExpanded(!expanded);
-//   };
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=167`);
-//         const response = resp.data;
-//         console.log(response);
-
-//         // Extract platform names from platformDetails array
-//         const platformNames = response.map((item) => item.platformDetails.map((platform) => platform.platformName));
-//         const platforIcons = response.map((item) => item.platformDetails.map((platform) => platform.image));
-//         console.log(platforIcons)
-
-//         const industriesNames = response.map(item => item.industriesName);
-//         const professions = response.map(item =>
-//           item.platformDetails.flatMap(platform =>
-//             platform.professionDetails.map(profession => profession.professionName)
-//           )
-//         );
-//         console.log(platformNames);
-//         // console.log("professionNames",professionNames)
-
-//         // Update platformName state with fetched platform names
-//         setPlatformName(platformNames);
-//         setIndustriesName(industriesNames);
-//         setProfessionName(professions);
-//         setPlatformIcon(platforIcons);
-//         setLoading(false); // Set loading to false after data is fetched
-//       } catch (error) {
-//         console.log(" error profession line 34 ", error);
-//         setLoading(false); // Set loading to false if an error occurs
-//       }
-//     };
-
-//     fetchData();
-//   }, []);
-//   return (
-//     <>
-
-
-//       <View style={style.bio_title}>
-//         <TouchableOpacity style={style.bio_title} onPress={toggleExpanded}>
-//           <Text style={style.bio_title_text}>PROFESSION</Text>
-
-//           <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
-//             <Image
-//               source={require("../../../Assets/Userprofile_And_Fonts/update/down-arrow.png")}
-//               style={style.downArrow}
-//             />
-//           </View>
-//         </TouchableOpacity>
-//       </View>
-
-//       {expanded && (
-
-//         <View style={style.container}>
-//           <View style={{ flex: 0.8 }}>
-
-//             <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', }}>
-//               <ImageBackground style={{
-//                 width: '102%',
-//                 height: '102%', right: -10
-//               }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 {/* <Image source={{ uri: platformIcon }}
-//                   style={{ width: responsiveHeight(8.5), height: responsiveHeight(10), right: -28, top: 4 }} /> */}
-//               </ImageBackground>
-//             </View>
-
-//           </View>
-//           <View style={style.bio_content}>
-//             {/* ///////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/Userprofile_And_Fonts/drama_icon.png")}
-//                   style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.8),
-//                   left: responsiveWidth(12)
-//                 }}>
-//                   Actor
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             <View style={style.bio_content_section_Hero}>
-//               {/* <Image source={require("../../../Assets/Userprofile_And_Fonts/drama_icon.png")} 
-//                style={{width:responsiveWidth(7.2),height:responsiveHeight(4),marginLeft:responsiveWidth(1),marginTop:responsiveHeight(0.5),left:responsiveWidth(1)}}/> */}
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(0.7),
-//                   left: responsiveWidth(7),
-//                 }}>
-//                   Hero
-//                 </Text>
-//               </ImageBackground>
-//               <Text style={{
-//                 fontSize: responsiveFontSize(1.55),
-//                 color: '#000000',
-//                 fontWeight: '500',
-//                 fontFamily: "Times New Roman",
-//                 top: responsiveHeight(1.5),
-//                 left: responsiveWidth(3),
-//               }}>
-//                 1993 - present
-//               </Text>
-//             </View>
-
-//             {/* ///////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/Userprofile_And_Fonts/producer_icon.png")}
-//                   style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
-
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.8),
-//                   left: responsiveWidth(12)
-//                 }}>
-//                   {platformName}
-//                 </Text>
-//               </ImageBackground>
-//               <Text style={{
-//                 fontSize: responsiveFontSize(1.55),
-//                 color: '#000000',
-//                 fontWeight: '500',
-//                 fontFamily: "Times New Roman",
-//                 top: responsiveHeight(8),
-//                 left: responsiveWidth(-24),
-//               }}>
-//                 2013 - 2023
-//               </Text>
-//             </View>
-//             <View style={style.bio_content_section_Producer}>
-//               {/* <Image source={require("../../../Assets/  Userprofile_And_Fonts/producer_icon.png")} 
-//                style={{width:responsiveWidth(7.2),height:responsiveHeight(4),marginLeft:responsiveWidth(1),marginTop:responsiveHeight(0.5),left:responsiveWidth(1)}}/> */}
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(0.8),
-//                   left: responsiveWidth(3)
-//                 }}>
-//                   {professionName}
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             {/* ////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-
-//               <View style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1), }}>
-
-//                 <ImageBackground style={{ width: "270%", height: "119%", right: 9, marginTop: responsiveHeight(-1) }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                   <Image source={require("../../../Assets//AllSearch_Icon_And_Fonts/Update/FH_Movies.png")}
-//                     style={{ width: responsiveWidth(6.5), height: responsiveHeight(4), }} />
-//                 </ImageBackground>
-//               </View>
-
-//               <Text style={{
-//                 fontSize: responsiveFontSize(2),
-//                 color: '#000000',
-//                 fontWeight: '500',
-//                 fontFamily: "Times New Roman",
-//                 top: responsiveHeight(0.7),
-//                 left: responsiveWidth(12)
-//               }}>
-//                 105 Films
-//               </Text>
-//             </View>
-//             {/* ///////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/Userprofile_And_Fonts/Cash_icon.png")}
-//                   style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
-
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.6),
-//                   left: responsiveWidth(12)
-//                 }}>
-//                   Rs.1.75Cr/Day
-
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             {/* ///////////////////////////////////////////////*/}
-//             {/* ///////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/Userprofile_And_Fonts/Net_worth_icon.png")}
-//                   style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.6),
-//                   left: responsiveWidth(12)
-//                 }}>
-//                   Rs.6281 Cr
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require(".../../../components/Assets/AllSearch_Icon_And_Fonts/country/Filmhook-maharashtra-PhotoRoom.png")}
-//                   style={{
-//                     width: responsiveWidth(7.8), height: responsiveHeight(4),
-//                     marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1),
-//                     backgroundColor: '#B1B4C7',
-//                     borderRadius: responsiveWidth(4)
-//                   }} />
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.6),
-//                   left: responsiveWidth(13)
-//                 }}>
-//                   BOLLYWOOD
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("..../../../components/Assets/AllSearch_Icon_And_Fonts/country/FH_TN.png")}
-//                   style={{
-//                     width: responsiveWidth(7.8), height: responsiveHeight(4),
-//                     marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1),
-//                     backgroundColor: '#B1B4C7',
-//                     borderRadius: responsiveWidth(4)
-//                   }} />
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.6),
-//                   left: responsiveWidth(11)
-//                 }}>
-//                   {industriesName}
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             {/* ///////////////////////////////////////////////*/}
-//           </View>
-//         </View>
-//       )}
-//       {/* ////////////////////////////////////////////*/}
-//       {/* <View  style={style.hr_tag}/> */}
-//       {expanded && (
-//         <View>
-//           <Profession_project />
-//         </View>
-//       )}
-
-//       <View style={{ width: responsiveWidth(100), borderWidth: responsiveWidth(0.1), marginBottom: responsiveHeight(1) }} />
-
-//       <View style={style.container}>
-//         {expanded && (
-//           <View style={{ flex: 0.8 }}>
-//             <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), marginLeft: 10, justifyContent: 'center', alignItems: 'center', }}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/AllSearch_Icon_And_Fonts/Update/FH_tv_drama.png")} style={{ width: responsiveHeight(8.5), height: responsiveHeight(10), right: -28, top: 4 }} />
-//               </ImageBackground>
-//             </View>
-//           </View>
-//         )}
-
-//         {expanded && (
-
-//           <View style={style.bio_content}>
-//             {/* ///////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/Userprofile_And_Fonts/drama_icon.png")}
-//                   style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
-
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3.7),
-//                   left: responsiveWidth(12)
-//                 }}>
-//                   Actor
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             <View style={style.bio_content_section_Hero}>
-//               {/* <Image source={require("../../../Assets/Userprofile_And_Fonts/drama_icon.png")} 
-//                style={{width:responsiveWidth(7.2),height:responsiveHeight(4),marginLeft:responsiveWidth(1),marginTop:responsiveHeight(0.5),left:responsiveWidth(1)}}/> */}
-//               <ImageBackground style={{ width: "90%", height: "88%", top: 1, right: -5 }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(0.7),
-//                   left: responsiveWidth(3),
-
-//                   //  width:responsiveWidth(15)
-//                 }}>
-//                   Music
-
-//                 </Text>
-//               </ImageBackground>
-
-//               <Text style={{
-//                 fontSize: responsiveFontSize(1.55),
-//                 color: '#000000',
-//                 fontWeight: '500',
-//                 fontFamily: "Times New Roman",
-//                 top: responsiveHeight(1.5),
-//                 left: responsiveWidth(4),
-
-//               }}>
-//                 1998 - present
-//               </Text>
-//             </View>
-
-//             {/* ///////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-//               <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Image source={require("../../../Assets/Userprofile_And_Fonts/producer_icon.png")}
-//                   style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1) }} />
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(-3),
-//                   left: responsiveWidth(12),
-
-//                 }}>
-//                   Producer
-//                 </Text>
-//               </ImageBackground>
-//               <Text style={{
-//                 fontSize: responsiveFontSize(1.55),
-//                 color: '#000000',
-//                 fontWeight: '500',
-//                 fontFamily: "Times New Roman",
-//                 top: responsiveHeight(8),
-//                 left: responsiveWidth(-25),
-//               }}>
-//                 2013 - 2023
-//               </Text>
-//             </View>
-//             <View style={style.bio_content_section_Producer}>
-//               {/* <Image source={require("../../../Assets/  Userprofile_And_Fonts/producer_icon.png")} 
-//                style={{width:responsiveWidth(7.2),height:responsiveHeight(4),marginLeft:responsiveWidth(1),marginTop:responsiveHeight(0.5),left:responsiveWidth(1)}}/> */}
-//               <ImageBackground style={{ width: "93%", height: "88%", top: 1, right: -5 }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(0.6),
-//                   left: responsiveWidth(3),
-//                   // borderWidth:1
-//                 }}>
-//                   Producer
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-//             {/* ////////////////////////////////////////////*/}
-//             <View style={style.bio_content_section}>
-
-//               <View style={{ width: responsiveWidth(7.2), height: responsiveHeight(4), marginLeft: responsiveWidth(1), marginTop: responsiveHeight(0.5), left: responsiveWidth(1), }}>
-//                 <Image source={require("../../../Assets//AllSearch_Icon_And_Fonts/Update/FH_Movies.png")}
-//                   style={{ width: responsiveWidth(6.5), height: responsiveHeight(4), }} />
-//               </View>
-//               <ImageBackground style={{ width: "100%", height: "100%", right: 34 }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-//                 <Text style={{
-//                   fontSize: responsiveFontSize(2),
-//                   color: '#000000',
-//                   fontWeight: '500',
-//                   fontFamily: "Times New Roman",
-//                   top: responsiveHeight(0.7),
-//                   left: responsiveWidth(12)
-//                 }}>
-//                   105 Films
-//                 </Text>
-//               </ImageBackground>
-//             </View>
-
-//             {/* ///////////////////////////////////////////////*/}
-
-//             {/* ///////////////////////////////////////////////*/}
-//           </View>
-//         )}
-//       </View>
-//       {expanded && (
-//         <Profession_project />
-//       )}
-//       {/* <View style={style.hr_tag} /> */}
-
-//       {/* <Profession_tv_drama_project /> */}
-
-//     </>
-//   )
-// }
-
-// const style = StyleSheet.create({
-//   container: {
-//     flexDirection: "row",
-//     // marginTop:20,
-//   },
-//   bio_title: {
-//     flex: responsiveWidth(0.2),
-//     width: '100%',
-//     flexDirection: 'row',
-//     columnGap: responsiveWidth(20),
-//     marginTop: responsiveHeight(1),
-//     marginBottom: responsiveHeight(2)
-
-//   },
-
-//   downArrow: {
-//     width: 20,
-//     height: 20,
-//     marginRight: responsiveWidth(2),
-//     // Add styles for your down arrow icon
-//   },
-//   bio_title_text: {
-//     fontWeight: "bold",
-//     fontSize: responsiveFontSize(2.2),
-//     color: "black",
-//     marginLeft: responsiveWidth(2),
-//     fontFamily: 'Cochin',
-//     // textDecorationLine: "underline",
-//     //  borderWidth:1,
-//     width: responsiveWidth(70)
-
-//   },
-//   bio_content: {
-//     flex: 1,
-//   },
-//   inputContainer: {
-
-
-//     width: '101%',
-//     height: '100%',
-//   },
-
-//   bio_content_section: {
-//     flexDirection: "row",
-//     width: responsiveWidth(52),
-//     height: responsiveHeight(5.5),
-//     // borderWidth: responsiveWidth(0.3),
-//     borderRadius: responsiveWidth(2),
-//     marginBottom: responsiveHeight(1),
-//   },
-//   hr_tag: {
-//     borderBottomWidth: 1,
-//     borderBottomColor: '#D7D7D7',
-//     marginVertical: 5,
-//   },
-//   bio_content_section_Hero: {
-//     flexDirection: "row",
-//     width: responsiveWidth(25),
-//     height: responsiveHeight(5.5),
-//     // borderWidth: responsiveWidth(0.3),
-//     borderRadius: responsiveWidth(2),
-//     marginBottom: responsiveHeight(1.5),
-//   },
-//   bio_content_section_Producer: {
-//     flexDirection: "row",
-//     width: responsiveWidth(25),
-//     height: responsiveHeight(5.5),
-//     // borderWidth: responsiveWidth(0.3),
-//     borderRadius: responsiveWidth(2),
-//     marginBottom: responsiveHeight(1.5),
-//   },
-// })
-
-//===================================================
-import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity, ActivityIndicator, TextInput, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Profession_project from './Projects'
 import Profession_tv_drama_project from './Tv_Drama_Projects'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import privateAPI from '../../../api/privateAPI'
 import { ScrollView } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Button } from 'react-native'
 
 
 export default function Profession() {
   const [platformData, setPlatformData] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(true);
+
+
+  const [filmCountInput, setFilmCountInput] = useState('');
+const [netWorthInput, setNetWorthInput] = useState('');
+const [dailySalaryInput, setDailySalaryInput] = useState('');
 
   // const toggleExpanded = () => {
   //   setExpanded(!expanded);
@@ -1014,27 +28,81 @@ export default function Profession() {
   //   }
   // };
 
+  const [editingPlatformId, setEditingPlatformId] = useState(null); // State to track the platform being edited
+
+// Function to toggle edit mode
+const toggleEditMode = (platformId, platformName) => {
+  if (platformId === editingPlatformId) {
+    // Save changes and exit edit mode
+    handleSave(platformId, platformName);
+    setEditingPlatformId(null);
+  } else {
+    // Enter edit mode for the selected platform
+    setEditingPlatformId(platformId);
+  }
+};
+
   useEffect(() => {
-   
-      fetchData(); // Fetch data initially when component mounts if expanded
-    
+
+    fetchData(); // Fetch data initially when component mounts if expanded
+
   }, []);
 
+
+  const handleSave = async (platformId, platformName) => {
+    try {
+      console.log('Platform:', platformId, filmCountInput, netWorthInput, dailySalaryInput);
+      const response = await privateAPI.post(
+        'industryUser/updateIndustryUserPermanentDetails',
+        {
+          platformPermanentId: platformId,
+          filmCount: filmCountInput,
+          netWorth: netWorthInput,
+          dailySalary: dailySalaryInput,
+        },
+      );
+      Alert.alert('Update', `${platformName} Updated`);
+
+      console.log('Platform details updated successfully:', response.data);
+  
+      // Update the state with the new values
+      setPlatformData(prevState =>
+        prevState.map(platform => {
+          if (platform.platformPermanentId === platformId) {
+            return {
+              ...platform,
+              filmCount: filmCountInput,
+              netWorth: netWorthInput,
+              dailySalary: dailySalaryInput,
+            };
+          }
+          return platform;
+        })
+      );
+    } catch (error) {
+      console.error('Error updating platform details:', error);
+    }
+  };
+  
+
+  
   const fetchData = async () => {
     try {
+
+      const userId = await AsyncStorage.getItem('userId');
       const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=248`);
       const response = resp.data;
-
-      // Group platforms by name and aggregate their industries, professions, and sub-professions
+  
       const groupedPlatforms = response.reduce((accumulator, currentItem) => {
         currentItem.platformDetails.forEach(platform => {
           const platformName = platform.platformName;
           const industries = currentItem.industriesName;
           const professions = platform.professionDetails.map(profession => ({
             professionName: profession.professionName,
-            subProfessions: profession.subProfessionName || [] // Include sub-professions or an empty array
+            subProfessions: profession.subProfessionName || [], 
+            professionPermanentId: profession.professionPermanentId 
           }));
-
+  
           if (!accumulator[platformName]) {
             accumulator[platformName] = {
               platformName: platformName,
@@ -1042,18 +110,23 @@ export default function Profession() {
               professions: []
             };
           }
-
+  
           // Add industries and professions to the grouped platform
           accumulator[platformName].industries.push(industries);
           accumulator[platformName].professions.push(...professions);
+  
+          // Add platformPermanentId to the platform object
+          accumulator[platformName].platformPermanentId = platform.platformPermanentId;
         });
-
+  
         return accumulator;
       }, {});
-
+  
       // Convert grouped platforms object to array
       const aggregatedPlatforms = Object.values(groupedPlatforms);
-
+  
+      console.log('aggregatedPlatforms', aggregatedPlatforms)
+  
       // Update state with fetched data
       setPlatformData(aggregatedPlatforms);
       setLoading(false); // Set loading to false after data is fetched
@@ -1062,73 +135,184 @@ export default function Profession() {
       setLoading(false); // Set loading to false if an error occurs
     }
   };
-
+  
   // Render JSX based on fetched data
   return (
     <View style={styles.containers}>
       <TouchableOpacity style={styles.bio_title} >
         <Text style={styles.bio_title_text}>PROFESSION</Text>
-       
+
         <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
           <Image
             source={require("../../../Assets/Userprofile_And_Fonts/update/down-arrow.png")}
             style={styles.downArrow}
           />
         </View>
-        
+
       </TouchableOpacity>
-     
-     
-        <ScrollView style={{width:responsiveWidth(100),}}> 
-          {loading ? (
-            <Text>Loading...</Text>
-          ) : (
-            platformData.map((platform, index) => (
-              <View key={index} style={styles.platformContainer}>
-                <View style={{
-                  flexDirection: 'row', columnGap: responsiveWidth(7),
-                  width:responsiveWidth(100),padding:responsiveWidth(1)
-                }}>
-                  <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center',  }}>
+
+
+      <ScrollView style={{ width: responsiveWidth(100), }}>
+        {loading ? (
+          <Text>Loading...</Text>
+        ) : (
+          platformData.map((platform, index) => (
+            <View key={index} style={styles.platformContainer}>
+
+<View style={{ width:responsiveWidth(96)}}>
+{editingPlatformId === platform.platformPermanentId ? ( // Render save button if in edit mode
+              <TouchableOpacity onPress={() => toggleEditMode(platform.platformPermanentId, platform.platformName)}>
+               <Text style={styles.editButton}>Save</Text>
+              </TouchableOpacity>
+            ) : ( // Render edit button if not in edit mode
+              <TouchableOpacity onPress={() => toggleEditMode(platform.platformPermanentId)}>
+               <Text style={styles.editButton}>Edit</Text>
+              </TouchableOpacity>
+            )}
+            </View>
+
+
+                {/* <TextInput
+                  placeholder="Net Worth"
+                  value={netWorthInput}
+                  onChangeText={text => setNetWorthInput(text)}
+                  keyboardType="numeric"
+                />
+                <TextInput
+                  placeholder="Daily Salary"
+                  value={dailySalaryInput}
+                  onChangeText={text => setDailySalaryInput(text)}
+                  keyboardType="numeric"
+                />
+              </>
+            )}
+             */}
+              <View style={{
+                flexDirection: 'row', columnGap: responsiveWidth(10),
+                width: responsiveWidth(100), padding: responsiveWidth(1)
+              }}>
+                <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', }}>
+                  <ImageBackground style={{
+                    width: '102%',
+                    height: '102%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
+                  }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                    <Text style={[styles.platformName, styles.border]}>{platform.platformName}</Text>
+                  </ImageBackground>
+                </View>
+                <View style={{ width: responsiveWidth(58) }}>
+                  <View style={styles.industriesContainer}>
+                    {platform.industries.map((industry, index) => (
+                      <ImageBackground key={index} style={{ width: responsiveWidth(45), marginBottom: responsiveHeight(1), height: responsiveHeight(5.5), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                        <Text style={styles.industry}>{industry}</Text>
+                      </ImageBackground>
+                    ))}
+                  </View>
+                  <View style={styles.professionsContainer}>
+                    {platform.professions.map((profession, index) => (
+                      <View key={index} style={styles.professionContainer}>
+                        <ImageBackground style={{
+                          width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
+                        }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                          <Text style={styles.profession}>{profession.professionName}</Text>
+                        </ImageBackground>
+                        {profession.subProfessions.map((subProfession, subIndex) => (
+                          <ImageBackground key={subIndex} style={{ width: responsiveWidth(30), marginBottom: responsiveHeight(1), height: responsiveHeight(5.5), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                            <Text style={styles.subProfession}>{subProfession}</Text>
+                          </ImageBackground>
+                        ))}
+                      </View>
+
+
+                    ))}
+                  </View>
+                  <View style={styles.professionContainer}>
+                    
                     <ImageBackground style={{
-                      width: '102%',
-                      height: '102%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
+                      width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2),
                     }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                      <Text style={[styles.platformName, styles.border]}>{platform.platformName}</Text>
+
+              {editingPlatformId === platform.platformPermanentId ? (
+              <>
+                <TextInput
+                  placeholder="Film Count"
+                  value={filmCountInput}
+                  onChangeText={text => setFilmCountInput(text)}
+                  keyboardType="numeric"
+                />
+                {/* Add other TextInput fields for net worth and daily salary */}
+
+                {/* Save button */}
+               
+              </>
+            ) : (
+              // Else condition when not in edit mode
+              <Text>Other platform details...</Text>
+            )}
+                      
                     </ImageBackground>
                   </View>
-                  <View style={{  width: responsiveWidth(54) }}>
-                    <View style={styles.industriesContainer}>
-                      {platform.industries.map((industry, index) => (
-                        <ImageBackground key={index} style={{ width: responsiveWidth(45), marginBottom: responsiveHeight(1), height: responsiveHeight(5.5), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                          <Text style={styles.industry}>{industry}</Text>
-                        </ImageBackground>
-                      ))}
-                    </View>
-                    <View style={styles.professionsContainer}>
-                      {platform.professions.map((profession, index) => (
-                        <View key={index} style={styles.professionContainer}>
-                          <ImageBackground style={{
-                            width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
-                          }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                            <Text style={styles.profession}>{profession.professionName}</Text>
-                          </ImageBackground>
-                          {profession.subProfessions.map((subProfession, subIndex) => (
-                            <ImageBackground key={subIndex} style={{ width: responsiveWidth(30), marginBottom: responsiveHeight(1), height: responsiveHeight(5.5), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                              <Text style={styles.subProfession}>{subProfession}</Text>
-                            </ImageBackground>
-                          ))}
-                        </View>
-                      ))}
-                    </View>
+                  <View style={styles.professionContainer}>
+                    
+                    <ImageBackground style={{
+                      width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2),
+                    }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+
+              {editingPlatformId === platform.platformPermanentId ? (
+              <>
+                <TextInput
+                  placeholder="Net Worth"
+                  value={netWorthInput}
+                  onChangeText={text => setNetWorthInput(text)}
+                  keyboardType="numeric"
+                />
+                {/* Add other TextInput fields for net worth and daily salary */}
+
+                {/* Save button */}
+               
+              </>
+            ) : (
+              // Else condition when not in edit mode
+              <Text>Other platform details...</Text>
+            )}
+                      
+                    </ImageBackground>
                   </View>
+                  <View style={styles.professionContainer}>
+                    
+                    <ImageBackground style={{
+                      width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2),
+                    }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+
+              {editingPlatformId === platform.platformPermanentId ? (
+              <>
+                <TextInput
+                  placeholder="Daily Salary"
+                  value={dailySalaryInput}
+                  onChangeText={text => setDailySalaryInput(text)}
+                  keyboardType="numeric"
+                />
+                {/* Add other TextInput fields for net worth and daily salary */}
+
+                {/* Save button */}
+               
+              </>
+            ) : (
+              // Else condition when not in edit mode
+              <Text>Other platform details...</Text>
+            )}
+                      
+                    </ImageBackground>
+                  </View>
+
+
                 </View>
-                <View style={styles.bottomLine}></View>
               </View>
-            ))
-          )}
-        </ScrollView>
-      
+
+            </View>
+          ))
+        )}
+      </ScrollView>
+
     </View>
   );
 }
@@ -1137,8 +321,18 @@ const styles = StyleSheet.create({
   containers: {
     alignItems: 'center',
     justifyContent: 'center',
-  
-   
+
+
+  },
+  editButton: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textDecorationLine: 'underline',
+    alignSelf: 'flex-end',
+    paddingRight: responsiveWidth(3),
+    top: responsiveHeight(0.5),
+    color:'black'
   },
   downArrow: {
     width: 20,
@@ -1166,15 +360,15 @@ const styles = StyleSheet.create({
   },
   platformContainer: {
     flex: 1,
-   
-    alignItems:'center'
-    
-    
+
+    alignItems: 'center'
+
+
   },
   bottomLine: {
     borderBottomWidth: 6,
     borderBottomColor: 'red',
-    marginBottom:responsiveHeight(1)
+    marginBottom: responsiveHeight(1)
   },
   platformName: {
     fontSize: 20,
@@ -1183,7 +377,7 @@ const styles = StyleSheet.create({
   industriesContainer: {
     marginLeft: responsiveWidth(2),
     marginBottom: 5,
-  
+
   },
   industry: {
     fontWeight: 'bold',
@@ -1198,12 +392,101 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   subProfession: {
-   // marginLeft: 10,
+    // marginLeft: 10,
   },
   border: {
-   
+
     borderColor: 'black',
     // padding: 5,
-   // marginVertical: 5,
+    // marginVertical: 5,
   },
 });
+
+
+// import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native'
+// import React, { useEffect, useState } from 'react'
+// import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
+// import privateAPI from '../../../api/privateAPI'
+
+// export default function Profession() {
+//   const [platformData, setPlatformData] = useState([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     fetchData(); // Fetch data initially when component mounts
+//   }, []);
+
+//   const fetchData = async () => {
+//     try {
+//       const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=248`);
+//       const response = resp.data;
+
+//       // Update state with fetched data
+//       setPlatformData(response);
+//       setLoading(false); // Set loading to false after data is fetched
+//     } catch (error) {
+//       console.log("Error fetching data:", error);
+//       setLoading(false); // Set loading to false if an error occurs
+//     }
+//   };
+
+//   const handleEdit = async (platformPermanentId, filmCount, netWorth, dailySalary) => {
+//     try {
+//       const token = 'YOUR_JWT_TOKEN'; // Replace 'YOUR_JWT_TOKEN' with your actual JWT token
+
+//       // Make the API request with the updated data and platform ID
+//       const response = await privateAPI.post(
+//         'industryUser/updateIndustryUserPermanentDetails',
+//         {
+//           platformPermanentId: 2,
+//           filmCount: filmCount,
+//           netWorth: netWorth,
+//           dailySalary: dailySalary,
+//         }
+//       );
+      
+// console.log()
+//       console.log('Platform details updated successfully:', response.data);
+//       // Optionally, you can handle success actions here, such as showing a success message or updating state
+//     } catch (error) {
+//       console.error('Error updating platform details:', error);
+//       // Optionally, you can handle error actions here, such as showing an error message to the user
+//     }
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <ScrollView style={styles.scrollView}>
+//         {loading ? (
+//           <Text>Loading...</Text> 
+//         ) : (
+//           platformData.map((platform, index) => (
+//             <View key={index} style={styles.platformContainer}>
+//               <TouchableOpacity onPress={() => handleEdit(platform.platformPermanentId, 77,99,99)}>
+//                 <Text>Edit</Text> 
+//               </TouchableOpacity>
+             
+//             </View>
+//           ))
+//         )}
+//       </ScrollView>
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+//   scrollView: {
+//     width: responsiveWidth(100),
+//   },
+//   platformContainer: {
+//     width: responsiveWidth(100),
+//     marginBottom: responsiveHeight(2),
+//     paddingHorizontal: responsiveWidth(2),
+//   },
+// });
+
