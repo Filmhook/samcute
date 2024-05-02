@@ -1,5 +1,5 @@
 
-import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity, ActivityIndicator, TextInput, Alert } from 'react-native'
+import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity, ActivityIndicator, TextInput, Alert, Modal } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Profession_project from './Projects'
 import Profession_tv_drama_project from './Tv_Drama_Projects'
@@ -7,7 +7,9 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 import privateAPI from '../../../api/privateAPI'
 import { ScrollView } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Button } from 'react-native'
+import { launchImageLibrary } from 'react-native-image-picker'
+import ImageCropPicker from 'react-native-image-crop-picker'
+
 
 
 export default function Profession() {
@@ -19,6 +21,9 @@ export default function Profession() {
   const [filmCountInput, setFilmCountInput] = useState('');
 const [netWorthInput, setNetWorthInput] = useState('');
 const [dailySalaryInput, setDailySalaryInput] = useState('');
+const [selectedImage, setSelectedImage] = useState(null);
+const [modalVisible, setModalVisible] = useState(false);
+const [currentTitle, setCurrentTitle] = useState('');
 
   // const toggleExpanded = () => {
   //   setExpanded(!expanded);
@@ -88,7 +93,6 @@ const toggleEditMode = (platformId, platformName) => {
   
   const fetchData = async () => {
     try {
-
       const userId = await AsyncStorage.getItem('userId');
       const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=248`);
       const response = resp.data;
@@ -99,15 +103,19 @@ const toggleEditMode = (platformId, platformName) => {
           const industries = currentItem.industriesName;
           const professions = platform.professionDetails.map(profession => ({
             professionName: profession.professionName,
-            subProfessions: profession.subProfessionName || [], 
-            professionPermanentId: profession.professionPermanentId 
+            subProfessions: profession.subProfessionName || [],
+            professionPermanentId: profession.professionPermanentId
           }));
   
           if (!accumulator[platformName]) {
             accumulator[platformName] = {
               platformName: platformName,
               industries: [],
-              professions: []
+              professions: [],
+              filmCount: platform.filmCount,
+              netWorth: platform.netWorth,
+              dailySalary: platform.dailySalary,
+              fileIds: [] // Add fileIds array to hold fileId for each platform
             };
           }
   
@@ -117,6 +125,11 @@ const toggleEditMode = (platformId, platformName) => {
   
           // Add platformPermanentId to the platform object
           accumulator[platformName].platformPermanentId = platform.platformPermanentId;
+  
+          // Add fileId to the platform object
+          platform.outputWebModelList.forEach(output => {
+            accumulator[platformName].fileIds.push(output.fileId);
+          });
         });
   
         return accumulator;
@@ -125,7 +138,12 @@ const toggleEditMode = (platformId, platformName) => {
       // Convert grouped platforms object to array
       const aggregatedPlatforms = Object.values(groupedPlatforms);
   
-      console.log('aggregatedPlatforms', aggregatedPlatforms)
+      // Fetch images for each platform
+      for (const platform of aggregatedPlatforms) {
+        for (const fileId of platform.fileIds) {
+          await fetchImage(fileId);
+        }
+      }
   
       // Update state with fetched data
       setPlatformData(aggregatedPlatforms);
@@ -135,7 +153,146 @@ const toggleEditMode = (platformId, platformName) => {
       setLoading(false); // Set loading to false if an error occurs
     }
   };
+  const [ imageUrl , setImageUrl] = useState('');
+
+  const fetchImage = async (fileId) => {
+    try {
+      console.log(`Fetching File id - ${fileId}`)
+      const jwt = await AsyncStorage.getItem("jwt");
+      const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/IndustryUser/project/downloadProjectFile?userId=248&category=project image&fileId=${fileId}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch image');
+      }
+
+      const imageBlob = await response.blob();
+      const base64Data = await blobToBase64(imageBlob);
+
+      // Assuming you receive a single image as base64 data
+      const base64Image = base64Data.split(',')[1];
+      setImageUrl(base64Image);
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to fetch image');
+    }
+  };
+
+  const blobToBase64 = async (blob) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error('Failed to convert blob to base64'));
+      reader.readAsDataURL(blob);
+    });
+  };
+
   
+  
+  // State to track the platform being edited
+  const [projectPlatformId, setProjectPlatformId] = useState(null);
+const [openingImagePicker, setOpeningImagePicker] = useState(false);
+
+const project = (platformId) => {
+  if (platformId === projectPlatformId) {
+    // Save changes and exit edit mode
+    openImagePicker(platformId);
+    setProjectPlatformId(null);
+  } else {
+    // Enter edit mode for the selected platform
+    setProjectPlatformId(platformId);
+  }
+}
+
+const openImagePicker = (platformId) => {
+  setOpeningImagePicker(true); // Set opening state to true before opening the picker
+  const options = {
+    mediaType: 'photo',
+    includeBase64: false,
+    maxHeight: 300,
+    maxWidth: 300,
+  };
+
+  launchImageLibrary(options, (response) => {
+    console.log(response);
+    setOpeningImagePicker(false); // Reset opening state when picker operation completes
+    if (response.didCancel) {
+      console.log('User cancelled image picker');
+    } else if (response.error) {
+      console.log('Image picker error: ', response.error);
+    } else {
+      const selectedImage = response.assets[0];
+      console.log("selected image", selectedImage);
+      setSelectedImage({ uri: selectedImage.uri, type: selectedImage.type, name: selectedImage.fileName });
+      addImageWithTitle(platformId);
+      // if (selectedImage) {
+      //   setModalVisible(true);
+      //   setCurrentTitle('');
+      //   setSelectedImage({ uri: selectedImage.uri, type: selectedImage.type, name: selectedImage.fileName });
+      // }
+    }
+  });
+};
+
+  const addImageWithTitle = async (platformId) => {
+   
+    try {
+      if (!selectedImage) {
+        Alert.alert('Please select an image to upload.');
+        return;
+      }
+
+      const jwt = await AsyncStorage.getItem("jwt");
+
+      console.log('success image to upload', selectedImage)
+      console.log('platformId', platformId)
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer " + jwt);
+
+      const formData = new FormData();
+      const userId = 248;
+      formData.append('userId', userId);
+      formData.append('paltformPermanentId', platformId);
+
+      const imageUriParts = selectedImage.uri.split('.');
+      const fileType = imageUriParts[imageUriParts.length - 1];
+      formData.append(`fileInputWebModel.files[0]`, {
+        uri: selectedImage.uri,
+        name: `image.${fileType}`,
+        type: `image/${fileType}`,
+      });
+
+      const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/IndustryUser/project/saveProjectFiles', {
+        method: 'POST',
+        body: formData,
+        headers: myHeaders
+      });
+
+      if (response.ok) {
+        console.log('success platform', platformId)
+        const data = await response.json();
+        if (data.status === 1) {
+          Alert.alert('Posted');
+         // setModalVisible(false);
+          setSelectedImage(null);
+        } else {
+          // Handle unsuccessful response
+          Alert.alert('Posted Error', 'Failed to post media.');
+        }
+      } else {
+        // Handle HTTP error
+        console.error('HTTP Error:', response.status);
+        Alert.alert('Posted Error', 'Failed to post media.');
+      }
+    } catch (error) {
+      console.error('Upload failed:', error);
+      Alert.alert('Upload failed. Please try again.');
+    }
+  };
+
   // Render JSX based on fetched data
   return (
     <View style={styles.containers}>
@@ -150,8 +307,7 @@ const toggleEditMode = (platformId, platformName) => {
         </View>
 
       </TouchableOpacity>
-
-
+ 
       <ScrollView style={{ width: responsiveWidth(100), }}>
         {loading ? (
           <Text>Loading...</Text>
@@ -159,8 +315,8 @@ const toggleEditMode = (platformId, platformName) => {
           platformData.map((platform, index) => (
             <View key={index} style={styles.platformContainer}>
 
-<View style={{ width:responsiveWidth(96)}}>
-{editingPlatformId === platform.platformPermanentId ? ( // Render save button if in edit mode
+                    <View style={{ width:responsiveWidth(96)}}>
+                    {editingPlatformId === platform.platformPermanentId ? ( 
               <TouchableOpacity onPress={() => toggleEditMode(platform.platformPermanentId, platform.platformName)}>
                <Text style={styles.editButton}>Save</Text>
               </TouchableOpacity>
@@ -172,21 +328,7 @@ const toggleEditMode = (platformId, platformName) => {
             </View>
 
 
-                {/* <TextInput
-                  placeholder="Net Worth"
-                  value={netWorthInput}
-                  onChangeText={text => setNetWorthInput(text)}
-                  keyboardType="numeric"
-                />
-                <TextInput
-                  placeholder="Daily Salary"
-                  value={dailySalaryInput}
-                  onChangeText={text => setDailySalaryInput(text)}
-                  keyboardType="numeric"
-                />
-              </>
-            )}
-             */}
+             
               <View style={{
                 flexDirection: 'row', columnGap: responsiveWidth(10),
                 width: responsiveWidth(100), padding: responsiveWidth(1)
@@ -231,23 +373,21 @@ const toggleEditMode = (platformId, platformName) => {
                       width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2),
                     }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
 
-              {editingPlatformId === platform.platformPermanentId ? (
-              <>
-                <TextInput
-                  placeholder="Film Count"
-                  value={filmCountInput}
-                  onChangeText={text => setFilmCountInput(text)}
-                  keyboardType="numeric"
-                />
-                {/* Add other TextInput fields for net worth and daily salary */}
-
-                {/* Save button */}
-               
-              </>
-            ) : (
-              // Else condition when not in edit mode
-              <Text>Other platform details...</Text>
-            )}
+             {editingPlatformId === platform.platformPermanentId ? (
+  <>
+    <TextInput
+      placeholder="Film Count"
+      value={filmCountInput}
+      onChangeText={text => setFilmCountInput(text)}
+      keyboardType="numeric"
+    />
+  </>
+) : (
+  <>
+    <Text>Film Count: {platform.filmCount}</Text>
+    {/* Additional platform details here if needed */}
+  </>
+)}
                       
                     </ImageBackground>
                   </View>
@@ -272,7 +412,7 @@ const toggleEditMode = (platformId, platformName) => {
               </>
             ) : (
               // Else condition when not in edit mode
-              <Text>Other platform details...</Text>
+              <Text>Networth: {platform.netWorth}</Text>
             )}
                       
                     </ImageBackground>
@@ -298,15 +438,58 @@ const toggleEditMode = (platformId, platformName) => {
               </>
             ) : (
               // Else condition when not in edit mode
-              <Text>Other platform details...</Text>
+              <Text>Daily Salery: {platform.dailySalary}</Text>
             )}
+
+         
                       
                     </ImageBackground>
                   </View>
 
-
                 </View>
               </View>
+              <View style={{width:'100%'}}>
+              <Text style={{ fontSize: 25, color: '#323232', fontWeight: 'bold', marginLeft: 10, textDecorationLine: 'underline' }}>Projects</Text>
+              </View>
+              <ScrollView horizontal contentContainerStyle={{margin:1}} style={{width:'100%', padding:responsiveWidth(1)}}>
+             
+                <View style={{marginRight:responsiveWidth(2)}}>
+                              <TouchableOpacity onPress={() => project(platform.platformPermanentId)} style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5",}} >
+                  <Image source={require('../../../Assets/Home_Icon_And_Fonts/plus_icon.png')}
+                      style={{width:80,height:80,alignSelf:'center',top:29}}/>
+              </TouchableOpacity>
+              </View>
+<View style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5",marginRight:responsiveWidth(2)}} >  
+ <Image source={require('../../../Assets/Home_Icon_And_Fonts/plus_icon.png')}
+                      style={{width:80,height:80,alignSelf:'center',top:29}}/>
+                      
+                      </View>
+
+              </ScrollView>
+              <ScrollView horizontal contentContainerStyle={{margin:1}} style={{width:'100%', padding:responsiveWidth(1)}}>
+          {platformData.map((platform, index) => (
+            <View key={index} style={styles.platformContainer}>
+              {/* Your existing JSX code for rendering platform data */}
+
+              {/* Render the fetched image if available */}
+              {platform.imageUrl ? (
+                <Image
+                  source={{ uri: `data:image/jpeg;base64,${platform.imageUrl}` }}
+                  style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5", marginRight: responsiveWidth(2) }}
+                />
+              ) : (
+                <View style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5", marginRight: responsiveWidth(2) }}>
+                  {/* Placeholder image or loading indicator */}
+                  <Image
+                    source={{ uri: `data:image/jpeg;base64,${platform.imageUrl}`}}
+                    style={{ width: 80, height: 80, alignSelf: 'center', top: 29 }}
+                  />
+                </View>
+              )}
+
+            </View>
+          ))}
+        </ScrollView>
 
             </View>
           ))

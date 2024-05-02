@@ -47,6 +47,8 @@ import Profilepic_edit_page from './UserProfileScreen/ProfileEdit/ProfilePic';
 import BiographyEdit from './UserProfileScreen/ProfileMain/BiographyEdit';
 import ChangePasswordScreen from './NavigationScreen/ChangePasswordScreen';
 import Biography from './UserProfileScreen/ProfileMain/BioGraphy';
+import fetchDataAndDisplayImage from './UsersLogState/test1';
+import FetchAndDisplayImage from './UsersLogState/test1';
 
 
 
