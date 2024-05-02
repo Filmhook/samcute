@@ -36,11 +36,11 @@ export default function Handle_img_picker() {
   }
 
 
-  // for open option modal
+  // for open option modal 
   const handleImagePicker = () => {
     setImagePickerModalVisible(true);
   };
-  // for open option modal
+  // for open option modal 
   const pickVideo = async () => {
     try {
       const res = await DocumentPicker.pick({
@@ -102,23 +102,18 @@ export default function Handle_img_picker() {
       const jwt = await AsyncStorage.getItem("jwt");
       myHeaders.append("Authorization", "Bearer " + jwt);
 
-      // Create a FormData object and append data based on media type
+      // Create a FormData object
       const formData = new FormData();
-      formData.append("userId", id);
-      formData.append("description",caption)
-      if (croppedImage) {
-        formData.append("category", "galleryImage");
-      }
 
-      else {
-        formData.append("category", "galleryVideo");
-      }
+      formData.append("userId", id);
+      formData.append("description", caption);
+      formData.append("category", "Gallery");
 
       // If croppedImage is defined, it's an image; append it to FormData
       if (croppedImage) {
         const imageUriParts = croppedImage.uri.split('.');
         const fileType = imageUriParts[imageUriParts.length - 1];
-        formData.append("file", {
+        formData.append("files", {
           uri: croppedImage.uri,
           name: `image.${fileType}`,
           type: `image/${fileType}`
@@ -127,14 +122,16 @@ export default function Handle_img_picker() {
 
       // If selectedVideo array has items, append each video to FormData
       if (selectedVideo.length > 0) {
-        [...selectedVideo].forEach(vid => {
-          formData.append("file", vid)
+        selectedVideo.forEach((vid, index) => {
+          const videoUriParts = vid.uri.split('.');
+          const fileType = videoUriParts[videoUriParts.length - 1];
+          formData.append(`files`, {
+            uri: vid.uri,
+            name: `video_${index}.${fileType}`,
+            type: `video/${fileType}`
+          });
         });
       }
-
-      // Log the data being posted
-      console.log("Data being posted:", formData);
-      console.log("caption posted",caption)
 
       // Define requestOptions with method, headers, body, and redirect options
       const requestOptions = {
@@ -145,27 +142,25 @@ export default function Handle_img_picker() {
       };
 
       // Make a POST request using fetch
-      fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/saveGalleryFiles`, requestOptions)
-        .then(async (response) => {
-          const data = await response.json(); // Parse response JSON
-          console.log("Response data:", data);
-          if (data.status === 1) {
-            Alert.alert("Posted")
-            setPostModalVisible(false);
-          } else {
-            // Handle unsuccessful response
-            // ...
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-          Alert.alert('Posted Error', 'Failed to post media.');
-        });
+      const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/saveGalleryFiles`, requestOptions);
+      const data = await response.json(); // Parse response JSON
+
+      // Log the response data
+      console.log("Response data:", data);
+
+      if (data.status === 1) {
+        Alert.alert("Posted");
+        setPostModalVisible(false);
+      } else {
+        // Handle unsuccessful response
+        // ...
+      }
     } catch (error) {
       console.error('Error posting:', error);
       Alert.alert('Error', error.message);
     }
   };
+
 
   const showDropdown = () => {
     setIsDropdownVisible(true);

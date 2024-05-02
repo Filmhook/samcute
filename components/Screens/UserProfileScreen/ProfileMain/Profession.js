@@ -69,6 +69,10 @@ const toggleEditMode = (platformId, platformName) => {
       Alert.alert('Update', `${platformName} Updated`);
 
       console.log('Platform details updated successfully:', response.data);
+
+      setFilmCountInput('');
+      setNetWorthInput('');
+      setDailySalaryInput('');
   
       // Update the state with the new values
       setPlatformData(prevState =>
@@ -107,6 +111,12 @@ const toggleEditMode = (platformId, platformName) => {
             professionPermanentId: profession.professionPermanentId
           }));
   
+          // Extract file paths from outputWebModelList
+          const fileUrls = platform.outputWebModelList.map(file => file.filePath);
+  
+          // Log file URLs to console
+          console.log(`File URLs for ${platformName}:`, fileUrls);
+  
           if (!accumulator[platformName]) {
             accumulator[platformName] = {
               platformName: platformName,
@@ -115,21 +125,17 @@ const toggleEditMode = (platformId, platformName) => {
               filmCount: platform.filmCount,
               netWorth: platform.netWorth,
               dailySalary: platform.dailySalary,
-              fileIds: [] // Add fileIds array to hold fileId for each platform
+              fileUrls: [], // Initialize fileUrls array
             };
           }
   
-          // Add industries and professions to the grouped platform
+          // Add industries, professions, and fileUrls to the grouped platform
           accumulator[platformName].industries.push(industries);
           accumulator[platformName].professions.push(...professions);
+          accumulator[platformName].fileUrls.push(...fileUrls);
   
           // Add platformPermanentId to the platform object
           accumulator[platformName].platformPermanentId = platform.platformPermanentId;
-  
-          // Add fileId to the platform object
-          platform.outputWebModelList.forEach(output => {
-            accumulator[platformName].fileIds.push(output.fileId);
-          });
         });
   
         return accumulator;
@@ -137,13 +143,6 @@ const toggleEditMode = (platformId, platformName) => {
   
       // Convert grouped platforms object to array
       const aggregatedPlatforms = Object.values(groupedPlatforms);
-  
-      // Fetch images for each platform
-      for (const platform of aggregatedPlatforms) {
-        for (const fileId of platform.fileIds) {
-          await fetchImage(fileId);
-        }
-      }
   
       // Update state with fetched data
       setPlatformData(aggregatedPlatforms);
@@ -153,45 +152,10 @@ const toggleEditMode = (platformId, platformName) => {
       setLoading(false); // Set loading to false if an error occurs
     }
   };
-  const [ imageUrl , setImageUrl] = useState('');
 
-  const fetchImage = async (fileId) => {
-    try {
-      console.log(`Fetching File id - ${fileId}`)
-      const jwt = await AsyncStorage.getItem("jwt");
-      const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/IndustryUser/project/downloadProjectFile?userId=248&category=project image&fileId=${fileId}`, {
-        headers: {
-          Authorization: `Bearer ${jwt}`
-        }
-      });
+ 
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch image');
-      }
-
-      const imageBlob = await response.blob();
-      const base64Data = await blobToBase64(imageBlob);
-
-      // Assuming you receive a single image as base64 data
-      const base64Image = base64Data.split(',')[1];
-      setImageUrl(base64Image);
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'Failed to fetch image');
-    }
-  };
-
-  const blobToBase64 = async (blob) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error('Failed to convert blob to base64'));
-      reader.readAsDataURL(blob);
-    });
-  };
-
-  
-  
+ 
   // State to track the platform being edited
   const [projectPlatformId, setProjectPlatformId] = useState(null);
 const [openingImagePicker, setOpeningImagePicker] = useState(false);
@@ -208,7 +172,7 @@ const project = (platformId) => {
 }
 
 const openImagePicker = (platformId) => {
-  setOpeningImagePicker(true); // Set opening state to true before opening the picker
+  setOpeningImagePicker(true);
   const options = {
     mediaType: 'photo',
     includeBase64: false,
@@ -216,82 +180,64 @@ const openImagePicker = (platformId) => {
     maxWidth: 300,
   };
 
-  launchImageLibrary(options, (response) => {
-    console.log(response);
-    setOpeningImagePicker(false); // Reset opening state when picker operation completes
+  launchImageLibrary(options, async (response) => {
+    setOpeningImagePicker(false);
     if (response.didCancel) {
       console.log('User cancelled image picker');
     } else if (response.error) {
       console.log('Image picker error: ', response.error);
     } else {
       const selectedImage = response.assets[0];
-      console.log("selected image", selectedImage);
-      setSelectedImage({ uri: selectedImage.uri, type: selectedImage.type, name: selectedImage.fileName });
-      addImageWithTitle(platformId);
-      // if (selectedImage) {
-      //   setModalVisible(true);
-      //   setCurrentTitle('');
-      //   setSelectedImage({ uri: selectedImage.uri, type: selectedImage.type, name: selectedImage.fileName });
-      // }
+      setSelectedImage(selectedImage);
+      try {
+        await addImageWithTitle(platformId);
+      } catch (error) {
+        console.error('Failed to upload image:', error);
+      }
     }
   });
 };
 
-  const addImageWithTitle = async (platformId) => {
-   
-    try {
-      if (!selectedImage) {
-        Alert.alert('Please select an image to upload.');
-        return;
-      }
+const addImageWithTitle = async (platformId) => {
+  if (!selectedImage) {
+    throw new Error('No image selected.');
+  }
+  
+  const jwt = await AsyncStorage.getItem('jwt');
+  const myHeaders = new Headers();
+  myHeaders.append('Authorization', 'Bearer ' + jwt);
 
-      const jwt = await AsyncStorage.getItem("jwt");
+  const formData = new FormData();
+  const userId = 248;
+  formData.append('userId', userId);
+  formData.append('platformPermanentId', platformId);
 
-      console.log('success image to upload', selectedImage)
-      console.log('platformId', platformId)
-      const myHeaders = new Headers();
-      myHeaders.append("Authorization", "Bearer " + jwt);
+  const imageUriParts = selectedImage.uri.split('.');
+  const fileType = imageUriParts[imageUriParts.length - 1];
+  formData.append(`fileInputWebModel.files[0]`, {
+    uri: selectedImage.uri,
+    name: `image.${fileType}`,
+    type: `image/${fileType}`,
+  });
 
-      const formData = new FormData();
-      const userId = 248;
-      formData.append('userId', userId);
-      formData.append('paltformPermanentId', platformId);
+  const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/IndustryUser/project/saveProjectFiles', {
+    method: 'POST',
+    body: formData,
+    headers: myHeaders
+  });
 
-      const imageUriParts = selectedImage.uri.split('.');
-      const fileType = imageUriParts[imageUriParts.length - 1];
-      formData.append(`fileInputWebModel.files[0]`, {
-        uri: selectedImage.uri,
-        name: `image.${fileType}`,
-        type: `image/${fileType}`,
-      });
+  if (!response.ok) {
+    throw new Error('Failed to upload image. HTTP Error: ' + response.status);
+  }
 
-      const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/IndustryUser/project/saveProjectFiles', {
-        method: 'POST',
-        body: formData,
-        headers: myHeaders
-      });
+  const data = await response.json();
+  if (data.status !== 1) {
+    throw new Error('Failed to upload image. Server returned status: ' + data.status);
+  }
 
-      if (response.ok) {
-        console.log('success platform', platformId)
-        const data = await response.json();
-        if (data.status === 1) {
-          Alert.alert('Posted');
-         // setModalVisible(false);
-          setSelectedImage(null);
-        } else {
-          // Handle unsuccessful response
-          Alert.alert('Posted Error', 'Failed to post media.');
-        }
-      } else {
-        // Handle HTTP error
-        console.error('HTTP Error:', response.status);
-        Alert.alert('Posted Error', 'Failed to post media.');
-      }
-    } catch (error) {
-      console.error('Upload failed:', error);
-      Alert.alert('Upload failed. Please try again.');
-    }
-  };
+  Alert.alert('Posted');
+};
+
 
   // Render JSX based on fetched data
   return (
@@ -459,37 +405,14 @@ const openImagePicker = (platformId) => {
                       style={{width:80,height:80,alignSelf:'center',top:29}}/>
               </TouchableOpacity>
               </View>
+              {platform.fileUrls.map((url, index) => (       
 <View style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5",marginRight:responsiveWidth(2)}} >  
- <Image source={require('../../../Assets/Home_Icon_And_Fonts/plus_icon.png')}
-                      style={{width:80,height:80,alignSelf:'center',top:29}}/>
-                      
+<Image key={index} source={{ uri: url }} style={{ width: '100%', height: '100%' }} resizeMode='stretch'/>
+                 
                       </View>
-
+))} 
               </ScrollView>
-              <ScrollView horizontal contentContainerStyle={{margin:1}} style={{width:'100%', padding:responsiveWidth(1)}}>
-          {platformData.map((platform, index) => (
-            <View key={index} style={styles.platformContainer}>
-              {/* Your existing JSX code for rendering platform data */}
-
-              {/* Render the fetched image if available */}
-              {platform.imageUrl ? (
-                <Image
-                  source={{ uri: `data:image/jpeg;base64,${platform.imageUrl}` }}
-                  style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5", marginRight: responsiveWidth(2) }}
-                />
-              ) : (
-                <View style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5", marginRight: responsiveWidth(2) }}>
-                  {/* Placeholder image or loading indicator */}
-                  <Image
-                    source={{ uri: `data:image/jpeg;base64,${platform.imageUrl}`}}
-                    style={{ width: 80, height: 80, alignSelf: 'center', top: 29 }}
-                  />
-                </View>
-              )}
-
-            </View>
-          ))}
-        </ScrollView>
+             
 
             </View>
           ))
@@ -672,4 +595,6 @@ const styles = StyleSheet.create({
 //     paddingHorizontal: responsiveWidth(2),
 //   },
 // });
+
+
 

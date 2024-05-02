@@ -342,7 +342,7 @@ export default function ProfileRoot() {
 
         <Profession />
 
-        <MyActivities />
+        {/* <MyActivities /> */}
 
 
       </ScrollView>

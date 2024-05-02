@@ -10,30 +10,32 @@ export default function Postfeedcontainor() {
   const [userPost, setUserPost] = useState([]);
 
   useEffect(() => {
-
     const fetchUserPost = async () => {
-
       try {
-        const posts = await privateApi.get("user/gallery/getGalleryFilesByUserId?userId=3");
-
-        setUserPost(posts.data.data)
-        console.log("Fetched User Post")
-        console.log('post dataaa', posts.data)
-
-
+        const posts = await privateApi.get(`user/gallery/getGalleryFilesByAllUser`);
+        setUserPost(posts.data.data);
+        console.log("Fetched User Post");
+        console.log('post dataaa', posts.data);
       } catch (e) {
-        console.log("Fetching Failed in user post", e)
+        console.log("Fetching Failed in user post", e);
       }
+    };
 
-    }
+    // Fetch data initially
+    fetchUserPost();
 
-    fetchUserPost()
+    // Set up interval to fetch data every 10 minutes
+    const intervalId = setInterval(fetchUserPost, 10 * 60 * 1000); // 10 minutes
 
-  }, [])
+    // Clean up interval on unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+
 
   //renderitem lists
   const Datas = ({ item }) => {
-    const [imageUrl, setImageUrl] = useState("");
+    const [imageUrl, setImageUrl] = useState(item.filePath)
     const [caption, setCaption] = useState("");
 
     const [like, setLike] = useState(item.likes || 0); // Initialize likes with the value from the item
@@ -54,41 +56,41 @@ export default function Postfeedcontainor() {
       });
     };
 
-    const fetchImage = async (fileId) => {
-      try {
-        console.log(`Fetching File id - ${fileId}`)
-        const jwt = await AsyncStorage.getItem("jwt");
-        const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFile?userId=3&category=galleryImage&fileId=${fileId}`, {
-          headers: {
-            Authorization: `Bearer ${jwt}`
-          }
-        });
+    // const fetchImage = async (fileId) => {
+    //   try {
+    //     console.log(`Fetching File id - ${fileId}`)
+    //     const jwt = await AsyncStorage.getItem("jwt");
+    //     const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFile?userId=3&category=Gallery&fileId=${fileId}`, {
+    //       headers: {
+    //         Authorization: `Bearer ${jwt}`
+    //       }
+    //     });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch images');
-        }
+    //     if (!response.ok) {
+    //       throw new Error('Failed to fetch images');
+    //     }
 
-        const imageBlob = await response.blob();
+    //     const imageBlob = await response.blob();
 
-        const base64Data = await blobToBase64(imageBlob);
+    //     const base64Data = await blobToBase64(imageBlob);
 
-        // Assuming you receive multiple images as base64 data separated by a delimiter
-        const base64Images = base64Data.split('delimiter');
+    //     // Assuming you receive multiple images as base64 data separated by a delimiter
+    //     const base64Images = base64Data.split('delimiter');
 
 
-        // console.log(base64Images)
-        console.log("Blob fetching...")
-        setImageUrl(base64Images)
-      } catch (error) {
-        console.error(error);
-        Alert.alert('Error', 'Failed to fetch images');
-      }
-    };
-    // for number format functions
+    //     // console.log(base64Images)
+    //     console.log("Blob fetching...")
+    //     setImageUrl(base64Images)
+    //   } catch (error) {
+    //     console.error(error);
+    //     Alert.alert('Error', 'Failed to fetch images');
+    //   }
+    // };
+    // // for number format functions
 
-    useEffect(() => {
-      fetchImage(item.fileId)
-    }, []);
+    // useEffect(() => {
+    //   fetchImage(item.fileId)
+    // }, []);
 
 
 
@@ -144,6 +146,8 @@ export default function Postfeedcontainor() {
 
     const [postId, setPostId] = useState(null); // Add postId state
     const [userId, setUserId] = useState(null);
+    const [postUrl, setPostUrl] = useState(null);
+
 
     useEffect(() => {
       setPostId(item.id); // Set postId when item changes
@@ -153,7 +157,13 @@ export default function Postfeedcontainor() {
       setUserId(item.userId);
     }, [item.userId]);
 
+    useEffect(() => {
+      setPostUrl(item.postUrl);
+    }, [item.postUrl]);
 
+
+
+console.log('psiturl', postId, postUrl)
 
     // Handle comment press function
     const onCommentPress = async (postId) => {
@@ -320,12 +330,12 @@ export default function Postfeedcontainor() {
     //   }
     // };
 
-    const onSharePress = async () => {
-      console.log(postId, userId);
+    const onSharePress = async (postUrl, userId) => {
+      console.log('gfhhghf', postUrl, userId);
       const options = {
         // Your default message
         // message: `${item.caption} `,
-        message: 'Share Your Link'
+        message: postUrl
       };
       try {
         const result = await Share.share(options);
@@ -334,7 +344,7 @@ export default function Postfeedcontainor() {
           // Assuming you want to share the file after sharing via Share API
           await privateApi.post('action/addShare', {
             userId: userId,
-            postId: postId
+            postUrl: postUrl
           });
           console.log('File shared via API successfully');
         } else if (result.action === Share.dismissedAction) {
@@ -479,7 +489,7 @@ export default function Postfeedcontainor() {
             <TouchableOpacity>
               <View
                 style={{ borderColor: "grey", width: responsiveWidth(100), height: responsiveHeight(50), }}>
-                <Image source={{ uri: `data:image/jpeg;base64,${imageUrl}` }}
+                <Image source={{ uri: imageUrl }}
                   style={{ width: "100%", height: '100%' }} />
               </View>
             </TouchableOpacity>
@@ -533,7 +543,7 @@ export default function Postfeedcontainor() {
               <View>
                 <Text style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", right: responsiveWidth(5) }}>0 Share</Text>
                 <TouchableOpacity
-                  onPress={() => onSharePress(item.postId, item.userId)}
+                  onPress={() => onSharePress(item.filePath, item.userId)}
                   style={{ width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', right: responsiveWidth(2) }}>
                   <View
                     style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
