@@ -58,7 +58,7 @@ export default function Postfeedcontainor() {
       try {
         console.log(`Fetching File id - ${fileId}`)
         const jwt = await AsyncStorage.getItem("jwt");
-        const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFile?userId=3&category=galleryImage&fileId=${fileId}`, {
+        const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFile?userId=3&category=Gallery&fileId=${fileId}`, {
           headers: {
             Authorization: `Bearer ${jwt}`
           }

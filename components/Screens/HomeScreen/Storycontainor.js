@@ -217,7 +217,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function StoryContainer() {
   const navigation = useNavigation();
   const [stories, setStories] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
   const [profileImage, setProfileImage] = useState(require('../../Assets/app_logo/salman-Khan-header-1.jpg'));
 
@@ -228,16 +227,20 @@ export default function StoryContainer() {
 
 const handleImageOption = async (option) => {
   try {
-    let image;
+    let image = null;
     if (option === 'camera') {
       image = await ImagePicker.openCamera({ cropping: true });
     } else if (option === 'gallery') {
-      image = await ImagePicker.openPicker({ cropping: true });
+      image = await ImagePicker.openPicker({ cropping: true, multiple: true});
     }
-    console.log(image)
-    setSelectedImage({ uri: image.path, type: image.mime, name: image.path.split('/').pop() });
+
+    const formatedImg = image?.map(im => {
+    return { uri: im.path, type: im.mime, name: im.path.split('/').pop() }
+    })
+    console.log(`Select Story Images: ${JSON.stringify(formatedImg)}`)
+
     // Move the uploadStory function call here
-    uploadStory();
+    uploadStory(formatedImg);
   } catch (error) {
     console.log('Image picker operation canceled or failed:', error);
   } finally {
@@ -245,10 +248,10 @@ const handleImageOption = async (option) => {
   }
 };
 
-  const uploadStory = async () => {
-    console.log(selectedImage)
+  const uploadStory = async (formatedMedia) => {
+    console.log(`Upload Story Media - ${JSON.stringify(formatedMedia)}`)
     try {
-      if (!selectedImage) {
+      if (formatedMedia?.length === 0) {
         Alert.alert('Please select an image to upload.');
         return;
       }
@@ -260,15 +263,13 @@ const handleImageOption = async (option) => {
       myHeaders.append("Authorization", "Bearer " + jwt);
       const formData = new FormData();
       formData.append('userId', id);
-      formData.append('fileInputWebModel.category', 'storiesImage');
-      formData.append('fileInputWebModel.description', 'Welcome to my world');
-      const imageUriParts = selectedImage.uri.split('.');
-      const fileType = imageUriParts[imageUriParts.length - 1];
-      formData.append('fileInputWebModel.file', {
-        uri: selectedImage.uri,
-        name: `image.${fileType}`,
-        type: `image/${fileType}`,
-      });
+      formData.append('type', 'IMG');
+      formData.append('description', 'Welcome to my world');
+      formatedMedia?.forEach((si , ind) => {
+            formData.append(`fileInputWebModel.files[${ind}]`, si);
+      })
+
+    console.log(`Data posted` , formData)
 
       const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/stories/uploadStory', {
         method: 'POST',
@@ -281,11 +282,12 @@ const handleImageOption = async (option) => {
         if (data.status === 1) {
           Alert.alert('Posted');
         } else {
+        console.log(`STORY FAILED 111 - ${data}`)
           // Handle unsuccessful response
         }
       } else {
         // Handle HTTP error
-        console.log(error)
+        console.log(`STORY FAILED - ${JSON.stringify(response)}`)
         Alert.alert('Posted Error', 'Failed to post media.');
       }
     } catch (error) {
@@ -294,73 +296,14 @@ const handleImageOption = async (option) => {
     }
   };
 
-  const renderStoryImages = ({ item }) => (
-    <TouchableOpacity
-      onPress={() => navigation.navigate('Status', { story: item })}
-      style={{
-        marginLeft: responsiveWidth(2),
-        width: responsiveWidth(18),
-        height: responsiveHeight(8),
-        borderRadius: responsiveWidth(15),
-        overflow: 'hidden',
-        position: 'relative', // Added for positioning the profile image
-      }}>
-      {item.images.map((image, index) => (
-        <Image
-          key={index}
-          source={{ uri: item.image }}
-          style={{ width: '100%', height: '100%', borderRadius: responsiveWidth(2) }}
-          resizeMode="stretch"
-        />
-      ))}
-      {/* <View style={{borderWidth:responsiveWidth(0.4),width: responsiveWidth(5), height: responsiveHeight(3), position: 'absolute',top:responsiveHeight(14.2),}}> */}
-      <Image
-        source={require('../../Assets/UserProfile_Icons_Fonts/Filmhook_UserProfile.png')}
-        style={{ width: '20%', height: '15%', position: 'absolute',top:responsiveHeight(14.5),borderRadius:responsiveHeight(5),  }}
-        resizeMode="stretch"
-      />
-      {/* </View> */}
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          // backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          paddingHorizontal: responsiveWidth(1),
-          paddingVertical: responsiveHeight(0.5),
-          alignItems: 'center',
-        }}> 
-       <Text
-          numberOfLines={1}
-          style={{
-            fontSize: responsiveFontSize(1.4),
-            fontWeight: '600',
-            // color: '#FFFFFF',
-            color:'black'
-          }}>
-          {item.name}
-        </Text>
-        <Text
-          numberOfLines={1}
-          style={{
-            fontSize: responsiveFontSize(1),
-            fontWeight: '600',
-            // color: '#FFFFFF',
-            color:'black'
-          }}>
-          {item.profession}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-  
-  
   return (
     <>
       <View style={{ padding: responsiveWidth(1.5), flexDirection: 'row', height: responsiveHeight(19) }}>
         <View style={{ borderRightWidth: responsiveWidth(1), borderRightColor: '#D7D7D7', }}>
           <TouchableOpacity
+          onPress={() =>
+                  navigation.navigate('Status')
+                  }
             style={{
               marginLeft: responsiveWidth(2),
               width: responsiveWidth(23),
@@ -369,13 +312,7 @@ const handleImageOption = async (option) => {
               overflow: 'hidden',
               position: 'relative',
             }}>
-            {selectedImage ? (
-              <Image
-                source={{ uri: selectedImage.uri }}
-                style={{ width: '100%', height: '100%', borderRadius: responsiveWidth(2) }}
-                resizeMode="cover"
-              />
-            ) : profileImage ? (
+         {profileImage ? (
               <Image
                 source={profileImage}
                 style={{ width: '100%', height: '100%' }}
@@ -416,23 +353,6 @@ const handleImageOption = async (option) => {
             resizeMode="stretch"
           />
         </TouchableOpacity>
-        <FlatList
-          data={stories}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={renderStoryImages}
-          // renderItem={({ item }) => (
-            
-          //   <TouchableOpacity>
-          //     <Image
-          //       source={{ uri: item.image }}
-          //       style={{ width: '20%', height: '15%', borderRadius: responsiveHeight(5) }}
-          //       resizeMode="stretch"
-          //     />
-          //   </TouchableOpacity>
-          // )}
-        />
         <Modal isVisible={imagePickerModalVisible} onBackdropPress={() => setImagePickerModalVisible(false)}>
           <View style={{ backgroundColor: '#ffffff', padding: responsiveWidth(2), borderRadius: responsiveWidth(2) }}>
             <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={() => handleImageOption('camera')}>
@@ -445,7 +365,6 @@ const handleImageOption = async (option) => {
               <Text>Cancel</Text>
             </TouchableOpacity>
           </View>
-          
         </Modal>
       </View>
     </>
