@@ -110,6 +110,7 @@ export default function Login() {
       const jwt = response.data.jwt;
       const emailId = response.data.email;
       const userId = response.data.id;
+      const userType = response.data.userType;
 
       // Store JWT token and ID in AsyncStorage
       await AsyncStorage.setItem('jwt', jwt);
