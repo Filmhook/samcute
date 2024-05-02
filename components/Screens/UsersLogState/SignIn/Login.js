@@ -108,6 +108,7 @@ export default function Login() {
 
       // Extract JWT token and ID from response data
       const jwt = response.data.jwt;
+      console.log(jwt)
       const emailId = response.data.email;
       const userId = response.data.id;
       const userType = response.data.userType;
