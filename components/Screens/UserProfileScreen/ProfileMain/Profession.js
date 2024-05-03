@@ -25,27 +25,20 @@ const [selectedImage, setSelectedImage] = useState(null);
 const [modalVisible, setModalVisible] = useState(false);
 const [currentTitle, setCurrentTitle] = useState('');
 
-  // const toggleExpanded = () => {
-  //   setExpanded(!expanded);
-  //   if (!expanded) {
-  //     setLoading(true)// Set loading to true when expanding
-  //     fetchData(); // Fetch data when expanding
-  //   }
-  // };
 
-  const [editingPlatformId, setEditingPlatformId] = useState(null); // State to track the platform being edited
+  const [editingPlatformId, setEditingPlatformId] = useState(null); 
 
-// Function to toggle edit mode
-const toggleEditMode = (platformId, platformName) => {
-  if (platformId === editingPlatformId) {
-    // Save changes and exit edit mode
-    handleSave(platformId, platformName);
-    setEditingPlatformId(null);
-  } else {
-    // Enter edit mode for the selected platform
-    setEditingPlatformId(platformId);
-  }
-};
+
+  const toggleEditMode = (platformId) => {
+    if (platformId === editingPlatformId) {
+      // Save changes and exit edit mode
+      handleSave();
+      setEditingPlatformId(null);
+    } else {
+      // Enter edit mode for the selected platform
+      setEditingPlatformId(platformId);
+    }
+  };
 
   useEffect(() => {
 
@@ -54,38 +47,43 @@ const toggleEditMode = (platformId, platformName) => {
   }, []);
 
 
-  const handleSave = async (platformId, platformName) => {
+  const handleSave = async () => {
     try {
-      console.log('Platform:', platformId, filmCountInput, netWorthInput, dailySalaryInput);
+      const platform = platformData.find(platform => platform.platformPermanentId === editingPlatformId);
+      if (!platform) {
+        console.error('Platform not found for editing.');
+        return;
+      }
+
       const response = await privateAPI.post(
         'industryUser/updateIndustryUserPermanentDetails',
         {
-          platformPermanentId: platformId,
+          platformPermanentId: editingPlatformId,
           filmCount: filmCountInput,
           netWorth: netWorthInput,
           dailySalary: dailySalaryInput,
         },
       );
-      Alert.alert('Update', `${platformName} Updated`);
+      Alert.alert('Update', `${platform.platformName} Updated`);
 
       console.log('Platform details updated successfully:', response.data);
 
       setFilmCountInput('');
       setNetWorthInput('');
       setDailySalaryInput('');
-  
+
       // Update the state with the new values
       setPlatformData(prevState =>
-        prevState.map(platform => {
-          if (platform.platformPermanentId === platformId) {
+        prevState.map(p => {
+          if (p.platformPermanentId === editingPlatformId) {
             return {
-              ...platform,
+              ...p,
               filmCount: filmCountInput,
               netWorth: netWorthInput,
               dailySalary: dailySalaryInput,
             };
           }
-          return platform;
+          return p;
         })
       );
     } catch (error) {
@@ -97,62 +95,30 @@ const toggleEditMode = (platformId, platformName) => {
   
   const fetchData = async () => {
     try {
-      const userId = await AsyncStorage.getItem('userId');
-      const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=248`);
+      
+      const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=269`);
       const response = resp.data;
-  
-      const groupedPlatforms = response.reduce((accumulator, currentItem) => {
-        currentItem.platformDetails.forEach(platform => {
-          const platformName = platform.platformName;
-          const industries = currentItem.industriesName;
-          const professions = platform.professionDetails.map(profession => ({
-            professionName: profession.professionName,
-            subProfessions: profession.subProfessionName || [],
-            professionPermanentId: profession.professionPermanentId
-          }));
-  
-          // Extract file paths from outputWebModelList
-          const fileUrls = platform.outputWebModelList.map(file => file.filePath);
-  
-          // Log file URLs to console
-          console.log(`File URLs for ${platformName}:`, fileUrls);
-  
-          if (!accumulator[platformName]) {
-            accumulator[platformName] = {
-              platformName: platformName,
-              industries: [],
-              professions: [],
-              filmCount: platform.filmCount,
-              netWorth: platform.netWorth,
-              dailySalary: platform.dailySalary,
-              fileUrls: [], // Initialize fileUrls array
-            };
-          }
-  
-          // Add industries, professions, and fileUrls to the grouped platform
-          accumulator[platformName].industries.push(industries);
-          accumulator[platformName].professions.push(...professions);
-          accumulator[platformName].fileUrls.push(...fileUrls);
-  
-          // Add platformPermanentId to the platform object
-          accumulator[platformName].platformPermanentId = platform.platformPermanentId;
-        });
-  
-        return accumulator;
-      }, {});
-  
-      // Convert grouped platforms object to array
-      const aggregatedPlatforms = Object.values(groupedPlatforms);
-  
-      // Update state with fetched data
-      setPlatformData(aggregatedPlatforms);
-      setLoading(false); // Set loading to false after data is fetched
+
+      const modifiedData = response.map(item => ({
+        platformName: item.platformName,
+        industries: item.industryNames,
+        professions: item.professions.map(profession => ({
+          professionName: profession.professionName,
+          subProfessions: profession.subProfessionNames || [],
+        })),
+        filmCount: item.filmCount,
+        netWorth: item.netWorth,
+        dailySalary: item.dailySalary,
+        platformPermanentId: item.platformPermanentId,
+      }));
+
+      setPlatformData(modifiedData);
+      setLoading(false);
     } catch (error) {
       console.log("Error fetching data:", error);
-      setLoading(false); // Set loading to false if an error occurs
+      setLoading(false);
     }
   };
-
  
 
  
@@ -161,6 +127,9 @@ const toggleEditMode = (platformId, platformName) => {
 const [openingImagePicker, setOpeningImagePicker] = useState(false);
 
 const project = (platformId) => {
+
+  console.log('platformId', platformId)
+
   if (platformId === projectPlatformId) {
     // Save changes and exit edit mode
     openImagePicker(platformId);
@@ -256,7 +225,8 @@ const addImageWithTitle = async (platformId) => {
  
       <ScrollView style={{ width: responsiveWidth(100), }}>
         {loading ? (
-          <Text>Loading...</Text>
+
+          <Text style={{textAlign:'center'}}>Loading...</Text>
         ) : (
           platformData.map((platform, index) => (
             <View key={index} style={styles.platformContainer}>
@@ -330,7 +300,7 @@ const addImageWithTitle = async (platformId) => {
   </>
 ) : (
   <>
-    <Text>Film Count: {platform.filmCount}</Text>
+    <Text style={{color:'black'}}>Film Count: {platform.filmCount}</Text>
     {/* Additional platform details here if needed */}
   </>
 )}
@@ -351,14 +321,11 @@ const addImageWithTitle = async (platformId) => {
                   onChangeText={text => setNetWorthInput(text)}
                   keyboardType="numeric"
                 />
-                {/* Add other TextInput fields for net worth and daily salary */}
-
-                {/* Save button */}
-               
+ 
               </>
             ) : (
               // Else condition when not in edit mode
-              <Text>Networth: {platform.netWorth}</Text>
+              <Text style={{color:'black'}}>Networth: {platform.netWorth}</Text>
             )}
                       
                     </ImageBackground>
@@ -384,7 +351,7 @@ const addImageWithTitle = async (platformId) => {
               </>
             ) : (
               // Else condition when not in edit mode
-              <Text>Daily Salery: {platform.dailySalary}</Text>
+              <Text style={{color:'black'}}>Daily Salery: {platform.dailySalary}</Text>
             )}
 
          
@@ -405,12 +372,12 @@ const addImageWithTitle = async (platformId) => {
                       style={{width:80,height:80,alignSelf:'center',top:29}}/>
               </TouchableOpacity>
               </View>
-              {platform.fileUrls.map((url, index) => (       
+              {/* {platform.fileUrls.map((url, index) => (       
 <View style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5",marginRight:responsiveWidth(2)}} >  
 <Image key={index} source={{ uri: url }} style={{ width: '100%', height: '100%' }} resizeMode='stretch'/>
                  
                       </View>
-))} 
+))}  */}
               </ScrollView>
              
 
@@ -479,6 +446,7 @@ const styles = StyleSheet.create({
   platformName: {
     fontSize: 20,
     fontWeight: 'bold',
+    color:'black'
   },
   industriesContainer: {
     marginLeft: responsiveWidth(2),
@@ -487,6 +455,7 @@ const styles = StyleSheet.create({
   },
   industry: {
     fontWeight: 'bold',
+    color:'black'
   },
   professionsContainer: {
     marginLeft: responsiveWidth(2),
@@ -496,15 +465,16 @@ const styles = StyleSheet.create({
   },
   profession: {
     fontWeight: 'bold',
+    color:'black'
   },
   subProfession: {
+    color:'black'
     // marginLeft: 10,
   },
   border: {
 
     borderColor: 'black',
-    // padding: 5,
-    // marginVertical: 5,
+   
   },
 });
 

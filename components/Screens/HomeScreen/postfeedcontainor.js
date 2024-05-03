@@ -163,7 +163,6 @@ export default function Postfeedcontainor() {
 
 
 
-console.log('psiturl', postId, postUrl)
 
     // Handle comment press function
     const onCommentPress = async (postId) => {
@@ -331,7 +330,7 @@ console.log('psiturl', postId, postUrl)
     // };
 
     const onSharePress = async (postUrl, userId) => {
-      console.log('gfhhghf', postUrl, userId);
+     
       const options = {
         // Your default message
         // message: `${item.caption} `,
