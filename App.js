@@ -1,36 +1,22 @@
-import { View, Text, SafeAreaView, StyleSheet,useColorScheme } from 'react-native';
-import React from 'react';
+import { View, Text, SafeAreaView,Alert, StyleSheet,TouchableOpacity, Modal } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Appnavigator from './components/Screens/appnavigator';
 import Industry_S_One from './components/Screens/UsersLogState/SignUp/I_S_One';
 import Otp_GS from './components/Screens/UsersLogState/SignUp/otp_gs';
 import OTPPage from './components/Screens/UsersLogState/SignUp/otp_gs';
-
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import MyComponent from './components/Screens/UsersLogState/test1';
-import SignUpDob from './components/Screens/UsersLogState/SignUp/G_S_Dob';
-import SignUpCountry from './components/Screens/UsersLogState/SignUp/G_S_Country';
-import ModernDatePicker from './components/Screens/UsersLogState/test1';
-import Postfeedcontainor from './components/Screens/UsersLogState/test1';
-import ShareFile from './components/Screens/UsersLogState/test1';
-import YourComponent from './components/Screens/UsersLogState/test1';
-import Profession from './components/Screens/UserProfileScreen/ProfileMain/Profession';
-
 
 
 export default function App() {
- 
+
+  
   return (
   <SafeAreaProvider>
     <View style={styles.container}>
        <Appnavigator/>
-
-       {/* <Profession/> */}
-{/* <YourComponent/> */}
-       {/* <Postfeedcontainor/> */}
-      
-
+    
     </View>
     </SafeAreaProvider>
   );
@@ -52,6 +38,7 @@ const styles = StyleSheet.create({
   darkModeText: {
     color: 'white',
   },
+  
  
 });
 

@@ -378,14 +378,20 @@
 
 
 
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, } from 'react-native';
-import Modal from "react-native-modal"
-
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
+import { PermissionsAndroid } from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TopBar = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [theme, setTheme] = useState(false);
+  const navigation = useNavigation();
+
 
   const toggleSwitch = () => {
     setTheme(!theme)
@@ -423,8 +429,8 @@ const TopBar = () => {
     topBar: {
       backgroundColor: 'white',
       height: responsiveHeight(7.8),
-      flexDirection:'row',
-      columnGap:responsiveWidth(14)
+      flexDirection: 'row',
+      columnGap: responsiveWidth(14)
       //borderWidth:1
 
     },
@@ -451,9 +457,9 @@ const TopBar = () => {
       flex: 1,
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
       // justifyContent: 'center',
-       alignItems: 'center',
+      alignItems: 'center',
       borderRadius: responsiveWidth(2),
-      width:responsiveWidth(90)
+      width: responsiveWidth(90)
     },
     popupContainer: {
       backgroundColor: 'white',
@@ -481,9 +487,9 @@ const TopBar = () => {
       height: responsiveHeight(90),
       width: 280,
       borderRadius: 3,
-     // borderWidth:1,
-     // backgroundColor: "#3B3B3C",
-     // bottom: 250,
+      // borderWidth:1,
+      // backgroundColor: "#3B3B3C",
+      // bottom: 250,
       left: 30
     },
     imgdiv: {
@@ -549,7 +555,132 @@ const TopBar = () => {
       marginTop: 10,
       backgroundColor: "#3B3B3C",
     },
+    CallIncomingMdalView: {
+      flex: 1,
+      marginTop: 50,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingBottom: '25%'
+    },
+    CallIncomingMdalTop: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+    },
+    CallIncomeingHeaderView: {
+      width: '100%',
+      justifyContent: 'center',
+      paddingLeft: 10
+    },
+    CallIncomeingHeader: {
+      color: 'black',
+      fontSize: 16
+    },
+    UserImageView: {
+      padding: 10,
+      backgroundColor: 'lightgrey',
+      borderRadius: 90,
+      marginTop: '40%'
+    },
+    UserNameText: {
+      color: 'blue',
+      fontSize: 19,
+      fontWeight: 'bold',
+      marginTop: 15
+    },
+    CallIncomingMdalBottom: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+      paddingHorizontal: 50
+    },
+    EndCallBTNView: {
+      backgroundColor: 'green',
+      padding: 10,
+      borderRadius: 100
+    },
   })
+
+
+  /// Incoming Calling Modall
+
+  const [visibleCallIncoming, setVisibleCallIncoming] = useState(false)
+  const [incomingCallData, setIncomingCallData] = useState(null);
+
+  const getFCMToken = async () => {
+    const token = await messaging().getToken();
+    console.log("Firebase FCM token",token)
+  }
+
+  const [loginedUserId, setLoginedUserId] = useState(false);
+
+  const GETAsuncStorage = async () => {
+    const UID = await AsyncStorage.getItem('id');
+    setLoginedUserId(parseInt(UID))
+  }
+
+
+
+  useEffect(() => {
+    async function requestUserPermission() {
+      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+      if (enabled) {
+        console.log('Authorization status:', authStatus);
+        getFCMToken()
+
+      } else {
+        console.log('Permission denied');
+      }
+    }
+    requestUserPermission()
+    GETAsuncStorage()
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      setIncomingCallData(JSON.parse(JSON.stringify(remoteMessage)).data)
+      setVisibleCallIncoming(true)
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const AttendCall = () => {
+    setVisibleCallIncoming(false)
+    if (incomingCallData.callType === 'video') {
+      navigation.navigate('Chat', {
+        screen: "VideoCallingScreen", params: {
+          remoteUserId: parseInt(incomingCallData.userId),
+          userName: incomingCallData.fromUser,
+          loggedUserId: parseInt(loginedUserId),
+          channelToken: incomingCallData.channelToken,
+          channelNameFromNotify: incomingCallData.channelNameFromNotify
+        }
+      })
+    } else {
+      navigation.navigate('Chat', {
+        screen: "VoiceCalling", params: {
+          remoteUserId: parseInt(incomingCallData.userId),
+          userName: incomingCallData.fromUser,
+          loggedUserId: parseInt(loginedUserId),
+          channelToken: incomingCallData.channelToken,
+          channelNameFromNotify: incomingCallData.channelNameFromNotify
+
+        }
+      })
+    }
+
+  }
+  const CancelCall = () => {
+    setVisibleCallIncoming(false)
+  }
+
 
   return (
     //TopBar Style
@@ -560,14 +691,14 @@ const TopBar = () => {
       {/* <View style={{ width: responsiveWidth(60), height: responsiveHeight(5), top: responsiveHeight(1),left:responsiveWidth(1),}}>
         <Image source={require('../Assets/Chats_Icon_And_Fonts/Film_hook.png')} style={{ width: responsiveWidth(60), height: responsiveHeight(5), alignSelf: 'center', justifyContent: 'center',  }} resizeMode='stretch'/>
       </View> */}
-       <View
+      <View
         style={{
           height: responsiveHeight(7),
           width: responsiveWidth(60),
           marginBottom: responsiveHeight(3),
           flexDirection: 'row',
           position: 'relative',
-          
+
         }}>
         <Image
           style={{
@@ -584,20 +715,20 @@ const TopBar = () => {
             height: responsiveHeight(5),
             width: responsiveWidth(48),
             position: 'absolute',
-             left: responsiveWidth(12),
-             top: responsiveHeight(1.8),
+            left: responsiveWidth(12),
+            top: responsiveHeight(1.8),
           }}
           source={require('../Assets/Login_page/Film_hook_name.png')}
           resizeMode="stretch"
         />
-        
+
         <Text
           style={{
             color: 'blue',
             fontWeight: 'bold',
             position: 'absolute',
             left: responsiveWidth(42),
-           top: responsiveHeight(5.8),
+            top: responsiveHeight(5.8),
           }}>
           Public User
         </Text>
@@ -605,13 +736,13 @@ const TopBar = () => {
 
       {/* Plus Icon */}
 
-      <View style={{ width: responsiveWidth(25), height: responsiveHeight(7),flexDirection:'row',columnGap:responsiveWidth(5),  justifyContent:'center',alignItems:'center'}}>
-      <TouchableOpacity style={{width: responsiveWidth(9), height: responsiveWidth(9), borderRadius: responsiveWidth(9), elevation: 10, backgroundColor: 'white', alignItems: 'center',justifyContent: 'center', }}>
-          <Image source={require('../Assets/UserProfile_Icons_Fonts/211694_bell_icon.png')} style={{width: responsiveWidth(8), height: responsiveHeight(4),  }} resizeMode='stretch'/>
+      <View style={{ width: responsiveWidth(25), height: responsiveHeight(7), flexDirection: 'row', columnGap: responsiveWidth(5), justifyContent: 'center', alignItems: 'center' }}>
+        <TouchableOpacity style={{ width: responsiveWidth(9), height: responsiveWidth(9), borderRadius: responsiveWidth(9), elevation: 10, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', }}>
+          <Image source={require('../Assets/UserProfile_Icons_Fonts/211694_bell_icon.png')} style={{ width: responsiveWidth(8), height: responsiveHeight(4), }} resizeMode='stretch' />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleOpenPopup} style={{ width: responsiveWidth(9), height: responsiveWidth(9), borderRadius: responsiveWidth(9), elevation: 10, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}>
-          <Image source={require('../Assets/Home_Icon_And_Fonts/plus_icon.png')} style={{ width: responsiveWidth(8), height: responsiveHeight(4), }} resizeMode='stretch'/>
+        <TouchableOpacity onPress={handleOpenPopup} style={{ width: responsiveWidth(9), height: responsiveWidth(9), borderRadius: responsiveWidth(9), elevation: 10, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
+          <Image source={require('../Assets/Home_Icon_And_Fonts/plus_icon.png')} style={{ width: responsiveWidth(8), height: responsiveHeight(4), }} resizeMode='stretch' />
         </TouchableOpacity>
         <Modal
           visible={isVisible}
@@ -634,7 +765,29 @@ const TopBar = () => {
 
         </Modal>
 
-       
+        <Modal visible={visibleCallIncoming}>
+          <View style={style.CallIncomingMdalView}>
+            <View style={style.CallIncomingMdalTop}>
+              <View style={style.CallIncomeingHeaderView}>
+                <Text style={style.CallIncomeingHeader}>Incoming Call....</Text>
+              </View>
+              <View style={style.UserImageView}>
+                <AntDesign name="user" size={70} color="black" />
+              </View>
+              <Text style={style.UserNameText}>{incomingCallData ? incomingCallData.fromUser : ''}</Text>
+            </View>
+            <View style={style.CallIncomingMdalBottom}>
+              <TouchableOpacity style={style.EndCallBTNView} onPress={AttendCall} >
+                <Ionicons name="call-sharp" size={35} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={CancelCall} style={[style.EndCallBTNView, { backgroundColor: "red" }]} >
+                <MaterialIcons name="call-end" size={35} color="white" />
+              </TouchableOpacity>
+            </View>
+
+          </View>
+        </Modal>
+
 
       </View>
     </View>
@@ -645,7 +798,7 @@ const TopBar = () => {
 
 
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import ChatRoot from './ChatScreen/ChatRoot/ChatRoot';
 import SearchRoot from './AllSearchScreen/SearchRoot';
 import AuditionRoot from './AuditionScreen/AuditionRoot';
@@ -672,11 +825,11 @@ function BottomBar() {
   return (
 
     <Tab.Navigator initialRouteName='Home'
-     activeColor='blue'
+      activeColor='blue'
       inactiveColor='black'
-      barStyle={{ backgroundColor: 'white' ,height:responsiveHeight(8)}}
+      barStyle={{ backgroundColor: 'white', height: responsiveHeight(8) }}
       backBehavior='order '
-      style={{ }}
+      style={{}}
       tabBarOptions={{ showlabel: false }}
     >
       <Tab.Screen
@@ -687,16 +840,13 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused }) => {
             return (
-
-              <View style={{width:responsiveWidth(9), height:responsiveHeight(5),}}>
-              <Image resizeMode='stretch'
-                style={{ width:'100%', height: '100%', bottom: 1, alignSelf: 'center',  }}
+              <Image
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
                 source={
                   require('../Assets/Home_Icon_And_Fonts/Home.png')
                 }
                 focused={focused}
               />
-              </View>
             );
           },
 
@@ -709,15 +859,12 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused: boolean, color: string }) => {
             return (
-              <View style={{width:responsiveWidth(9), height:responsiveHeight(5),}}>
               <Image
-                resizeMode='stretch'
-                style={{ width:'100%', height: '100%', bottom: 1, alignSelf: 'center',  }}
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
                 source={
                   require('../Assets/Chats_Icon_And_Fonts/Filmhook_chat.png')
                 }
               />
-              </View>
             );
           },
         }}
@@ -729,15 +876,12 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused: boolean, color: string }) => {
             return (
-              <View style={{width:responsiveWidth(9), height:responsiveHeight(5),}}>
               <Image
-                resizeMode='stretch'
-                style={{ width:'100%', height: '100%', bottom: 1, alignSelf: 'center',  }}
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
                 source={
                   require('../Assets/app_logo/all_search.png')
                 }
               />
-              </View>
             );
           },
         }}
@@ -749,15 +893,12 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused: boolean, color: string }) => {
             return (
-              <View style={{width:responsiveWidth(9), height:responsiveHeight(5),}}>
               <Image
-                resizeMode='stretch'
-                style={{ width:'100%', height: '100%', bottom: 1, alignSelf: 'center',  }}
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
                 source={
                   require('../Assets/Audition_Icons_Fonts/Filmhook_Audition.png')
                 }
               />
-              </View>
             );
           },
         }}
@@ -770,15 +911,12 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused: boolean, color: string }) => {
             return (
-              <View style={{width:responsiveWidth(9), height:responsiveHeight(5),}}>
               <Image
-                 resizeMode='stretch'
-                 style={{ width:'100%', height: '100%', bottom: 1, alignSelf: 'center',  }}
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 4, top: 0, alignSelf: 'center', padding: 5 }}
                 source={
                   require('../Assets/UserProfile_Icons_Fonts/Filmhook_UserProfile.png')
                 }
               />
-              </View>
             );
           },
         }}
