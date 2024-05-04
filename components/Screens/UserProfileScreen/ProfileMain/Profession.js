@@ -9,6 +9,7 @@ import { ScrollView } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { launchImageLibrary } from 'react-native-image-picker'
 import ImageCropPicker from 'react-native-image-crop-picker'
+import { useNavigation } from '@react-navigation/native'
 
 
 
@@ -16,6 +17,7 @@ export default function Profession() {
   const [platformData, setPlatformData] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(true);
+  const navigation=useNavigation();
 
 
   const [filmCountInput, setFilmCountInput] = useState('');
@@ -24,12 +26,18 @@ const [dailySalaryInput, setDailySalaryInput] = useState('');
 const [selectedImage, setSelectedImage] = useState(null);
 const [modalVisible, setModalVisible] = useState(false);
 const [currentTitle, setCurrentTitle] = useState('');
-
+const [isEditing, setIsEditing] = useState(false);
 
   const [editingPlatformId, setEditingPlatformId] = useState(null); 
 
 
+
+
+
+
   const toggleEditMode = (platformId) => {
+
+setIsEditing(true)
     if (platformId === editingPlatformId) {
       // Save changes and exit edit mode
       handleSave();
@@ -48,77 +56,81 @@ const [currentTitle, setCurrentTitle] = useState('');
 
 
   const handleSave = async () => {
-    try {
-      const platform = platformData.find(platform => platform.platformPermanentId === editingPlatformId);
-      if (!platform) {
-        console.error('Platform not found for editing.');
-        return;
-      }
-
-      const response = await privateAPI.post(
-        'industryUser/updateIndustryUserPermanentDetails',
-        {
-          platformPermanentId: editingPlatformId,
-          filmCount: filmCountInput,
-          netWorth: netWorthInput,
-          dailySalary: dailySalaryInput,
-        },
-      );
-      Alert.alert('Update', `${platform.platformName} Updated`);
-
-      console.log('Platform details updated successfully:', response.data);
-
-      setFilmCountInput('');
-      setNetWorthInput('');
-      setDailySalaryInput('');
-
-      // Update the state with the new values
-      setPlatformData(prevState =>
-        prevState.map(p => {
-          if (p.platformPermanentId === editingPlatformId) {
-            return {
-              ...p,
-              filmCount: filmCountInput,
-              netWorth: netWorthInput,
-              dailySalary: dailySalaryInput,
-            };
-          }
-          return p;
-        })
-      );
-    } catch (error) {
-      console.error('Error updating platform details:', error);
+    setIsEditing(false)
+  try {
+    const platform = platformData.find(platform => platform.platformPermanentId === editingPlatformId);
+    if (!platform) {
+      console.error('Platform not found for editing.');
+      return;
     }
-  };
-  
+
+    const response = await privateAPI.post(
+      'industryUser/updateIndustryUserPermanentDetails',
+      {
+        platformPermanentId: editingPlatformId,
+        filmCount: filmCountInput,
+        netWorth: netWorthInput,
+        dailySalary: dailySalaryInput,
+      },
+    );
+    Alert.alert('Update', `${platform.platformName} Updated`);
+
+    console.log('Platform details updated successfully:', response.data);
+
+    setFilmCountInput('');
+    setNetWorthInput('');
+    setDailySalaryInput('');
+    setEditingPlatformId(null); // Reset editingPlatformId after saving changes
+    // Update the state with the new values
+    setPlatformData(prevState =>
+      prevState.map(p => {
+        if (p.platformPermanentId === editingPlatformId) {
+          return {
+            ...p,
+            filmCount: filmCountInput,
+            netWorth: netWorthInput,
+            dailySalary: dailySalaryInput,
+          };
+        }
+        return p;
+      })
+    );
+  } catch (error) {
+    console.error('Error updating platform details:', error);
+  }
+};
 
   
-  const fetchData = async () => {
-    try {
-      
-      const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=269`);
-      const response = resp.data;
+const fetchData = async () => {
+  try {
+    const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=269`);
+    const response = resp.data;
 
-      const modifiedData = response.map(item => ({
-        platformName: item.platformName,
-        industries: item.industryNames,
-        professions: item.professions.map(profession => ({
-          professionName: profession.professionName,
-          subProfessions: profession.subProfessionNames || [],
-        })),
-        filmCount: item.filmCount,
-        netWorth: item.netWorth,
-        dailySalary: item.dailySalary,
-        platformPermanentId: item.platformPermanentId,
-      }));
+    const modifiedData = response.map(item => ({
+      platformName: item.platformName,
+      industries: item.industries.map(industry => ({
+        industryName: industry.industryName,
+        imageURL: `data:image/jpeg;base64,${industry.image}`, // Decode base64 to image URL
+      })),
+      professions: item.professions.map(profession => ({
+        professionName: profession.professionName,
+        subProfessions: profession.subProfessionNames || [],
+        imageURL: `data:image/jpeg;base64,${profession.image}`, // Decode base64 to image URL
+      })),
+      filmCount: item.filmCount,
+      netWorth: item.netWorth,
+      dailySalary: item.dailySalary,
+      platformPermanentId: item.platformPermanentId,
+      platformImageURL: `data:image/jpeg;base64,${item.platformImage}`, // Decode base64 to image URL
+    }));
 
-      setPlatformData(modifiedData);
-      setLoading(false);
-    } catch (error) {
-      console.log("Error fetching data:", error);
-      setLoading(false);
-    }
-  };
+    setPlatformData(modifiedData);
+    setLoading(false);
+  } catch (error) {
+    console.log("Error fetching data:", error);
+    setLoading(false);
+  }
+};
  
 
  
@@ -213,47 +225,40 @@ const addImageWithTitle = async (platformId) => {
     <View style={styles.containers}>
       <TouchableOpacity style={styles.bio_title} >
         <Text style={styles.bio_title_text}>PROFESSION</Text>
-
         <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
-          <Image
-            source={require("../../../Assets/Userprofile_And_Fonts/update/down-arrow.png")}
-            style={styles.downArrow}
-          />
+          <Image source={require("../../../Assets/Userprofile_And_Fonts/update/down-arrow.png")} style={styles.downArrow} />
         </View>
-
       </TouchableOpacity>
- 
-      <ScrollView style={{ width: responsiveWidth(100), }}>
-        {loading ? (
 
-          <Text style={{textAlign:'center'}}>Loading...</Text>
+
+      <ScrollView style={{ width: responsiveWidth(100), }}>
+      {isEditing && (
+              <TouchableOpacity onPress={()=>navigation.navigate('IndustryUpdateOne')} style={{ color: 'black' }}>
+                <Text style={styles.editButton}>Add Industry</Text>
+              </TouchableOpacity>
+            )}
+        {loading ? (
+          <Text style={{ textAlign: 'center' }}>Loading...</Text>
         ) : (
           platformData.map((platform, index) => (
             <View key={index} style={styles.platformContainer}>
+              <View style={{ width: responsiveWidth(96) }}>
+                {editingPlatformId === platform.platformPermanentId ? (
+                  <TouchableOpacity onPress={() => toggleEditMode(platform.platformPermanentId, platform.platformName)}>
+                    <Text style={styles.editButton}>Save</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={() => toggleEditMode(platform.platformPermanentId)}>
+                    <Text style={styles.editButton}>Edit</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
 
-                    <View style={{ width:responsiveWidth(96)}}>
-                    {editingPlatformId === platform.platformPermanentId ? ( 
-              <TouchableOpacity onPress={() => toggleEditMode(platform.platformPermanentId, platform.platformName)}>
-               <Text style={styles.editButton}>Save</Text>
-              </TouchableOpacity>
-            ) : ( // Render edit button if not in edit mode
-              <TouchableOpacity onPress={() => toggleEditMode(platform.platformPermanentId)}>
-               <Text style={styles.editButton}>Edit</Text>
-              </TouchableOpacity>
-            )}
-            </View>
 
-
-             
-              <View style={{
-                flexDirection: 'row', columnGap: responsiveWidth(10),
-                width: responsiveWidth(100), padding: responsiveWidth(1)
-              }}>
-                <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', }}>
-                  <ImageBackground style={{
-                    width: '102%',
-                    height: '102%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
-                  }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+              <View style={{ flexDirection: 'row', columnGap: responsiveWidth(10), width: responsiveWidth(100), padding: responsiveWidth(1) }}>
+                <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', flexWrap:'wrap' }}>
+                  <ImageBackground style={{ width: '102%', height: '102%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                  <Image source={{ uri: platform.platformImageURL }} style={{ width: responsiveWidth(10), height: 20 }} resizeMode='stretch'/>
                     <Text style={[styles.platformName, styles.border]}>{platform.platformName}</Text>
                   </ImageBackground>
                 </View>
@@ -261,16 +266,16 @@ const addImageWithTitle = async (platformId) => {
                   <View style={styles.industriesContainer}>
                     {platform.industries.map((industry, index) => (
                       <ImageBackground key={index} style={{ width: responsiveWidth(45), marginBottom: responsiveHeight(1), height: responsiveHeight(5.5), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                        <Text style={styles.industry}>{industry}</Text>
+                        <Image source={{ uri: industry.imageURL }} style={{ width: 20, height: 20 }} resizeMode='stretch' />
+                        <Text style={styles.industry}>{industry.industryName}</Text>
                       </ImageBackground>
                     ))}
                   </View>
                   <View style={styles.professionsContainer}>
                     {platform.professions.map((profession, index) => (
                       <View key={index} style={styles.professionContainer}>
-                        <ImageBackground style={{
-                          width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center'
-                        }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                        <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                          <Image source={{ uri: profession.imageURL }} style={{ width: 20, height: 20 }} resizeMode='stretch' />
                           <Text style={styles.profession}>{profession.professionName}</Text>
                         </ImageBackground>
                         {profession.subProfessions.map((subProfession, subIndex) => (
@@ -279,115 +284,69 @@ const addImageWithTitle = async (platformId) => {
                           </ImageBackground>
                         ))}
                       </View>
-
-
                     ))}
                   </View>
                   <View style={styles.professionContainer}>
-                    
-                    <ImageBackground style={{
-                      width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2),
-                    }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-
-             {editingPlatformId === platform.platformPermanentId ? (
-  <>
-    <TextInput
-      placeholder="Film Count"
-      value={filmCountInput}
-      onChangeText={text => setFilmCountInput(text)}
-      keyboardType="numeric"
-    />
-  </>
-) : (
-  <>
-    <Text style={{color:'black'}}>Film Count: {platform.filmCount}</Text>
-    {/* Additional platform details here if needed */}
-  </>
-)}
-                      
+                    <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2) }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                      {editingPlatformId === platform.platformPermanentId ? (
+                        <TextInput
+                          placeholder="Film Count"
+                          value={filmCountInput}
+                          onChangeText={text => setFilmCountInput(text)}
+                          keyboardType="numeric"
+                        />
+                      ) : (
+                        <Text style={{ color: 'black' }}>Film Count: {platform.filmCount}</Text>
+                      )}
                     </ImageBackground>
                   </View>
                   <View style={styles.professionContainer}>
-                    
-                    <ImageBackground style={{
-                      width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2),
-                    }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-
-              {editingPlatformId === platform.platformPermanentId ? (
-              <>
-                <TextInput
-                  placeholder="Net Worth"
-                  value={netWorthInput}
-                  onChangeText={text => setNetWorthInput(text)}
-                  keyboardType="numeric"
-                />
- 
-              </>
-            ) : (
-              // Else condition when not in edit mode
-              <Text style={{color:'black'}}>Networth: {platform.netWorth}</Text>
-            )}
-                      
+                    <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2) }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                      {editingPlatformId === platform.platformPermanentId ? (
+                        <TextInput
+                          placeholder="Net Worth"
+                          value={netWorthInput}
+                          onChangeText={text => setNetWorthInput(text)}
+                          keyboardType="numeric"
+                        />
+                      ) : (
+                        <Text style={{ color: 'black' }}>Net Worth: {platform.netWorth}</Text>
+                      )}
                     </ImageBackground>
                   </View>
                   <View style={styles.professionContainer}>
-                    
-                    <ImageBackground style={{
-                      width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2),
-                    }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-
-              {editingPlatformId === platform.platformPermanentId ? (
-              <>
-                <TextInput
-                  placeholder="Daily Salary"
-                  value={dailySalaryInput}
-                  onChangeText={text => setDailySalaryInput(text)}
-                  keyboardType="numeric"
-                />
-                {/* Add other TextInput fields for net worth and daily salary */}
-
-                {/* Save button */}
-               
-              </>
-            ) : (
-              // Else condition when not in edit mode
-              <Text style={{color:'black'}}>Daily Salery: {platform.dailySalary}</Text>
-            )}
-
-         
-                      
+                    <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2) }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                      {editingPlatformId === platform.platformPermanentId ? (
+                        <TextInput
+                          placeholder="Daily Salary"
+                          value={dailySalaryInput}
+                          onChangeText={text => setDailySalaryInput(text)}
+                          keyboardType="numeric"
+                        />
+                      ) : (
+                        <Text style={{ color: 'black' }}>Daily Salary: {platform.dailySalary}</Text>
+                      )}
                     </ImageBackground>
                   </View>
-
                 </View>
               </View>
-              <View style={{width:'100%'}}>
-              <Text style={{ fontSize: 25, color: '#323232', fontWeight: 'bold', marginLeft: 10, textDecorationLine: 'underline' }}>Projects</Text>
+              <View style={{ width: '100%' }}>
+                <Text style={{ fontSize: 25, color: '#323232', fontWeight: 'bold', marginLeft: 10, textDecorationLine: 'underline' }}>Projects</Text>
               </View>
-              <ScrollView horizontal contentContainerStyle={{margin:1}} style={{width:'100%', padding:responsiveWidth(1)}}>
-             
-                <View style={{marginRight:responsiveWidth(2)}}>
-                              <TouchableOpacity onPress={() => project(platform.platformPermanentId)} style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5",}} >
-                  <Image source={require('../../../Assets/Home_Icon_And_Fonts/plus_icon.png')}
-                      style={{width:80,height:80,alignSelf:'center',top:29}}/>
-              </TouchableOpacity>
-              </View>
-              {/* {platform.fileUrls.map((url, index) => (       
-<View style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5",marginRight:responsiveWidth(2)}} >  
-<Image key={index} source={{ uri: url }} style={{ width: '100%', height: '100%' }} resizeMode='stretch'/>
-                 
-                      </View>
-))}  */}
+              <ScrollView horizontal contentContainerStyle={{ margin: 1 }} style={{ width: '100%', padding: responsiveWidth(1) }}>
+                <View style={{ marginRight: responsiveWidth(2) }}>
+                  <TouchableOpacity onPress={() => project(platform.platformPermanentId)} style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5", }} >
+                    <Image source={require('../../../Assets/Home_Icon_And_Fonts/plus_icon.png')} style={{ width: 80, height: 80, alignSelf: 'center', top: 29 }} />
+                  </TouchableOpacity>
+                </View>
               </ScrollView>
-             
-
             </View>
           ))
         )}
       </ScrollView>
-
     </View>
   );
+  
 }
 
 const styles = StyleSheet.create({

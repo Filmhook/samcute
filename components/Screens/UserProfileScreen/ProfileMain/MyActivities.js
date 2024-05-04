@@ -995,41 +995,36 @@
 // })
 
 
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { responsiveWidth } from 'react-native-responsive-dimensions';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image } from 'react-native';
 import privateAPI from '../../../api/privateAPI';
 
-export default function Profession() {
+
+const YourComponent = () => {
   const [platformData, setPlatformData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editingPlatformId, setEditingPlatformId] = useState(null);
-  const [filmCountInput, setFilmCountInput] = useState('');
-  const [netWorthInput, setNetWorthInput] = useState('');
-  const [dailySalaryInput, setDailySalaryInput] = useState('');
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const fetchData = async () => {
     try {
-      
       const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=269`);
       const response = resp.data;
 
       const modifiedData = response.map(item => ({
         platformName: item.platformName,
-        industries: item.industryNames,
+        industries: item.industries.map(industry => ({
+          industryName: industry.industryName,
+          imageURL: `data:image/jpeg;base64,${industry.image}`, // Decode base64 to image URL
+        })),
         professions: item.professions.map(profession => ({
           professionName: profession.professionName,
           subProfessions: profession.subProfessionNames || [],
+          imageURL: `data:image/jpeg;base64,${profession.image}`, // Decode base64 to image URL
         })),
         filmCount: item.filmCount,
         netWorth: item.netWorth,
         dailySalary: item.dailySalary,
         platformPermanentId: item.platformPermanentId,
+        platformImageURL: `data:image/jpeg;base64,${item.platformImage}`, // Decode base64 to image URL
       }));
 
       setPlatformData(modifiedData);
@@ -1040,116 +1035,45 @@ export default function Profession() {
     }
   };
 
-  const toggleEditMode = (platformId) => {
-    if (platformId === editingPlatformId) {
-      // Save changes and exit edit mode
-      handleSave();
-      setEditingPlatformId(null);
-    } else {
-      // Enter edit mode for the selected platform
-      setEditingPlatformId(platformId);
-    }
-  };
+  useEffect(() => {
+    fetchData();
+  }, []); // Fetch data on component mount
 
-  const handleSave = async () => {
-    try {
-      const platform = platformData.find(platform => platform.platformPermanentId === editingPlatformId);
-      if (!platform) {
-        console.error('Platform not found for editing.');
-        return;
-      }
-
-      const response = await privateAPI.post(
-        'industryUser/updateIndustryUserPermanentDetails',
-        {
-          platformPermanentId: editingPlatformId,
-          filmCount: filmCountInput,
-          netWorth: netWorthInput,
-          dailySalary: dailySalaryInput,
-        },
-      );
-      Alert.alert('Update', `${platform.platformName} Updated`);
-
-      console.log('Platform details updated successfully:', response.data);
-
-      setFilmCountInput('');
-      setNetWorthInput('');
-      setDailySalaryInput('');
-
-      // Update the state with the new values
-      setPlatformData(prevState =>
-        prevState.map(p => {
-          if (p.platformPermanentId === editingPlatformId) {
-            return {
-              ...p,
-              filmCount: filmCountInput,
-              netWorth: netWorthInput,
-              dailySalary: dailySalaryInput,
-            };
-          }
-          return p;
-        })
-      );
-    } catch (error) {
-      console.error('Error updating platform details:', error);
-    }
-  };
+  if (loading) {
+    return <View><Text>Loading...</Text></View>;
+  }
 
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView style={{ width: responsiveWidth(100) }}>
-        {loading ? (
-          <Text style={{ textAlign: 'center' }}>Loading...</Text>
-        ) : (
-          platformData.map((platform, index) => (
-            <View key={index} style={{ marginVertical: 10, marginHorizontal: 20, padding: 10, backgroundColor: '#F5F5F5', borderRadius: 10 }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{platform.platformName}</Text>
-                <TouchableOpacity onPress={() => toggleEditMode(platform.platformPermanentId)}>
-                  <Text style={{ color: 'blue' }}>{editingPlatformId === platform.platformPermanentId ? 'Save' : 'Edit'}</Text>
-                </TouchableOpacity>
+    <View>
+      {platformData.map((platform, index) => (
+        <View key={index}>
+          <Text>{platform.platformName}</Text>
+          <Image source={{ uri: platform.platformImageURL }} style={{ width: 20, height: 20 }} resizeMode='stretch'/>
+          <Text>Industries:</Text>
+          <View>
+            {platform.industries.map((industry, index) => (
+              <View key={index}>
+                <Image source={{ uri: industry.imageURL }} style={{ width: 20, height: 20 }} resizeMode='stretch' />
+                <Text>{industry.industryName}</Text>
               </View>
-              <Text style={{ marginBottom: 5 }}>Industries: {platform.industries.join(', ')}</Text>
-              <Text style={{ marginBottom: 5 }}>Professions:</Text>
-              <View style={{ marginLeft: 20 }}>
-                {platform.professions.map((profession, profIndex) => (
-                  <View key={profIndex}>
-                    <Text>{profession.professionName}</Text>
-                    {profession.subProfessions.map((subProfession, subIndex) => (
-                      <Text key={subIndex} style={{ marginLeft: 20 }}>{subProfession}</Text>
-                    ))}
-                  </View>
-                ))}
+            ))}
+          </View>
+          <Text>Professions:</Text>
+          <View>
+            {platform.professions.map((profession, index) => (
+              <View key={index}>
+                <Image source={{ uri: profession.imageURL }} style={{ width: 20, height: 20 }} resizeMode='stretch' />
+                <Text>{profession.professionName}</Text>
               </View>
-              <Text style={{ marginBottom: 5 }}>Film Count: {platform.filmCount}</Text>
-              <Text style={{ marginBottom: 5 }}>Net Worth: {platform.netWorth}</Text>
-              <Text style={{ marginBottom: 5 }}>Daily Salary: {platform.dailySalary}</Text>
-              {editingPlatformId === platform.platformPermanentId && (
-                <View>
-                  <TextInput
-                    placeholder="Film Count"
-                    value={filmCountInput}
-                    onChangeText={text => setFilmCountInput(text)}
-                    keyboardType="numeric"
-                  />
-                  <TextInput
-                    placeholder="Net Worth"
-                    value={netWorthInput}
-                    onChangeText={text => setNetWorthInput(text)}
-                    keyboardType="numeric"
-                  />
-                  <TextInput
-                    placeholder="Daily Salary"
-                    value={dailySalaryInput}
-                    onChangeText={text => setDailySalaryInput(text)}
-                    keyboardType="numeric"
-                  />
-                </View>
-              )}
-            </View>
-          ))
-        )}
-      </ScrollView>
+            ))}
+          </View>
+          <Text>Film Count: {platform.filmCount}</Text>
+          <Text>Net Worth: {platform.netWorth}</Text>
+          <Text>Daily Salary: {platform.dailySalary}</Text>
+        </View>
+      ))}
     </View>
   );
-}
+};
+
+export default YourComponent;

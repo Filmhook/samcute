@@ -28,6 +28,8 @@ import Otp_GS from './otp_gs';
 import ForgotPasswordsecondpage from '../SignIn/ForgotPasswordsecondpage';
 import SignUpDob from './G_S_Dob';
 import SignUpCountry from './G_S_Country';
+import IndustryUpdateOne from './IndustryUpdateOne';
+import IndustryUpdateTwo from './IndustryUpdateTwo';
 
 const Stack = createNativeStackNavigator();
 
@@ -79,6 +81,11 @@ export default function SignUpRoot() {
                 options={{ headerShown: false }} />
 
 <Stack.Screen name='SignUpCountry' component={SignUpCountry}
+                options={{ headerShown: false }} />
+                
+<Stack.Screen name='IndustryUpdateOne' component={IndustryUpdateOne}
+                options={{ headerShown: false }} />
+                <Stack.Screen name='IndustryUpdateTwo' component={IndustryUpdateTwo}
                 options={{ headerShown: false }} />
 
 
