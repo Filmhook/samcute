@@ -41,12 +41,14 @@ export default function Handle_img_picker() {
   const handleImagePicker = () => {
     setImagePickerModalVisible(true);
   };
-  // for open option modal 
+  // for open option modal
+  console.log(`selected video state - ${JSON.stringify(selectedVideo)}`)
   const pickVideo = async () => {
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.video],
       });
+      console.log(`selected video - ${JSON.stringify(res)}`)
       setSelectedVideo(v => {
         return [...v, res[0]]
       });
@@ -124,12 +126,12 @@ export default function Handle_img_picker() {
       // If selectedVideo array has items, append each video to FormData
       if (selectedVideo.length > 0) {
         selectedVideo.forEach((vid, index) => {
-          const videoUriParts = vid.uri.split('.');
-          const fileType = videoUriParts[videoUriParts.length - 1];
+console.log(vid)
+
           formData.append(`files`, {
             uri: vid.uri,
-            name: `video_${index}.${fileType}`,
-            type: `video/${fileType}`
+            name: vid.name,
+            type: vid.type
           });
         });
       }
@@ -141,7 +143,7 @@ export default function Handle_img_picker() {
         body: formData,
         redirect: "follow"
       };
-
+console.log(`FormData : ${JSON.stringify(formData)}`)
       // Make a POST request using fetch
       const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/saveGalleryFiles`, requestOptions);
       const data = await response.json(); // Parse response JSON
