@@ -29,12 +29,12 @@ import { useRoute } from '@react-navigation/native';
 export default function VoiceCalling({ navigation }) {
 
     const route = useRoute();
-    const { remoteUserId, userName, loggedUserId } = route.params;
+    const { remoteUserId, userName, loggedUserId, channelToken, channelNameFromNotify } = route.params;
 
 
     const appId = '49c68e633e9c4a738530b1e37818b759'
-    const token = '007eJxTYEjYnj3Hd9OeIG7Rh9KR8zbJ/vE88fxX2N2o0wWf/k1o3r5BgcHEMtnMItXM2DjVMtkk0dzYwtTYIMkw1djcwtAiydzUUrxJO60hkJFB/8oXJkYGCATxWRhKUotLGBgA2OkhFg=='
-    const channelName = 'test';
+    const token = channelToken ? channelToken : '007eJxTYEjYnj3Hd9OeIG7Rh9KR8zbJ/vE88fxX2N2o0wWf/k1o3r5BgcHEMtnMItXM2DjVMtkk0dzYwtTYIMkw1djcwtAiydzUUrxJO60hkJFB/8oXJkYGCATxWRhKUotLGBgA2OkhFg=='
+    const channelName = channelNameFromNotify ? channelNameFromNotify : 'test';
     const uid = loggedUserId;
 
     const agoraEngineRef = useRef(null); // Agora engine instance
@@ -181,17 +181,18 @@ export default function VoiceCalling({ navigation }) {
                     <View style={styles.VideoallConatctCircle}>
                         <AntDesign name="user" size={70} color="black" />
                     </View>
-                    <Text style={styles.VideoallConatctText}> Ram</Text>
+                    <Text style={styles.VideoallConatctText}> {userName}</Text>
                     {(() => {
                         if (!remoteUid) {
                             return (
                                 <Text style={styles.CallingText}> Callling.....</Text>
                             )
-                        } else {
-                            return (
-                                <Text style={styles.timer}>{formatTime(timer)}</Text>
-                            )
                         }
+                        // } else {
+                        //     return (
+                        //         <Text style={styles.timer}>{formatTime(timer)}</Text>
+                        //     )
+                        // }
                     })()}
 
                 </View>

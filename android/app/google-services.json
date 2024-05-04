@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "873288333259",
-    "project_id": "fmpl-android",
-    "storage_bucket": "fmpl-android.appspot.com"
+    "project_number": "605193172597",
+    "project_id": "film-hook-92d46",
+    "storage_bucket": "film-hook-92d46.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:873288333259:android:763d73fcc434e328d7684e",
+        "mobilesdk_app_id": "1:605193172597:android:5328a02c3338fdcd35aa3c",
         "android_client_info": {
           "package_name": "com.projectfh"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB8ZVU3QKrvEHQSGz-h9Eu-uGeSsB_dV5k"
+          "current_key": "AIzaSyAfBdltGKLd0dpGogj5A34NOVo-aiA3MPA"
         }
       ],
       "services": {

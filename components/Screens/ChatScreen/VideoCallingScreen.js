@@ -29,10 +29,10 @@ export default function VideoCallingScreen({ navigation }) {
 
 
     const route = useRoute();
-    const { remoteUserId, userName, loggedUserId } = route.params;
+    const { remoteUserId, userName, loggedUserId, channelToken, channelNameFromNotify } = route.params;
     const appId = '49c68e633e9c4a738530b1e37818b759'
-    const token = '007eJxTYEjYnj3Hd9OeIG7Rh9KR8zbJ/vE88fxX2N2o0wWf/k1o3r5BgcHEMtnMItXM2DjVMtkk0dzYwtTYIMkw1djcwtAiydzUUrxJO60hkJFB/8oXJkYGCATxWRhKUotLGBgA2OkhFg=='
-    const channelName = 'test';
+    const token = channelToken ? channelToken : '007eJxTYLAVr+U7FHLsTdHMrRnHqnvSZ4a7PS55nF69RLvAh2nKNn8FBhPLZDOLVDNj41TLZJNEc2MLU2ODJMNUY3MLQ4skc1PL8C3GaQ2BjAypl3tYGBkgEMRnYShJLS5hYAAAIz8erQ=='
+    const channelName = channelNameFromNotify ? channelNameFromNotify : 'test';
     const uid = loggedUserId
 
     const agoraEngineRef = useRef(null); // Agora engine instance
@@ -43,7 +43,7 @@ export default function VideoCallingScreen({ navigation }) {
     const [isRunning, setIsRunning] = useState(false);
     const [remoteUserJoined, setRemoteUserJoined] = useState(false);
 
-
+    console.log(remoteUserId, userName, loggedUserId)
 
 
 
