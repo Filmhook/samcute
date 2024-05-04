@@ -8,6 +8,7 @@ import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/fire
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import privateAPI from '../../../api/privateAPI';
+import Video from 'react-native-video';
 
 
 export default function Handle_img_picker() {
@@ -242,7 +243,7 @@ export default function Handle_img_picker() {
             />
           )}
           {selectedVideo.length === 1 && !croppedImage && (
-            <Image
+            <Video
               source={{ uri: selectedVideo[0].uri }}
               style={{ width: responsiveWidth(75), height: responsiveHeight(30), marginBottom: responsiveHeight(1), borderRadius: responsiveWidth(1) }}
               controls
