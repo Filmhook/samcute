@@ -109,7 +109,6 @@ export default function Handle_img_picker() {
       if (croppedImage) {
         formData.append("category", "galleryImage");
       }
-
       else {
         formData.append("category", "galleryVideo");
       }
