@@ -111,42 +111,40 @@ const IndustryUpdateTwo = () => {
 
    
 
-const handleSave = async () => {
-    try {
-        const jwt = await AsyncStorage.getItem('jwt');
-        const id = await AsyncStorage.getItem('userId');
-        console.log(`User Id from IS Confirm ${id}`)
-
-        const headers = {
-            Authorization: `Bearer ${jwt}`,
-            'Content-Type': 'application/json'
-        };
-
-        const response = await PublicAPI.post(
-            `/industryUser/updatePermanentDetails?userId=269`,
-            makeData,
-            { headers }
-        );
-
-        console.log('Registration successful:', response.data);
-
-        // Show alert if response is okay
-        if (response.status === 200) {
-            Alert.alert(
-                'Success',
-                'Successfully updated',
-                [
-                    { text: 'OK', onPress: () => console.log('OK Pressed') }
-                ],
-                { cancelable: false }
+    const handleSave = async () => {
+        try {
+            const jwt = await AsyncStorage.getItem('jwt');
+            const id = await AsyncStorage.getItem('userId');
+            console.log(`User Id from IS Confirm ${id}`)
+    
+            const headers = {
+                Authorization: `Bearer ${jwt}`,
+                'Content-Type': 'application/json'
+            };
+    
+            const response = await PublicAPI.post(
+                `/industryUser/updatePermanentDetails?userId=${id}`,
+                makeData,
+                { headers }
             );
+    
+            console.log('Registration successful:', response.data);
+    
+            // Show alert if response is okay
+            if (response.status === 200) {
+                Alert.alert(
+                    'Success',
+                    'Successfully updated',
+                    [
+                        { text: 'OK', onPress: () => console.log('OK Pressed') }
+                    ],
+                    { cancelable: false }
+                );
+            }
+        } catch (error) {
+            console.error('Registration failed:',  error.response.data);
         }
-
-       
-    } catch (error) {
-        console.error('Registration failed:', error);
     }
-}
 
     
     return (

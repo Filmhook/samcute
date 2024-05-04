@@ -55,6 +55,8 @@ export default function Handle_img_picker() {
 
       console.log('video', selectedVideo)
       setPostModalVisible(true);
+      setImagePickerModalVisible(false);
+
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker

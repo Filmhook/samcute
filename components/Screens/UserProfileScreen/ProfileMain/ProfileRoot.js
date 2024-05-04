@@ -9,12 +9,14 @@ import Profession from './Profession'
 import CurrentIndustry from './Current_Industry'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Swiper from 'react-native-swiper'
-import MyActivities from './MyActivities'
+// import MyActivities from './MyActivities'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 
 import ImagePicker from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
+// import MyActivities from './MyActivities'
+import Myactive from './Myactive'
 
 // for firebase sirestore 
 // import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -30,7 +32,7 @@ export default function ProfileRoot() {
   // const [selectedImage, setSelectedImage] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
 
-  
+
 
   const openModal = () => {
 
@@ -62,8 +64,8 @@ export default function ProfileRoot() {
   const openGallery = () => {
     ImagePicker.openPicker({
       cropping: true,
-      width:  400,
-      height:  500,
+      width: 400,
+      height: 500,
       compressImageQuality: 1,
     }).then(image => {
       setSelectedImage({ uri: image.path });
@@ -80,8 +82,8 @@ export default function ProfileRoot() {
   const openGalleryCover = () => {
     ImagePicker.openPicker({
       cropping: true,
-      width:  400,
-      height:  500,
+      width: 400,
+      height: 500,
       compressImageQuality: 1,
     }).then(image => {
       setSelectedImage({ uri: image.path });
@@ -223,7 +225,7 @@ export default function ProfileRoot() {
           </View> */}
         <View style={styles.profilPic}>
           <TouchableOpacity onPress={openGallery}>
-            <Image source={selectedImage ? selectedImage : require('../../../Assets/app_logo/8641606.jpg')} style={styles.profileImage}  resizeMode='stretch' />
+            <Image source={selectedImage ? selectedImage : require('../../../Assets/app_logo/8641606.jpg')} style={styles.profileImage} resizeMode='stretch' />
             <Icon name="camera" size={11} color="#fff" style={styles.cameraIcon} />
           </TouchableOpacity>
           <Modal visible={showGallery} animationType="slide">
@@ -280,7 +282,7 @@ export default function ProfileRoot() {
           </View>
         </View>
 
-        <View style={{ position: 'absolute', top: responsiveHeight(60), marginLeft: responsiveWidth(5) }}>
+        {/* <View style={{ position: 'absolute', top: responsiveHeight(60), marginLeft: responsiveWidth(5) }}>
           <TouchableOpacity onPress={() => openModal()}  >
             <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/Chats-Menu.png')} style={{ width: responsiveWidth(12), height: responsiveHeight(5) }} />
           </TouchableOpacity>
@@ -324,7 +326,7 @@ export default function ProfileRoot() {
 
             </View>
           </Modal>
-        </View>
+        </View> */}
 
 
 
@@ -342,7 +344,8 @@ export default function ProfileRoot() {
 
         <Profession />
 
-        <MyActivities />
+        {/* <MyActivities /> */}
+        <Myactive />
 
 
       </ScrollView>
@@ -369,7 +372,7 @@ const styles = StyleSheet.create({
     // borderWidth:1,
     top: responsiveHeight(-12),
     left: responsiveWidth(0.5),
-   // backgroundColor: "#C1E7FA"
+    // backgroundColor: "#C1E7FA"
   },
   modalContainer: {
     // flex: 1,
@@ -447,13 +450,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#949EE9"
   },
   cameraIcon: {
-        position: 'absolute',
-        right: -19,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        padding: 8,
-        borderRadius: 12,
-      },
+    position: 'absolute',
+    right: -19,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    padding: 8,
+    borderRadius: 12,
+  },
   followings: {
     borderWidth: 1,
     height: responsiveHeight(4.8),
@@ -482,7 +485,7 @@ const styles = StyleSheet.create({
   profileImage: {
     width: responsiveHeight(18),
     height: responsiveHeight(25),
-     borderRadius: responsiveWidth(3),
+    borderRadius: responsiveWidth(3),
   },
   modalContainerP: {
     flex: 1,
@@ -498,29 +501,29 @@ const styles = StyleSheet.create({
   selectButton: {
     backgroundColor: '#007bff',
     padding: responsiveWidth(2),
-    width:responsiveWidth(60),
+    width: responsiveWidth(60),
     marginBottom: 10,
-    justifyContent:'center',
-    alignItems:'center',borderRadius:responsiveWidth(3)
+    justifyContent: 'center',
+    alignItems: 'center', borderRadius: responsiveWidth(3)
   },
   selectButtonText: {
     color: '#fff',
     fontSize: responsiveFontSize(2),
-    fontWeight:'500',
-    
+    fontWeight: '500',
+
   },
   cancelButton: {
     backgroundColor: '#dc3545',
     padding: responsiveWidth(2),
-    width:responsiveWidth(60),
+    width: responsiveWidth(60),
     marginBottom: 10,
-    justifyContent:'center',
-    alignItems:'center',borderRadius:responsiveWidth(3)
+    justifyContent: 'center',
+    alignItems: 'center', borderRadius: responsiveWidth(3)
   },
   cancelButtonText: {
     color: '#fff',
     fontSize: responsiveFontSize(2),
-    fontWeight:'500',
+    fontWeight: '500',
   },
 
 

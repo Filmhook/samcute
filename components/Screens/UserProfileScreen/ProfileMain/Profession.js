@@ -103,7 +103,9 @@ setIsEditing(true)
   
 const fetchData = async () => {
   try {
-    const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=269`);
+    const userId = await AsyncStorage.getItem('userId');
+    console.log('check userid' ,userId )
+    const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=${userId}`);
     const response = resp.data;
 
     const modifiedData = response.map(item => ({
@@ -258,7 +260,9 @@ const addImageWithTitle = async (platformId) => {
               <View style={{ flexDirection: 'row', columnGap: responsiveWidth(10), width: responsiveWidth(100), padding: responsiveWidth(1) }}>
                 <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', flexWrap:'wrap' }}>
                   <ImageBackground style={{ width: '102%', height: '102%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                  <Image source={{ uri: platform.platformImageURL }} style={{ width: responsiveWidth(10), height: 20 }} resizeMode='stretch'/>
+                  <View style={{width:responsiveWidth(9), height:responsiveHeight(5), right:responsiveWidth(2)}}>
+                  <Image source={{ uri: platform.platformImageURL }} style={{  width: '100%', height: '80%'  }} resizeMode='stretch'/>
+                  </View>
                     <Text style={[styles.platformName, styles.border]}>{platform.platformName}</Text>
                   </ImageBackground>
                 </View>
@@ -266,7 +270,9 @@ const addImageWithTitle = async (platformId) => {
                   <View style={styles.industriesContainer}>
                     {platform.industries.map((industry, index) => (
                       <ImageBackground key={index} style={{ width: responsiveWidth(45), marginBottom: responsiveHeight(1), height: responsiveHeight(5.5), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                        <Image source={{ uri: industry.imageURL }} style={{ width: 20, height: 20 }} resizeMode='stretch' />
+                        <View style={{width:responsiveWidth(9), height:responsiveHeight(5), right:responsiveWidth(2)}}>
+                        <Image source={{ uri: industry.imageURL }} style={{ width: '100%', height: '80%' }} resizeMode='stretch' />
+                        </View>
                         <Text style={styles.industry}>{industry.industryName}</Text>
                       </ImageBackground>
                     ))}
@@ -275,11 +281,14 @@ const addImageWithTitle = async (platformId) => {
                     {platform.professions.map((profession, index) => (
                       <View key={index} style={styles.professionContainer}>
                         <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                          <Image source={{ uri: profession.imageURL }} style={{ width: 20, height: 20 }} resizeMode='stretch' />
+                        <View style={{width:responsiveWidth(9), height:responsiveHeight(5), right:responsiveWidth(2)}}>
+                          <Image source={{ uri: profession.imageURL }} style={{ width: '100%', height: '80%' }} resizeMode='stretch' />
+                          </View>
                           <Text style={styles.profession}>{profession.professionName}</Text>
                         </ImageBackground>
                         {profession.subProfessions.map((subProfession, subIndex) => (
                           <ImageBackground key={subIndex} style={{ width: responsiveWidth(30), marginBottom: responsiveHeight(1), height: responsiveHeight(5.5), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                            
                             <Text style={styles.subProfession}>{subProfession}</Text>
                           </ImageBackground>
                         ))}

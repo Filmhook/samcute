@@ -45,11 +45,124 @@ export default function Biography() {
     // You can send the updated profile details to your backend or update the state accordingly
   };
 
+const bio=()=>{
+    if(userType === "IndustryUser"){
+      return(
+        <View>
+        <View style={style.bio_content_section}>
+        <ImageBackground
+          style={style.inputContainer}
+          source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+          resizeMode="stretch">
+          <View
+            style={{
+              width: responsiveWidth(7.2),
+              height: responsiveHeight(4),
+              marginLeft: responsiveWidth(1),
+              marginTop: responsiveHeight(0.5),
+            }}>
+            <Image
+              source={require('../../../Assets/Userprofile_And_Fonts/update/Work_Exp.png')}
+              style={{ width: '100%', height: '100%' }}
+            />
+          </View>
+          <View style={style.bioTextContainer}>
+            {isEditing ? (
+              <TextInput
+                style={{
+                  fontSize: responsiveFontSize(2),
+                  color: '#000000',
+                  fontWeight: '500',
+                  fontFamily: 'Times New Roman',
+                  top: responsiveHeight(-4.5),
+                  textAlign:'center',
+                  left:responsiveWidth(3)
+                }}
+                value={workExperience}
+                onChangeText={setworkExperience}
+                placeholder="Enter your Experience"
+              />
+            ) : (
+              <Text
+                style={{
+                  fontSize: responsiveFontSize(2),
+                  color: '#000000',
+                  fontWeight: '500',
+                  fontFamily: 'Times New Roman',
+                  top: responsiveHeight(-3.5),
+                }}>
+                {workExperience}
+              </Text>
+            )}
+          </View>
+        </ImageBackground>
+      </View>
+   
+      <View style={style.bio_content_section}>
+        <ImageBackground
+          style={style.inputContainer}
+          source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+          resizeMode="stretch">
+          <View
+            style={{
+              width: responsiveWidth(7.2),
+              height: responsiveHeight(4),
+              marginLeft: responsiveWidth(1),
+              marginTop: responsiveHeight(0.5),
+            }}>
+            <Image
+              source={require('../../../Assets/Userprofile_And_Fonts/update/Booking.png')}
+              style={{ width: '100%', height: '100%' }}
+            />
+          </View>
+          <View style={style.bioTextContainer}>
+            {isEditing ? (
+              <TextInput
+                style={{
+                  fontSize: responsiveFontSize(2),
+                  color: '#000000',
+                  fontWeight: '500',
+                  fontFamily: 'Times New Roman',
+                  top: responsiveHeight(-4.5),
+                  textAlign:'center',
+                  left:responsiveWidth(3)
+                }}
+                value={workSchedule}
+                onChangeText={setWorkSchedule}
+                placeholder="Enter your Schedule"
+              />
+            ) : (
+              <Text
+                style={{
+                  fontSize: responsiveFontSize(2),
+                  color: '#000000',
+                  fontWeight: '500',
+                  fontFamily: 'Times New Roman',
+                  top: responsiveHeight(-3.5),
+                }}>
+                {workSchedule}
+              </Text>
+            )}
+          </View>
+        </ImageBackground>
+      </View>
+      </View>
+      )
+    }
+    return null;
+  }
+
+const [userType,setuserType]=useState('');
   useEffect(() => {
     const fetchData = async () => {
       try {
         const userId = await AsyncStorage.getItem('userId');
         const jwt = await AsyncStorage.getItem('jwt');
+        const value=await AsyncStorage.getItem('usertype')
+        if(value !== null){
+         setuserType(value)
+        }
+        console.log('usertype:',value)
 
         const response = await PublicAPI.get(`user/getUserByUserId?userId=${userId}`, {
           headers: {
@@ -65,10 +178,14 @@ export default function Biography() {
         setDistrict(user.district || '');
       } catch (error) {
         console.error('Error fetching user data:', error);
+        const customError = "usertype not get from AsyncStorage"
+        // console.log(error,"usertype not get from AsyncStorage")
         if (error.response) {
           console.error('Response status:', error.response.status);
           console.error('Response data:', error.response.data);
+        
         }
+        throw customError;
       }
     };
 
@@ -478,105 +595,11 @@ export default function Biography() {
               </View>
             </ImageBackground>
           </View>
-          {/* ///////////////////////////////////////////////*/}
-          <View style={style.bio_content_section}>
-            <ImageBackground
-              style={style.inputContainer}
-              source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-              resizeMode="stretch">
-              <View
-                style={{
-                  width: responsiveWidth(7.2),
-                  height: responsiveHeight(4),
-                  marginLeft: responsiveWidth(1),
-                  marginTop: responsiveHeight(0.5),
-                }}>
-                <Image
-                  source={require('../../../Assets/Userprofile_And_Fonts/update/Work_Exp.png')}
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </View>
-              <View style={style.bioTextContainer}>
-                {isEditing ? (
-                  <TextInput
-                    style={{
-                      fontSize: responsiveFontSize(2),
-                      color: '#000000',
-                      fontWeight: '500',
-                      fontFamily: 'Times New Roman',
-                      top: responsiveHeight(-4.5),
-                      textAlign:'center',
-                      left:responsiveWidth(3)
-                    }}
-                    value={workExperience}
-                    onChangeText={setworkExperience}
-                    placeholder="Enter your Experience"
-                  />
-                ) : (
-                  <Text
-                    style={{
-                      fontSize: responsiveFontSize(2),
-                      color: '#000000',
-                      fontWeight: '500',
-                      fontFamily: 'Times New Roman',
-                      top: responsiveHeight(-3.5),
-                    }}>
-                    {workExperience}
-                  </Text>
-                )}
-              </View>
-            </ImageBackground>
+          <View>
+          {bio()}
           </View>
           {/* ///////////////////////////////////////////////*/}
-          <View style={style.bio_content_section}>
-            <ImageBackground
-              style={style.inputContainer}
-              source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-              resizeMode="stretch">
-              <View
-                style={{
-                  width: responsiveWidth(7.2),
-                  height: responsiveHeight(4),
-                  marginLeft: responsiveWidth(1),
-                  marginTop: responsiveHeight(0.5),
-                }}>
-                <Image
-                  source={require('../../../Assets/Userprofile_And_Fonts/update/Booking.png')}
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </View>
-              <View style={style.bioTextContainer}>
-                {isEditing ? (
-                  <TextInput
-                    style={{
-                      fontSize: responsiveFontSize(2),
-                      color: '#000000',
-                      fontWeight: '500',
-                      fontFamily: 'Times New Roman',
-                      top: responsiveHeight(-4.5),
-                      textAlign:'center',
-                      left:responsiveWidth(3)
-                    }}
-                    value={workSchedule}
-                    onChangeText={setWorkSchedule}
-                    placeholder="Enter your Schedule"
-                  />
-                ) : (
-                  <Text
-                    style={{
-                      fontSize: responsiveFontSize(2),
-                      color: '#000000',
-                      fontWeight: '500',
-                      fontFamily: 'Times New Roman',
-                      top: responsiveHeight(-3.5),
-                    }}>
-                    {workSchedule}
-                  </Text>
-                )}
-              </View>
-            </ImageBackground>
-          </View>
-
+          
           {/* ///////////////////////////////////////////////*/}
         </View>
       </View>
@@ -669,4 +692,3 @@ const style = StyleSheet.create({
     alignItems:'center'
   },
 });
-

@@ -1,414 +1,19 @@
-
-// import { Button, View, Text, TouchableOpacity, TextInput, StyleSheet } from "react-native";
-// import React, { useState } from 'react';
-// import { SelectList } from 'react-native-dropdown-select-list';
-// import DateTimePicker from '@react-native-community/datetimepicker';
-
-
-// export default function ScreenOne({ navigation }) {
-
-//   const [TitleText, setTitleText] = useState('');
-//   const [selected, setSelected] = useState('');
-//   const [startDate, setStartDate] = useState(new Date());
-//   const [endDate, setEndDate] = useState();
-//   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-//   const [showEndDatePicker, setShowEndDatePicker] = useState();
-//   // const navigation = useNavigation();
-
-//   const About = () => {
-//     if (selected.trim() === '' || TitleText.trim() === '') {
-//       alert('Title, Description, and Expire Date cannot be empty.');
-//       return;
-//     }
-
-//     // // Reset the state
-//     setTitleText('');
-//     setSelected('');
-
-//     // Navigate to ScreenTwo
-//     // navigation.navigate('ScreenTwo');
-//   };
-
-//   const onStartDateChange = (event, selectedDate) => {
-//     const currentDate = selectedDate || startDate;
-//     setShowStartDatePicker(false);
-//     setStartDate(currentDate);
-//   };
-
-//   const onEndDateChange = (event, selectedDate) => {
-//     const currentDate = selectedDate || endDate;
-//     setShowEndDatePicker(false);
-//     setEndDate(currentDate);
-//   };
-
-//   const data = [
-//     { key: '1', value: 'Freasher' },
-//     { key: '2', value: 'Experienced' },
-//     { key: '3', value: 'Freasher/Experienced' },
-//   ];
-//   return (
-//     <View>
-//       <TouchableOpacity
-//         onPress={() => navigation.navigate("ScreenTwo")}
-//         style={{ backgroundColor: 'blue', borderRadius: 10, marginTop: 10, width: 100, alignSelf: 'center', top:50, left:140 }}
-//       >
-//         <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center', padding: 10 }}>
-//           Next
-//         </Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity
-//         onPress={() => navigation.navigate("SearchBars")}
-//         style={{ backgroundColor: 'blue', borderRadius: 10, marginTop: 10, width: 100, alignSelf: 'center', top:5, right:130}}
-//       >
-//         <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center', padding: 10 }}>Back</Text>
-//         </TouchableOpacity>
-//        <View style={{ borderWidth: 3, borderRadius: 10, margin: 5, borderColor: 'blue', backgroundColor: 'white', top: 80, overflow: 'scroll', paddingBottom: 50, shadowColor: '#080504', shadowOffset: { width: -2, height: 40 }, shadowOpacity: 0.2, shadowRadius: 50, elevation: 20 }}>
-//         <Text style={{ fontSize: 18, fontWeight: 'bold', alignSelf: 'center' }}>Create a Job Post</Text>
-//         <View style={{ margin: 5, top: 20 }}>
-//           <TextInput
-//             placeholder="Write Your Job Title Here..!!"
-//             multiline
-//             value={TitleText}
-//             onChangeText={setTitleText}
-//             style={{
-//               borderWidth: 1,
-//               borderColor: 'gray',
-//               borderRadius: 10,
-//               padding: 8,
-//               overflow: 'scroll'
-//             }}
-//           />
-//         </View>
-//         <View style={{ top: 20 }}>
-//           <SelectList
-//             onSelect={() => alert(` Your Candidates Experience will be ${selected}`)}
-
-//             setSelected={(val) => setSelected(val)}
-//             data={data}
-//             save="value"
-//             fontFamily='lato'
-//             placeholder='Select Your Candidates Experience...'
-//             search={false}
-//             boxStyles={{ borderRadius: 10, margin: 5 }} // override default styles
-//             dropdownStyles={{ margin: 5, borderRadius: 10, height: 150 }}
-//           />
-//         </View>
-//         <View style={style.Date}>
-//           <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={{ backgroundColor: 'blue', borderRadius: 10, marginTop: 10, width: 320 }}>
-//             <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center', padding: 10 }}>
-//               Select Start Date
-//             </Text>
-//           </TouchableOpacity>
-
-//           {showStartDatePicker && (
-//             <DateTimePicker
-//               value={startDate}
-//               mode="date"
-//               display="spinner"
-//               onChange={onStartDateChange}
-//             />
-//           )}
-
-//           <TouchableOpacity onPress={() => {
-//             setEndDate(endDate || new Date());
-//             setShowEndDatePicker(true);
-//           }} style={{ backgroundColor: 'blue', borderRadius: 10, marginTop: 10, width: 320 }}>
-//             <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center', padding: 10 }}>
-//               Select End Date
-//             </Text>
-//           </TouchableOpacity>
-
-//           {showEndDatePicker && (
-//             <DateTimePicker
-//               value={endDate || new Date()}
-//               mode="date"
-//               display="spinner"
-//               onChange={onEndDateChange}
-//             />
-//           )}
-//           <View style={style.Text}>
-//             <View style={style.TextStart}>
-//               <Text>{`Start Date : ${startDate.toDateString()}`}</Text>
-//             </View>
-//             <View style={style.TextEnd}>
-//               <Text>{`End Date : ${endDate ? endDate.toDateString() : ''}`}</Text>
-//             </View>
-//           </View>
-//         </View>
-//     </View>
-//     </View>
-//   );
-// }
-// const style = StyleSheet.create({
-//   Date: {
-//     margin: 5,
-//     top: 12
-//   },
-//   Text: {
-//     margin: 0,
-//     width: 320,
-//     top: 10
-//   },
-//   TextStart: {
-//     margin: 5
-//   },
-//   TextEnd: {
-//     margin: 5
-//   }
-// });
-// =================================================================
-
-
-
-
-// import { Button, View, Text, TouchableOpacity, TextInput, StyleSheet, Image } from "react-native";
-// import React, { useState } from 'react';
-// import { SelectList } from 'react-native-dropdown-select-list';
-// import DateTimePicker from '@react-native-community/datetimepicker';
-// import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
-
-
-// export default function ScreenOne({ navigation }) {
-
-//   const [TitleText, setTitleText] = useState('');
-//   const [selected, setSelected] = useState('');
-//   const [startDate, setStartDate] = useState(new Date());
-//   const [endDate, setEndDate] = useState();
-//   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-//   const [showEndDatePicker, setShowEndDatePicker] = useState();
-//   // const navigation = useNavigation();
-
-//   const isValid = () => {
-//     return TitleText.trim() !== '' && selected.trim() !== '' && startDate && endDate;
-//   };
-
-//   const handleNext = () => {
-//     if (isValid()) {
-//       if (endDate && startDate) {
-//         if (endDate >= startDate || endDate.toDateString() === startDate.toDateString()) {
-//           navigation.navigate("ScreenTwo", { TitleText, selected, startDate, endDate });
-//         } else {
-//           alert('End date must be greater than or equal to the start date.');
-//         }
-//       } else {
-//         alert('Please select both start and end dates.');
-//       }
-//     } else {
-//       alert('Please fill in all fields before proceeding.');
-//     }
-//   };
-
-
-
-//   const onStartDateChange = (event, selectedDate) => {
-//     const currentDate = selectedDate || startDate;
-//     console.log(selectedDate)
-//     setShowStartDatePicker(false);
-//     setStartDate(currentDate);
-//   };
-
-//   const onEndDateChange = (event, selectedDate) => {
-//     const currentDate = selectedDate || endDate;
-//     setShowEndDatePicker(false);
-//     setEndDate(currentDate);
-//   };
-
-//   const data = [
-//     { key: '1', value: 'Freasher' },
-//     { key: '2', value: 'Experienced' },
-//     { key: '3', value: 'Freasher/Experienced' },
-//   ];
-//   console.log(TitleText, selected, startDate, endDate)
-
-
-//   return (
-//     <View style={{ height: '100%' ,alignItems:'center',justifyContent:'center'}}>
-
-
-
-
-//         <View style={{ borderRadius: responsiveWidth(4), backgroundColor: '#e0e3e6', overflow: 'scroll', width: responsiveWidth(94),paddingVertical:responsiveHeight(2) }}>
-//         <View style={style.headerContainer}>
-//           <Image style={{
-//             height: responsiveHeight(12),
-//             width: responsiveWidth(25), alignSelf: 'center'
-//           }} source={require("../../Assets/Login_page/FH_logos.png")} />
-//           {/* <Text style={styles.header}>Login</Text> */}
-//         </View>
-
-//           <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: 'bold', alignSelf: 'center', color: 'black' }}>Create a Job Post</Text>
-
-//           <View style={{ margin: responsiveWidth(2) }}>
-//             <TextInput
-//               placeholder="Looking for a ?"
-//               multiline
-//               value={TitleText}
-//               placeholderTextColor="black"
-//               onChangeText={setTitleText}
-//               style={{
-//                 borderWidth: 1,
-//                 borderColor: '#004242',
-//                 borderRadius: responsiveWidth(2),
-//                 padding: responsiveHeight(1),
-//                 overflow: 'scroll',
-//                 color: 'black',
-
-//                 paddingHorizontal:responsiveWidth(5),
-//                 width: responsiveWidth(82), alignSelf: 'center'
-//               }}
-//             />
-//           </View>
-//           <View style={{ margin: responsiveWidth(2) }}>
-//             <SelectList
-//               onSelect={() => alert(` Your Candidates Experience will be ${selected}`)}
-//               setSelected={(val) => setSelected(val)}
-//               data={data}
-//               save="value"
-//               inputStyles={{color:'black'}}
-//               //fontFamily='lato'
-//               placeholder='Select Your Candidates Experience...'
-//               search={false}
-//               boxStyles={{ borderRadius: responsiveWidth(2), borderColor: '#004242', width: responsiveWidth(82), alignSelf: 'center', }} // override default styles
-//               dropdownStyles={{ margin: '1%', borderRadius: responsiveWidth(2), height: responsiveHeight(13), width: responsiveWidth(82), left: responsiveWidth(3),backgroundColor: '#616161' }}
-//             />
-//           </View>
-//           <View style={style.Date}>
-//             <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={{ backgroundColor: 'black', borderRadius: responsiveWidth(2), marginTop: responsiveHeight(0), width: responsiveWidth(80), alignSelf: 'center' }}>
-//               <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center', padding: responsiveWidth(3) }}>
-//                 Select Start Date
-//               </Text>
-//             </TouchableOpacity>
-
-//             {showStartDatePicker && (
-//               <DateTimePicker
-//                 value={startDate}
-//                 mode="date"
-//                 display="spinner"
-//                 minimumDate={new Date()} // Set minimum date as today's date
-//                 onChange={onStartDateChange}
-//               />
-//             )}
-
-//             <TouchableOpacity onPress={() => {
-//               setEndDate(endDate || new Date());
-//               setShowEndDatePicker(true);
-//             }} style={{ backgroundColor: 'black', borderRadius: responsiveWidth(2), marginTop: responsiveHeight(1), width: responsiveWidth(80), alignSelf: 'center' }}>
-//               <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center', padding: responsiveWidth(3) }}>
-//                 Select End Date
-//               </Text>
-//             </TouchableOpacity>
-//             {showEndDatePicker && (
-//               <DateTimePicker
-//                 value={endDate || startDate} // Set initial value to start date if no end date selected
-//                 mode="date"
-//                 display="spinner"
-//                 minimumDate={ new Date()}
-//                 onChange={onEndDateChange}
-//               />
-//             )}
-//             <View style={style.Text}>
-//               <View style={style.TextStart}>
-//                 <Text style={{color:'black'}}>{`Start Date : ${startDate.toDateString().split('T')[0]}`}</Text>
-//               </View>
-//               <View style={style.TextEnd}>
-//                 <Text  style={{color:'black'}}>{`End Date : ${endDate ? endDate.toDateString().split('T')[0] : ''}`}</Text>
-//               </View>
-//             </View>
-//           </View>
-//           <View style={{ flexDirection: 'row', columnGap: responsiveWidth(20), marginTop:responsiveHeight(5) ,marginLeft:responsiveWidth(8)}}>
-//         <TouchableOpacity
-//             onPress={() => navigation.navigate("SearchBars")}
-
-//             style={{ borderRadius: responsiveWidth(2),
-//               justifyContent: 'center',
-
-//               alignItems: 'center',
-
-//               borderWidth: responsiveWidth(0.4),
-//               backgroundColor: 'black',
-//               height: responsiveHeight(6),
-//               width: responsiveWidth(30), }}
-//           >
-//             {/* <Image
-//               source={require('../../Assets/Audition_Icons_Fonts/back.png')}
-//               style={{ width: responsiveWidth(10), height: responsiveHeight(5) }}
-//             /> */}
-//             <Text style={{ color: 'white',
-//                 fontWeight: 'bold',
-//                 textAlign: 'center', fontSize: responsiveFontSize(2), height: responsiveHeight(3)}}>Back</Text>
-//           </TouchableOpacity>
-//           <TouchableOpacity
-//             onPress={() => handleNext({ TitleText, selected, startDate, endDate })}
-
-//             style={{  backgroundColor: '#616161',
-//             // padding: responsiveWidth(2.5),
-//             borderRadius: responsiveWidth(2),
-//             justifyContent: 'center',
-//             alignItems: 'center',
-//             // alignSelf: 'center',
-//             height: responsiveHeight(6),
-//             width: responsiveWidth(30),
-//            // bottom: responsiveHeight(1.5)
-//            }}
-//           >
-//              <Text style={{ color: 'white',
-//                 fontWeight: 'bold',
-//                 textAlign: 'center', fontSize: responsiveFontSize(2), height: responsiveHeight(3)}}>Next</Text>
-
-//           </TouchableOpacity>
-//         </View>
-//         </View>
-
-
-
-//     </View>
-//   );
-// }
-// const style = StyleSheet.create({
-//   Date: {
-//     margin: '2%',
-//     top: '5%',
-//     //  borderWidth:1
-//   },
-//   headerContainer: {
-//     // flexDirection: 'row',
-//     // alignSelf: 'center',
-//     marginTop:responsiveHeight(1),
-//     //bottom:responsiveHeight(5),
-//    // top:responsiveHeight(5),
-//     height: responsiveHeight(15),
-//     width: responsiveWidth(30),
-//     left:responsiveWidth(30)
-//     //bottom: responsiveHeight(1)
-
-
-//   },
-//   Text: {
-//     margin: 0,
-//     width: '89%',
-//     top: '3%',
-
-//   },
-//   TextStart: {
-//     margin: '2%',
-//     marginLeft: '6.5%',
-
-//   },
-//   TextEnd: {
-//     margin: '2%',
-//     marginLeft: '6.5%',
-
-//   }
-// });
-//----------------------------------------------------------------//
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ImageBackground, FlatList, TextInput, Image, } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ImageBackground, FlatList, TextInput, Image, Alert, } from 'react-native';
 import { responsiveHeight, responsiveWidth, responsiveFontSize } from 'react-native-responsive-dimensions';
 import ImagePicker from 'react-native-image-crop-picker';
 
 import RazorpayCheckout from 'react-native-razorpay';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { Calendar } from 'react-native-calendars';
+import { Picker } from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import privateAPI from '../../api/privateAPI';
+import { launchImageLibrary } from 'react-native-image-picker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { useNavigation } from '@react-navigation/native';
+
+
 
 export default function SOne() {
 
@@ -423,19 +28,30 @@ export default function SOne() {
   const [title, settitle] = useState('');
   const [fresher, setfresher] = useState('');
   const [startDates, setStartDate] = useState(null);
+  const navigation = useNavigation();
+
 
   const edit_profile_pic = async () => {
-    try {
-      const image = await ImagePicker.openPicker({
-        cropping: true,
-      });
-      if (image) {
-        console.log(image.path);
-        setProfilepic(image.path);
+    const options = {
+      mediaType: 'photo',
+      includeBase64: false,
+      maxHeight: 300,
+      maxWidth: 300,
+    };
+
+    launchImageLibrary(options, (response) => {
+      console.log(response);
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('Image picker error: ', response.error);
+      } else {
+        const profilepic = response.assets[0]; // Access the first element of the assets array
+        if (profilepic) {
+          setProfilepic({ uri: profilepic.uri, type: profilepic.type, name: profilepic.fileName });
+        }
       }
-    } catch (error) {
-      console.log('Image picker operation canceled or failed:', error);
-    }
+    });
   };
   const isFormValid = () => {
     return (
@@ -460,13 +76,14 @@ export default function SOne() {
 
   const addItem = () => {
     if (inputText.trim() !== '') {
-      setItems((prevItems) => [
+      setItems(prevItems => [
         ...prevItems,
-        { id: prevItems.length + 1, text: inputText.trim() }, // Trim the input text
+        { id: prevItems.length + 1, text: inputText.trim() } // Add new item to the array
       ]);
       setInputText(''); // Clear inputText after adding an item
     }
   };
+
 
   const handleItemPress = (itemId) => {
     setEditingItemId(itemId);
@@ -528,14 +145,120 @@ export default function SOne() {
 
   const handleStartDateSelect = (date) => {
     setStartDate(date.dateString);
-    hideStartDatePicker();
+    hideEndDatePicker(); // No need to explicitly hide end date picker here
   };
 
   const handleEndDateSelect = (date) => {
     setEndDate(date.dateString);
-
-    hideEndDatePicker();
   };
+
+  const [selectedLabel, setSelectedLabel] = useState('Accounts Team');
+  const [address, setAddress] = useState('');
+  const [Message, setMessage] = useState('');
+  const labels = [
+    'Accounts Team',
+    'Action Dept',
+    'Actor',
+    'Actors Assistant',
+    'Animator',
+    'Art Dept',
+    'Cameraman',
+    'Casting Director',
+    'Celebrity Manager',
+    'Choreography',
+    'Costume Dept',
+    'Crane Operator',
+    'Digital Artist',
+    'Digital Creator',
+    'Digital Imagine Dept',
+    'Director',
+    'Dubbing',
+    'Editor',
+    'Lighting Dept',
+    'Makeup & Hair Stylist',
+    'Marketing Dept',
+    'Music Dept',
+    'Other',
+    'PRO',
+    'Producer',
+    'Production Dept',
+    'Prosthetic',
+    'Sound Effect Engg',
+    'Special Effects',
+    'Still Photographer',
+    'Technicians',
+    'VFX Dept',
+    'Writter',
+    'publicity Designer',
+  ];
+
+
+  const post = async () => {
+    try {
+      const id = await AsyncStorage.getItem('userId');
+      const jwt = await AsyncStorage.getItem("jwt");
+
+      const textValues = items.map(item => item.text).join(', ');
+      console.log(textValues);
+
+
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer " + jwt);
+      myHeaders.append("Content-Type", "multipart/form-data"); // Set Content-Type header
+
+      const formData = new FormData();
+      formData.append("auditionCreatedBy", id); // Use id fetched from AsyncStorage
+      formData.append("auditionTitle", selectedLabel);
+      formData.append("auditionExperience", selected);
+      formData.append("auditionCategory", "2");
+      formData.append("auditionExpireOn", selectedDate); // Correct date format
+      formData.append("auditionRoles", textValues); // Corrected
+      formData.append("fileInputWebModelcategory", "Audition");
+      formData.append("auditionAddress", address);
+      formData.append("auditionMessage", Message);
+
+      if (profilepic) {
+        const imageUriParts = profilepic.uri.split('.');
+        const fileType = imageUriParts[imageUriParts.length - 1];
+        formData.append("fileInputWebModel.files[0]", {
+          uri: profilepic.uri,
+          name: `image.${fileType}`,
+          type: `image/${fileType}`,
+        });
+      }
+
+      const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/audition/saveAudition', {
+        method: 'POST',
+        body: formData,
+        headers: myHeaders
+      });
+
+      if (response.ok) {
+        const responseData = await response.json(); // Parse response data
+        console.log('posted', responseData);
+        Alert.alert('Posted successfully');
+        makePayment();
+        navigation.navigate('SearchBars');
+
+
+      } else {
+        console.log('Response Error:', response.status);
+        Alert.alert('Posted unsuccessfully');
+      }
+    } catch (error) {
+      console.log('Error response', error);
+      Alert.alert('Posted unsuccessfully');
+
+      if (error.response) {
+        console.log('Status:', error.response.status);
+        console.log('Data:', error.response.data);
+        console.log('Headers:', error.response.headers);
+      }
+    }
+  };
+
+
+
 
 
 
@@ -569,6 +292,34 @@ export default function SOne() {
       alert(`Error: ${error.code} | ${error.description}`);
     });
   }
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [editedDate, setEditedDate] = useState('');
+
+  console.log('dddd', selectedDate)
+
+
+
+
+
+
+
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    const formattedDate = date.toISOString().split('T')[0];
+    setSelectedDate(formattedDate);
+    hideDatePicker();
+  };
+
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
 
@@ -584,7 +335,44 @@ export default function SOne() {
           padding: responsiveWidth(5),
           alignItems: 'center',
         }} resizeMode="stretch">
-          <TextInput style={styles.input} placeholder="Write the title for your project?" value={title} onChangeText={settitle} />
+
+          <View style={styles.input}>
+
+            <Picker
+              selectedValue={selectedLabel}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedLabel(itemValue)
+              }>
+              {labels.map((label) => (
+                <Picker.Item key={label} label={label} value={label} />
+              ))}
+            </Picker>
+            {/* <Text> {selectedLabel}</Text> */}
+          </View>
+          <View style={styles.input2}>
+            <TextInput
+              placeholder='Address'
+              onChangeText={(text) => setAddress(text)}
+              value={address}
+              multiline
+              style={{
+                overflow: 'scroll',
+              }}
+            />
+          </View>
+          <View style={styles.input2}>
+            <TextInput
+              placeholder='Messsage'
+              onChangeText={(text) => setMessage(text)}
+              value={Message}
+              multiline
+              style={{
+                overflow: 'scroll',
+              }}
+            />
+
+          </View>
+
           {/* <TouchableOpacity onPress={handleImageOption} style={styles.imagePickerButton}>
           <Text style={styles.buttonText}>Upload Logo</Text>
         </TouchableOpacity> */}
@@ -592,20 +380,15 @@ export default function SOne() {
             <View style={{ width: responsiveWidth(10), height: responsiveHeight(5), }}>
               <TouchableOpacity onPress={edit_profile_pic} style={{ width: '500%', height: '300%', borderRadius: 5, right: responsiveWidth(20), top: responsiveHeight(-5) }}>
                 {profilepic ? (
-                  <Image source={{ uri: profilepic }} style={{ width: '100%', height: '100%', }} resizeMode='stretch' />
+                  <Image source={{ uri: profilepic.uri }} style={{ width: '100%', height: '100%' }} resizeMode='stretch' />
                 ) : (
                   <View style={{ alignItems: 'center', top: responsiveHeight(4.5) }}>
-                    <Image
-                      source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-cameraicon.png')}
-                      style={{ width: '20%', height: '50%', top: responsiveHeight(5.4), left: responsiveWidth(20) }}
-                      resizeMode='stretch'
-                    />
+                    <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-cameraicon.png')} style={{ width: '20%', height: '50%', top: responsiveHeight(5.4), left: responsiveWidth(20) }} resizeMode='stretch' />
                     <Text style={{ top: responsiveHeight(-3), fontSize: 18 }}>Upload Logo</Text>
                   </View>
-
                 )}
-
               </TouchableOpacity>
+
             </View>
           </View>
           <View>
@@ -652,46 +435,31 @@ export default function SOne() {
               </TouchableOpacity>
             )}
           </View>
-          {/* <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton}>
-          <Text style={styles.buttonText1}> Date</Text>
-        </TouchableOpacity>
-        {showDatePicker && (
-          <DateTimePicker
-            value={dob}
-            mode='date'
-            display='default'
-            // maximumDate={new Date()}
-            onChange={onDateChange}
-          />
-        )}
-        
-        <View style={styles.selectedDateContainer}>
-          <Text style={styles.selectedDateText}>{dob.toDateString()}</Text>
-        </View> */}
+
           <View>
             <Text style={{ color: 'black', fontWeight: 'bold', fontSize: responsiveWidth(4), right: responsiveWidth(19), top: responsiveHeight(-4) }}>Audition ends on</Text>
           </View>
           <View style={{ flexDirection: 'row', marginHorizontal: responsiveWidth(4), columnGap: responsiveWidth(10), top: responsiveHeight(-8) }}>
-            <TouchableOpacity onPress={showStartDatePickers} style={{ width: responsiveWidth(30), height: responsiveHeight(5), borderWidth: responsiveWidth(0.3), borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', flexDirection: 'row', columnGap: responsiveWidth(3), left: responsiveWidth(22), }} >
-              <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/Booking.png')} style={{ width: responsiveWidth(6), height: responsiveHeight(3) }} />
-              <Text style={{ color: 'black', fontWeight: 'bold' }}>{startDates ? startDates : ''} </Text></TouchableOpacity>
+            <TouchableOpacity onPress={showDatePicker} style={{ width: responsiveWidth(30), height: responsiveHeight(5), borderWidth: responsiveWidth(0.3), borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', flexDirection: 'row', columnGap: responsiveWidth(3), left: responsiveWidth(22), }} >
+              {/* <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/Booking.png')} style={{ width: responsiveWidth(6), height: responsiveHeight(3) }} /> */}
 
+
+              <Text style={styles.dateText}>{selectedDate ? selectedDate : 'YYYY-MM-DD'}</Text>
+
+              <Image source={require('../../Assets/Userprofile_And_Fonts/calander_icon.png')} style={{ width: responsiveWidth(6), height: responsiveHeight(3), right: responsiveWidth(6) }} />
+            </TouchableOpacity>
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode="date"
+              // maximumDate={maximumDate}
+              // minimumDate={minimumDate}
+              onConfirm={handleConfirm}
+              onCancel={hideDatePicker}
+            />
+
+            {/* {dobError? <Text style={styles.errorMessage}>{dobError}</Text> : null } */}
           </View>
-          {showStartDatePicker && (
-            <Calendar
-              style={styles.calendar}
-              onDayPress={handleStartDateSelect}
-              markedDates={{ [startDates]: { selected: true } }}
-            />
-          )}
 
-          {showEndDatePicker && (
-            <Calendar
-              style={styles.calendar}
-              onDayPress={handleEndDateSelect}
-              markedDates={{ [endDates]: { selected: true } }}
-            />
-          )}
           <View style={{ right: 105, }}>
             <Text style={{ fontSize: responsiveFontSize(1.5), color: 'black', fontWeight: 'bold', right: responsiveWidth(8), top: responsiveHeight(-5) }}>Posted by:</Text>
           </View>
@@ -699,7 +467,7 @@ export default function SOne() {
       </View>
 
       <TouchableOpacity style={{ backgroundColor: 'black', width: responsiveWidth(20), height: responsiveHeight(3.5), margin: 4, borderRadius: responsiveWidth(2), left: responsiveWidth(30) }} >
-        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: responsiveHeight(2), left: responsiveWidth(2.5), top: responsiveHeight(0.5) }} onPress={makePayment}>Post Ad</Text>
+        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: responsiveHeight(2), left: responsiveWidth(2.5), top: responsiveHeight(0.5) }} onPress={() => { post(); }} >Post Ad</Text>
       </TouchableOpacity>
 
     </ScrollView>
@@ -731,6 +499,15 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     height: responsiveHeight(5),
+    borderWidth: 1,
+    borderRadius: responsiveWidth(2),
+    marginBottom: responsiveHeight(2),
+    paddingHorizontal: responsiveWidth(2),
+    color: 'black',
+    fontWeight: 'bold'
+  },
+  input2: {
+    width: '100%',
     borderWidth: 1,
     borderRadius: responsiveWidth(2),
     marginBottom: responsiveHeight(2),
@@ -867,7 +644,3 @@ const styles = StyleSheet.create({
 });
 
 // //---------------------------------------------------------------//
-
-
-
-

@@ -43,6 +43,7 @@ import { NavigationContainer } from "@react-navigation/native";
 
 
 import SampleFeed from "./sampleFeed";
+import Postview from "./Postview";
 
 
 const Stack = createNativeStackNavigator();
@@ -50,15 +51,15 @@ const Stack = createNativeStackNavigator();
 export default function AuditionRoot() {
   return (
     <Stack.Navigator initialRouteName="SearchBars">
-      <Stack.Screen name="FloatingButton" component={FloatingButton} options={{headerShown: false}}/>
-      <Stack.Screen name="SearchBars" component={SearchBar} options={{headerShown: false}}/>
-      <Stack.Screen name="Timeline" component={Timeline} options={{headerShown: false}}/>
-      <Stack.Screen name="AccountsTeamScreen" component={AccountsTeamScreen} options={{headerShown:false}}/>
+      <Stack.Screen name="FloatingButton" component={FloatingButton} options={{ headerShown: false }} />
+      <Stack.Screen name="SearchBars" component={SearchBar} options={{ headerShown: false }} />
+      <Stack.Screen name="Timeline" component={Timeline} options={{ headerShown: false }} />
+      <Stack.Screen name="AccountsTeamScreen" component={AccountsTeamScreen} options={{ headerShown: false }} />
       <Stack.Screen name="ScreenOne" component={ScreenOne} options={{ headerShown: false }} />
-      <Stack.Screen name="ScreenTwo" component={ScreenTwo} options={{ headerShown: false }}/>
-      <Stack.Screen name="ScreenThree" component={ScreenThree} options={{headerShown: false}}/>
-    
-      <Stack.Screen name="SampleFeed" component={SampleFeed}/>
+      <Stack.Screen name="ScreenTwo" component={ScreenTwo} options={{ headerShown: false }} />
+      <Stack.Screen name="ScreenThree" component={ScreenThree} options={{ headerShown: false }} />
+      <Stack.Screen name="Postview" component={Postview} options={{ headerShown: false }} />
+      <Stack.Screen name="SampleFeed" component={SampleFeed} />
     </Stack.Navigator>
 
   )

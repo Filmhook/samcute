@@ -4,7 +4,7 @@ import Modal from 'react-native-modal'
 import ImagePicker from 'react-native-image-crop-picker'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import privateApi from "../../api/privateAPI"
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import Video from 'react-native-video'
 
 export default function Postfeedcontainor() {
   const [userPost, setUserPost] = useState([]);
@@ -25,7 +25,7 @@ export default function Postfeedcontainor() {
     fetchUserPost();
 
     // Set up interval to fetch data every 10 minutes
-    const intervalId = setInterval(fetchUserPost, 10 * 60 * 1000); // 10 minutes
+    const intervalId = setInterval(fetchUserPost, 5 * 60 * 1000); // 5 minutes
 
     // Clean up interval on unmount
     return () => clearInterval(intervalId);
@@ -37,6 +37,8 @@ export default function Postfeedcontainor() {
   const Datas = ({ item }) => {
     const [imageUrl, setImageUrl] = useState(item.filePath)
     const [caption, setCaption] = useState("");
+    const [hitLike, setHitLike] = useState(false);
+    const [likeId, setLikeId] = useState(null);
 
     const [like, setLike] = useState(item.likes || 0); // Initialize likes with the value from the item
     const [hitlike, setHitlike] = useState(false);
@@ -47,50 +49,6 @@ export default function Postfeedcontainor() {
 
 
 
-    const blobToBase64 = async (blob) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = () => reject(new Error('Failed to convert blob to base64'));
-        reader.readAsDataURL(blob);
-      });
-    };
-
-    // const fetchImage = async (fileId) => {
-    //   try {
-    //     console.log(`Fetching File id - ${fileId}`)
-    //     const jwt = await AsyncStorage.getItem("jwt");
-    //     const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/gallery/downloadGalleryFile?userId=3&category=Gallery&fileId=${fileId}`, {
-    //       headers: {
-    //         Authorization: `Bearer ${jwt}`
-    //       }
-    //     });
-
-    //     if (!response.ok) {
-    //       throw new Error('Failed to fetch images');
-    //     }
-
-    //     const imageBlob = await response.blob();
-
-    //     const base64Data = await blobToBase64(imageBlob);
-
-    //     // Assuming you receive multiple images as base64 data separated by a delimiter
-    //     const base64Images = base64Data.split('delimiter');
-
-
-    //     // console.log(base64Images)
-    //     console.log("Blob fetching...")
-    //     setImageUrl(base64Images)
-    //   } catch (error) {
-    //     console.error(error);
-    //     Alert.alert('Error', 'Failed to fetch images');
-    //   }
-    // };
-    // // for number format functions
-
-    // useEffect(() => {
-    //   fetchImage(item.fileId)
-    // }, []);
 
 
 
@@ -104,27 +62,53 @@ export default function Postfeedcontainor() {
       return usformatter.format(number)
     }
 
-    // for number format functions
-    // ==============================================
-    //for like and dislike
+
 
 
     const handleLikePress = async (postId) => {
       try {
-        const likeResponse = await privateApi.post('action/addLike', { postId });
+        if (!likeId) {
+          // User hasn't liked the post yet, so call addLike API
+          const likeResponse = await privateApi.post('action/addLike', { postId });
 
-        if (likeResponse.status === 200) {
-          console.log('Like posted successfully for post with id:', postId);
-          setLike(like + 1); // Update the like count
-          setHitlike(true);
+          if (likeResponse.status === 200) {
+            const responseData = likeResponse.data;
+            if (responseData && responseData.data && responseData.data.likeInfo) {
+              const newLikeId = responseData.data.likeInfo.likeId;
+              console.log('Like posted successfully for post with id:', postId);
+              setLike(like + 1); // Update the like count
+              setHitLike(true); // Set like status to true
+              setLikeId(newLikeId); // Store the new likeId
+            } else {
+              throw new Error('Invalid response data for addLike');
+            }
+          } else {
+            throw new Error('Failed to post like');
+          }
         } else {
-          throw new Error('Failed to post like');
+          // User has already liked the post, so call updateLike API
+          const status = !hitLike; // Toggle like/dislike status
+          const response = await privateApi.post('action/updateLike', {
+            likeId: likeId,
+            status: status
+          });
+
+          if (response.status === 200) {
+            console.log(`Like ${status ? 'added' : 'removed'} successfully for post with id:`, postId);
+            setLike(status ? like + 1 : like - 1); // Update the like count based on like/dislike action
+            setHitLike(status); // Set like status based on the updated action
+          } else {
+            throw new Error(`Failed to ${status ? 'add' : 'remove'} like`);
+          }
         }
       } catch (error) {
         console.error('Error:', error.message);
-        Alert.alert('Error', 'Failed to add like');
+        Alert.alert('Error', error.message);
       }
     };
+
+
+
 
     // Call the function to fetch data and post like
 
@@ -146,8 +130,6 @@ export default function Postfeedcontainor() {
 
     const [postId, setPostId] = useState(null); // Add postId state
     const [userId, setUserId] = useState(null);
-    const [postUrl, setPostUrl] = useState(null);
-
 
     useEffect(() => {
       setPostId(item.id); // Set postId when item changes
@@ -156,11 +138,6 @@ export default function Postfeedcontainor() {
     useEffect(() => {
       setUserId(item.userId);
     }, [item.userId]);
-
-    useEffect(() => {
-      setPostUrl(item.postUrl);
-    }, [item.postUrl]);
-
 
 
 
@@ -309,28 +286,8 @@ export default function Postfeedcontainor() {
     };
 
 
-
-
-    // const onSharePress = async (postId, userId) => {
-    //   console.log(postId, userId);
-    //   try {
-    //     const response = await privateApi.post('action/addShare', {
-    //       userId: userId,
-    //       postId: postId
-    //     });
-    //     console.log(response.data);
-    //     if (response.status === 200) {
-    //       console.log('Post shared successfully');
-    //     } else {
-    //       console.log('Share failed');
-    //     }
-    //   } catch (error) {
-    //     console.error('Error sharing post:', error.message);
-    //   }
-    // };
-
     const onSharePress = async (postUrl, userId) => {
-     
+
       const options = {
         // Your default message
         // message: `${item.caption} `,
@@ -486,11 +443,14 @@ export default function Postfeedcontainor() {
 
 
             <TouchableOpacity>
-              <View
-                style={{ borderColor: "grey", width: responsiveWidth(100), height: responsiveHeight(50), }}>
-                <Image source={{ uri: imageUrl }}
-                  style={{ width: "100%", height: '100%' }} />
+              <View style={{ borderColor: "grey", width: responsiveWidth(100), height: responsiveHeight(50) }}>
+                {imageUrl.endsWith('.mp4') || imageUrl.endsWith('.mov') ? ( // Check if the URL ends with a video extension
+                  <Video source={{ uri: imageUrl }} style={{ width: "100%", height: '100%' }} />
+                ) : (
+                  <Image source={{ uri: imageUrl }} style={{ width: "100%", height: '100%' }} />
+                )}
               </View>
+
             </TouchableOpacity>
 
             <View
