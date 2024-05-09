@@ -22,30 +22,28 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRoute } from '@react-navigation/native'; // Import useRoute hook
-
-
+import privateAPI from '../../api/privateAPI';
 
 export default function VideoCallingScreen({ navigation }) {
 
-
     const route = useRoute();
-    const { remoteUserId, userName, loggedUserId, channelToken, channelNameFromNotify } = route.params;
+    const { loginedUsername, remoteUserId, userName, loggedUserId, channelToken, channelNameFromNotify } = route.params;
     const appId = '49c68e633e9c4a738530b1e37818b759'
-    const token = channelToken ? channelToken : '007eJxTYLAVr+U7FHLsTdHMrRnHqnvSZ4a7PS55nF69RLvAh2nKNn8FBhPLZDOLVDNj41TLZJNEc2MLU2ODJMNUY3MLQ4skc1PL8C3GaQ2BjAypl3tYGBkgEMRnYShJLS5hYAAAIz8erQ=='
-    const channelName = channelNameFromNotify ? channelNameFromNotify : 'test';
-    const uid = loggedUserId
+    const [token, setToken] = useState(channelToken);
+    const channelName = channelNameFromNotify ? channelNameFromNotify : (loggedUserId.toString() + remoteUserId.toString());
+    const uid = parseInt(loggedUserId)
 
     const agoraEngineRef = useRef(null); // Agora engine instance
     const [isJoined, setIsJoined] = useState(false); // Indicates if the local user has joined the channel
-    const [remoteUid, setRemoteUid] = useState(remoteUserId); // Uid of the remote user
+    const [remoteUid, setRemoteUid] = useState(parseInt(remoteUserId)); // Uid of the remote user
     const [message, setMessage] = useState(''); // Message to the user
     const [timer, setTimer] = useState(0); // Timer in seconds
     const [isRunning, setIsRunning] = useState(false);
     const [remoteUserJoined, setRemoteUserJoined] = useState(false);
+    const [FcmTokenOfRemoteUser, setFCMTokenOfRemoteUser] = useState(null);
 
-    console.log(remoteUserId, userName, loggedUserId)
 
-
+    // console.log(remoteUserId, userName, loggedUserId)
 
     const getPermission = async () => {
         if (Platform.OS === 'android') {
@@ -56,11 +54,51 @@ export default function VideoCallingScreen({ navigation }) {
         }
     };
 
-    useEffect(() => {
-        // Initialize Agora engine when the app starts
-        setupVideoSDKEngine();
 
-    });
+
+    const GetFCMTokenOfRemoteUser = async () => {
+
+
+        try {
+            const res = await privateAPI.get(`/chat/getFirebaseTokenByuserId?userId=${parseInt(remoteUserId)}`);
+            console.log("FCM of Remote user", res.data.data)
+            SendCalligNotifcationToRemoteUser(res.data.data)
+            setFCMTokenOfRemoteUser(null)
+            setFCMTokenOfRemoteUser(res.data.data)
+
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+
+
+
+    useEffect(() => {
+        setupVideoSDKEngine();
+    }, []);
+
+
+
+
+    const SendCalligNotifcationToRemoteUser = async (FCMToken) => {
+
+        try {
+            const res = await privateAPI.post('/chat/send-fcm-message', {
+                token: FCMToken,
+                userName: loginedUsername,
+                callType: "video",
+                userId: loggedUserId.toString(),
+                channelName: channelName,
+                channelToken: token.toString()
+            });
+            console.log("calling notification status!", res.data)
+        } catch (error) {
+            console.error("FCM Sedn Error", error)
+        }
+
+    }
 
     const setupVideoSDKEngine = async () => {
         try {
@@ -72,8 +110,10 @@ export default function VideoCallingScreen({ navigation }) {
                 throw new Error('Failed to initialize Agora Engine');
             } else {
                 console.log("Video Call initilazed")
+                join()
             }
-            join()
+
+
 
             agoraEngine.registerEventHandler({
                 onJoinChannelSuccess: () => {
@@ -81,10 +121,12 @@ export default function VideoCallingScreen({ navigation }) {
                     setIsJoined(true);
                     console.log('Successfully joined the channel')
                     startTimer()
+                    GetFCMTokenOfRemoteUser()
+
                 },
                 onUserJoined: (_connection, Uid) => {
                     setMessage('Remote user joined with uid ' + Uid);
-                    setRemoteUid(Uid);
+                    setRemoteUid(parseInt(Uid));
                     setRemoteUserJoined(true)
                     console.log('Remote user joined with uid ' + Uid)
 
@@ -107,6 +149,9 @@ export default function VideoCallingScreen({ navigation }) {
     };
 
     const join = async () => {
+        console.log('Attempt to JOin', channelName, token, uid)
+
+
         if (isJoined) {
             return;
         }
@@ -115,7 +160,7 @@ export default function VideoCallingScreen({ navigation }) {
                 ChannelProfileType.ChannelProfileCommunication,
             );
             agoraEngineRef.current?.startPreview();
-            agoraEngineRef.current?.joinChannel(token, channelName, uid, {
+            agoraEngineRef.current?.joinChannel(token, channelName, parseInt(uid), {
                 clientRoleType: ClientRoleType.ClientRoleBroadcaster,
             });
         } catch (e) {
@@ -167,14 +212,16 @@ export default function VideoCallingScreen({ navigation }) {
         return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
 
+    console.log("tmail", isJoined, remoteUserJoined, uid)
 
-    if (isJoined && remoteUserJoined && uid) {
+
+    if ((isJoined && remoteUserJoined && uid) || channelNameFromNotify) {
         return (
             <SafeAreaView style={styles.main}>
                 <View style={styles.cameraView}>
                     <React.Fragment key={remoteUid}>
                         <RtcSurfaceView
-                            canvas={{ uid: remoteUid }} style={styles.videoView} />
+                            canvas={{ uid: parseInt(remoteUid) }} style={styles.videoView} />
                         {/* <Text style={{ color: 'black' }}>Remote user uid: {remoteUid}</Text> */}
                     </React.Fragment>
                     <Text style={styles.info}>{message}</Text>
@@ -186,12 +233,12 @@ export default function VideoCallingScreen({ navigation }) {
                         </View>
                         <View style={styles.BtnsFrontViewBottom}>
                             <View style={[styles.BtnsFrontViewBottomCont, { height: '100%' }]}>
-                                <View style={styles.LoggedUserScreen}>
+                                <TouchableOpacity style={styles.LoggedUserScreen} onPress={join}>
                                     <React.Fragment key={0}>
                                         <RtcSurfaceView canvas={{ uid: 0 }} style={styles.videoView} />
                                         <></>
                                     </React.Fragment>
-                                </View>
+                                </TouchableOpacity>
                             </View>
                             <View style={[styles.BtnsFrontViewBottomCont, {
 
@@ -223,9 +270,9 @@ export default function VideoCallingScreen({ navigation }) {
                     <Text style={styles.VideoCallText}> Video Call</Text>
                 </View>
                 <View style={[styles.VideoCallWaitinConat, { flex: 1, flexDirection: 'column' }]}>
-                    <View style={styles.VideoallConatctCircle}>
+                    <TouchableOpacity style={styles.VideoallConatctCircle} onPress={join}>
                         <AntDesign name="user" size={70} color="black" />
-                    </View>
+                    </TouchableOpacity>
                     <Text style={styles.VideoallConatctText}>{userName}</Text>
                     <Text style={styles.CallingText}> Callling.....</Text>
 

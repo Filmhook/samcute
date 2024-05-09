@@ -23,28 +23,29 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRoute } from '@react-navigation/native';
-
+import privateAPI from '../../api/privateAPI';
 
 
 export default function VoiceCalling({ navigation }) {
 
     const route = useRoute();
-    const { remoteUserId, userName, loggedUserId, channelToken, channelNameFromNotify } = route.params;
-
-
+    const { loginedUsername, remoteUserId, userName, loggedUserId, channelToken, channelNameFromNotify } = route.params;
     const appId = '49c68e633e9c4a738530b1e37818b759'
-    const token = channelToken ? channelToken : '007eJxTYEjYnj3Hd9OeIG7Rh9KR8zbJ/vE88fxX2N2o0wWf/k1o3r5BgcHEMtnMItXM2DjVMtkk0dzYwtTYIMkw1djcwtAiydzUUrxJO60hkJFB/8oXJkYGCATxWRhKUotLGBgA2OkhFg=='
-    const channelName = channelNameFromNotify ? channelNameFromNotify : 'test';
-    const uid = loggedUserId;
+    const [token, setToken] = useState(channelToken ? channelToken : '007eJxTYOCs6Z7OXvEkbHVq2zKLWSu5sw/UmUQv3uG671LLZn+x+FUKDCaWyWYWqWbGxqmWySaJ5sYWpsYGSYapxuYWhhZJ5qaWslrWaQ2BjAxCisasjAwQCOKzMJSkFpcwMAAAysccSA==');
+    const channelName = channelNameFromNotify ? channelNameFromNotify : (loggedUserId.toString() + remoteUserId.toString());
+    const uid = parseInt(loggedUserId)
 
     const agoraEngineRef = useRef(null); // Agora engine instance
     const [isJoined, setIsJoined] = useState(false); // Indicates if the local user has joined the channel
-    const [remoteUid, setRemoteUid] = useState(1); // Uid of the remote user
+    const [remoteUid, setRemoteUid] = useState(remoteUserId); // Uid of the remote user
     const [message, setMessage] = useState(''); // Message to the user
-
     const [timer, setTimer] = useState(0); // Timer in seconds
     const [isRunning, setIsRunning] = useState(false);
-    const [audioEnable, setAudioDisable] = useState(true)
+    const [remoteUserJoined, setRemoteUserJoined] = useState(false);
+    const [FcmTokenOfRemoteUser, setFCMTokenOfRemoteUser] = useState(null);
+
+
+    // console.log(remoteUserId, userName, loggedUserId)
 
     const getPermission = async () => {
         if (Platform.OS === 'android') {
@@ -55,14 +56,75 @@ export default function VoiceCalling({ navigation }) {
         }
     };
 
+    const GetchannelToken = async () => {
+        try {
+            const res = await privateAPI.post('/agora/getRTCToken', {
+                userId: loggedUserId.toString(),
+                channelName: loggedUserId.toString() + remoteUserId.toString(),
+                role: 2,
+                expirationTimeInSeconds: 3600
+            });
+            setToken(res.data.data)
+            console.log("channel Token: ", res.data.data)
+            console.log("Chaneel Name", loggedUserId.toString() + remoteUserId.toString())
+
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const GetFCMTokenOfRemoteUser = async () => {
+
+
+        try {
+            const res = await privateAPI.get(`/chat/getFirebaseTokenByuserId?userId=${remoteUserId}`);
+            console.log("FCM of Remote user", res.data.data)
+            SendCalligNotifcationToRemoteUser(res.data.data)
+            setFCMTokenOfRemoteUser(null)
+            setFCMTokenOfRemoteUser(res.data.data)
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    useEffect(() => {
+        setupVideoSDKEngine();
+
+        GetchannelToken()
+
+
+        GetFCMTokenOfRemoteUser()
+
+    }, []);
 
 
     useEffect(() => {
-        // Initialize Agora engine when the app starts
-        setupVoiceSDKEngine();
-    });
+        if (FcmTokenOfRemoteUser) {
+            join()
+        }
+    }, [FcmTokenOfRemoteUser]);
 
-    const setupVoiceSDKEngine = async () => {
+    const SendCalligNotifcationToRemoteUser = async (FCMToken) => {
+
+        try {
+            const res = await privateAPI.post('/chat/send-fcm-message', {
+                token: FCMToken,
+                userName: loginedUsername,
+                callType: "voice",
+                userId: loggedUserId.toString(),
+                channelName: channelName,
+                channelToken: token.toString()
+            });
+            console.log("calling notification status!", res.data)
+        } catch (error) {
+            console.error("FCM Sedn Error", error)
+        }
+
+    }
+
+    const setupVideoSDKEngine = async () => {
         try {
             // use the helper function to get permissions
             if (Platform.OS === 'android') { await getPermission() };
@@ -72,33 +134,48 @@ export default function VoiceCalling({ navigation }) {
                 throw new Error('Failed to initialize Agora Engine');
             } else {
                 console.log("Voice Call initilazed")
-                join()
-
             }
+
+
+
             agoraEngine.registerEventHandler({
                 onJoinChannelSuccess: () => {
-                    console.log('Successfully joined the channel ' + channelName);
+                    setMessage('Successfully joined the channel ' + channelName);
                     setIsJoined(true);
+                    console.log('Successfully joined the channel')
                     startTimer()
+                    if (!channelNameFromNotify) {
+                        SendCalligNotifcationToRemoteUser()
+                    }
                 },
                 onUserJoined: (_connection, Uid) => {
-                    console.log('Remote user joined with uid ' + Uid);
+                    setMessage('Remote user joined with uid ' + Uid);
                     setRemoteUid(Uid);
+                    setRemoteUserJoined(true)
+                    console.log('Remote user joined with uid ' + Uid)
+
                 },
                 onUserOffline: (_connection, Uid) => {
-                    console.log('Remote user left the channel. uid: ' + Uid);
-                    setRemoteUid(0);
+                    setMessage('Remote user left the channel. uid: ' + Uid);
+                    setRemoteUid(null);
+                    console.log('Remote user left the channel. uid: ' + Uid)
+
                 },
             });
             agoraEngine.initialize({
                 appId: appId,
+                channelProfile: ChannelProfileType.ChannelProfileLiveBroadcasting,
             });
+            agoraEngine.enableVideo();
         } catch (e) {
             console.log(e);
         }
     };
 
     const join = async () => {
+        console.log('fcm sent')
+
+
         if (isJoined) {
             return;
         }
@@ -106,6 +183,7 @@ export default function VoiceCalling({ navigation }) {
             agoraEngineRef.current?.setChannelProfile(
                 ChannelProfileType.ChannelProfileCommunication,
             );
+            agoraEngineRef.current?.startPreview();
             agoraEngineRef.current?.joinChannel(token, channelName, uid, {
                 clientRoleType: ClientRoleType.ClientRoleBroadcaster,
             });
@@ -119,14 +197,14 @@ export default function VoiceCalling({ navigation }) {
             agoraEngineRef.current?.leaveChannel();
             setRemoteUid(0);
             setIsJoined(false);
-            navigation.goBack()
             stopTimer()
             setMessage('You left the channel');
+            console.log("Voice Call distoryed")
+            navigation.goBack()
         } catch (e) {
             console.log(e);
         }
     };
-
 
     useEffect(() => {
         let interval;
@@ -158,17 +236,6 @@ export default function VoiceCalling({ navigation }) {
         return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
 
-    const EnableDisEnbaudio = () => {
-        if (audioEnable) {
-            agoraEngineRef.current.muteLocalAudioStream(false)
-            setAudioDisable(false)
-        } else {
-            agoraEngineRef.current.muteLocalAudioStream(true)
-            setAudioDisable(true)
-
-        }
-    }
-
     if (uid) {
 
         return (
@@ -183,21 +250,22 @@ export default function VoiceCalling({ navigation }) {
                     </View>
                     <Text style={styles.VideoallConatctText}> {userName}</Text>
                     {(() => {
-                        if (!remoteUid) {
+                        if ((isJoined && remoteUserJoined && uid) || channelNameFromNotify) {
+                            return (
+                                <Text style={styles.timer}>{formatTime(timer)}</Text>
+
+                            )
+                        }
+                        else {
                             return (
                                 <Text style={styles.CallingText}> Callling.....</Text>
                             )
                         }
-                        // } else {
-                        //     return (
-                        //         <Text style={styles.timer}>{formatTime(timer)}</Text>
-                        //     )
-                        // }
                     })()}
 
                 </View>
-                <View style={[styles.VideoCallWaitinConat, { justifyContent: remoteUid ? 'space-between' : 'center' }]}>
-                    {remoteUid && (
+                <View style={[styles.VideoCallWaitinConat, { justifyContent: ((isJoined && remoteUserJoined && uid) || channelNameFromNotify) ? 'space-between' : 'center' }]}>
+                    {((isJoined && remoteUserJoined && uid) || channelNameFromNotify) && (
                         <MaterialIcons name={audioEnable ? "volume-up" : "volume-off"} size={24} color="black" onPress={EnableDisEnbaudio} />
                     )}
                     <TouchableOpacity style={styles.EndCallBTNView} onPress={leave}>

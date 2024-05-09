@@ -53,7 +53,7 @@ const ChatScreen = ({ navigation }) => {
   const chatManager = chatClient.chatManager;
   const [chatMessageStatusm, setChatMessageStatus] = React.useState([]);
 
-
+  const [loginedUsername, setLoginedUsername] = useState("")
 
   // Outputs console logs.
   useEffect(() => {
@@ -73,7 +73,9 @@ const ChatScreen = ({ navigation }) => {
 
   const GETAsuncStorage = async () => {
     const UID = await AsyncStorage.getItem('id');
+    const username = await AsyncStorage.getItem('username')
     setUid(parseInt(UID))
+    setLoginedUsername(username)
   }
 
 
@@ -107,7 +109,6 @@ const ChatScreen = ({ navigation }) => {
         message: content,
         chatReceiverId: username,
       });
-      console.log(res.data)
       GetAllMessages()
     } catch (error) {
       console.error(error)
@@ -141,6 +142,7 @@ const ChatScreen = ({ navigation }) => {
             const res = privateAPI.post('/chat/saveMessage', {
               message: JSON.stringify(messages[index].body.content),
               chatReceiverId: 3,
+
             });
             GetAllMessages()
 
@@ -237,8 +239,7 @@ const ChatScreen = ({ navigation }) => {
       rollLog('Perform initialization first.');
       return;
     }
-    console.log(username,
-      content,)
+
 
     let msg = ChatMessage.createTextMessage(
       targetId,
@@ -268,21 +269,41 @@ const ChatScreen = ({ navigation }) => {
   };
   // Renders the UI.
 
-  const GotoVoiceCall = () => {
-    navigation.navigate('VoiceCalling', {
-      remoteUserId: data.userId,
-      userName: data.userName,
-      loggedUserId: uid
-    })
-  }
-  const GoToVideoCalling = () => {
-    navigation.navigate('VideoCallingScreen', {
-      remoteUserId: data.userId,
-      userName: data.userName,
-      loggedUserId: uid
+  const [channelToken, setChannelToken] = useState(null)
 
-    })
+  const GetchannelToken = async (type) => {
+    try {
+      const res = await privateAPI.post('/agora/getRTCToken', {
+        userId: uid.toString(),
+        channelName: uid.toString() + data.userId.toString(),
+        role: 2,
+        expirationTimeInSeconds: 3600
+      });
+      if (type === 'video') {
+        navigation.navigate('VideoCallingScreen', {
+          loginedUsername,
+          remoteUserId: data.userId,
+          userName: data.userName,
+          loggedUserId: uid,
+          channelToken: res.data.data
+        })
+      } else {
+        navigation.navigate('VoiceCalling', {
+          loginedUsername,
+          remoteUserId: data.userId,
+          userName: data.userName,
+          loggedUserId: uid,
+          channelToken: res.data.data
+        })
+      }
+
+    } catch (error) {
+      console.error(error)
+    }
   }
+
+
+
 
   if (uid) {
 
@@ -293,25 +314,25 @@ const ChatScreen = ({ navigation }) => {
           <View style={styles.TopBar}>
             <Text style={styles.UsernameText}>{data.userName}</Text>
             <View style={styles.TopBarRightIcons}>
-              <Ionicons name="call-outline" size={27} style={{ marginRight: 15 }} color="blue" onPress={GotoVoiceCall} />
-              <AntDesign name="videocamera" size={27} color="blue" onPress={GoToVideoCalling} />
+              <Ionicons name="call-outline" size={27} style={{ marginRight: 15 }} color="blue" onPress={() => GetchannelToken('voice')} />
+              <AntDesign name="videocamera" size={27} color="blue" onPress={() => GetchannelToken('video')} />
             </View>
           </View>
           <ScrollView style={styles.ScrollView}>
 
             {Object.values(chatMessageStatusm).map((item,) => (
-              <View key={item.chatId} style={[styles.MessageTextView, {
-                justifyContent: item.chatReceiverId === username ? 'flex-end' : 'flex-start',
-              }]}>
+                        <View key={item.chatId} style={[styles.MessageTextView, {
+                          justifyContent: item.chatReceiverId === username ? 'flex-end' : 'flex-start',
+                        }]}>
 
-                <Text style={[styles.MessageText, {
+                          <Text style={[styles.MessageText, {
 
-                  borderTopRightRadius: item.chatReceiverId === username ? 0 : 10,
-                  borderTopLeftRadius: item.chatReceiverId === username ? 10 : 0
-                  , backgroundColor: item.chatReceiverId === username ? 'lightgrey' : 'lightblue'
-                }]}  >{item.message}</Text>
-              </View>
-            ))}
+                            borderTopRightRadius: item.chatReceiverId === username ? 0 : 10,
+                            borderTopLeftRadius: item.chatReceiverId === username ? 10 : 0
+                            , backgroundColor: item.chatReceiverId === username ? 'lightgrey' : 'lightblue'
+                          }]}  >{item.message}</Text>
+                        </View>
+                      ))}
           </ScrollView>
 
 
@@ -419,4 +440,5 @@ const styles = StyleSheet.create({
 });
 
 export default ChatScreen;
+
 

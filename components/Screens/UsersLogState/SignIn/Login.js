@@ -20,14 +20,15 @@ import {
 
 import PublicAPI from '../../../api/publicAPI';
 import { Alert } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 
 
 export default function Login() {
   const [email, setEmail] = useState("yaswanthshankar2705@gmail.com");
-  const [password, setPassword] = useState("maninew");
+  const [password, setPassword] = useState('maninew');
   const [showPassword, setShowPassword] = useState('');
-
-
+  //yaswanthshankar2705@gmail.com
+  //benishabeni21@gmail.com
   const navigation = useNavigation();
 
   const handle_forgotpass = async () => {
@@ -46,94 +47,47 @@ export default function Login() {
   const handlePasswordChange = text => {
     setPassword(text);
   };
-
-//   useEffect(() => {
-// navigation.navigate('IndustryTwo')
-//   } , [])
-  // const loginUser = async () => {
-
-
-
-  //   try {
-  //     const response = await PublicAPI.post('/user/login', {
-  //       email: email,
-  //       password: password,
-  //       userType: 'commonUser',
-  //     });
-
-
-  //     // Extract JWT token and ID from response data
-  //     const jwt = response.data.jwt;
-  //     const emailId = response.data.email;
-  //     const userId= response.data.id;
-
-
-
-  //     // Store JWT token and ID in AsyncStorage
-  //     await AsyncStorage.setItem('jwt', jwt);
-
-  //     await AsyncStorage.setItem('mail', emailId);
-  //     await AsyncStorage.setItem('userId', userId.toString());
-
-  //     // Log stored values for verification
-
-  //     const storedMail = await AsyncStorage.getItem('mail');
-  //     console.log('stored ', storedMail);
-  //     //
-  //     Alert.alert('Success', 'Login Successful');
-  //     navigation.navigate('Tabbar');
-
-  //     // Handle response as needed
-  //   } catch (error) {
-  //     Alert.alert('Error', "Invalid User Info");
-  //     console.error('Login failed:', error);
-  //     // Handle error as needed
-  //   }
-  // };
-
-//   useEffect(()=>{
-//    const clearAssync = async ()=>{
-//     await AsyncStorage.clear()
-//    }
-//    clearAssync()
-//   },[])
-
   const loginUser = async () => {
+    const token = await messaging().getToken();
     try {
+    console.log(`generated fcm token for login user - ${token}`)
       const response = await PublicAPI.post('/user/login', {
         email: email,
         password: password,
-       // userType: 'commonUser',
+        userType: 'commonUser',
+        firebaseDeviceToken: token
       });
-
-      // Extract JWT token and ID from response data
       const jwt = response.data.jwt;
-      console.log(jwt)
       const emailId = response.data.email;
-      const userId = response.data.id;
-      const userType = response.data.userType;
 
-      // Store JWT token and ID in AsyncStorage
       await AsyncStorage.setItem('jwt', jwt);
       await AsyncStorage.setItem('mail', emailId);
-      await AsyncStorage.setItem('userId', userId.toString()); // Convert userId to string
-      await AsyncStorage.setItem('id', userId.toString()); // Convert userId to string
+      await AsyncStorage.setItem('id', response.data.id.toString());
+      await AsyncStorage.setItem('fcmToken', token);
+      await AsyncStorage.setItem('username', response.data.username);
 
-      // Log stored values for verification
+
+
+      //   161 basein
+      //  3   yaswin
+
       const storedMail = await AsyncStorage.getItem('mail');
-      console.log('stored ', storedMail);
-
+      //
       Alert.alert('Success', 'Login Successful');
       navigation.navigate('Tabbar');
+
+      // Handle response as needed
     } catch (error) {
       Alert.alert('Error', "Invalid User Info");
       console.error('Login failed:', error);
+      // Handle error as needed
     }
   };
 
   //=======================================================================
 
   const handleLogin = () => {
+    // navigation.navigate('Tabbar');
     const emailRegex = /\S+@\S+\.\S+/; // Regex pattern for a basic email format check
 
     if (!email.trim()) {
@@ -151,9 +105,6 @@ export default function Login() {
     }
   };
 
- 
-
-   
   return (
 
     <View style={styles.container}>
@@ -180,7 +131,6 @@ export default function Login() {
               onChangeText={(text) => setEmail(text)}
               style={styles.input}
               placeholderTextColor="black"
-
               // placeholderTextColor={'black'}
               keyboardType='email-address'
               autoCapitalize='none'
@@ -253,7 +203,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     alignItems: 'center',
     // padding: responsiveWidth(3),
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#f5f5f5',
 
 
     width: '100%',
@@ -309,7 +259,7 @@ const styles = StyleSheet.create({
     width: '100%',
 
     // padding: responsiveWidth(3),
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#f5f5f5',
     borderRadius: responsiveWidth(5),
     justifyContent: 'center',
     alignItems: 'center',
@@ -354,9 +304,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2),
     // right: responsiveWidth(2),
     color: 'black',
-   
     fontWeight: '500',
-    
     //backgroundColor: 'rgba(162,161,151,0.18)'
 
 
