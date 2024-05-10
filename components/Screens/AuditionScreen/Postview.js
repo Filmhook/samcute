@@ -1,58 +1,79 @@
-import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
-import { Image } from 'react-native-elements';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {
+  Alert,
+  FlatList,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from 'react-native-responsive-dimensions';
+import {Image} from 'react-native-elements';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import privateAPI from '../../api/privateAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { error } from 'console';
+import {error} from 'console';
 
 export default function Postview() {
   const [userData, setUserData] = useState([]);
   const [auditionId, setAuditonId] = useState('');
   const [attendedAuditions, setAttendedAuditions] = useState([]);
-  
 
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { selectedJobTitle, collect } = route.params;
+  const {selectedJobTitle, collect} = route.params;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const jwt = await AsyncStorage.getItem("jwt");
+        const jwt = await AsyncStorage.getItem('jwt');
 
         const myHeaders = new Headers();
-        myHeaders.append("Authorization", "Bearer " + jwt);
-        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append('Authorization', 'Bearer ' + jwt);
+        myHeaders.append('Content-Type', 'application/json');
 
-        const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/audition/getAuditionByCategory?auditionTitle=${selectedJobTitle}`, {
-          method: 'GET',
-          headers: myHeaders
-        });
-
+        const response = await fetch(
+          `https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/audition/getAuditionByCategory?auditionTitle=${selectedJobTitle}`,
+          {
+            method: 'GET',
+            headers: myHeaders,
+          },
+        );
 
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
 
         const responseData = await response.json();
-        setUserData(responseData.data["Audition List"]);
-        console.log("post data", responseData);
+        setUserData(responseData.data['Audition List']);
+        console.log('post data', responseData);
       } catch (error) {
-        console.log("error line ", error);
+        console.log('error line ', error);
       }
     };
     fetchData();
   }, []);
-  
 
-
-
-  const Datas = ({ item }) => {
+  const Datas = ({item}) => {
     const [attended, setAttended] = useState(false);
-    const { auditionTitle, auditionExperience, auditionCategory, auditionAddress, auditionMessage, auditionExpireOn, auditionPostedBy, auditionRolesWebModels, auditionId, auditionAttendedCount } = item;
+    const {
+      auditionTitle,
+      auditionExperience,
+      auditionCategory,
+      auditionAddress,
+      auditionMessage,
+      auditionExpireOn,
+      auditionPostedBy,
+      auditionRolesWebModels,
+      auditionId,
+      auditionAttendedCount,
+    } = item;
 
     const handleAttend = async () => {
       try {
@@ -60,12 +81,12 @@ export default function Postview() {
         await privateAPI.post(`audition/auditionAcceptance`, {
           auditionAccepted: true,
           auditionAcceptanceUser: id,
-          auditionRefId: auditionId
+          auditionRefId: auditionId,
         });
         setAttended(true); // Set attended to true after successful attendance
-        Alert.alert("Success");
+        Alert.alert('Success');
       } catch (error) {
-        console.error("Error marking attendance:", error);
+        console.error('Error marking attendance:', error);
       }
     };
 
@@ -76,11 +97,13 @@ export default function Postview() {
       // Add any other logic you need
     };
     // Map auditionRoleDesc
-    const roles = auditionRolesWebModels && auditionRolesWebModels.length > 0 ? auditionRolesWebModels.map(role => role.auditionRoleDesc).join(', ') : '';
-   
+    const roles =
+      auditionRolesWebModels && auditionRolesWebModels.length > 0
+        ? auditionRolesWebModels.map(role => role.auditionRoleDesc).join(', ')
+        : '';
 
     return (
-      <View style={{ width: '100%' }}>
+      <View style={{width: '100%'}}>
         <View style={styles.container}>
           <ImageBackground
             style={{
@@ -90,32 +113,76 @@ export default function Postview() {
               backgroundColor: 'white',
             }}
             source={require('../../Assets/Audition_Icons_Fonts/auditionBg.png')}
-            resizeMode='stretch'
-          >
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: responsiveHeight(2) }}>
+            resizeMode="stretch">
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: responsiveHeight(2),
+              }}>
               <Text style={styles.Text}>{auditionTitle}</Text>
             </View>
-            <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center' }}>
-              <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/camera.jpg')} style={{ width: responsiveWidth(80), height: responsiveHeight(20), marginTop: responsiveHeight(2) }} />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Image
+                source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/camera.jpg')}
+                style={{
+                  width: responsiveWidth(80),
+                  height: responsiveHeight(20),
+                  marginTop: responsiveHeight(2),
+                }}
+              />
             </View>
-            <View style={{ marginLeft: responsiveWidth(4), marginTop: responsiveHeight(3), marginBottom: responsiveHeight(1) }}>
+            <View
+              style={{
+                marginLeft: responsiveWidth(4),
+                marginTop: responsiveHeight(3),
+                marginBottom: responsiveHeight(1),
+              }}>
               <Text style={styles.Text}>{auditionExperience}</Text>
               <Text style={styles.Text}>Roles: {roles}</Text>
               <Text style={styles.Text}>Date: {auditionExpireOn}</Text>
               <Text style={styles.Text}>Address: {auditionAddress}</Text>
               <Text style={styles.Text}>Posted by: {auditionPostedBy}</Text>
-              <Text style={styles.Text}>Attenders Count: {auditionAttendedCount}</Text>
-
-              
+              <Text style={styles.Text}>
+                Attenders Count: {auditionAttendedCount}
+              </Text>
             </View>
-            <View style={{ flexDirection: 'row', marginLeft: responsiveWidth(4), marginBottom: (20), justifyContent: 'flex-end' }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginLeft: responsiveWidth(4),
+                marginBottom: 20,
+                justifyContent: 'flex-end',
+              }}>
               {attended ? null : (
-                <TouchableOpacity onPress={handleAttend} style={{ backgroundColor: '#33333d', borderRadius: responsiveWidth(3), width: responsiveWidth(18), right: responsiveWidth(10), height: responsiveHeight(5), }}>
+                <TouchableOpacity
+                  onPress={handleAttend}
+                  style={{
+                    backgroundColor: '#33333d',
+                    borderRadius: responsiveWidth(3),
+                    width: responsiveWidth(18),
+                    right: responsiveWidth(10),
+                    height: responsiveHeight(5),
+                  }}>
                   <Text style={styles.Touch}>Attend</Text>
                 </TouchableOpacity>
               )}
               {attended ? (
-                <TouchableOpacity onPress={handleDeny} style={{ backgroundColor: '#33333d', borderRadius: responsiveWidth(3), width: responsiveWidth(16), right: responsiveWidth(5), height: responsiveHeight(5), }}>
+                <TouchableOpacity
+                  onPress={handleDeny}
+                  style={{
+                    backgroundColor: '#33333d',
+                    borderRadius: responsiveWidth(3),
+                    width: responsiveWidth(16),
+                    right: responsiveWidth(5),
+                    height: responsiveHeight(5),
+                  }}>
                   <Text style={styles.Touch2}>Deny</Text>
                 </TouchableOpacity>
               ) : null}
@@ -130,11 +197,9 @@ export default function Postview() {
     <>
       <FlatList
         data={userData}
-        style={{ padding: 0, margin: 0 }}
-        renderItem={({ item }) => (
-          <Datas item={item} />
-        )}
-        keyExtractor={(item) => item.auditionId.toString()}
+        style={{padding: 0, margin: 0}}
+        renderItem={({item}) => <Datas item={item} />}
+        keyExtractor={item => item.auditionId.toString()}
       />
     </>
   );
@@ -160,13 +225,13 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: 'white',
     textAlign: 'center',
-    padding: 10
+    padding: 10,
   },
   Touch2: {
     fontSize: responsiveFontSize(1.8),
     fontWeight: '800',
     color: 'white',
     textAlign: 'center',
-    padding: 10
-  }
+    padding: 10,
+  },
 });

@@ -27,10 +27,10 @@ import privateAPI from '../../api/privateAPI';
 export default function VideoCallingScreen({ navigation }) {
 
     const route = useRoute();
-    const { loginedUsername, remoteUserId, userName, loggedUserId, channelToken, channelNameFromNotify } = route.params;
+    const { loginedUsername, remoteUserId, userName, loggedUserId, channelToken, channelNameFromNotify, randomchannelName } = route.params;
     const appId = '49c68e633e9c4a738530b1e37818b759'
     const [token, setToken] = useState(channelToken);
-    const channelName = channelNameFromNotify ? channelNameFromNotify : (loggedUserId.toString() + remoteUserId.toString());
+    const channelName = channelNameFromNotify ? channelNameFromNotify : ( randomchannelName);
     const uid = parseInt(loggedUserId)
 
     const agoraEngineRef = useRef(null); // Agora engine instance
@@ -40,7 +40,6 @@ export default function VideoCallingScreen({ navigation }) {
     const [timer, setTimer] = useState(0); // Timer in seconds
     const [isRunning, setIsRunning] = useState(false);
     const [remoteUserJoined, setRemoteUserJoined] = useState(false);
-    const [FcmTokenOfRemoteUser, setFCMTokenOfRemoteUser] = useState(null);
 
 
     // console.log(remoteUserId, userName, loggedUserId)
@@ -63,8 +62,7 @@ export default function VideoCallingScreen({ navigation }) {
             const res = await privateAPI.get(`/chat/getFirebaseTokenByuserId?userId=${parseInt(remoteUserId)}`);
             console.log("FCM of Remote user", res.data.data)
             SendCalligNotifcationToRemoteUser(res.data.data)
-            setFCMTokenOfRemoteUser(null)
-            setFCMTokenOfRemoteUser(res.data.data)
+
 
 
         } catch (error) {
@@ -94,6 +92,7 @@ export default function VideoCallingScreen({ navigation }) {
                 channelToken: token.toString()
             });
             console.log("calling notification status!", res.data)
+            console.log("channelName", channelName)
         } catch (error) {
             console.error("FCM Sedn Error", error)
         }
@@ -112,8 +111,6 @@ export default function VideoCallingScreen({ navigation }) {
                 console.log("Video Call initilazed")
                 join()
             }
-
-
 
             agoraEngine.registerEventHandler({
                 onJoinChannelSuccess: () => {
@@ -148,9 +145,9 @@ export default function VideoCallingScreen({ navigation }) {
         }
     };
 
+
     const join = async () => {
         console.log('Attempt to JOin', channelName, token, uid)
-
 
         if (isJoined) {
             return;
@@ -212,7 +209,6 @@ export default function VideoCallingScreen({ navigation }) {
         return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
 
-    console.log("tmail", isJoined, remoteUserJoined, uid)
 
 
     if ((isJoined && remoteUserJoined && uid) || channelNameFromNotify) {
@@ -233,12 +229,12 @@ export default function VideoCallingScreen({ navigation }) {
                         </View>
                         <View style={styles.BtnsFrontViewBottom}>
                             <View style={[styles.BtnsFrontViewBottomCont, { height: '100%' }]}>
-                                <TouchableOpacity style={styles.LoggedUserScreen} onPress={join}>
+                                <View style={styles.LoggedUserScreen}>
                                     <React.Fragment key={0}>
                                         <RtcSurfaceView canvas={{ uid: 0 }} style={styles.videoView} />
                                         <></>
                                     </React.Fragment>
-                                </TouchableOpacity>
+                                </View>
                             </View>
                             <View style={[styles.BtnsFrontViewBottomCont, {
 

@@ -1,5 +1,5 @@
 // Imports dependencies.
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   FlatList,
@@ -16,7 +16,6 @@ import {
   ChatOptions,
   ChatMessageChatType,
   ChatMessage,
-
 } from 'react-native-agora-chat';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -25,25 +24,24 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 // Defines the App object.
 
-import { useRoute } from '@react-navigation/native'; // Import useRoute hook
+import {useRoute} from '@react-navigation/native'; // Import useRoute hook
 import privateAPI from '../api/privateAPI';
+import Entypo from 'react-native-vector-icons/Entypo';
+import EmojiPicker from 'rn-emoji-keyboard';
 
-
-const loginedUserToken = '007eJxTYNgVsbfgs0/41lNCm7Qys3Mb/jYanPrHsO7m+pTKZVkxxdsVGCwSU81NTc2AhJGFSUpysoWBoYlFokmqmaGZiZmJuWn7XKW0hkBGhuz4b8yMDKwMjEAI4qswpKYYppoaJRvopqWaJeoaGqam6lqamSbrmpuaJBsZJptaGicaAgD4UihU';
+const loginedUserToken =
+  '007eJxTYNgVsbfgs0/41lNCm7Qys3Mb/jYanPrHsO7m+pTKZVkxxdsVGCwSU81NTc2AhJGFSUpysoWBoYlFokmqmaGZiZmJuWn7XKW0hkBGhuz4b8yMDKwMjEAI4qswpKYYppoaJRvopqWaJeoaGqam6lqamSbrmpuaJBsZJptaGicaAgD4UihU';
 // const Ruby = '007eJxTYHjW6TRh1r5tN37v2XDj8P9vjc/2BxZ45x3Qf5695vGuyHOHFBgsElPNTU3NgISRhUlKcrKFgaGJRaJJqpmhmYmZibnp/p+KaQ2BjAxV/DVMjAysDIxACOKrMBgZGKSYpqQZ6KYlpxjrGhqmpuomWqak6CaZGpiZpyUlJwNlAca+LSI=';
 
-const ChatScreen = ({ navigation }) => {
-
-
-
+const ChatScreen = ({navigation}) => {
   const route = useRoute();
-  const { data } = route.params;
+  const {data} = route.params;
   // Defines the variable.
   const title = 'chat';
   // Replaces <your appKey> with your app key.
   const appKey = '611133509#1318257';
   // Replaces <your userId> with your user ID.
-  const username = data.userId// userid
+  const username = data.userId; // userid
   // Replaces <your agoraToken> with your Agora token.
   const [chatToken, setChatToken] = React.useState(loginedUserToken);
   const [targetId, setTargetId] = React.useState(3);
@@ -53,11 +51,10 @@ const ChatScreen = ({ navigation }) => {
   const chatManager = chatClient.chatManager;
   const [chatMessageStatusm, setChatMessageStatus] = React.useState([]);
 
-  const [loginedUsername, setLoginedUsername] = useState("")
+  const [loginedUsername, setLoginedUsername] = useState('');
 
   // Outputs console logs.
   useEffect(() => {
-
     // get chatToken from server
 
     logText.split('\n').forEach((value, index, array) => {
@@ -65,19 +62,16 @@ const ChatScreen = ({ navigation }) => {
         console.log(value);
       }
     });
-
   }, [logText]);
-
 
   const [uid, setUid] = useState(null);
 
   const GETAsuncStorage = async () => {
     const UID = await AsyncStorage.getItem('id');
-    const username = await AsyncStorage.getItem('username')
-    setUid(parseInt(UID))
-    setLoginedUsername(username)
-  }
-
+    const username = await AsyncStorage.getItem('username');
+    setUid(parseInt(UID));
+    setLoginedUsername(username);
+  };
 
   // Outputs UI logs.
   const rollLog = text => {
@@ -103,58 +97,56 @@ const ChatScreen = ({ navigation }) => {
   const [error, setError] = useState(null);
 
   const SaveMessages = async () => {
-    setContent('')
+    setContent('');
     try {
       const res = await privateAPI.post('/chat/saveMessage', {
         message: content,
         chatReceiverId: username,
       });
-      GetAllMessages()
+      GetAllMessages();
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-
-
-  }
+  };
   const GetAllMessages = async () => {
     try {
-      const res = await privateAPI.post('/chat/getMessageByUserId', {chatReceiverId : username});
-      console.log(`fetching msg - ${JSON.stringify(res.data.data.userChat)}`)
-      setChatMessageStatus(res.data.data.userChat)
+      const res = await privateAPI.post('/chat/getMessageByUserId', {
+        chatReceiverId: username,
+      });
+      console.log(`fetching msg - ${JSON.stringify(res.data.data.userChat)}`);
+      setChatMessageStatus(res.data.data.userChat);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-
-  }
+  };
   useEffect(() => {
-    GETAsuncStorage()
-    GetAllMessages()
-    login()
+    GETAsuncStorage();
+    GetAllMessages();
+    login();
     // Registers listeners for messaging.
     const setMessageListener = () => {
       let msgListener = {
         onMessagesReceived(messages) {
           for (let index = 0; index < messages.length; index++) {
-
-            rollLog('received msgId: ' + JSON.stringify(messages[index].body.content));
+            rollLog(
+              'received msgId: ' + JSON.stringify(messages[index].body.content),
+            );
 
             //Save recieved messages
             const res = privateAPI.post('/chat/saveMessage', {
               message: JSON.stringify(messages[index].body.content),
               chatReceiverId: 3,
-
             });
-            GetAllMessages()
-
+            GetAllMessages();
           }
         },
-        onCmdMessagesReceived: messages => { },
-        onMessagesRead: messages => { },
-        onGroupMessageRead: groupMessageAcks => { },
-        onMessagesDelivered: messages => { },
-        onMessagesRecalled: messages => { },
-        onConversationsUpdate: () => { },
-        onConversationRead: (from, to) => { },
+        onCmdMessagesReceived: messages => {},
+        onMessagesRead: messages => {},
+        onGroupMessageRead: groupMessageAcks => {},
+        onMessagesDelivered: messages => {},
+        onMessagesRecalled: messages => {},
+        onConversationsUpdate: () => {},
+        onConversationRead: (from, to) => {},
       };
       chatManager.removeAllMessageListener();
       chatManager.addMessageListener(msgListener);
@@ -192,7 +184,7 @@ const ChatScreen = ({ navigation }) => {
         .catch(error => {
           rollLog(
             'init fail: ' +
-            (error instanceof Object ? JSON.stringify(error) : error),
+              (error instanceof Object ? JSON.stringify(error) : error),
           );
         });
     };
@@ -207,8 +199,7 @@ const ChatScreen = ({ navigation }) => {
     }
     rollLog('start login ...');
     chatClient
-      .loginWithAgoraToken(username, chatToken
-      )
+      .loginWithAgoraToken(username, chatToken)
       .then(() => {
         rollLog('login operation success.');
       })
@@ -234,12 +225,10 @@ const ChatScreen = ({ navigation }) => {
   };
   // Sends a text message to somebody.
   const sendMessageByagora = () => {
-
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
       return;
     }
-
 
     let msg = ChatMessage.createTextMessage(
       targetId,
@@ -267,77 +256,125 @@ const ChatScreen = ({ navigation }) => {
         rollLog('send fail: ' + JSON.stringify(reason));
       });
   };
-  // Renders the UI.
 
-  const [channelToken, setChannelToken] = useState(null)
+  const GetchannelToken = async type => {
+    // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    // let randomText = '';
 
-  const GetchannelToken = async (type) => {
+    // for (let i = 0; i < 5; i++) {
+    //   const randomIndex = Math.floor(Math.random() * characters.length);
+    //   randomText += characters.charAt(randomIndex);
+    // }
+    // const channelName = uid.toString() + data.userId.toString() + randomText;
+
     try {
-      const res = await privateAPI.post('/agora/getRTCToken', {
-        userId: uid.toString(),
-        channelName: uid.toString() + data.userId.toString(),
-        role: 2,
-        expirationTimeInSeconds: 3600
-      });
+      // const res = await privateAPI.post('/agora/getRTCToken', {
+      //   userId: uid.toString(),
+      //   channelName: channelName,
+      //   role: 2,
+      //   expirationTimeInSeconds: 3600
+      // });
+
+      const tempChannelNmae = '2308Ram'; ///mannual generation
+      const tempChannelToken =
+        '00649c68e633e9c4a738530b1e37818b759IAB4gdJsMrrskVZJHtE6K472pN5zqYvk5R6Zn+yTneXTNsZL1Dp0eHBuEAD5EkX2Xk4/ZgEAAQBeTj9m';
+
       if (type === 'video') {
         navigation.navigate('VideoCallingScreen', {
           loginedUsername,
           remoteUserId: data.userId,
           userName: data.userName,
           loggedUserId: uid,
-          channelToken: res.data.data
-        })
+          channelToken: tempChannelToken,
+          randomchannelName: tempChannelNmae,
+        });
       } else {
         navigation.navigate('VoiceCalling', {
           loginedUsername,
           remoteUserId: data.userId,
           userName: data.userName,
           loggedUserId: uid,
-          channelToken: res.data.data
-        })
+          channelToken: tempChannelToken,
+          randomchannelName: tempChannelNmae,
+        });
       }
-
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
+  const [openEmojiKeyboard, setOpenEmojiKeyboard] = useState(false);
 
+  const handleEmojiSelect = emoji => {
+    setContent(content + emoji.emoji);
+  };
 
+  const handleCloseEmojiPicker = () => {
+    setOpenEmojiKeyboard(false);
+  };
 
   if (uid) {
-
     return (
       <View style={styles.WholeScreen}>
-
         <View style={styles.WholeContentView}>
           <View style={styles.TopBar}>
             <Text style={styles.UsernameText}>{data.userName}</Text>
             <View style={styles.TopBarRightIcons}>
-              <Ionicons name="call-outline" size={27} style={{ marginRight: 15 }} color="blue" onPress={() => GetchannelToken('voice')} />
-              <AntDesign name="videocamera" size={27} color="blue" onPress={() => GetchannelToken('video')} />
+              <Ionicons
+                name="call-outline"
+                size={27}
+                style={{marginRight: 15}}
+                color="blue"
+                onPress={() => GetchannelToken('voice')}
+              />
+              <AntDesign
+                name="videocamera"
+                size={27}
+                color="blue"
+                onPress={() => GetchannelToken('video')}
+              />
             </View>
           </View>
           <ScrollView style={styles.ScrollView}>
-
-            {Object.values(chatMessageStatusm).map((item,) => (
-                        <View key={item.chatId} style={[styles.MessageTextView, {
-                          justifyContent: item.chatReceiverId === username ? 'flex-end' : 'flex-start',
-                        }]}>
-
-                          <Text style={[styles.MessageText, {
-
-                            borderTopRightRadius: item.chatReceiverId === username ? 0 : 10,
-                            borderTopLeftRadius: item.chatReceiverId === username ? 10 : 0
-                            , backgroundColor: item.chatReceiverId === username ? 'lightgrey' : 'lightblue'
-                          }]}  >{item.message}</Text>
-                        </View>
-                      ))}
+            {Object.values(chatMessageStatusm).map(item => (
+              <View
+                key={item.chatId}
+                style={[
+                  styles.MessageTextView,
+                  {
+                    justifyContent:
+                      item.chatReceiverId === username
+                        ? 'flex-end'
+                        : 'flex-start',
+                  },
+                ]}>
+                <Text
+                  style={[
+                    styles.MessageText,
+                    {
+                      borderTopRightRadius:
+                        item.chatReceiverId === username ? 0 : 10,
+                      borderTopLeftRadius:
+                        item.chatReceiverId === username ? 10 : 0,
+                      backgroundColor:
+                        item.chatReceiverId === username
+                          ? 'lightgrey'
+                          : 'lightblue',
+                    },
+                  ]}>
+                  {item.message}
+                </Text>
+              </View>
+            ))}
           </ScrollView>
 
-
           <View style={styles.MessageEnteringView}>
-
+            <Entypo
+              name="emoji-flirt"
+              size={30}
+              color="blue"
+              onPress={() => setOpenEmojiKeyboard(true)}
+            />
             <TextInput
               multiline
               style={styles.MessageInput}
@@ -345,14 +382,23 @@ const ChatScreen = ({ navigation }) => {
               placeholderTextColor={'grey'}
               onChangeText={text => setContent(text)}
               value={content}
+              keyboardType="emoji"
             />
-            <TouchableOpacity style={styles.SendBTN} onPress={SaveMessages}  >
+
+            {openEmojiKeyboard && (
+              <EmojiPicker
+                onEmojiSelected={handleEmojiSelect}
+                open={openEmojiKeyboard}
+                onClose={handleCloseEmojiPicker}
+              />
+            )}
+
+            <TouchableOpacity style={styles.SendBTN} onPress={SaveMessages}>
               <FontAwesome name="send" size={20} color="white" />
             </TouchableOpacity>
           </View>
-        </View >
-
-      </View >
+        </View>
+      </View>
     );
   }
 };
@@ -363,7 +409,7 @@ const styles = StyleSheet.create({
   },
   WholeContentView: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   TopBar: {
     flexDirection: 'row',
@@ -372,40 +418,39 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: 'rgba(173, 216, 230, 0.5)',
     paddingVertical: 10,
-    marginTop: 5
+    marginTop: 5,
   },
   TopBarRightIcons: {
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   UsernameText: {
     color: 'black',
-    fontSize: 15
+    fontSize: 15,
   },
   ScrollView: {
     flex: 1,
     padding: 10,
     marginTop: 20,
     marginBottom: 1,
-
   },
   MessageEnteringView: {
-    width: '100%',
+    width: '98%',
     height: 70,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   MessageInput: {
     color: 'black',
-    fontSize: 15,
+    fontSize: 17,
     borderColor: 'blue',
     borderWidth: 1,
-    width: '85%',
+    width: '75%',
     borderRadius: 5,
-    paddingLeft: 15
+    paddingLeft: 15,
   },
   SendBTN: {
     backgroundColor: 'blue',
@@ -415,11 +460,10 @@ const styles = StyleSheet.create({
     width: 47,
     height: 47,
     flexDirection: 'row',
-
   },
   SendBTNText: {
     color: 'white',
-    fontSize: 15
+    fontSize: 15,
   },
 
   MessageTextView: {
@@ -434,11 +478,8 @@ const styles = StyleSheet.create({
     padding: 7,
     paddingHorizontal: 15,
     borderRadius: 10,
-    borderTopLeftRadius: 0
-
-  }
+    borderTopLeftRadius: 0,
+  },
 });
 
 export default ChatScreen;
-
-
