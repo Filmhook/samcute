@@ -392,7 +392,6 @@ const TopBar = () => {
   const [theme, setTheme] = useState(false);
   const navigation = useNavigation();
 
-
   const toggleSwitch = () => {
     setTheme(!theme)
   }
@@ -653,6 +652,7 @@ const TopBar = () => {
 
   const AttendCall = () => {
     setVisibleCallIncoming(false)
+    console.log('incomingCallData' , incomingCallData)
     if (incomingCallData.callType === 'video') {
       navigation.navigate('Chat', {
         screen: "VideoCallingScreen", params: {

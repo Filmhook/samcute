@@ -29,8 +29,10 @@ export default function VideoCallingScreen({ navigation }) {
     const route = useRoute();
     const { loginedUsername, remoteUserId, userName, loggedUserId, channelToken, channelNameFromNotify, randomchannelName } = route.params;
     const appId = '49c68e633e9c4a738530b1e37818b759'
-    const [token, setToken] = useState(channelToken);
-    const channelName = channelNameFromNotify ? channelNameFromNotify : ( randomchannelName);
+//    const [token, setToken] = useState(channelToken);
+//    const channelName = channelNameFromNotify ? channelNameFromNotify : ( randomchannelName);
+    const [token, setToken] = useState('007eJxTYPD0bmHrXeZ9RVqoozsyo5fZYo/xu1WSR7z5bDmfrNHuY1NgMLFMNrNINTM2TrVMNkk0N7YwNTZIMkw1NrcwtEgyN7Wcbmaf1hDIyPB631pWRgYIBPF5GIoSc3Py84tLC0pLSxkYAC8QH6c=');
+    const channelName = "ramloosupuuu";
     const uid = parseInt(loggedUserId)
 
     const agoraEngineRef = useRef(null); // Agora engine instance
@@ -41,9 +43,6 @@ export default function VideoCallingScreen({ navigation }) {
     const [isRunning, setIsRunning] = useState(false);
     const [remoteUserJoined, setRemoteUserJoined] = useState(false);
 
-
-    // console.log(remoteUserId, userName, loggedUserId)
-
     const getPermission = async () => {
         if (Platform.OS === 'android') {
             await PermissionsAndroid.requestMultiple([
@@ -53,35 +52,21 @@ export default function VideoCallingScreen({ navigation }) {
         }
     };
 
-
-
     const GetFCMTokenOfRemoteUser = async () => {
-
-
         try {
             const res = await privateAPI.get(`/chat/getFirebaseTokenByuserId?userId=${parseInt(remoteUserId)}`);
             console.log("FCM of Remote user", res.data.data)
             SendCalligNotifcationToRemoteUser(res.data.data)
-
-
-
         } catch (error) {
             console.error(error)
         }
     }
 
-
-
-
     useEffect(() => {
         setupVideoSDKEngine();
     }, []);
 
-
-
-
     const SendCalligNotifcationToRemoteUser = async (FCMToken) => {
-
         try {
             const res = await privateAPI.post('/chat/send-fcm-message', {
                 token: FCMToken,
@@ -116,10 +101,9 @@ export default function VideoCallingScreen({ navigation }) {
                 onJoinChannelSuccess: () => {
                     setMessage('Successfully joined the channel ' + channelName);
                     setIsJoined(true);
-                    console.log('Successfully joined the channel')
+                    console.log('Successfully joined the channel' , channelName)
                     startTimer()
                     GetFCMTokenOfRemoteUser()
-
                 },
                 onUserJoined: (_connection, Uid) => {
                     setMessage('Remote user joined with uid ' + Uid);

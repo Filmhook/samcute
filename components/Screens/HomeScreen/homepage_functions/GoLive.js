@@ -27,6 +27,7 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import privateAPI from '../../../api/privateAPI';
 const appId = '49c68e633e9c4a738530b1e37818b759'
+import uuid from 'react-native-uuid';
 
 export default function GoLive() {
 
@@ -35,7 +36,7 @@ export default function GoLive() {
   const [isRunning, setIsRunning] = useState(false);
   const [token, setToken] = useState(null);
   const [channelName, setChannelName] = useState('');
-
+  const [liveChannelId , setLiveChannelId] = useState(null)
 
   const [uid, setUid] = useState(null);
   const agoraEngineRef = useRef(null);
@@ -51,8 +52,8 @@ export default function GoLive() {
   const [joiningUse, setJoinningUser] = useState(false);
   const [loginedUserId, setLoginedUserId] = useState(null);
 
-
   const GETAsuncStorage = async () => {
+    console.log('setting GETAsuncStorage !')
     const UID = await AsyncStorage.getItem('id');
     setUid(parseInt(UID))
     setLoginedUserId(parseInt(UID))
@@ -67,15 +68,14 @@ export default function GoLive() {
   useEffect(() => {
     // Initialize Agora engine when the app starts
     setupVideoSDKEngine();
-    return () => {
-      leave()
-    }
 
   }, []);
 
   const setupVideoSDKEngine = async () => {
     try {
       // use the helper function to get permissions
+    const UID = await AsyncStorage.getItem('id');
+    const Uname = await AsyncStorage.getItem('username');
       if (Platform.OS === 'android') { await getPermission() };
       agoraEngineRef.current = createAgoraRtcEngine();
       const agoraEngine = agoraEngineRef.current;
@@ -86,17 +86,16 @@ export default function GoLive() {
       }
       agoraEngine.registerEventHandler({
         onJoinChannelSuccess: () => {
-          setMessage('Successfully joined the channel ' + channelName);
+        let tempChannelName = channelName || UID;
+            console.log('Successfully joined the channel ' + tempChannelName)
+          setMessage('Successfully joined the channel ' + tempChannelName);
           setIsJoined(true);
           startTimer()
-          SaveRegisterChannel()  //update to datatbase
-          console.log('Successfully joined the channel')
-
         },
         onUserJoined: (_connection, Uid) => {
           setMessage('Remote user joined with uid ' + Uid);
           setRemoteUid(Uid);
-          setJoinedUIDS(prevItems => [...prevItems, { userId: Uid, userName: "WdWdWd" }]);
+          setJoinedUIDS(prevItems => [...prevItems, { userId: Uid, userName: Uname }]);
 
         },
         onUserOffline: (_connection, Uid) => {
@@ -131,7 +130,6 @@ export default function GoLive() {
     }
   }
 
-
   const getPermission = async () => {
     if (Platform.OS === 'android') {
       await PermissionsAndroid.requestMultiple([
@@ -142,12 +140,13 @@ export default function GoLive() {
   };
 
   const join = async () => {
-    console.log(uid)
+    console.log('init live' ,token, channelName, uid, isJoined, isHost)
 
     if (isJoined) {
       return;
     }
     try {
+      SaveRegisterChannel()  //update to datatbase
       agoraEngineRef.current?.setChannelProfile(
         ChannelProfileType.ChannelProfileLiveBroadcasting,
       );
@@ -182,7 +181,6 @@ export default function GoLive() {
     }
   };
 
-
   useEffect(() => {
     let interval;
 
@@ -214,23 +212,25 @@ export default function GoLive() {
 
   const SaveRegisterChannel = async () => {
     try {
-      const res = await privateAPI.post('/live/saveLiveChannelDetails', {
+    const liveId = uuid.v4();
+    setLiveChannelId(liveId)
+    const res = await privateAPI.post('/live/saveLiveChannelDetails', {
         userId: uid,
         channelName: channelName,
         startTime: new Date(),
-        token: token
+        token: token,
+        liveId
       });
-      console.log("save Database status", res.data);
+      console.log("live saved");
     } catch (error) {
       console.error(error)
     }
 
   }
 
-
-
   const JoinAsRemoteUser = (item) => {
     setUid(item.userId)
+    console.log("save +", item.channelName)
     setChannelName(item.channelName)
     setToken(item.token)
     setJoinningUser(true)
@@ -245,11 +245,11 @@ export default function GoLive() {
 
   }
 
-
   useEffect(() => {
     const getAllLives = async () => {
       try {
         const res = await privateAPI.post('/live/getLiveDetails', {});
+//        console.log(`Fetching live details  - ${JSON.stringify(res.data)}`)
         let List = []
         for (let i = 0; i < res.data.length; i++) {
           if (res.data[i].token) {
@@ -257,11 +257,8 @@ export default function GoLive() {
             setOnLivePeople(List)
           }
         }
-        console.log("All Live data  ", res.data)
-
-
       } catch (error) {
-        console.error(error)
+        console.error("Error fetching live details" , error)
       }
     }
     getAllLives()
@@ -278,8 +275,8 @@ export default function GoLive() {
 
   const OpenCommentsSession = async () => {
     try {
-      const res = await privateAPI.get('/live/getLiveCommentDetails?liveChannelId=4');
-      console.log("All comments data  ", res.data)
+      const res = await privateAPI.get(`/live/getLiveCommentDetails?liveChannelId=${liveChannelId}`);
+      console.log("All comments data  ", JSON.stringify(res.data))
       const filteredData = res.data.filter(doc => parseInt(doc.liveStreamCommencreatedBy) === parseInt(loginedUserId))
       setAllComments(filteredData)
       setVisibleCommentsModal(true)
@@ -299,11 +296,11 @@ export default function GoLive() {
     try {
       const res = await privateAPI.post('/live/saveLiveStreamComment', {
         userId: loginedUserId,
-        liveChannelId: 4,
+        liveChannelId: liveChannelId,
         liveStreamMessage: commentText,
         liveStreamCommencreatedBy: uid
       });
-      console.log("Comment added ", res.data)
+      console.log("Comment added ")
 
       setCommentText('')
       setVisibleAddCommentModal(false)
@@ -312,6 +309,7 @@ export default function GoLive() {
       console.error(error)
     }
   }
+
 
   return (
     <SafeAreaView style={styles.main}>
@@ -425,10 +423,6 @@ export default function GoLive() {
             <Text style={{ color: 'black' }}>Host</Text>
           </View> */}
         </View>
-
-
-
-
       </View>
       <Modal
         animationType="slide" // You can customize animationType
@@ -448,10 +442,12 @@ export default function GoLive() {
             <FlatList
               data={onLivePeople}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => JoinAsRemoteUser(item)}>
+                <TouchableOpacity onPress={() => {
+                JoinAsRemoteUser(item)
+                }}>
                   <View style={styles.ModalOnlIveUserBar}>
                     <AntDesign name="user" size={24} color="blue" />
-                    <Text style={styles.ModalOnlIveUserText}>{item.userId ? item.userId : ""}</Text>
+                    <Text style={styles.ModalOnlIveUserText}>{item.username ? item.username : ""}</Text>
                   </View>
                 </TouchableOpacity>
               )}
@@ -503,7 +499,7 @@ export default function GoLive() {
             renderItem={({ item }) => (
               <View style={styles.CommentsBar}>
                 <FontAwesome name="comment" size={24} color="blue" />
-                <Text style={styles.UserNameComment}>{item.liveStreamCommencreatedBy}</Text>
+                <Text style={styles.UserNameComment}>{item.username}</Text>
                 <Text style={styles.CommentMessage}>{item.liveStreamMessage}</Text>
               </View>
             )}

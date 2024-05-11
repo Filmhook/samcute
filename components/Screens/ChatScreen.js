@@ -275,9 +275,9 @@ const ChatScreen = ({navigation}) => {
       //   expirationTimeInSeconds: 3600
       // });
 
-      const tempChannelNmae = '2308Ram'; ///mannual generation
+      const tempChannelNmae = 'ramloosupuuu'; ///mannual generation
       const tempChannelToken =
-        '00649c68e633e9c4a738530b1e37818b759IAB4gdJsMrrskVZJHtE6K472pN5zqYvk5R6Zn+yTneXTNsZL1Dp0eHBuEAD5EkX2Xk4/ZgEAAQBeTj9m';
+        '007eJxTYPD0bmHrXeZ9RVqoozsyo5fZYo/xu1WSR7z5bDmfrNHuY1NgMLFMNrNINTM2TrVMNkk0N7YwNTZIMkw1NrcwtEgyN7Wcbmaf1hDIyPB631pWRgYIBPF5GIoSc3Py84tLC0pLSxkYAC8QH6c=';
 
       if (type === 'video') {
         navigation.navigate('VideoCallingScreen', {

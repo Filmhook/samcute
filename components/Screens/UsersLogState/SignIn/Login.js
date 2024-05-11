@@ -51,10 +51,16 @@ export default function Login() {
     const token = await messaging().getToken();
     try {
     console.log(`generated fcm token for login user - ${token}`)
+    console.log('/user/login', {
+                        email: email,
+                        password: password,
+                //        userType: 'commonUser',
+                        firebaseDeviceToken: token
+                      })
       const response = await PublicAPI.post('/user/login', {
         email: email,
         password: password,
-        userType: 'commonUser',
+//        userType: 'commonUser',
         firebaseDeviceToken: token
       });
       const jwt = response.data.jwt;
