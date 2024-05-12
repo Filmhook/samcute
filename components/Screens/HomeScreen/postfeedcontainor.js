@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, FlatList, StyleSheet, TextInput, ScrollView, Share, useColorScheme, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, Image, FlatList, StyleSheet, TextInput, ScrollView, Share, useColorScheme } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-native-modal'
 import ImagePicker from 'react-native-image-crop-picker'
@@ -373,7 +373,6 @@ export default function Postfeedcontainor() {
           reason: 'report'
         }
         const response = await privateAPI.post('/report/addPostReport', body);
-        Alert.alert('Success' , 'Report sucess')
         console.log('reported Post successfully:', response.data)
       } catch (error) {
         console.log('Error repoting post:', error);
@@ -496,12 +495,12 @@ export default function Postfeedcontainor() {
                             style={{ color: '#ffffff' }}
                           >Report Post</Text>
                         </TouchableOpacity>
-                        {/* <TouchableOpacity onPress={() => pinProfile(userId)}
+                        <TouchableOpacity onPress={() => pinProfile(userId)}
                           style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }} >
                           <Image style={{ height: responsiveHeight(3), width: responsiveWidth(3), tintColor: 'white', zIndex: 3 }} source={require('../../Assets/Home_Icon_And_Fonts/pin_icon.png')} resizeMode='stretch'></Image>
                           <Text
                             style={{ color: '#ffffff' }}>Pin Profile</Text>
-                        </TouchableOpacity> */}
+                        </TouchableOpacity>
                       </View>
                     ) : null}
                   </View>

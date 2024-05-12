@@ -392,7 +392,6 @@ const TopBar = () => {
   const [theme, setTheme] = useState(false);
   const navigation = useNavigation();
 
-
   const toggleSwitch = () => {
     setTheme(!theme)
   }
@@ -610,7 +609,7 @@ const TopBar = () => {
 
   const getFCMToken = async () => {
     const token = await messaging().getToken();
-    console.log("Firebase FCM token",token)
+    console.log("Tabar FCM token", token);
   }
 
   const [loginedUserId, setLoginedUserId] = useState(false);
@@ -653,12 +652,13 @@ const TopBar = () => {
 
   const AttendCall = () => {
     setVisibleCallIncoming(false)
+    console.log('incomingCallData' , incomingCallData)
     if (incomingCallData.callType === 'video') {
       navigation.navigate('Chat', {
         screen: "VideoCallingScreen", params: {
           remoteUserId: parseInt(incomingCallData.userId),
           userName: incomingCallData.fromUser,
-          loggedUserId: parseInt(loginedUserId),
+          loggedUserId: loginedUserId,
           channelToken: incomingCallData.channelToken,
           channelNameFromNotify: incomingCallData.channelNameFromNotify
         }
@@ -668,7 +668,7 @@ const TopBar = () => {
         screen: "VoiceCalling", params: {
           remoteUserId: parseInt(incomingCallData.userId),
           userName: incomingCallData.fromUser,
-          loggedUserId: parseInt(loginedUserId),
+          loggedUserId: loginedUserId,
           channelToken: incomingCallData.channelToken,
           channelNameFromNotify: incomingCallData.channelNameFromNotify
 
@@ -840,15 +840,13 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused }) => {
             return (
-              <View style={{width: responsiveWidth(10), height: responsiveHeight(5)}}>
               <Image
-                style={{ width: responsiveWidth(9), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
                 source={
                   require('../Assets/Home_Icon_And_Fonts/Home.png')
                 }
-                focused={focused} resizeMode='stretch'
+                focused={focused}
               />
-              </View>
             );
           },
 
@@ -861,14 +859,12 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused: boolean, color: string }) => {
             return (
-              <View style={{width: responsiveWidth(10), height: responsiveHeight(5)}}>
               <Image
-                style={{ width: responsiveWidth(9), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
                 source={
                   require('../Assets/Chats_Icon_And_Fonts/Filmhook_chat.png')
-                } resizeMode='stretch'
+                }
               />
-              </View>
             );
           },
         }}
@@ -880,14 +876,12 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused: boolean, color: string }) => {
             return (
-              <View style={{width: responsiveWidth(10), height: responsiveHeight(5)}}>
               <Image
-                style={{ width: responsiveWidth(9), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
                 source={
                   require('../Assets/app_logo/all_search.png')
-                } resizeMode='stretch'
+                }
               />
-              </View>
             );
           },
         }}
@@ -899,14 +893,12 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused: boolean, color: string }) => {
             return (
-              <View style={{width: responsiveWidth(10), height: responsiveHeight(5)}}>
               <Image
-                style={{ width: responsiveWidth(9), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
                 source={
                   require('../Assets/Audition_Icons_Fonts/Filmhook_Audition.png')
-                } resizeMode='stretch'
+                }
               />
-              </View>
             );
           },
         }}
@@ -919,14 +911,12 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused: boolean, color: string }) => {
             return (
-              <View style={{width: responsiveWidth(10), height: responsiveHeight(5)}}>
               <Image
-                style={{ width: responsiveWidth(9), height: responsiveHeight(5), bottom: 4, top: 0, alignSelf: 'center', padding: 5 }}
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 4, top: 0, alignSelf: 'center', padding: 5 }}
                 source={
                   require('../Assets/UserProfile_Icons_Fonts/Filmhook_UserProfile.png')
-                } resizeMode='stretch'
+                }
               />
-              </View>
             );
           },
         }}

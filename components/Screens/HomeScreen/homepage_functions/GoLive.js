@@ -7,6 +7,7 @@ import {
   Switch,
   FlatList,
   TouchableOpacity,
+  TextInput
 } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -25,8 +26,8 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import privateAPI from '../../../api/privateAPI';
-
 const appId = '49c68e633e9c4a738530b1e37818b759'
+import uuid from 'react-native-uuid';
 
 export default function GoLive() {
 
@@ -35,7 +36,7 @@ export default function GoLive() {
   const [isRunning, setIsRunning] = useState(false);
   const [token, setToken] = useState(null);
   const [channelName, setChannelName] = useState('');
-
+  const [liveChannelId , setLiveChannelId] = useState(null)
 
   const [uid, setUid] = useState(null);
   const agoraEngineRef = useRef(null);
@@ -49,10 +50,13 @@ export default function GoLive() {
   const [visibleJoinedUsersModal, setvisibleJoinedUsersModal] = useState(false);
 
   const [joiningUse, setJoinningUser] = useState(false);
+  const [loginedUserId, setLoginedUserId] = useState(null);
 
   const GETAsuncStorage = async () => {
+    console.log('setting GETAsuncStorage !')
     const UID = await AsyncStorage.getItem('id');
     setUid(parseInt(UID))
+    setLoginedUserId(parseInt(UID))
     GenerateChaanelToken(UID)
     setChannelName(UID)
   }
@@ -64,15 +68,14 @@ export default function GoLive() {
   useEffect(() => {
     // Initialize Agora engine when the app starts
     setupVideoSDKEngine();
-    return () => {
-      leave()
-    }
 
   }, []);
 
   const setupVideoSDKEngine = async () => {
     try {
       // use the helper function to get permissions
+    const UID = await AsyncStorage.getItem('id');
+    const Uname = await AsyncStorage.getItem('username');
       if (Platform.OS === 'android') { await getPermission() };
       agoraEngineRef.current = createAgoraRtcEngine();
       const agoraEngine = agoraEngineRef.current;
@@ -83,17 +86,16 @@ export default function GoLive() {
       }
       agoraEngine.registerEventHandler({
         onJoinChannelSuccess: () => {
-          setMessage('Successfully joined the channel ' + channelName);
+        let tempChannelName = channelName || UID;
+            console.log('Successfully joined the channel ' + tempChannelName)
+          setMessage('Successfully joined the channel ' + tempChannelName);
           setIsJoined(true);
           startTimer()
-          SaveRegisterChannel()  //update to datatbase
-          console.log('Successfully joined the channel')
-
         },
         onUserJoined: (_connection, Uid) => {
           setMessage('Remote user joined with uid ' + Uid);
           setRemoteUid(Uid);
-          setJoinedUIDS(prevItems => [...prevItems, { userId: Uid, userName: "WdWdWd" }]);
+          setJoinedUIDS(prevItems => [...prevItems, { userId: Uid, userName: Uname }]);
 
         },
         onUserOffline: (_connection, Uid) => {
@@ -128,7 +130,6 @@ export default function GoLive() {
     }
   }
 
-
   const getPermission = async () => {
     if (Platform.OS === 'android') {
       await PermissionsAndroid.requestMultiple([
@@ -139,12 +140,13 @@ export default function GoLive() {
   };
 
   const join = async () => {
-    console.log(uid)
+    console.log('init live' ,token, channelName, uid, isJoined, isHost)
 
     if (isJoined) {
       return;
     }
     try {
+      SaveRegisterChannel()  //update to datatbase
       agoraEngineRef.current?.setChannelProfile(
         ChannelProfileType.ChannelProfileLiveBroadcasting,
       );
@@ -179,7 +181,6 @@ export default function GoLive() {
     }
   };
 
-
   useEffect(() => {
     let interval;
 
@@ -210,29 +211,17 @@ export default function GoLive() {
   };
 
   const SaveRegisterChannel = async () => {
-    const UIDString = uid.toString()
     try {
-      const res = await privateAPI.post('/live/saveLiveChannelDetails', {
+    const liveId = uuid.v4();
+    setLiveChannelId(liveId)
+    const res = await privateAPI.post('/live/saveLiveChannelDetails', {
         userId: uid,
         channelName: channelName,
         startTime: new Date(),
-        token: token
+        token: token,
+        liveId
       });
-      console.log("save Database status", res.data);
-    } catch (error) {
-      console.error(error)
-    }
-
-  }
-
-  const GETAllLiveUsers = async () => {
-    try {
-      const res = await privateAPI.post('/live/getLiveDetails', {});
-      setOnLivePeople(res.data)
-      console.log("All Live data  ",res.data)
-
-      setVisibleJoinLiveModal(true)
-
+      console.log("live saved");
     } catch (error) {
       console.error(error)
     }
@@ -241,7 +230,9 @@ export default function GoLive() {
 
   const JoinAsRemoteUser = (item) => {
     setUid(item.userId)
+    console.log("save +", item.channelName)
     setChannelName(item.channelName)
+    setToken(item.token)
     setJoinningUser(true)
     join()
     setVisibleJoinLiveModal(false)
@@ -254,9 +245,71 @@ export default function GoLive() {
 
   }
 
-  const OpenAllLivesMoodal = () => {
-    GETAllLiveUsers()
+  useEffect(() => {
+    const getAllLives = async () => {
+      try {
+        const res = await privateAPI.post('/live/getLiveDetails', {});
+//        console.log(`Fetching live details  - ${JSON.stringify(res.data)}`)
+        let List = []
+        for (let i = 0; i < res.data.length; i++) {
+          if (res.data[i].token) {
+            List.push(res.data[i])
+            setOnLivePeople(List)
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching live details" , error)
+      }
+    }
+    getAllLives()
+  }, [])
+
+  const OpenAllLivesMoodal = async () => {
+    console.log("Openning All lives")
+    setVisibleJoinLiveModal(true)
+
   }
+
+  const [visibleCommentsModal, setVisibleCommentsModal] = useState(false);
+  const [allComments, setAllComments] = useState(false);
+
+  const OpenCommentsSession = async () => {
+    try {
+      const res = await privateAPI.get(`/live/getLiveCommentDetails?liveChannelId=${liveChannelId}`);
+      console.log("All comments data  ", JSON.stringify(res.data))
+      const filteredData = res.data.filter(doc => parseInt(doc.liveStreamCommencreatedBy) === parseInt(loginedUserId))
+      setAllComments(filteredData)
+      setVisibleCommentsModal(true)
+
+    } catch (error) {
+      console.error(error)
+    }
+
+  }
+  const [visibleAddCommentModal, setVisibleAddCommentModal] = useState(false);
+  const OpenCommentKeyboard = () => {
+    setVisibleAddCommentModal(true)
+  }
+  const [commentText, setCommentText] = useState("");
+
+  const UploadComment = async () => {
+    try {
+      const res = await privateAPI.post('/live/saveLiveStreamComment', {
+        userId: loginedUserId,
+        liveChannelId: liveChannelId,
+        liveStreamMessage: commentText,
+        liveStreamCommencreatedBy: uid
+      });
+      console.log("Comment added ")
+
+      setCommentText('')
+      setVisibleAddCommentModal(false)
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
 
   return (
     <SafeAreaView style={styles.main}>
@@ -318,12 +371,17 @@ export default function GoLive() {
                     }
 
                   }
+                } else {
+                  return (
+                    <TouchableOpacity style={styles.AddCommentButton} onPress={OpenCommentKeyboard}>
+                      <Text style={styles.AddCommentButtonText}>Comment</Text>
+                    </TouchableOpacity>
+                  )
                 }
               })()}
             </View>
             <View style={styles.BtnsFrontViewBottomCont}>
               {(() => {
-
                 if ((!isJoined || !isHost)) {
                   return (
                     <TouchableOpacity onPress={OpenAllLivesMoodal} style={styles.JoinBTN}>
@@ -334,9 +392,16 @@ export default function GoLive() {
                   if (joiningUse) {
                     return (
                       <TouchableOpacity onPress={LeaveingRemoteUser} style={[styles.JoinBTN, { backgroundColor: 'red' }]}>
-                        <Text style={styles.JoinBTNext}>Leave</Text>
+                        <Text style={[styles.JoinBTNext, { color: 'white' }]}>Leave</Text>
                       </TouchableOpacity >
                     )
+                  } else {
+                    return (
+                      <TouchableOpacity onPress={OpenCommentsSession} style={[styles.JoinBTN, { backgroundColor: 'grey' }]}>
+                        <Text style={styles.JoinBTNext}>Comments</Text>
+                      </TouchableOpacity >
+                    )
+
                   }
                 }
               })()}
@@ -358,7 +423,6 @@ export default function GoLive() {
             <Text style={{ color: 'black' }}>Host</Text>
           </View> */}
         </View>
-
       </View>
       <Modal
         animationType="slide" // You can customize animationType
@@ -378,10 +442,12 @@ export default function GoLive() {
             <FlatList
               data={onLivePeople}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => JoinAsRemoteUser(item)}>
+                <TouchableOpacity onPress={() => {
+                JoinAsRemoteUser(item)
+                }}>
                   <View style={styles.ModalOnlIveUserBar}>
                     <AntDesign name="user" size={24} color="blue" />
-                    <Text style={styles.ModalOnlIveUserText}>{item.userId ? item.userId : ""}</Text>
+                    <Text style={styles.ModalOnlIveUserText}>{item.username ? item.username : ""}</Text>
                   </View>
                 </TouchableOpacity>
               )}
@@ -415,6 +481,60 @@ export default function GoLive() {
           />
         </View>
 
+      </Modal>
+      <Modal
+        animationType="slide" // You can customize animationType
+        transparent={true}
+        visible={visibleCommentsModal}
+      >
+        <View style={styles.CommentsWholeScreen}>
+          <View style={styles.CommenctsTopBAr}>
+            <AntDesign onPress={() => setVisibleCommentsModal(false)} name="closecircle" size={30} color="black" />
+            <Text>All Comments</Text>
+          </View>
+
+          <FlatList
+            data={allComments}
+            contentContainerStyle={{ padding: 10 }}
+            renderItem={({ item }) => (
+              <View style={styles.CommentsBar}>
+                <FontAwesome name="comment" size={24} color="blue" />
+                <Text style={styles.UserNameComment}>{item.username}</Text>
+                <Text style={styles.CommentMessage}>{item.liveStreamMessage}</Text>
+              </View>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </View>
+
+      </Modal>
+
+      <Modal
+        animationType="slide" // You can customize animationType
+        transparent={true}
+        visible={visibleAddCommentModal}
+      >
+        <View style={styles.AddCommentModal}>
+          <View style={styles.AddcommentView}>
+            <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 10, color: 'blue' }}>Add Comment</Text>
+            <TextInput
+              placeholder="Type something..."
+              autoFocus={true}
+              style={styles.CommentTextInput}
+              onChangeText={text => setCommentText(text)}
+              value={commentText}
+              multiline
+            />
+            <View style={styles.AddCommentBTNView}>
+              <TouchableOpacity style={styles.AddCommentBTN} onPress={() => setVisibleAddCommentModal(false)}>
+                <Text style={styles.AddCommentBTNText}>Canel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.AddCommentBTN, { marginLeft: 15, backgroundColor: 'lightblue' }]} onPress={UploadComment}>
+                <Text style={styles.AddCommentBTNText}>Comment</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </Modal>
     </SafeAreaView >
   );
@@ -478,7 +598,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightblue',
     borderRadius: 10,
     padding: 10,
-    paddingHorizontal: 30
+    paddingHorizontal: 20
   },
   JoinBTNext: {
     color: 'black',
@@ -551,5 +671,87 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10
+  },
+  CommentsWholeScreen: {
+    flex: 1,
+    backgroundColor: 'white'
+  },
+  CommenctsTopBAr: {
+    width: '100%',
+    backgroundColor: 'rgba(0, 0, 1, 0.5)',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+
+  },
+  CommentsBar: {
+    width: '100%',
+    backgroundColor: 'lightblue',
+    marginBottom: 10,
+    borderRadius: 15,
+    padding: 15,
+    flexDirection: 'row'
+  },
+  CommentHeaderView: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+  CommentMessage: {
+    color: 'black',
+    fontSize: 17,
+    marginLeft: 15
+  },
+  UserNameComment: {
+    color: 'black',
+    fontSize: 14,
+    marginLeft: 5
+  },
+  AddCommentButton: {
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: 'white'
+  },
+  AddCommentButtonText: {
+    color: 'black'
+  },
+  AddCommentModal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  AddcommentView: {
+    backgroundColor: 'lightgrey',
+    width: "80%",
+    minHeight: 170,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  AddCommentBTNView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  AddCommentBTN: {
+    backgroundColor: 'grey',
+    padding: 10,
+    borderRadius: 5,
+    paddingHorizontal: 15
+  },
+  AddCommentBTNText: {
+    color: 'black'
+  },
+  CommentTextInput: {
+    width: '70%',
+    paddingVertical: 10,
+    backgroundColor: 'white',
+    marginBottom: 20,
+    borderRadius: 5,
+    color: 'black'
+
   }
+
 });

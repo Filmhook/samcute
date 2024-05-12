@@ -20,14 +20,15 @@ import {
 
 import PublicAPI from '../../../api/publicAPI';
 import { Alert } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState('');
-
-
+  //yaswanthshankar2705@gmail.com
+  //benishabeni21@gmail.com
   const navigation = useNavigation();
 
   const handle_forgotpass = async () => {
@@ -87,9 +88,12 @@ export default function Login() {
       navigation.navigate('Tabbar');
 
       // Handle response as needed
+
+      // Handle response as needed
     } catch (error) {
       Alert.alert("Invalid User Info");
       console.error('Login failed:', error);
+      // Handle error as needed
       // Handle error as needed
     }
   };
@@ -97,6 +101,7 @@ export default function Login() {
   //=======================================================================
 
   const handleLogin = () => {
+    // navigation.navigate('Tabbar');
     const emailRegex = /\S+@\S+\.\S+/; // Regex pattern for a basic email format check
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/; // Regex pattern to check password length (at least 6 characters)
@@ -114,6 +119,7 @@ export default function Login() {
       navigation.navigate('Tabbar');
     }
   };
+
 
   return (
 
@@ -214,6 +220,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // padding: responsiveWidth(3),
     backgroundColor: '#f5f5f5',
+    backgroundColor: '#f5f5f5',
 
 
     width: '100%',
@@ -269,6 +276,7 @@ const styles = StyleSheet.create({
     width: '100%',
 
     // padding: responsiveWidth(3),
+    backgroundColor: '#f5f5f5',
     backgroundColor: '#f5f5f5',
     borderRadius: responsiveWidth(5),
     justifyContent: 'center',
