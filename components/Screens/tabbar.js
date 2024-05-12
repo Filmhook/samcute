@@ -840,13 +840,16 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused }) => {
             return (
+              <View style={{width: responsiveWidth(9), height: responsiveHeight(5),}}>
               <Image
-                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
+                style={{ width: responsiveWidth(9), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
                 source={
                   require('../Assets/Home_Icon_And_Fonts/Home.png')
                 }
                 focused={focused}
+                resizeMode='stretch'
               />
+              </View>
             );
           },
 
@@ -859,12 +862,15 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused: boolean, color: string }) => {
             return (
+              <View style={{width: responsiveWidth(9), height: responsiveHeight(5),}}>
               <Image
-                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
+                style={{ width: responsiveWidth(9), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
                 source={
                   require('../Assets/Chats_Icon_And_Fonts/Filmhook_chat.png')
                 }
+                resizeMode='stretch'
               />
+              </View>
             );
           },
         }}
@@ -876,12 +882,15 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused: boolean, color: string }) => {
             return (
+              <View style={{width: responsiveWidth(9), height: responsiveHeight(5),}}>
               <Image
-                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
+                style={{ width: responsiveWidth(9), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
                 source={
                   require('../Assets/app_logo/all_search.png')
                 }
+                resizeMode='stretch'
               />
+              </View>
             );
           },
         }}
@@ -893,12 +902,15 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused: boolean, color: string }) => {
             return (
+              <View style={{width: responsiveWidth(9), height: responsiveHeight(5),}}>
               <Image
-                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
+                style={{ width: responsiveWidth(9), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
                 source={
                   require('../Assets/Audition_Icons_Fonts/Filmhook_Audition.png')
                 }
+                resizeMode='stretch'
               />
+              </View>
             );
           },
         }}
@@ -911,12 +923,15 @@ function BottomBar() {
           tabBarLabel: false,
           tabBarIcon: ({ focused: boolean, color: string }) => {
             return (
+              <View style={{width: responsiveWidth(9), height: responsiveHeight(5),}}>
               <Image
-                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 4, top: 0, alignSelf: 'center', padding: 5 }}
+                style={{ width: responsiveWidth(9), height: responsiveHeight(5), bottom: 4, top: 0, alignSelf: 'center', padding: 5 }}
                 source={
                   require('../Assets/UserProfile_Icons_Fonts/Filmhook_UserProfile.png')
                 }
+                resizeMode='stretch'
               />
+              </View>
             );
           },
         }}
