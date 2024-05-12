@@ -23,8 +23,8 @@ import { Alert } from 'react-native';
 
 
 export default function Login() {
-  const [email, setEmail] = useState("yaswanthshankar2705@gmail.com");
-  const [password, setPassword] = useState("maninew");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState('');
 
 
@@ -46,88 +46,51 @@ export default function Login() {
   const handlePasswordChange = text => {
     setPassword(text);
   };
-
-//   useEffect(() => {
-// navigation.navigate('IndustryTwo')
-//   } , [])
-  // const loginUser = async () => {
-
-
-
-  //   try {
-  //     const response = await PublicAPI.post('/user/login', {
-  //       email: email,
-  //       password: password,
-  //       userType: 'commonUser',
-  //     });
-
-
-  //     // Extract JWT token and ID from response data
-  //     const jwt = response.data.jwt;
-  //     const emailId = response.data.email;
-  //     const userId= response.data.id;
-
-
-
-  //     // Store JWT token and ID in AsyncStorage
-  //     await AsyncStorage.setItem('jwt', jwt);
-
-  //     await AsyncStorage.setItem('mail', emailId);
-  //     await AsyncStorage.setItem('userId', userId.toString());
-
-  //     // Log stored values for verification
-
-  //     const storedMail = await AsyncStorage.getItem('mail');
-  //     console.log('stored ', storedMail);
-  //     //
-  //     Alert.alert('Success', 'Login Successful');
-  //     navigation.navigate('Tabbar');
-
-  //     // Handle response as needed
-  //   } catch (error) {
-  //     Alert.alert('Error', "Invalid User Info");
-  //     console.error('Login failed:', error);
-  //     // Handle error as needed
-  //   }
-  // };
-
-//   useEffect(()=>{
-//    const clearAssync = async ()=>{
-//     await AsyncStorage.clear()
-//    }
-//    clearAssync()
-//   },[])
-
   const loginUser = async () => {
+    console.log("Login Clicked")
     try {
       const response = await PublicAPI.post('/user/login', {
         email: email,
         password: password,
-       // userType: 'commonUser',
+        userType: 'commonUser',
       });
-
       // Extract JWT token and ID from response data
       const jwt = response.data.jwt;
-      console.log(jwt)
+
       const emailId = response.data.email;
-      const userId = response.data.id;
+      const userid = response.data.id;
+      const token = response.data.token;
       const userType = response.data.userType;
+      const username = response.data.username;
+
+
 
       // Store JWT token and ID in AsyncStorage
+      await AsyncStorage.setItem('userId', userid.toString())
       await AsyncStorage.setItem('jwt', jwt);
+
       await AsyncStorage.setItem('mail', emailId);
-      await AsyncStorage.setItem('userId', userId.toString()); // Convert userId to string
-      await AsyncStorage.setItem('id', userId.toString()); // Convert userId to string
+      await AsyncStorage.setItem('usertype', userType)
+      await AsyncStorage.setItem('username', username)
+      // await AsyncStorage.setItem('token', token);
+
+      console.log("resposne token", token)
+
 
       // Log stored values for verification
+
       const storedMail = await AsyncStorage.getItem('mail');
       console.log('stored ', storedMail);
-
-      Alert.alert('Success', 'Login Successful');
+      //
+      Alert.alert('Login Successful');
+      console.log('Login successful:', response.data);
       navigation.navigate('Tabbar');
+
+      // Handle response as needed
     } catch (error) {
-      Alert.alert('Error', "Invalid User Info");
+      Alert.alert("Invalid User Info");
       console.error('Login failed:', error);
+      // Handle error as needed
     }
   };
 
@@ -135,25 +98,23 @@ export default function Login() {
 
   const handleLogin = () => {
     const emailRegex = /\S+@\S+\.\S+/; // Regex pattern for a basic email format check
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/; // Regex pattern to check password length (at least 6 characters)
 
-    if (!email.trim()) {
-      Alert.alert('Error', 'Please enter email');
+    if (!emailRegex.test(email.trim())) {
+      alert('Please enter a valid email address');
       return;
-    } else if (!emailRegex.test(email.trim())) {
-      Alert.alert('Error', 'Please enter a valid email address');
+    } else if (!passwordRegex.test(password.trim())) {
+      alert('Password contains "0-9, A-Z, a-z, @-$"');
       return;
-    } else if (!password.trim()) {
-      Alert.alert('Error', 'Please enter password');
-      return;
-
+    } else if (password.trim().length < 8) {
+      alert('password length at least 8 characters');
     } else {
-      loginUser();
+      // handleLoginAuth();
+      navigation.navigate('Tabbar');
     }
   };
 
- 
-
-   
   return (
 
     <View style={styles.container}>
@@ -180,7 +141,6 @@ export default function Login() {
               onChangeText={(text) => setEmail(text)}
               style={styles.input}
               placeholderTextColor="black"
-
               // placeholderTextColor={'black'}
               keyboardType='email-address'
               autoCapitalize='none'
@@ -226,7 +186,7 @@ export default function Login() {
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.loginButton}
-          onPress={handleLogin}>
+          onPress={loginUser}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
 
@@ -253,7 +213,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     alignItems: 'center',
     // padding: responsiveWidth(3),
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#f5f5f5',
 
 
     width: '100%',
@@ -309,7 +269,7 @@ const styles = StyleSheet.create({
     width: '100%',
 
     // padding: responsiveWidth(3),
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#f5f5f5',
     borderRadius: responsiveWidth(5),
     justifyContent: 'center',
     alignItems: 'center',
@@ -354,9 +314,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2),
     // right: responsiveWidth(2),
     color: 'black',
-   
     fontWeight: '500',
-    
     //backgroundColor: 'rgba(162,161,151,0.18)'
 
 

@@ -1,12 +1,28 @@
-import { View, Text, TouchableOpacity, Image, FlatList, StyleSheet, TextInput, ScrollView, Share } from 'react-native'
+import { View, Text, TouchableOpacity, Image, FlatList, StyleSheet, TextInput, ScrollView, Share, useColorScheme, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-native-modal'
 import ImagePicker from 'react-native-image-crop-picker'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import privateApi from "../../api/privateAPI"
 import Video from 'react-native-video'
+import { DefaultTheme, DarkTheme, Provider as PaperProvider, useTheme } from 'react-native-paper';
+import { useSafeAreaFrame } from 'react-native-safe-area-context'
+import { error } from 'console'
+import { useNavigation } from '@react-navigation/native'
+import privateAPI from '../../api/privateAPI'
+
 
 export default function Postfeedcontainor() {
+  const navigation = useNavigation();
+  const scheme = useColorScheme();
+  const theme = scheme === 'dark' ? DarkTheme : DefaultTheme;
+
+  // Ensure theme object exists and has colors property
+  const { colors } = theme || {};
+
+  // If theme or colors is undefined, provide default values
+  const backgroundColor = colors ? colors.background : 'white';
+  const textColor = colors ? colors.text : 'black';
   const [userPost, setUserPost] = useState([]);
 
   useEffect(() => {
@@ -33,19 +49,51 @@ export default function Postfeedcontainor() {
 
 
 
+
+
+
   //renderitem lists
   const Datas = ({ item }) => {
-    const [imageUrl, setImageUrl] = useState(item.filePath)
+
+
+
+
+    const [imageUrl, setImageUrl] = useState(item.FileInfo.filePath)
     const [caption, setCaption] = useState("");
     const [hitLike, setHitLike] = useState(false);
     const [likeId, setLikeId] = useState(null);
+    const [likeCount, setLikeCount] = useState('');
+    const [commentCount, setCommentCount] = useState('');
+    const [shareCount, setShareCount] = useState('');
+    const [profilePicUrl, setProfilePicUrl] = useState(null);
+    const [userName, setuserName] = useState('');
 
     const [like, setLike] = useState(item.likes || 0); // Initialize likes with the value from the item
-    const [hitlike, setHitlike] = useState(false);
+    // const [hitlike, setHitlike] = useState(false);
 
     useEffect(() => {
-      setCaption(item.description);
-    }, [item.description]);
+      setCaption(item.FileInfo.description);
+    }, [item.FileInfo.description]);
+    useEffect(() => {
+      setLikeCount(item.LikeCount)
+
+    }, [item.LikeCount]);
+    useEffect(() => {
+      setCommentCount(item.CommentCount);
+    }, [item.CommentCount]);
+    useEffect(() => {
+      setShareCount(item.ShareCount);
+    }, [item.ShareCount]);
+
+    useEffect(() => {
+      setProfilePicUrl(item.profileUrl)
+    }, [item.profileUrl]);
+    useEffect(() => {
+      setuserName(item.username)
+    }, [item.username]);
+
+
+    // console.log("image url ", imageUrl)
 
 
 
@@ -65,41 +113,37 @@ export default function Postfeedcontainor() {
 
 
 
-    const handleLikePress = async (postId) => {
-      try {
-        if (!likeId) {
-          // User hasn't liked the post yet, so call addLike API
-          const likeResponse = await privateApi.post('action/addLike', { postId });
 
-          if (likeResponse.status === 200) {
-            const responseData = likeResponse.data;
-            if (responseData && responseData.data && responseData.data.likeInfo) {
-              const newLikeId = responseData.data.likeInfo.likeId;
+
+    const handleLikePress = async () => {
+      try {
+        // Call the API to add or remove like
+        const likeResponse = await privateApi.post('action/addLike', { postId });
+
+        if (likeResponse.status === 200) {
+          const responseData = likeResponse.data;
+          if (responseData && responseData.data && responseData.data.likeInfo) {
+            const newLikeId = responseData.data.likeInfo.likeId;
+
+            // Toggle like state
+            if (hitLike) {
+              // If post was liked, now unliking it
+              console.log('Post unliked successfully:', postId);
+              setLike(like - 1); // Decrement the like count
+              setHitLike(false); // Set like status to false
+              setLikeId(null); // Clear the stored likeId
+            } else {
+              // If post wasn't liked, now liking it
               console.log('Like posted successfully for post with id:', postId);
               setLike(like + 1); // Update the like count
               setHitLike(true); // Set like status to true
               setLikeId(newLikeId); // Store the new likeId
-            } else {
-              throw new Error('Invalid response data for addLike');
             }
           } else {
-            throw new Error('Failed to post like');
+            throw new Error('Invalid response data for addLike');
           }
         } else {
-          // User has already liked the post, so call updateLike API
-          const status = !hitLike; // Toggle like/dislike status
-          const response = await privateApi.post('action/updateLike', {
-            likeId: likeId,
-            status: status
-          });
-
-          if (response.status === 200) {
-            console.log(`Like ${status ? 'added' : 'removed'} successfully for post with id:`, postId);
-            setLike(status ? like + 1 : like - 1); // Update the like count based on like/dislike action
-            setHitLike(status); // Set like status based on the updated action
-          } else {
-            throw new Error(`Failed to ${status ? 'add' : 'remove'} like`);
-          }
+          throw new Error('Failed to post like');
         }
       } catch (error) {
         console.error('Error:', error.message);
@@ -108,41 +152,29 @@ export default function Postfeedcontainor() {
     };
 
 
-
-
-    // Call the function to fetch data and post like
-
-
-
-
-
-
-
-    //for like and dislike
-    //======================================================
-
-    // for comment section
-
     const [isCommentVisible, setCommentVisible] = useState(false);
     const [commentText, setCommentText] = useState('');
     const [comments, setComments] = useState([]);
+    const [paused, setPaused] = useState(true);
 
 
     const [postId, setPostId] = useState(null); // Add postId state
     const [userId, setUserId] = useState(null);
 
     useEffect(() => {
-      setPostId(item.id); // Set postId when item changes
-    }, [item.id]);
+      setPostId(item.FileInfo.id); // Set postId when item changes
+    }, [item.FileInfo.id]);
+
 
     useEffect(() => {
-      setUserId(item.userId);
-    }, [item.userId]);
+      setUserId(item.FileInfo.userId);
+    }, [item.FileInfo.userId]);
+
 
 
 
     // Handle comment press function
-    const onCommentPress = async (postId) => {
+    const onCommentPress = async () => {
       console.log(postId);
       setCommentVisible(!isCommentVisible);
       if (postId) {
@@ -197,7 +229,7 @@ export default function Postfeedcontainor() {
       }
     };
 
-    const fetchComment = async (postId) => {
+    const fetchComment = async () => {
       try {
         if (!postId) {
           console.error('PostId is null');
@@ -286,12 +318,12 @@ export default function Postfeedcontainor() {
     };
 
 
-    const onSharePress = async (postUrl, userId) => {
+    const onSharePress = async () => {
 
       const options = {
         // Your default message
         // message: `${item.caption} `,
-        message: postUrl
+        message: imageUrl
       };
       try {
         const result = await Share.share(options);
@@ -300,9 +332,11 @@ export default function Postfeedcontainor() {
           // Assuming you want to share the file after sharing via Share API
           await privateApi.post('action/addShare', {
             userId: userId,
-            postUrl: postUrl
+            postUrl: imageUrl,
+            postId: postId
           });
           console.log('File shared via API successfully');
+          console.log("psotId", postId)
         } else if (result.action === Share.dismissedAction) {
           console.log('Share dismissed');
         }
@@ -315,6 +349,48 @@ export default function Postfeedcontainor() {
     const handle_seemoreicon = () => {
       setVisible(!visible)
     }
+
+    const pinPost = async (postId) => {
+      try {
+        const body = {
+          flag: 1,
+          pinMediaId: postId
+        };
+
+        // Make API call to pin the post using postId
+        const response = await privateAPI.post('/pin/addPin', body);
+        // Handle response as needed
+        console.log('Post pinned successfully:', response.data);
+      } catch (error) {
+        console.error('Error pinning post:', error);
+      }
+    };
+
+    const reportPost = async (postId) => {
+      try {
+        const body = {
+          postId: postId,
+          reason: 'report'
+        }
+        const response = await privateAPI.post('/report/addPostReport', body);
+        Alert.alert('Success' , 'Report sucess')
+        console.log('reported Post successfully:', response.data)
+      } catch (error) {
+        console.log('Error repoting post:', error);
+      }
+    };
+    const pinProfile = async (userId) => {
+      try {
+        const body = {
+          userProfilePinId: userId,
+          status: true
+        }
+        const response = await privateAPI.post('pin/profilePinStatus', body);
+        console.log('profile pinned successfully:', response.data)
+      } catch (error) {
+        console.log('Error pinning profile:', error);
+      }
+    };
     return (
       <View>
         <View style={{}}>
@@ -332,7 +408,7 @@ export default function Postfeedcontainor() {
                     // borderWidth: responsiveWidth(0.4),
                     borderRadius: responsiveWidth(14),
                   }}>
-                  <Image source={require('../../../components/Assets/app_logo/8641606.jpg')}
+                  <Image source={{ uri: profilePicUrl }}
                     style={{ width: '100%', height: '100%', borderRadius: 50, }} resizeMode='stretch'
                   />
                 </TouchableOpacity>
@@ -351,11 +427,14 @@ export default function Postfeedcontainor() {
               <View
                 style={{ width: responsiveWidth(43), bottom: responsiveHeight(1.5) }}
               >
-                <Text
-                  style={{ fontSize: responsiveFontSize(1.8), fontWeight: "900", color: "#000000", letterSpacing: 0.5 }}>
-                  {/* {name} */}
-                  Deepaa
-                </Text>
+                <TouchableOpacity onPress={() => navigation.navigate('UserProfile',{userId})}>
+                  <Text
+                    style={{ fontSize: responsiveFontSize(1.8), fontWeight: "900", color: "#000000", letterSpacing: 0.5 }}>
+                    {/* {name} */}
+                    {userName}
+                  </Text>
+                </TouchableOpacity>
+
                 <Text
                   style={{ fontWeight: "500", color: "black", fontSize: responsiveFontSize(1.4), top: 2 }}>
                   {/* {profession} */}
@@ -404,19 +483,25 @@ export default function Postfeedcontainor() {
                     {visible ? (
                       <View
                         style={{ position: "absolute", marginTop: responsiveHeight(4), right: responsiveWidth(2.2), width: responsiveWidth(35), height: responsiveHeight(10), backgroundColor: "#666666", borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', rowGap: responsiveHeight(1.1), zIndex: 3 }}>
-                        <TouchableOpacity
-                          style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }}>
+                        <TouchableOpacity onPress={() => pinPost(postId)}
+                          style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }} >
                           <Image style={{ height: responsiveHeight(3), width: responsiveWidth(3), tintColor: 'white', zIndex: 3 }} source={require('../../Assets/Home_Icon_And_Fonts/pin_icon.png')} resizeMode='stretch'></Image>
                           <Text
                             style={{ color: '#ffffff' }}>Pin Post</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity
+                        <TouchableOpacity onPress={() => reportPost(postId)}
                           style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), justifyContent: 'center', borderColor: 'white', alignItems: 'center', borderWidth: responsiveWidth(0.3) }}
                         >
                           <Text
                             style={{ color: '#ffffff' }}
                           >Report Post</Text>
                         </TouchableOpacity>
+                        {/* <TouchableOpacity onPress={() => pinProfile(userId)}
+                          style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }} >
+                          <Image style={{ height: responsiveHeight(3), width: responsiveWidth(3), tintColor: 'white', zIndex: 3 }} source={require('../../Assets/Home_Icon_And_Fonts/pin_icon.png')} resizeMode='stretch'></Image>
+                          <Text
+                            style={{ color: '#ffffff' }}>Pin Profile</Text>
+                        </TouchableOpacity> */}
                       </View>
                     ) : null}
                   </View>
@@ -427,6 +512,7 @@ export default function Postfeedcontainor() {
 
             <View
               style={{
+                flexDirection: "row", width: responsiveWidth(32), justifyContent: "space-evenly", marginLeft: responsiveWidth(1), bottom: responsiveHeight(1), marginTop: responsiveWidth(1)
 
               }}>
               <Text
@@ -434,7 +520,7 @@ export default function Postfeedcontainor() {
 
                 }}>
                 {/* <LongTextComponent > */}
-                <Text>
+                <Text style={{ color: textColor }}>
                   {caption}
                 </Text>
                 {/* </LongTextComponent> */}
@@ -442,16 +528,32 @@ export default function Postfeedcontainor() {
             </View>
 
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => setPaused(!paused)}>
               <View style={{ borderColor: "grey", width: responsiveWidth(100), height: responsiveHeight(50) }}>
-                {imageUrl.endsWith('.mp4') || imageUrl.endsWith('.mov') ? ( // Check if the URL ends with a video extension
-                  <Video source={{ uri: imageUrl }} style={{ width: "100%", height: '100%' }} />
-                ) : (
-                  <Image source={{ uri: imageUrl }} style={{ width: "100%", height: '100%' }} />
+                {imageUrl && ( // Check if filePath exists
+                  imageUrl.endsWith('.mp4') || imageUrl.endsWith('.mov') ? (
+                    <View style={{ position: 'relative', width: '100%', height: '100%' }}>
+                      <Video
+                        source={{ uri: imageUrl }}
+                        style={{ width: "100%", height: '100%' }}
+                        paused={paused}
+                        resizeMode="contain"
+                      />
+                      {paused && ( // Display play button only if video is paused
+                        <Image
+                          source={require('../../../components/Assets/video/play_button.png')}
+                          style={styles.playButton}
+                        />
+                      )}
+                    </View>
+                  ) : (
+                    <Image source={{ uri: imageUrl }} style={{ width: "100%", height: '100%' }} />
+                  )
                 )}
               </View>
-
             </TouchableOpacity>
+
+
 
             <View
               style={{ height: responsiveHeight(7), width: responsiveWidth(100), flexDirection: "row", justifyContent: "space-between", top: responsiveHeight(0.5), paddingHorizontal: responsiveWidth(2) }}>
@@ -459,14 +561,14 @@ export default function Postfeedcontainor() {
 
                 {/* like button */}
                 <Text
-                  style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000" }}>{`${formatCmpctNumber(like)} Likes`}</Text>
+                  style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000" }}> {likeCount} Likes</Text>
                 <TouchableOpacity
                   //  {`${formatCmpctNumber(like)} Likes`}
                   onPress={() => handleLikePress(item.id)} // Call onLikePress with fileId
                   style={{ width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', }}>
                   <View
                     style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
-                    {hitlike && hitlike ?
+                    {hitLike && hitLike ?
                       <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/Like_after_Icon.png')} style={{ width: "100%", height: "100%", }} resizeMode='stretch' />
 
                       :
@@ -483,7 +585,7 @@ export default function Postfeedcontainor() {
               {/* comments button */}
               <View >
                 <Text
-                  style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", right: responsiveWidth(2.1) }}>{`${formatCmpctNumber(comments.length)} comments`}</Text>
+                  style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", right: responsiveWidth(2.1) }}>{commentCount} Comments</Text>
                 <TouchableOpacity
                   onPress={() => onCommentPress(item.id)}
                   style={{ width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', right: responsiveWidth(2) }}>
@@ -500,7 +602,7 @@ export default function Postfeedcontainor() {
 
               {/* shares button */}
               <View>
-                <Text style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", right: responsiveWidth(5) }}>0 Share</Text>
+                <Text style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", right: responsiveWidth(5) }}>{shareCount} Share</Text>
                 <TouchableOpacity
                   onPress={() => onSharePress(item.filePath, item.userId)}
                   style={{ width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', right: responsiveWidth(2) }}>
@@ -606,6 +708,7 @@ export default function Postfeedcontainor() {
           borderBottomColor: '#D7D7D7',
           marginVertical: 5
         }} />
+
         {/* ------------------------------------ */}
 
       </View>
@@ -617,14 +720,13 @@ export default function Postfeedcontainor() {
       <FlatList
         data={userPost}
         style={{ padding: 0, margin: 0 }}
-        renderItem={({ item }) => (
-          <Datas item={item} />
-        )}
-        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <Datas item={item} />}
+        keyExtractor={(item, index) => index.toString()} // Use index as the key since there are no unique IDs in the data
       />
 
 
     </>
+
   )
 }
 
@@ -648,6 +750,15 @@ const styles = StyleSheet.create({
     height: 500,
     borderWidth: 1,
 
+  },
+  playButton: {
+    position: 'absolute',
+    width: 50,
+    height: 50,
+    top: '50%', // Position the button at the vertical center of the container
+    left: '50%', // Position the button at the horizontal center of the container
+    marginLeft: -25, // Adjust for half of the button width to center it precisely
+    marginTop: -25, // Adjust for half of the button height to center it precisely
   },
   commentInput: {
     height: 50,

@@ -345,17 +345,23 @@ export default function Myactive() {
             setVisible(!visible)
         };
         const promoteEdit = () => {
-            
+
             navigation.navigate('PromoteEdit', {
                 imageUrl,
                 id
             });
-            console.log(" id passed " , id)
+            console.log(" id passed ", id)
         };
         return (
             <View>
                 <View style={{}}>
-                    <View>
+                    <View style={{marginTop:responsiveHeight(2)}}>
+
+                        <View style={styles.headder}>
+
+                            <Text style={styles.headder_text}>My Activities:</Text>
+
+                        </View>
 
                         <View style={{ flexDirection: "row", alignItems: 'center' }}>
 
@@ -677,6 +683,18 @@ const styles = StyleSheet.create({
     modal: {
         margin: 0,
         justifyContent: 'flex-end',
+    },
+    headder_text: {
+        fontWeight: "bold",
+        fontSize: responsiveFontSize(2.5),
+        color: "black",
+        marginLeft: responsiveWidth(2),
+        fontFamily: "Times New Roman",
+        //   textDecorationLine: "underline",
+    },
+    headder: {
+        bottom: responsiveHeight(1)
+
     },
     modalContainer: {
         backgroundColor: 'white',

@@ -104,7 +104,7 @@ setIsEditing(true)
 const fetchData = async () => {
   try {
     const userId = await AsyncStorage.getItem('userId');
-    console.log('check userid' ,userId )
+    console.log('check userid', userId)
     const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=${userId}`);
     const response = resp.data;
 
@@ -124,6 +124,7 @@ const fetchData = async () => {
       dailySalary: item.dailySalary,
       platformPermanentId: item.platformPermanentId,
       platformImageURL: `data:image/jpeg;base64,${item.platformImage}`, // Decode base64 to image URL
+      filePaths: item.outputWebModelList.map(file => file.filePath), // Add filePaths array from response
     }));
 
     setPlatformData(modifiedData);
@@ -133,6 +134,7 @@ const fetchData = async () => {
     setLoading(false);
   }
 };
+
  
 
  
@@ -141,9 +143,7 @@ const fetchData = async () => {
 const [openingImagePicker, setOpeningImagePicker] = useState(false);
 
 const project = (platformId) => {
-
-  console.log('platformId', platformId)
-
+  console.log('platformId', platformId);
   if (platformId === projectPlatformId) {
     // Save changes and exit edit mode
     openImagePicker(platformId);
@@ -152,7 +152,7 @@ const project = (platformId) => {
     // Enter edit mode for the selected platform
     setProjectPlatformId(platformId);
   }
-}
+};
 
 const openImagePicker = (platformId) => {
   setOpeningImagePicker(true);
@@ -181,17 +181,21 @@ const openImagePicker = (platformId) => {
   });
 };
 
+
+
 const addImageWithTitle = async (platformId) => {
   if (!selectedImage) {
     throw new Error('No image selected.');
   }
-  
+  const userId = await AsyncStorage.getItem('userId');
   const jwt = await AsyncStorage.getItem('jwt');
+
+  console.log('usedidddd ',userId )
   const myHeaders = new Headers();
   myHeaders.append('Authorization', 'Bearer ' + jwt);
 
   const formData = new FormData();
-  const userId = 248;
+ 
   formData.append('userId', userId);
   formData.append('platformPermanentId', platformId);
 
@@ -221,22 +225,39 @@ const addImageWithTitle = async (platformId) => {
   Alert.alert('Posted');
 };
 
+const toggleExpanded = () => {
+  setExpanded(!expanded);
+};
+
 
   // Render JSX based on fetched data
   return (
     <View style={styles.containers}>
-      <TouchableOpacity style={styles.bio_title} >
+      <TouchableOpacity style={styles.bio_title} onPress={toggleExpanded}>
         <Text style={styles.bio_title_text}>PROFESSION</Text>
         <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
           <Image source={require("../../../Assets/Userprofile_And_Fonts/update/down-arrow.png")} style={styles.downArrow} />
         </View>
       </TouchableOpacity>
 
+      {expanded &&(
+
 
       <ScrollView style={{ width: responsiveWidth(100), }}>
       {isEditing && (
-              <TouchableOpacity onPress={()=>navigation.navigate('IndustryUpdateOne')} style={{ color: 'black' }}>
-                <Text style={styles.editButton}>Add Industry</Text>
+              <TouchableOpacity onPress={()=>navigation.navigate('IndustryUpdateOne')} style={{
+                height: responsiveHeight(5.5),
+                width: responsiveWidth(45.5),
+                 borderWidth: responsiveWidth(0.3),
+                borderColor: 'black',
+                borderRadius: responsiveWidth(2),
+               left:responsiveWidth(54),
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor:'blue'
+              }}>
+                <Text style={{ fontSize: responsiveFontSize(2),
+    color: 'white',}}>Add Industry</Text>
               </TouchableOpacity>
             )}
         {loading ? (
@@ -258,36 +279,41 @@ const addImageWithTitle = async (platformId) => {
 
 
               <View style={{ flexDirection: 'row', columnGap: responsiveWidth(10), width: responsiveWidth(100), padding: responsiveWidth(1) }}>
-                <View style={{ width: responsiveHeight(17), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', flexWrap:'wrap' }}>
-                  <ImageBackground style={{ width: '102%', height: '102%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                  <View style={{width:responsiveWidth(9), height:responsiveHeight(5), right:responsiveWidth(2)}}>
+                <View style={{ width: responsiveHeight(19), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', flexWrap:'wrap' }}>
+                  <ImageBackground style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center',  flexWrap:'wrap'  }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                  <View style={{width:responsiveWidth(21), height:responsiveHeight(6.5), right:responsiveWidth(2), margin:responsiveWidth(1)}}>
                   <Image source={{ uri: platform.platformImageURL }} style={{  width: '100%', height: '80%'  }} resizeMode='stretch'/>
                   </View>
+
                     <Text style={[styles.platformName, styles.border]}>{platform.platformName}</Text>
                   </ImageBackground>
                 </View>
                 <View style={{ width: responsiveWidth(58) }}>
                   <View style={styles.industriesContainer}>
                     {platform.industries.map((industry, index) => (
-                      <ImageBackground key={index} style={{ width: responsiveWidth(45), marginBottom: responsiveHeight(1), height: responsiveHeight(5.5), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                        <View style={{width:responsiveWidth(9), height:responsiveHeight(5), right:responsiveWidth(2)}}>
-                        <Image source={{ uri: industry.imageURL }} style={{ width: '100%', height: '80%' }} resizeMode='stretch' />
+                      <ImageBackground key={index} style={{ width: responsiveWidth(45), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap:'wrap' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                        <View style={{width:responsiveWidth(9), height:responsiveHeight(5), right:responsiveWidth(2),}}>
+                        <Image source={{ uri: industry.imageURL }} style={{ width: '90%', height: '80%',padding:1 }} resizeMode='stretch' />
                         </View>
+                        <View style={{width:responsiveWidth(29)}}>
                         <Text style={styles.industry}>{industry.industryName}</Text>
+                        </View>
                       </ImageBackground>
                     ))}
                   </View>
                   <View style={styles.professionsContainer}>
                     {platform.professions.map((profession, index) => (
                       <View key={index} style={styles.professionContainer}>
-                        <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                        <ImageBackground style={{ width: responsiveWidth(45), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' ,flexWrap:'wrap'}} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
                         <View style={{width:responsiveWidth(9), height:responsiveHeight(5), right:responsiveWidth(2)}}>
                           <Image source={{ uri: profession.imageURL }} style={{ width: '100%', height: '80%' }} resizeMode='stretch' />
                           </View>
+                          <View style={{width:responsiveWidth(29)}}>
                           <Text style={styles.profession}>{profession.professionName}</Text>
+                          </View>
                         </ImageBackground>
                         {profession.subProfessions.map((subProfession, subIndex) => (
-                          <ImageBackground key={subIndex} style={{ width: responsiveWidth(30), marginBottom: responsiveHeight(1), height: responsiveHeight(5.5), flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                          <ImageBackground key={subIndex} style={{ width: responsiveWidth(30), marginBottom: responsiveHeight(1), padding:2,flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
                             
                             <Text style={styles.subProfession}>{subProfession}</Text>
                           </ImageBackground>
@@ -348,11 +374,22 @@ const addImageWithTitle = async (platformId) => {
                     <Image source={require('../../../Assets/Home_Icon_And_Fonts/plus_icon.png')} style={{ width: 80, height: 80, alignSelf: 'center', top: 29 }} />
                   </TouchableOpacity>
                 </View>
+                              
+              {platform.filePaths.map((url, index) => (       
+              <View style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5",marginRight:responsiveWidth(2)}} >  
+              <Image key={index} source={{ uri: url }} style={{ width: '100%', height: '100%' }} resizeMode='stretch'/>
+                              
+              </View>
+              ))} 
+
               </ScrollView>
+           
+              <View style={styles.horizontalLine} />
             </View>
           ))
         )}
       </ScrollView>
+)}
     </View>
   );
   
@@ -364,6 +401,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
 
 
+  },
+  horizontalLine: {
+    borderBottomWidth: 6,
+    borderBottomColor: 'black',
+    marginVertical: 5, // Adjust the vertical margin as needed
   },
   editButton: {
     fontSize: 18,
@@ -414,7 +456,9 @@ const styles = StyleSheet.create({
   platformName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color:'black'
+    color:'black',
+   
+    textAlign:'center'
   },
   industriesContainer: {
     marginLeft: responsiveWidth(2),
@@ -436,14 +480,15 @@ const styles = StyleSheet.create({
     color:'black'
   },
   subProfession: {
-    color:'black'
+    color:'black',
+     textAlign:'center'
     // marginLeft: 10,
   },
-  border: {
+  // border: {
 
-    borderColor: 'black',
+  //   borderColor: 'black',
    
-  },
+  // },
 });
 
 

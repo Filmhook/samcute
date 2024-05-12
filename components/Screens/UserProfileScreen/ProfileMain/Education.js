@@ -1,7 +1,5 @@
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
-
-
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PublicAPI from '../../../api/publicAPI';
@@ -249,7 +247,8 @@ const style = StyleSheet.create({
     container: {
         //  borderWidth:2,
         //  height: responsiveHeight(28),
-        flex: 1
+        flex: 1,
+        marginBottom:responsiveHeight(1)
 
     },
     headder_text: {

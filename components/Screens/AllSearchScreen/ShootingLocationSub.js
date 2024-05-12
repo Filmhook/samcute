@@ -300,12 +300,12 @@ const DetailsScreen = ({ route }) => {
     };
 
 
-    const { location, startDate, endDate, image, link, rate, refer } = route.params;
+    const { location, startDate, endDate, image, link, rate, refer ,description } = route.params;
 
     return (
         <ScrollView style={{ flex: 1, }}>
             <View style={{ alignItems: 'center' }}>
-                <Image source={image} style={{
+                <Image source={{uri : image}} style={{
                     width: responsiveWidth(95),
                     height: responsiveHeight(30),
                     resizeMode: 'stretch',
@@ -323,7 +323,7 @@ const DetailsScreen = ({ route }) => {
 
                     <Text style={{ color: 'blue', textDecorationLine: 'underline', fontSize: responsiveFontSize(2.5), marginHorizontal: responsiveWidth(4) }}>{link}</Text>
 
-                    <Text style={{ marginHorizontal: responsiveWidth(4), color: 'black', marginTop: responsiveHeight(2) }}><Text style={{ fontWeight: '800', color: 'black' }}>Description:</Text> This property can be given for the shooting only based on request on Forest Officer Support. Its very good for Song Shooting. </Text>
+                    <Text style={{ marginHorizontal: responsiveWidth(4), color: 'black', marginTop: responsiveHeight(2) }}><Text style={{ fontWeight: '800', color: 'black' }}>Description:</Text>{description }</Text>
 
                     <Text style={{ marginHorizontal: responsiveWidth(4), color: 'black', marginTop: responsiveHeight(2), fontWeight: '800', fontSize: responsiveFontSize(1.8) }}>Do's & Don'ts Apply</Text>
 
@@ -397,4 +397,3 @@ const styles = StyleSheet.create({
 
 
 export default DetailsScreen;
-
