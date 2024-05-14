@@ -517,6 +517,7 @@ const getStyles = theme => {
       flexDirection: 'row',
       marginTop: responsiveHeight(0.2),
       flex: 1,
+      
     },
     bio_title: {
       flex: responsiveWidth(0.2),

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Image, ScrollView, Modal, ImageBackground, Alert } from 'react-native'
-// import Swiper from 'react-native-swiper'
 import Biography from './BioGraphy'
 import Bodymeasurement from './BodyMeasurements'
 import Professionalinfo from './Professional_Info'
@@ -9,20 +8,13 @@ import Profession from './Profession'
 import CurrentIndustry from './Current_Industry'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Swiper from 'react-native-swiper'
-// import MyActivities from './MyActivities'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 
 import ImagePicker from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
-// import MyActivities from './MyActivities'
 import Myactive from './Myactive'
 
-// for firebase sirestore 
-// import { getAuth, onAuthStateChanged } from 'firebase/auth';
-// import {getFirestore, query, collection, getDocs, where } from 'firebase/firestore';
-// import { app ,database } from '../../../../FirebaseConfig';
-// for firebase sirestore 
 
 export default function ProfileRoot() {
 
@@ -45,6 +37,14 @@ export default function ProfileRoot() {
     setModalVisible(false);
 
   };
+  const [userName, setUserName] = useState('');
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const username = await AsyncStorage.getItem('username');
+      setUserName(username);
+    }
+    fetchUserName();
+  });
 
   const handleImage1Press = () => {
     // Function to navigate or perform action for image 1
@@ -94,77 +94,6 @@ export default function ProfileRoot() {
     });
   };
 
-
-
-
-  //forfirebase data save 
-
-  // const [fetchData, setFetchData] = useState([]);
-  // const [loading , setLoading] = useState(false);
-
-  // Accessing properties
-  //const user = fetchData[0]
-  // Accessing properties
-
-
-  //   useEffect(() => {
-
-  //             const auth = getAuth(app);
-  //             let unsubscribe; 
-
-  //         const fetchUserData = async (userUid) => {
-  //               console.log(userUid);
-  //     // Firestore Schema
-  //         const firestore = getFirestore(app)
-  //         const collectionName = 'IndutryUser';
-  //         const collectionName1 = 'IndutryUser';
-  //         const collectionName2 = 'userProfile';
-  //    // Firestore Schema
-
-  //     try{
-  //       setLoading(true);
-
-  //       const postQuery = query(collection(firestore,collectionName),
-  //        where('AutoUid','==',userUid)
-  //        );
-
-  //       const querySnapshot = await getDocs(postQuery)
-
-  //       const data = querySnapshot.docs.map( doc => {
-  //         return {
-  //             ...doc.data()
-  //         }  
-  //       });
-
-  //       setFetchData(data);
-  //       setLoading(false);
-
-  //     }catch(err){
-  //        setLoading(false);
-  //        console.log('Error fetching data:',err);
-  //     }
-  //   }; 
-
-  //   const getUserUid = async () => {
-  //    unsubscribe = onAuthStateChanged(auth, (user) => {
-  //      if (user) {
-  //        const userUid = user.uid;
-  //        // Fetch user data using the obtained UID
-  //        fetchUserData(userUid);
-  //      }
-  //    });
-  //  };
-
-  //  getUserUid();
-
-  //  // Cleanup the subscription when the component is unmounted
-  //  return () => {
-  //    if (unsubscribe) {
-  //     unsubscribe();
-  //    }
-  //  };
-
-  // }, []);
 
   const [coverPics, setCoverPics] = useState([
     require('../../../Assets/app_logo/8641606.jpg'),
@@ -259,7 +188,7 @@ export default function ProfileRoot() {
 
 
         <View style={{ marginTop: responsiveHeight(-21), marginLeft: responsiveWidth(44), }}>
-          <Text style={styles.profile_name}>SRK</Text>
+          <Text style={styles.profile_name}>{userName}</Text>
 
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity style={styles.followers}>
@@ -282,71 +211,24 @@ export default function ProfileRoot() {
           </View>
         </View>
 
-        {/* <View style={{ position: 'absolute', top: responsiveHeight(60), marginLeft: responsiveWidth(5) }}>
-          <TouchableOpacity onPress={() => openModal()}  >
-            <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/Chats-Menu.png')} style={{ width: responsiveWidth(12), height: responsiveHeight(5) }} />
-          </TouchableOpacity>
-
-          <Modal
-            visible={modalVisible}
-            transparent={true}
-            onRequestClose={closeModal}
-          >
-            <View style={styles.modalContainer}>
-              <TouchableOpacity onPress={handleImage1Press} >
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/hire.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleImage2Press}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/remove.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/pin.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/chat.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/call.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/project.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/block.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/UserProfile_Icons_Fonts/Booking.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/market.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-
-
-
-
-            </View>
-          </Modal>
-        </View> */}
-
-
 
         <Biography />
-
+        <View style={styles.underline} />
 
         <Bodymeasurement />
-
+        <View style={styles.underline} />
         <Professionalinfo />
-
+        <View style={styles.underline} />
         <Education />
-
+        <View style={styles.underline} />
         <CurrentIndustry />
-
+        <View style={styles.underline} />
 
         <Profession />
-
-        {/* <MyActivities /> */}
-        <Myactive />
-
+        <View style={styles.underline} />
+      
+        {/* <Myactive />
+        <View style={styles.underline} /> */}
 
       </ScrollView>
 
@@ -358,6 +240,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     height: '100%'
+  },
+  underline: {
+    flex: 1,
+    height: responsiveHeight(0.3),
+    backgroundColor: 'gray',
+    
   },
 
   bgprofile: {

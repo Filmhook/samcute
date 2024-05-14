@@ -343,22 +343,31 @@ export default function Myactive() {
     };
     const [visible, setVisible] = useState(false);
 
-    const handle_seemoreicon = () => {
-      setVisible(!visible);
-    };
-    const promoteEdit = () => {
-      navigation.navigate('PromoteEdit', {
-        imageUrl,
-        id,
-      });
-      console.log(' id passed ', id);
-    };
-    return (
-      <View>
-        <View style={{}}>
-          <View>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {/* <LongTextComponent  text={caption}/> */}
+        const handle_seemoreicon = () => {
+            setVisible(!visible)
+        };
+        const promoteEdit = () => {
+
+            navigation.navigate('PromoteEdit', {
+                imageUrl,
+                id
+            });
+            console.log(" id passed ", id)
+        };
+        return (
+            <View>
+                <View style={{}}>
+                    <View style={{marginTop:responsiveHeight(2)}}>
+
+                        <View style={styles.headder}>
+
+                            <Text style={styles.headder_text}>My Activities:</Text>
+
+                        </View>
+
+                        <View style={{ flexDirection: "row", alignItems: 'center' }}>
+
+                            {/* <LongTextComponent  text={caption}/> */}
 
               <View
                 style={{
@@ -946,27 +955,40 @@ export default function Myactive() {
 }
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  modal: {
-    margin: 0,
-    justifyContent: 'flex-end',
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    height: 500,
-    borderWidth: 1,
-  },
-  commentInput: {
-    height: 50,
+    // container: {
+    //   flex: 1,
+    //   justifyContent: 'center',
+    //   alignItems: 'center',
+    // },
+    modal: {
+        margin: 0,
+        justifyContent: 'flex-end',
+    },
+    headder_text: {
+        fontWeight: "bold",
+        fontSize: responsiveFontSize(2.5),
+        color: "black",
+        marginLeft: responsiveWidth(2),
+        fontFamily: "Times New Roman",
+        //   textDecorationLine: "underline",
+    },
+    headder: {
+        bottom: responsiveHeight(1)
+
+    },
+    modalContainer: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        height: 500,
+        borderWidth: 1,
+
+    },
+    commentInput: {
+        height: 50,
 
     width: responsiveWidth(63.5),
     position: 'absolute',

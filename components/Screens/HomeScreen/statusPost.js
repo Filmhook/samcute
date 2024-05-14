@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, TextInput, } from 'react-native';
 
 import { useNavigation } from "@react-navigation/native";
@@ -53,6 +53,8 @@ export default function StatusPost() {
   const [link, setLink] = useState('');
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [linkVisibility, setLinkVisibility] = useState('public');
+  const [imageURL, setImageURL] = useState(null);
+
 
   const handleFocus = () => {
     setVisible(!visible);
@@ -115,13 +117,46 @@ export default function StatusPost() {
     // Implement logic to add a link
     navigation.navigate('Promote')
   };
+  useEffect(() => {
+    const fetchProfilePicture = async () => {
+      try {
+        const jwt = await AsyncStorage.getItem('jwt');
+        const id = await AsyncStorage.getItem('userId');
+
+        const myHeaders = {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwt
+        };
+
+        const requestData = {
+          userId: id
+        };
+
+        const response = await privateAPI.post('user/getProfilePic', requestData, { headers: myHeaders });
+
+        const data = response.data; // Extract response data
+
+        if (data.status === 1) {
+          const profilePicUrl = data.data.filePath; // Extract filePath from response
+          setImageURL(profilePicUrl); // Update state with profile picture URL
+          console.log('Profile pic found successfully:', profilePicUrl);
+        } else {
+          throw new Error('Failed to fetch profile picture');
+        }
+      } catch (error) {
+        console.error('Error fetching profile picture:', error);
+      }
+    };
+
+    fetchProfilePicture();
+  }, []);
   return (
     <>
       <View>
         <View style={{ flexDirection: 'row', padding: responsiveWidth(2),}}>
           {/* User Profile Section */}
           <TouchableOpacity style={{ marginLeft: responsiveWidth(0), width: responsiveWidth(12.5), height: responsiveHeight(6), borderWidth: responsiveWidth(0.2), borderRadius: responsiveWidth(10), backgroundColor: "grey" }} onPress={() => navigation.navigate('profilepage')}>
-            <Image source={require('../../../components/Assets/app_logo/8641606.jpg')} style={{ width: '100%', height: '100%', borderRadius: 50, }} resizeMode='stretch'/>
+            <Image source={{ uri: imageURL }} style={{ width: '100%', height: '100%', borderRadius: 50, }} resizeMode='stretch'/>
           </TouchableOpacity>
           <View style={{ width: responsiveWidth(7.5), height: responsiveHeight(2), borderRadius: responsiveWidth(2), top: responsiveHeight(4.5), left: responsiveWidth(-10), backgroundColor: "#000000", }}>
             <Text

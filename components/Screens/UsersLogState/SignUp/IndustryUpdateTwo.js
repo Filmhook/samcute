@@ -136,7 +136,7 @@ const IndustryUpdateTwo = () => {
                     'Success',
                     'Successfully updated',
                     [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') }
+                        { text: 'OK', onPress: () => navigation.navigate('Tabbar') }
                     ],
                     { cancelable: false }
                 );

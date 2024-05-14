@@ -1,9 +1,14 @@
-import React, { useMemo, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ImageBackground, FlatList, TextInput, Image,Alert  } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ImageBackground, FlatList, TextInput, Image, Alert } from 'react-native';
 import { responsiveHeight, responsiveWidth, responsiveFontSize } from 'react-native-responsive-dimensions';
 import ImagePicker from 'react-native-image-crop-picker';
 import RazorpayCheckout from 'react-native-razorpay';
 import CheckBox from '@react-native-community/checkbox';
+import privateApi from "../../api/privateAPI"
+import privateAPI from '../../api/privateAPI';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Checkbox from '@react-native-community/checkbox';
+
 
 export default function MarketPost() {
 
@@ -11,71 +16,107 @@ export default function MarketPost() {
     const [ProductName, setProductName] = useState('');
     const [productDescription, setProductDescription] = useState('');
     const [productType, setProductType] = useState('');
-    
+
     // const navigation = useNavigation()
     const [priceValue, setPriceValue] = useState('');
     const [items, setItems] = useState([]);
     const [editingItemId, setEditingItemId] = useState(null);
     const [inputText, setInputText] = useState('');
     const [profilepics, setProfilePics] = useState([]);
+    const [selectedCheckboxIndex, setSelectedCheckboxIndex] = useState(-1);
 
-    const edit_profile_pic = async () => {
+    const handleCheckboxChange = (index) => {
+        setSelectedCheckboxIndex(index);
+
+    };
+
+    useEffect(() => {
+        console.log("checkbox", selectedCheckboxIndex);
+    }, [selectedCheckboxIndex]);
+
+    const edit_profile_pic = async (option) => {
         try {
             const images = await ImagePicker.openPicker({
-                multiple: true,
+                multiple: false,
                 cropping: true,
             });
             if (images) {
-                console.log(images.map(image => image.path));
-                setProfilePics(images.map(image => ({ uri: image.path })));
+                ImagePicker.openPicker({ cropping: true }).then(images => {
+                    console.log(images)
+                    let generateName = images.path.split("/")[images.path.split("/")?.length - 1]
+
+                    setProfilePics({ uri: images.path, type: images.mime, name: generateName });
+                })
             }
         } catch (error) {
             console.log('Image picker operation canceled or failed:', error);
         }
-    }; 
+    };
     const [selectedItem, setSelectedItem] = useState(null);
-    const checkBoxItems = [
-        {
-            id: '1',
-            label: 'Would you like to Rental',
-            value: 'For Rental'
-        },
-        {
-            id: '2',
-            label: 'Would you like to Sale  ',
-            value: 'For Sale'
-        }
-    ];
-    const handleCheckBoxChange = (id) => {
-        if (selectedItem === id) {
-            setSelectedItem(null);
-        } else {
-            setSelectedItem(id);
+
+
+    const handlePostButton = async () => {
+        try {
+            // Retrieve userId from AsyncStorage
+            const id = await AsyncStorage.getItem('userId');
+
+            // Create a new Headers object and append the authorization token
+            const myHeaders = new Headers();
+            const jwt = await AsyncStorage.getItem("jwt");
+            myHeaders.append("Authorization", "Bearer " + jwt);
+
+            // Create a FormData object
+            const formData = new FormData();
+
+            // Check if profilepics is defined
+            if (profilepics && profilepics.uri) {
+                const imageUriParts = profilepics.uri.split('.');
+                const fileType = imageUriParts[imageUriParts.length - 1];
+                formData.append("fileInputWebModel.files[0]", {
+                    uri: profilepics.uri,
+                    name: `image.${fileType}`,
+                    type: `image/${fileType}`
+                });
+            }
+
+            formData.append("companyName", CompanyName);
+            formData.append("productName", ProductName);
+            formData.append("productDescription", productDescription);
+            formData.append("count", "2");
+            formData.append("cost", priceValue);
+            formData.append("newProduct", productType);
+            formData.append("rentalOrsale", selectedItem);
+            formData.append("createdBy", id);
+            formData.append("userId", id);
+
+            // Define requestOptions with method, headers, body, and redirect options
+            const requestOptions = {
+                method: "POST",
+                headers: myHeaders,
+                body: formData,
+                redirect: "follow"
+            };
+            console.log(`FormData : ${JSON.stringify(formData)}`)
+            // Make a POST request using fetch
+            const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/marketPlace/marketPlace`, requestOptions);
+            const data = await response.json(); // Parse response JSON
+
+            // Log the response data
+            console.log("Response data:", data);
+
+            if (data.status === 1) {
+                Alert.alert("Posted");
+                setPostModalVisible(false);
+            } else {
+                // Handle unsuccessful response
+                // ...
+            }
+        } catch (error) {
+            console.error('Error posting:', error);
+            Alert.alert('Error', error.message);
         }
     };
 
-    const handlePostButton = () => {
-        Alert.alert(
-            'Confirm Post',
-            'Are you sure you want to post?',
-            [
-                {
-                    text: 'Cancel',
-                    onPress: () => console.log('Post cancelled'),
-                    style: 'cancel',
-                },
-                { 
-                    text: 'OK', 
-                    onPress: () => {
-                        // Perform post action here
-                        console.log('Post confirmed');
-                        // Navigate to other page
-                    }
-                },
-            ],
-            { cancelable: false }
-        );
-    };
     return (
         <ScrollView contentContainerStyle={styles.container}>
 
@@ -86,35 +127,37 @@ export default function MarketPost() {
                 {/* <TextInput style={styles.input} placeholder="your Company Name" value={title} onChangeText={settitle} /> */}
 
                 <View style={styles.imageContainer}>
-                <TouchableOpacity onPress={edit_profile_pic} style={styles.imagePicker}>
-                    {profilepics.length > 0 ? (
-                        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                            {profilepics.map((profilepic, index) => (
-                                <Image
-                                    key={index}
-                                    source={profilepic}
-                                    style={profilepics.length === 1 ? styles.fullimage : styles.image}
-                                    resizeMode='stretch'
-                                />
-                            ))}
-                        </View>
-                    ) : (
-                        <View style={styles.uploadContainer}>
-                            <View style={{ top: responsiveHeight(17), left: responsiveWidth(65) }}>
-                                <Image
-                                    source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-cameraicon.png')}
-                                    style={styles.uploadIcon}
-                                    resizeMode='stretch'
-                                /></View>
-                            <Text style={styles.uploadText}>Upload Image</Text>
-                        </View>
-                    )}
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity onPress={edit_profile_pic} style={styles.imagePicker}>
+                        {profilepics.length > 0 ? (
+                            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                                {profilepics.map((profilepic, index) => (
+                                    <Image
+                                        key={index}
+                                        source={{ uri: profilepic }}
+                                        style={profilepics.length === 1 ? styles.fullimage : styles.image}
+                                        resizeMode='stretch'
+                                    />
+                                ))}
+                            </View>
+                        ) : (
+                            <View style={styles.uploadContainer}>
+                                <View style={{ top: responsiveHeight(17), left: responsiveWidth(65) }}>
+                                    <Image
+                                        source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-cameraicon.png')}
+                                        style={styles.uploadIcon}
+                                        resizeMode='stretch'
+                                    /></View>
+                                <Text style={styles.uploadText}>Upload Image</Text>
+                            </View>
+                        )}
+                    </TouchableOpacity>
+                </View>
                 <ImageBackground style={styles.inputContainerPName} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                     <TextInput
                         placeholder='Your Product Name'
                         value={ProductName}
+                        placeholderTextColor='black'
+
                         onChangeText={setProductName}
                         style={{
 
@@ -129,6 +172,7 @@ export default function MarketPost() {
                     <ImageBackground style={styles.inputContainer} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                         <TextInput
                             placeholder='Your Company Name'
+                            placeholderTextColor='black'
                             value={CompanyName}
                             onChangeText={setCompanyName}
                             style={{
@@ -149,6 +193,7 @@ export default function MarketPost() {
                         <TextInput
                             placeholder='Your Product Description'
                             multiline
+                            placeholderTextColor='black'
                             value={productDescription}
                             onChangeText={setProductDescription}
                             style={{
@@ -168,7 +213,7 @@ export default function MarketPost() {
                         <TextInput
                             placeholder='Used Product or New Product'
                             multiline
-                            value={productType}
+                            placeholderTextColor='black'                            value={productType}
                             onChangeText={setProductType}
                             style={{
                                 paddingHorizontal: responsiveWidth(5),
@@ -180,26 +225,26 @@ export default function MarketPost() {
                     </ImageBackground>
                 </View>
 
-                {/* <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <RadioGroup
-                        radioButtons={radioButtons}
-                        onPress={setSelectedId}
-                        selectedId={selectedId}
-                        layout='row'
-                        containerStyle={{ alignSelf: 'center', marginTop: responsiveHeight(2), width: responsiveWidth(82), }}
 
-                    />
-                </View> */}
-                <View style={{ width: responsiveWidth(78), rowGap: responsiveHeight(1) }}>
-                    {checkBoxItems.map(item => (
-                        <View key={item.id} style={{ flexDirection: 'row', alignItems: 'center', }}>
-                            <CheckBox
-                                value={selectedItem === item.id}
-                                onValueChange={() => handleCheckBoxChange(item.id)}
-                            />
-                            <Text style={{ color: 'black', fontWeight: '400' }}>{item.label}</Text>
-                        </View>
-                    ))}
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={styles.checkboxContainer}>
+                        <Checkbox
+                            value={selectedCheckboxIndex === true}
+                            onValueChange={() => handleCheckboxChange(true)}
+                            color='black'
+                            borderColor='black'
+                        />
+                        <Text style={{ color: 'black', fontWeight: 'bold' }}>Rental</Text>
+                    </View>
+                    <View style={styles.checkboxContainer2}>
+                        <Checkbox
+                            value={selectedCheckboxIndex === false}
+                            onValueChange={() => handleCheckboxChange(false)}
+                            color='black'
+                            borderColor='black'
+                        />
+                        <Text style={{ color: 'black', fontWeight: 'bold' }}>Sale</Text>
+                    </View>
                 </View>
 
                 <View style={{
@@ -208,18 +253,19 @@ export default function MarketPost() {
                 }}>
 
                     <View style={{ width: responsiveWidth(13), justifyContent: 'center', alignItems: 'center', borderRadius: responsiveWidth(2), height: responsiveHeight(5.2), }}>
-                        <ImageBackground style={{ height: responsiveHeight(5.2), width: responsiveWidth(11), justifyContent: 'center', alignItems: 'center', borderRadius: responsiveWidth(2) }} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
+                        <ImageBackground style={{ height: responsiveHeight(5.2), width: responsiveWidth(13), justifyContent: 'center', alignItems: 'center', borderRadius: responsiveWidth(2) }} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                             <Text style={{ color: 'black', fontWeight: '600' }}>INR ₹</Text>
                         </ImageBackground>
                     </View>
-                   
+
                     <ImageBackground style={{
                         height: responsiveHeight(5.2),
-                        width: responsiveWidth(30),
+                        width: responsiveWidth(35),
                     }} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                         <TextInput
                             placeholder="Price per quantity"
                             value={priceValue}
+                            placeholderTextColor='black'
                             onChangeText={setPriceValue}
                             keyboardType='numeric'
                             style={{
@@ -234,9 +280,9 @@ export default function MarketPost() {
                             }}
                         />
                     </ImageBackground>
-                 
+
                 </View>
-              
+
 
             </View>
             <View style={{ width: responsiveWidth(90), marginTop: responsiveHeight(5), padding: responsiveWidth(3) }}>
@@ -337,10 +383,27 @@ const styles = StyleSheet.create({
 
 
     },
+    checkboxContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        color: 'black',
+        borderColor:'black'
+        // right: responsiveWidth(23)
+    },
+    checkboxContainer2: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        color: 'black',
+        borderColor: 'black'
+
+        // left: responsiveWidth(13),
+        // bottom: responsiveHeight(3.5)
+    },
     uploadText: {
         fontSize: responsiveWidth(5),
         bottom: responsiveHeight(5),
-        left: responsiveWidth(23)
+        left: responsiveWidth(23),
+        color: 'black'
     },
     inputContainerPName: {
         flexDirection: 'row',

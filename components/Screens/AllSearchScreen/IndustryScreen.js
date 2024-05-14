@@ -1,191 +1,85 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Image, Text, TouchableOpacity, View, StyleSheet, ImageBackground } from "react-native";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 
 
 
 
-const IndustryScreen = () => {
-    const navigation = useNavigation();
-    const handleNavigation = () => {
+const IndustryScreen = ({route}) => {
 
-      
-        navigation.navigate("Home")
+    const {selectedIndIds, selectedIds}=route.params;
+
+    console.log('selectedIndIds', selectedIndIds,  )
+    console.log('selectedIds',selectedIds)
+    const [platforms, setPlatforms] = useState([]);
+
+    const navigation = useNavigation();
+    const handleNavigation = (platfornId) => {
+        console.log('platformid', platfornId)
+
+        if (platfornId === 8) {
+            navigation.navigate("ShootingLocationPage");
+        }
+        else if(platfornId === 9){
+            navigation.navigate("MarketPlace");
+        }
+        else{
+
+
+        navigation.navigate("Home", {selectedIndIds, selectedIds, platfornId})
+        }
     }
+
+    const fetchData = async () => {
+        try {
+            const jwt = await AsyncStorage.getItem('jwt');
+            const response = await axios.get('http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT/masterData/getAllPlatform', {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            });
+            const extractedData = response.data.data.map(item => ({
+                id: item.id,
+                name: item.platformName,
+
+                imagePath: item.iconFilePath
+            }));
+            setPlatforms(extractedData);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
 
     return (
         <View style={styles.container}>
             <View style={styles.content}>
-                <View style={styles.contentBox}>
-                    <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-bg.png')} style={styles.imgbg} resizeMode="stretch">
-                        <TouchableOpacity onPress={handleNavigation} style={styles.contentDetials} >
 
-                            <View style={{ marginTop: responsiveHeight(3) }}>
-                                <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/FH_Movies.png')} style={{ borderWidth: 1, width: responsiveWidth(25), height: responsiveHeight(13), }} />
-                            </View>
+                {platforms.map(platform => (
+                    <View key={platform.id} style={styles.contentBox}>
+                        <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-bg.png')} style={styles.imgbg} resizeMode="stretch">
+                            <TouchableOpacity onPress={() => handleNavigation(platform.id)} style={styles.contentDetials}>
+                                <View style={{ marginTop: responsiveHeight(3) }}>
+                                    {/* Use platform.imagePath for the image source */}
+                                    <Image source={{ uri: platform.imagePath  }} style={{ borderWidth: 1, width: responsiveWidth(25), height: responsiveHeight(13) }} />
+                                </View>
+                                <View style={{ height: '28%', width: '100%', marginTop: responsiveHeight(1), justifyContent: 'center' }}>
+                                    <Text style={{ fontSize: responsiveFontSize(1.9), fontWeight: "900", textAlign: 'center', color: 'black' }}>{platform.name}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </ImageBackground>
+                    </View>
+                ))}
 
-                            <View style={{ height: '28%', width: '100%', marginTop: responsiveHeight(1), justifyContent: 'center' }}>
-                                <Text style={{ fontSize: responsiveFontSize(1.9), fontWeight: "900", textAlign: 'center' ,color:'black'}}>MOVIES</Text>
-                            </View>
-
-                        </TouchableOpacity>
-                    </ImageBackground>
-                </View>
-
-                <View style={styles.contentBox}>
-                    <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-bg.png')} style={styles.imgbg}  resizeMode="stretch">
-                        <TouchableOpacity style={styles.contentDetials} onPress={handleNavigation}>
-
-                            <View style={{ marginTop: responsiveHeight(2) }}>
-                                <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/FH_tv_drama.png')} style={{ borderWidth: 1, width: responsiveWidth(25), height: responsiveHeight(13), }} />
-                            </View>
-
-                            <View style={{ height: '28%', width: '100%', marginTop: responsiveHeight(2), justifyContent: 'center' }}>
-                                <Text style={{ fontSize: responsiveFontSize(1.9), fontWeight: "900", textAlign: 'center',color:'black' }}>TV DRAMA SHOW</Text>
-                            </View>
-
-                        </TouchableOpacity>
-                    </ImageBackground>
-                </View>
-                <View style={styles.contentBox}>
-                    <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-bg.png')} style={styles.imgbg}  resizeMode="stretch">
-
-                        <TouchableOpacity style={styles.contentDetials} onPress={handleNavigation}>
-
-                            <View style={{ marginTop: responsiveHeight(2) }}>
-                                <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/FH_web_series.png')} style={{ borderWidth: 1, width: responsiveWidth(25), height: responsiveHeight(13) }} />
-                            </View>
-                            <View style={{ height: '28%', width: '100%', marginTop: responsiveHeight(2), justifyContent: 'center' }}>
-                                <Text style={{ fontSize: responsiveFontSize(1.9), fontWeight: "900", textAlign: 'center',color:'black' }}>WEB SERIES</Text>
-                            </View>
-
-                        </TouchableOpacity>
-                    </ImageBackground>
-                </View>
-
-                <View style={styles.contentBox}>
-                    <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-bg.png')} style={styles.imgbg} resizeMode="stretch">
-
-                        <TouchableOpacity style={styles.contentDetials} onPress={handleNavigation}>
-
-                            <View style={{ marginTop: responsiveHeight(2) }}>
-                                <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/FH_Documentry.png')} style={{ borderWidth: 1, width: responsiveWidth(25), height: responsiveHeight(13), }} />
-                            </View>
-
-                            <View style={{ height: '28%', width: '100%', marginTop: responsiveHeight(2), justifyContent: 'center' }}>
-                                <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: "900", textAlign: 'center',color:'black' }}>DOCUMENTARY</Text>
-                            </View>
-
-                        </TouchableOpacity>
-                    </ImageBackground>
-                </View>
-
-                <View style={styles.contentBox}>
-                    <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-bg.png')} style={styles.imgbg}  resizeMode="stretch">
-
-                        <TouchableOpacity style={styles.contentDetials} onPress={()=>navigation.navigate('NewsReporter')}>
-
-                            <View style={{ marginTop: responsiveHeight(2) }}>
-                                <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/news_reporter_icon-PhotoRoom.png')} style={{ borderWidth: 1, width: responsiveWidth(25), height: responsiveHeight(13), }} />
-                            </View>
-                            <View style={{ height: '28%', width: '100%', marginTop: responsiveHeight(2), justifyContent: 'center' }}>
-                                <Text style={{ fontSize: responsiveFontSize(1.9), fontWeight: "900", textAlign: 'center' ,color:'black'}}>NEWS REPORTER</Text>
-                            </View>
-
-                        </TouchableOpacity>
-                    </ImageBackground>
-                </View>
-                <View style={styles.contentBox}>
-                    <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-bg.png')} style={styles.imgbg}  resizeMode="stretch">
-
-                        <TouchableOpacity style={styles.contentDetials} onPress={handleNavigation}>
-
-                            <View style={{ marginTop: responsiveHeight(2) }}>
-                                <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/Advertisement-icon-PhotoRoom.png')} style={{ borderWidth: 1, width: responsiveWidth(25), height: responsiveHeight(13), }} />
-                            </View>
-                            <View style={{ height: '28%', width: '100%', marginTop: responsiveHeight(2), justifyContent: 'center' }}>
-                                <Text style={{ fontSize: responsiveFontSize(1.9), fontWeight: "900", textAlign: 'center' ,color:'black'}}>ADS INDUSTRY</Text>
-                            </View>
-
-                        </TouchableOpacity>
-                    </ImageBackground>
-                </View>
-
-                <View style={styles.contentBox}>
-                    <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-bg.png')} style={styles.imgbg}  resizeMode="stretch">
-
-                        <TouchableOpacity style={styles.contentDetials} onPress={()=>navigation.navigate('ModelingIndustry')}>
-
-                            <View style={{ marginTop: responsiveHeight(2) }}>
-                                <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/Modeling-Industry-icon-PhotoRoom.png')} style={{ borderWidth: 1, width: responsiveWidth(22), height: responsiveHeight(11), }} />
-                            </View>
-                            <View style={{ height: '28%', width: '100%', marginTop: responsiveHeight(2), justifyContent: 'center' }}>
-                                <Text style={{ fontSize: responsiveFontSize(1.9), fontWeight: "900", textAlign: 'center',color:'black' }}>MODELING INDUSTRY</Text>
-                            </View>
-
-                        </TouchableOpacity>
-                    </ImageBackground>
-                </View>
-
-                <View style={styles.contentBox}>
-                    <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-bg.png')} style={styles.imgbg}  resizeMode="stretch">
-
-                        <TouchableOpacity style={styles.contentDetials} onPress={() => navigation.navigate('ShootingLocationPage')}>
-
-                            <View style={{ marginTop: responsiveHeight(2) }}>
-                                <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-Shooting_location_spot-removebg-preview.png')} style={{ borderWidth: 1, width: responsiveWidth(22), height: responsiveHeight(11), }} />
-                            </View>
-                            <View style={{ height: '28%', width: '100%', marginTop: responsiveHeight(2), justifyContent: 'center' }}>
-                                <Text style={{ fontSize: responsiveFontSize(1.9), fontWeight: "900", textAlign: 'center',color:'black' }}>SHOOTING LOCATIONS</Text>
-                            </View>
-
-                        </TouchableOpacity>
-                    </ImageBackground>
-                </View>
-                <View style={styles.contentBox}>
-                    <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-bg.png')} style={styles.imgbg}  resizeMode="stretch">
-
-                        <TouchableOpacity style={styles.contentDetials} onPress={() => navigation.navigate('MarketPlace')} >
-
-                            <View style={{ marginTop: responsiveHeight(2) }}>
-                                <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/FH_MarketPlace.png')} style={{ borderWidth: 1, width: responsiveWidth(22), height: responsiveHeight(11), }} />
-                            </View>
-                            <View style={{ height: '28%', width: '100%', marginTop: responsiveHeight(2), justifyContent: 'center' }}>
-                                <Text style={{ fontSize: responsiveFontSize(1.9), fontWeight: "900", textAlign: 'center',color:'black' }}>MARKET</Text>
-                            </View>
-
-                        </TouchableOpacity>
-                    </ImageBackground>
-                </View>
+               
             </View>
-
-
-
-
-
-            {/* <TouchableOpacity>
-            <Text>Film</Text>
-           </TouchableOpacity>
-           <TouchableOpacity>
-            <Text>Film</Text>
-           </TouchableOpacity>
-           <TouchableOpacity>
-            <Text>Film</Text>
-           </TouchableOpacity>
-           <TouchableOpacity>
-            <Text>Film</Text>
-           </TouchableOpacity>
-           <TouchableOpacity>
-            <Text>Film</Text>
-           </TouchableOpacity>
-           <TouchableOpacity>
-            <Text>Film</Text>
-           </TouchableOpacity>
-           <TouchableOpacity>
-            <Text>Film</Text>
-           </TouchableOpacity> */}
-
 
 
 
@@ -198,21 +92,7 @@ export default IndustryScreen;
 
 const styles = StyleSheet.create({
 
-    // container: {
-    //     borderWidth: 1,
-    //     borderColor:'red',
-    //     height: 691,
-    //     width: 400,
-    //     margin: 5,
-    //     display: 'flex',
-    //     flexDirection: 'row',
-    //     justifyContent: 'center',
-    //     justifyContent: 'space-around',
-    //     flexWrap: 'wrap',
-
-    //     //top: 60,
-
-    // }
+   
     container: {
         flex: 1,
         flexDirection: 'column',
@@ -227,14 +107,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         height: '100%',
         flexWrap: 'wrap',
-        columnGap: responsiveWidth(2),
+        //  columnGap: responsiveWidth(0.5),
         justifyContent: 'center',
         alignContent: 'center'
 
 
     },
     contentBox: {
-         height: '31%', width: '31.5%', marginTop: responsiveHeight(1),borderRadius:responsiveWidth(5)
+        height: '31%', width: '32%', marginTop: responsiveHeight(1), borderRadius: responsiveWidth(5)
 
     },
     contentDetials: {
