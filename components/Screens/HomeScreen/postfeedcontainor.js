@@ -71,26 +71,7 @@ export default function Postfeedcontainor() {
     const [like, setLike] = useState(item.likes || 0); // Initialize likes with the value from the item
     // const [hitlike, setHitlike] = useState(false);
 
-    useEffect(() => {
-      setCaption(item.FileInfo.description);
-    }, [item.FileInfo.description]);
-    useEffect(() => {
-      setLikeCount(item.LikeCount)
 
-    }, [item.LikeCount]);
-    useEffect(() => {
-      setCommentCount(item.CommentCount);
-    }, [item.CommentCount]);
-    useEffect(() => {
-      setShareCount(item.ShareCount);
-    }, [item.ShareCount]);
-
-    useEffect(() => {
-      setProfilePicUrl(item.profileUrl)
-    }, [item.profileUrl]);
-    useEffect(() => {
-      setuserName(item.username)
-    }, [item.username]);
 
 
     // console.log("image url ", imageUrl)
@@ -162,13 +143,12 @@ export default function Postfeedcontainor() {
     const [userId, setUserId] = useState(null);
 
     useEffect(() => {
-      setPostId(item.FileInfo.id); // Set postId when item changes
-    }, [item.FileInfo.id]);
-
-
-    useEffect(() => {
+      setPostId(item.FileInfo.id);
       setUserId(item.FileInfo.userId);
-    }, [item.FileInfo.userId]);
+// Set postId when item changes
+    });
+
+
 
 
 
@@ -381,10 +361,10 @@ export default function Postfeedcontainor() {
     const pinProfile = async (userId) => {
       try {
         const body = {
-          userProfilePinId: userId,
-          status: true
+          flag: 0,
+          pinProfile:userId
         }
-        const response = await privateAPI.post('pin/profilePinStatus', body);
+        const response = await privateAPI.post('pin/addPin', body);
         console.log('profile pinned successfully:', response.data)
       } catch (error) {
         console.log('Error pinning profile:', error);
@@ -407,7 +387,7 @@ export default function Postfeedcontainor() {
                     // borderWidth: responsiveWidth(0.4),
                     borderRadius: responsiveWidth(14),
                   }}>
-                  <Image source={{ uri: profilePicUrl }}
+                  <Image source={{ uri: item.profileUrl }}
                     style={{ width: '100%', height: '100%', borderRadius: 50, }} resizeMode='stretch'
                   />
                 </TouchableOpacity>
@@ -430,7 +410,7 @@ export default function Postfeedcontainor() {
                   <Text
                     style={{ fontSize: responsiveFontSize(1.8), fontWeight: "900", color: "#000000", letterSpacing: 0.5 }}>
                     {/* {name} */}
-                    {userName}
+                    {item.username}
                   </Text>
                 </TouchableOpacity>
 
@@ -520,7 +500,7 @@ export default function Postfeedcontainor() {
                 }}>
                 {/* <LongTextComponent > */}
                 <Text style={{ color: textColor }}>
-                  {caption}
+                  {item.FileInfo.description}
                 </Text>
                 {/* </LongTextComponent> */}
               </Text>
@@ -560,7 +540,7 @@ export default function Postfeedcontainor() {
 
                 {/* like button */}
                 <Text
-                  style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000" }}> {likeCount} Likes</Text>
+                  style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000" }}> {item.LikeCount} Likes</Text>
                 <TouchableOpacity
                   //  {`${formatCmpctNumber(like)} Likes`}
                   onPress={() => handleLikePress(item.id)} // Call onLikePress with fileId
@@ -584,7 +564,7 @@ export default function Postfeedcontainor() {
               {/* comments button */}
               <View >
                 <Text
-                  style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", right: responsiveWidth(2.1) }}>{commentCount} Comments</Text>
+                  style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", right: responsiveWidth(2.1) }}>{item.CommentCount} Comments</Text>
                 <TouchableOpacity
                   onPress={() => onCommentPress(item.id)}
                   style={{ width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', right: responsiveWidth(2) }}>
@@ -601,7 +581,7 @@ export default function Postfeedcontainor() {
 
               {/* shares button */}
               <View>
-                <Text style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", right: responsiveWidth(5) }}>{shareCount} Share</Text>
+                <Text style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", right: responsiveWidth(5) }}>{item.ShareCount} Share</Text>
                 <TouchableOpacity
                   onPress={() => onSharePress(item.filePath, item.userId)}
                   style={{ width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', right: responsiveWidth(2) }}>

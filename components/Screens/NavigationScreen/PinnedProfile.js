@@ -1,37 +1,54 @@
-import React from 'react';
-import {  SafeAreaView,
-    View,
-    ScrollView,Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, View, Text, TouchableOpacity, Image, FlatList, StyleSheet } from 'react-native';
+import privateAPI from '../../api/privateAPI';
 
-const PinnedProfile = ({  onPress }) => {
+const PinnedProfile = ({ onPress }) => {
+  const [pinnedProfiles, setPinnedProfiles] = useState([]);
+
+  const fetchPinnedProfile = async () => {
+    try {
+      const response = await privateAPI.post(`pin/getAllProfilePin`);
+      console.log("response data",response.data);
+      setPinnedProfiles(response.data); // Store the fetched data in state
+    } catch (e) {
+      console.log("Fetching Failed pinnedPost", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchPinnedProfile();
+  }, []);
+
+  const renderProfile = ({ item }) => (
+    <View style={styles.profile}>
+      <TouchableOpacity onPress={onPress} style={styles.containernew}>
+        <Image source={{ uri: item.profilePicUrl }} style={styles.profileAvatar} />
+        <Text style={styles.profileName}>{item.userName}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f6f6f6' }}>
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>PinnedProfile</Text>
-
-          <Text style={styles.subtitle}>
+          {/* <Text style={styles.subtitle}>
             Lorem ipsum dolor sit amet consectetur.
-          </Text>
+          </Text> */}
         </View>
-        <ScrollView>
-          <View style={styles.profile}>
-    <TouchableOpacity onPress={onPress} style={styles.containernew}>
-       <Image source={require('../../../components/Assets/app_logo/8641606.jpg')}style={styles.profileAvatar} />
-      <Text style={styles.profileName}>Sharukhan</Text>
-    </TouchableOpacity>
-   
-</View>
-         
-        </ScrollView>
+        <FlatList
+          data={pinnedProfiles}
+          renderItem={renderProfile}
+          keyExtractor={item => item.toString()}
+        />
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-    containernew: {
+  containernew: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
@@ -45,12 +62,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    width:responsiveWidth(100)
+    width: '100%'
   },
   profileAvatar: {
-    width: responsiveWidth(15),
-    height: responsiveHeight(7),
-    borderRadius: responsiveHeight(5),
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     marginRight: 10,
   },
   profileName: {
@@ -58,15 +75,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   container: {
+    flex: 1,
     paddingVertical: 24,
-    paddingHorizontal: 0,
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
+    paddingHorizontal: 24,
   },
   header: {
-    paddingLeft: 24,
-    paddingRight: 24,
     marginBottom: 12,
   },
   title: {
@@ -81,12 +94,8 @@ const styles = StyleSheet.create({
     color: '#929292',
   },
   profile: {
-    padding: 16,
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    // borderBottomWidth: 1,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
     borderColor: '#e3e3e3',
   },
 });

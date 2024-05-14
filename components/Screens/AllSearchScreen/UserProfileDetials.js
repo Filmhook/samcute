@@ -8,7 +8,8 @@ import PublicAPI from '../../api/publicAPI';
 import { Appearance } from 'react-native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
-const ProfilePic = () => {
+import privateAPI from '../../api/privateAPI';
+const ProfilePic = (userId) => {
   const [filePaths, setFilePaths] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -28,7 +29,7 @@ const ProfilePic = () => {
             Authorization: `Bearer ${jwt}`
           },
           body: JSON.stringify({
-            userId: 3
+            userId: userId
           })
         });
         const data = await response.json();
@@ -70,7 +71,7 @@ const ProfilePic = () => {
             Authorization: `Bearer ${jwt}`
           },
           body: JSON.stringify({
-            userId: 3
+            userId: userId
           })
         });
         const data = await response.json();
@@ -149,13 +150,13 @@ const ProfilePic = () => {
         </TouchableOpacity>
 
       </View>
-      <View style={{ flexDirection: "row", position: "absolute", top: '110%', left:'5%'}}>
-            <Text style={styleProfileCover.review}>Reviews </Text>
-            <View style={styleProfileCover.review_box}>
-              <Text style={styleProfileCover.review_num}>9.9</Text>
-              <Image source={require("../../Assets/Userprofile_And_Fonts/star.png")} style={styleProfileCover.review_img} />
-            </View>
-          </View>
+      <View style={{ flexDirection: "row", position: "absolute", top: '110%', left: '5%' }}>
+        <Text style={styleProfileCover.review}>Reviews </Text>
+        <View style={styleProfileCover.review_box}>
+          <Text style={styleProfileCover.review_num}>9.9</Text>
+          <Image source={require("../../Assets/Userprofile_And_Fonts/star.png")} style={styleProfileCover.review_img} />
+        </View>
+      </View>
 
     </View>
   );
@@ -297,7 +298,7 @@ const styleProfileCover = StyleSheet.create({
   },
 });
 
-const Biography = () => {
+const Biography = (userId) => {
   const navigation = useNavigation();
   const [dob, setDob] = useState(new Date());
   const [gender, setGender] = useState('');
@@ -311,7 +312,7 @@ const Biography = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = await AsyncStorage.getItem('userId');
+      //  const userId = await AsyncStorage.getItem('userId');
         const jwt = await AsyncStorage.getItem('jwt');
         const userType = await AsyncStorage.getItem('usertype');
 
@@ -666,7 +667,7 @@ const style = StyleSheet.create({
 
 
 
-const BodyMeasurement = () => {
+const BodyMeasurement = (userId) => {
   const [expanded, setExpanded] = useState(false);
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
@@ -692,12 +693,12 @@ const BodyMeasurement = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = await AsyncStorage.getItem('userId');
-        const userIdString = userId.toString(); // Convert to string if needed
+       // const userId = await AsyncStorage.getItem('userId');
+     
         const jwt = await AsyncStorage.getItem('jwt');
 
         const response = await PublicAPI.get(
-          `user/getUserByUserId?userId=${userIdString}`,
+          `user/getUserByUserId?userId=${userId}`,
           {
             headers: {
               Authorization: `Bearer ${jwt}`,
@@ -1014,7 +1015,7 @@ const getStyles = theme => {
 
 
 
-const Professionalinfo = () => {
+const Professionalinfo = (userId) => {
   const [expanded, setExpanded] = useState(false)
   const [religion, setReligion] = useState('');
   const [caste, setCaste] = useState('');
@@ -1032,11 +1033,11 @@ const Professionalinfo = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = await AsyncStorage.getItem('userId');
-        const userIdString = userId.toString();
+        // const userId = await AsyncStorage.getItem('userId');
+        // const userIdString = userId.toString();
         const jwt = await AsyncStorage.getItem('jwt');
 
-        const response = await PublicAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
+        const response = await PublicAPI.get(`user/getUserByUserId?userId=${userId}`, {
           headers: {
             'Authorization': `Bearer ${jwt}`
           }
@@ -1543,7 +1544,7 @@ const stylePi = StyleSheet.create({
 
 //Education
 
-const Education = () => {
+const Education = (userid) => {
 
   // console.log('educ', useriii)
   const [expanded, setExpanded] = useState(false);
@@ -1560,13 +1561,13 @@ const Education = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = await AsyncStorage.getItem('userId');
-        const userIdString = userId.toString(); // Convert to string if needed
+        // const userId = await AsyncStorage.getItem('userId');
+        // const userIdString = userId.toString(); // Convert to string if needed
         const jwt = await AsyncStorage.getItem('jwt');
 
-        console.log('idddd', userIdString)
+       
 
-        const response = await PublicAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
+        const response = await PublicAPI.get(`user/getUserByUserId?userId=${userid}`, {
           headers: {
             'Authorization': `Bearer ${jwt}`
           }
@@ -1596,37 +1597,7 @@ const Education = () => {
   }, []);
 
 
-  const handleSave = async () => {
-    try {
-      const jwt = await AsyncStorage.getItem('jwt');
-      const userId = await AsyncStorage.getItem('userId');
-      const userIdString = userId.toString();
 
-      console.log('save', userId)
-
-      const response = await PublicAPI.put(
-        `/user/updateEducationInfo`,
-        {
-          userId: userIdString,
-          schoolName: school,
-          collegeName: collage,
-          qualification: qualification
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        },
-      );
-      console.log('data saved successfully', response.data);
-
-
-
-      setIsEditing(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
 
   return (
@@ -1830,7 +1801,7 @@ const styleEducation = StyleSheet.create({
 // profession
 
 
-const Profession = () => {
+const Profession = (userId) => {
   const [platformData, setPlatformData] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -1877,7 +1848,8 @@ const Profession = () => {
 
   const fetchData = async () => {
     try {
-      const userId = await AsyncStorage.getItem('userId');
+      console.log('professionuserId', userId)
+     // const userId = await AsyncStorage.getItem('userId');
       console.log('check userid', userId)
       const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=${userId}`);
       const response = resp.data;
@@ -2243,6 +2215,64 @@ export default function UserProfileDetials({ route }) {
     setShowIcons(!showIcons);
   };
 
+  const handlePressBlock = (userId) => {
+
+
+    const apiUrl = 'http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT/block/addBlock';
+
+
+    // const payload = {
+    //   blockedBy: userId,
+    //   blockUserId: 
+    // };
+
+    const postData = async () => {
+      try {
+        const userLoginId = await AsyncStorage.getItem('userId')
+        const jwt = await AsyncStorage.getItem('jwt')
+        console.log('useridlogin' ,userLoginId , 'userId' , userId)
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwt}`
+          },
+          body: JSON.stringify({
+            blockedBy: userLoginId,
+            blockedUser: userId
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        console.log('Success:', data);
+
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    postData();
+
+  }
+
+  const pinProfile = async (userId) => {
+    try {
+      const body = {
+        flag: 0,
+        pinProfile:283
+      }
+      const response = await privateAPI.post('pin/addPin', body);
+      console.log('profile pinned successfully:', response.data)
+    } catch (error) {
+      console.log('Error pinning profile:', error);
+    }
+  };
+
+
   const handleIconClick = (icon) => {
     // Implement functionality for each icon
     switch (icon) {
@@ -2255,6 +2285,7 @@ export default function UserProfileDetials({ route }) {
         break;
 
       case 'Icon 3':
+        pinProfile(userId)
         console.log('Functionality for Icon 3');
         break;
       case 'Icon 4':
@@ -2268,6 +2299,7 @@ export default function UserProfileDetials({ route }) {
         break;
       case 'Icon 7':
         console.log('Functionality for Icon 7');
+        handlePressBlock(userId);
         break;
       case 'Icon 8':
         console.log('Functionality for Icon 8')
@@ -2318,6 +2350,55 @@ export default function UserProfileDetials({ route }) {
     }
   };
 
+  const saveBookingRequest = async () => {
+   
+    if (!projectName || !startDate || !endDate) {
+      alert('Please fill in all fields');
+      return;
+    }
+    console.log('projectName', projectName )
+    console.log('Start Date:', startDate);
+    console.log('End Date:', endDate);
+
+    const url = 'http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT/user/booking/saveBookingRequest';
+    const userIdLogin=await AsyncStorage.getItem('userId');
+    const jwt=await AsyncStorage.getItem('jwt');
+  
+    
+    const requestBody = {
+      currentUserId: userIdLogin,
+      bookingUserId: userId,
+      projectName: projectName,
+      fromDate: startDate,
+      toDate: endDate,
+      bookingStatus: "Pending"
+    };
+    
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwt}`
+        },
+        body: JSON.stringify(requestBody)
+      });
+  
+      if (response.ok) {
+        // Handle successful response
+        console.log('Booking request saved successfully');
+      } else {
+        // Handle error response
+        console.error('Failed to save booking request');
+      }
+    } catch (error) {
+      // Handle network error
+      console.error('Network error:', error);
+    }
+    setShowRequestModal(false);
+  };
+
 
 
   return (
@@ -2325,15 +2406,15 @@ export default function UserProfileDetials({ route }) {
       <ScrollView>
         {ProfilePic(userId)}
 
-        {Biography()}
+        {Biography(userId)}
 
-        {BodyMeasurement()}
+        {BodyMeasurement(userId)}
 
-        {Professionalinfo()}
+        {Professionalinfo(userId)}
 
-        {Education()}
+        {Education(userId)}
 
-        {Profession()}
+        {Profession(userId)}
 
 
 
@@ -2377,7 +2458,7 @@ export default function UserProfileDetials({ route }) {
             </TouchableOpacity>
 
             <View style={styles.buttonContainer}>
-              <Button title="Submit" onPress={handleFormSubmit} />
+              <Button title="Submit" onPress={saveBookingRequest} />
               <Button title="Cancel" onPress={handleFormCancel} />
             </View>
           </View>
@@ -2401,6 +2482,8 @@ export default function UserProfileDetials({ route }) {
           onChange={handleEndDateChange}
         />
       )}
+
+      
 
       {showIcons && (
         <View style={styles.iconGrid}>

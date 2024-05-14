@@ -24,8 +24,8 @@ import messaging from '@react-native-firebase/messaging';
 
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("yaswanthshankar2705@gmail.com");
+  const [password, setPassword] = useState('maninew');
   const [showPassword, setShowPassword] = useState('');
   //yaswanthshankar2705@gmail.com
   //benishabeni21@gmail.com
@@ -48,52 +48,45 @@ export default function Login() {
     setPassword(text);
   };
   const loginUser = async () => {
-    console.log("Login Clicked")
+    const token = await messaging().getToken();
     try {
+    console.log(`generated fcm token for login user - ${token}`)
+    console.log('/user/login', {
+                        email: email,
+                        password: password,
+                //        userType: 'commonUser',
+                        firebaseDeviceToken: token
+                      })
       const response = await PublicAPI.post('/user/login', {
         email: email,
         password: password,
-        userType: 'commonUser',
+//        userType: 'commonUser',
+        firebaseDeviceToken: token
       });
-      // Extract JWT token and ID from response data
       const jwt = response.data.jwt;
-
       const emailId = response.data.email;
-      const userid = response.data.id;
-      const token = response.data.token;
-      const userType = response.data.userType;
-      const username = response.data.username;
 
-
-
-      // Store JWT token and ID in AsyncStorage
-      await AsyncStorage.setItem('userId', userid.toString())
       await AsyncStorage.setItem('jwt', jwt);
-
       await AsyncStorage.setItem('mail', emailId);
-      await AsyncStorage.setItem('usertype', userType)
-      await AsyncStorage.setItem('username', username)
-      // await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('id', response.data.id.toString());
+      await AsyncStorage.setItem('fcmToken', token);
+      await AsyncStorage.setItem('username', response.data.username);
 
-      console.log("resposne token", token)
+        console.log("Yaswanth id:", response.data.id.toString())
 
 
-      // Log stored values for verification
+      //   161 basein
+      //  3   yaswin
 
       const storedMail = await AsyncStorage.getItem('mail');
-      console.log('stored ', storedMail);
       //
-      Alert.alert('Login Successful');
-      console.log('Login successful:', response.data);
+      Alert.alert('Success', 'Login Successful');
       navigation.navigate('Tabbar');
 
       // Handle response as needed
-
-      // Handle response as needed
     } catch (error) {
-      Alert.alert("Invalid User Info");
+      Alert.alert('Error', "Invalid User Info");
       console.error('Login failed:', error);
-      // Handle error as needed
       // Handle error as needed
     }
   };
@@ -103,23 +96,21 @@ export default function Login() {
   const handleLogin = () => {
     // navigation.navigate('Tabbar');
     const emailRegex = /\S+@\S+\.\S+/; // Regex pattern for a basic email format check
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/; // Regex pattern to check password length (at least 6 characters)
 
-    if (!emailRegex.test(email.trim())) {
-      alert('Please enter a valid email address');
+    if (!email.trim()) {
+      Alert.alert('Error', 'Please enter email');
       return;
-    } else if (!passwordRegex.test(password.trim())) {
-      alert('Password contains "0-9, A-Z, a-z, @-$"');
+    } else if (!emailRegex.test(email.trim())) {
+      Alert.alert('Error', 'Please enter a valid email address');
       return;
-    } else if (password.trim().length < 8) {
-      alert('password length at least 8 characters');
+    } else if (!password.trim()) {
+      Alert.alert('Error', 'Please enter password');
+      return;
+
     } else {
-      // handleLoginAuth();
-      navigation.navigate('Tabbar');
+      loginUser();
     }
   };
-
 
   return (
 
@@ -192,7 +183,7 @@ export default function Login() {
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.loginButton}
-          onPress={loginUser}>
+          onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
 
@@ -219,7 +210,6 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     alignItems: 'center',
     // padding: responsiveWidth(3),
-    backgroundColor: '#f5f5f5',
     backgroundColor: '#f5f5f5',
 
 
@@ -276,7 +266,6 @@ const styles = StyleSheet.create({
     width: '100%',
 
     // padding: responsiveWidth(3),
-    backgroundColor: '#f5f5f5',
     backgroundColor: '#f5f5f5',
     borderRadius: responsiveWidth(5),
     justifyContent: 'center',

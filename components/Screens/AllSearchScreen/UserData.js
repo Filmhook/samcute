@@ -10,10 +10,11 @@ const UserData = ({ route }) => {
 
     const navigation=useNavigation();
 
-    const [userData, setUserData] = useState([]);
+    const [userData, setUserData] = useState([]); 
 
     useEffect(() => {
       const fetchData = async () => {
+
         try {
           const jwt = await AsyncStorage.getItem('jwt');
           const response = await fetch('http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT/user/getFinalUserList', {
@@ -33,6 +34,7 @@ const UserData = ({ route }) => {
           const jsonData = await response.json();
           if (jsonData.status === 1 && jsonData.data) {
             const categories = Object.keys(jsonData.data);
+            console.log('jsonData', jsonData)
             setUserData(categories.map(category => ({ category, data: jsonData.data[category] })));
           } else {
             console.error('Error fetching user data');

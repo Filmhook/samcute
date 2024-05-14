@@ -42,7 +42,7 @@ export default function Homecontents() {
           {/*Post_feed_Containor */}
 
 
-          {/* <Postfeedcontainor /> */}
+          <Postfeedcontainor />
 
 
 
