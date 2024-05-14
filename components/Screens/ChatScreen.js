@@ -1,5 +1,5 @@
 // Imports dependencies.
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   SafeAreaView,
   FlatList,
@@ -24,7 +24,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 // Defines the App object.
 
-import {useRoute} from '@react-navigation/native'; // Import useRoute hook
+import { useRoute } from '@react-navigation/native'; // Import useRoute hook
 import privateAPI from '../api/privateAPI';
 import Entypo from 'react-native-vector-icons/Entypo';
 import EmojiPicker from 'rn-emoji-keyboard';
@@ -33,9 +33,12 @@ const loginedUserToken =
   '007eJxTYNgVsbfgs0/41lNCm7Qys3Mb/jYanPrHsO7m+pTKZVkxxdsVGCwSU81NTc2AhJGFSUpysoWBoYlFokmqmaGZiZmJuWn7XKW0hkBGhuz4b8yMDKwMjEAI4qswpKYYppoaJRvopqWaJeoaGqam6lqamSbrmpuaJBsZJptaGicaAgD4UihU';
 // const Ruby = '007eJxTYHjW6TRh1r5tN37v2XDj8P9vjc/2BxZ45x3Qf5695vGuyHOHFBgsElPNTU3NgISRhUlKcrKFgaGJRaJJqpmhmYmZibnp/p+KaQ2BjAxV/DVMjAysDIxACOKrMBgZGKSYpqQZ6KYlpxjrGhqmpuomWqak6CaZGpiZpyUlJwNlAca+LSI=';
 
-const ChatScreen = ({navigation}) => {
+const ChatScreen = ({ navigation }) => {
+
+  const scrollViewRef = useRef(null);
+
   const route = useRoute();
-  const {data} = route.params;
+  const { data } = route.params;
   // Defines the variable.
   const title = 'chat';
   // Replaces <your appKey> with your app key.
@@ -52,6 +55,19 @@ const ChatScreen = ({navigation}) => {
   const [chatMessageStatusm, setChatMessageStatus] = React.useState([]);
 
   const [loginedUsername, setLoginedUsername] = useState('');
+
+  useEffect(() => {
+    // Function to scroll to the bottom of the chat ScrollView
+    const scrollToBottom = () => {
+      if (scrollViewRef.current) {
+        scrollViewRef.current.scrollToEnd({ animated: true });
+      }
+    };
+
+    // Scroll to bottom whenever chatMessageStatusm is updated
+    scrollToBottom();
+
+  }, [chatMessageStatusm]);
 
   // Outputs console logs.
   useEffect(() => {
@@ -140,13 +156,13 @@ const ChatScreen = ({navigation}) => {
             GetAllMessages();
           }
         },
-        onCmdMessagesReceived: messages => {},
-        onMessagesRead: messages => {},
-        onGroupMessageRead: groupMessageAcks => {},
-        onMessagesDelivered: messages => {},
-        onMessagesRecalled: messages => {},
-        onConversationsUpdate: () => {},
-        onConversationRead: (from, to) => {},
+        onCmdMessagesReceived: messages => { },
+        onMessagesRead: messages => { },
+        onGroupMessageRead: groupMessageAcks => { },
+        onMessagesDelivered: messages => { },
+        onMessagesRecalled: messages => { },
+        onConversationsUpdate: () => { },
+        onConversationRead: (from, to) => { },
       };
       chatManager.removeAllMessageListener();
       chatManager.addMessageListener(msgListener);
@@ -184,7 +200,7 @@ const ChatScreen = ({navigation}) => {
         .catch(error => {
           rollLog(
             'init fail: ' +
-              (error instanceof Object ? JSON.stringify(error) : error),
+            (error instanceof Object ? JSON.stringify(error) : error),
           );
         });
     };
@@ -323,7 +339,7 @@ const ChatScreen = ({navigation}) => {
               <Ionicons
                 name="call-outline"
                 size={27}
-                style={{marginRight: 15}}
+                style={{ marginRight: 15 }}
                 color="blue"
                 onPress={() => GetchannelToken('voice')}
               />
@@ -335,7 +351,9 @@ const ChatScreen = ({navigation}) => {
               />
             </View>
           </View>
-          <ScrollView style={styles.ScrollView}>
+          <ScrollView
+            ref={scrollViewRef}
+            style={styles.ScrollView}>
             {Object.values(chatMessageStatusm).map(item => (
               <View
                 key={item.chatId}

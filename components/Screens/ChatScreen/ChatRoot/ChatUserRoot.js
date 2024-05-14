@@ -3,8 +3,12 @@ import { View } from 'react-native'
 import Chatheadder from '../ChtaUsers/ChatHeader/ChatHeaderRoot';
 import Chatprofiles from '../ChtaUsers/ChatProfiles/Profile';
 import privateAPI from '../../../api/privateAPI';
+import { ChatClient } from 'react-native-agora-chat';
 
 export default function ChatuserRoot() {
+
+  const chatClient = ChatClient.getInstance();
+  const chatManager = chatClient.chatManager;
 
   useEffect(() => {
 
@@ -18,6 +22,9 @@ export default function ChatuserRoot() {
 
       }
       fetchUsers()
+
+      // const convos = chatManager.getAllConversations();
+      // console.log('cm',convos)
   }, [])
   const [items, setItems] = useState([]);
 

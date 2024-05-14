@@ -1,47 +1,137 @@
 import React, { useRef, useState, useEffect } from 'react';
 import {
     SafeAreaView,
-    Modal,
     StyleSheet,
     Text,
     View,
-    Switch,
-    FlatList,
     TouchableOpacity,
 } from 'react-native';
 import { PermissionsAndroid, Platform } from 'react-native';
 import {
     ClientRoleType,
     createAgoraRtcEngine,
-    IRtcEngine,
     RtcSurfaceView,
     ChannelProfileType,
 } from 'react-native-agora';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRoute } from '@react-navigation/native'; // Import useRoute hook
 import privateAPI from '../../api/privateAPI';
 
 export default function VideoCallingScreen({ navigation }) {
 
+    const config = {
+        appId: 'e0580e01a75e494db4c54b3f3e050bf2',
+        channelName: 'demoApp',
+        token: '007eJxTYPC0qfiwcHWNWUZkk82tLSslY83WyFyQWK/2UyHv7PlteyQUGFINTC0MUg0ME81NU00sTVKSTJJNTZKM04yBEgZJaUa3PZzSGgIZGd4V1zEzMkAgiM/OkJKam+9YUMDAAACfNiCV'
+    }
+
     const route = useRoute();
     const { loginedUsername, remoteUserId, userName, loggedUserId, channelToken, channelNameFromNotify, randomchannelName } = route.params;
-    const appId = '49c68e633e9c4a738530b1e37818b759'
-//    const [token, setToken] = useState(channelToken);
-//    const channelName = channelNameFromNotify ? channelNameFromNotify : ( randomchannelName);
-    const [token, setToken] = useState('007eJxTYPD0bmHrXeZ9RVqoozsyo5fZYo/xu1WSR7z5bDmfrNHuY1NgMLFMNrNINTM2TrVMNkk0N7YwNTZIMkw1NrcwtEgyN7Wcbmaf1hDIyPB631pWRgYIBPF5GIoSc3Py84tLC0pLSxkYAC8QH6c=');
-    const channelName = "ramloosupuuu";
+    const appId = config.appId
+    //    const [token, setToken] = useState(channelToken);
+    //    const channelName = channelNameFromNotify ? channelNameFromNotify : ( randomchannelName);
+    const [token, setToken] = useState(config.token);
+    const channelName = config.channelName;
     const uid = parseInt(loggedUserId)
 
     const agoraEngineRef = useRef(null); // Agora engine instance
+
     const [isJoined, setIsJoined] = useState(false); // Indicates if the local user has joined the channel
     const [remoteUid, setRemoteUid] = useState(parseInt(remoteUserId)); // Uid of the remote user
     const [message, setMessage] = useState(''); // Message to the user
     const [timer, setTimer] = useState(0); // Timer in seconds
     const [isRunning, setIsRunning] = useState(false);
     const [remoteUserJoined, setRemoteUserJoined] = useState(false);
+
+    useEffect(() => {
+        // Initialize Agora engine when the app starts
+        setupVideoSDKEngine();
+    }, []);
+
+    const setupVideoSDKEngine = async () => {
+        try {
+            // use the helper function to get permissions
+            if (Platform.OS === 'android') { await getPermission() };
+            agoraEngineRef.current = createAgoraRtcEngine();
+            const agoraEngine = agoraEngineRef.current;
+
+            agoraEngine.registerEventHandler({
+                onJoinChannelSuccess: () => {
+                    console.log('Successfully joined the channel', channelName)
+                    setMessage('Successfully joined the channel ' + channelName);
+
+                    // join();
+                    setIsJoined(true);
+                    startTimer();
+                },
+                onUserJoined: (_connection, Uid) => {
+                    console.log('Remote user joined with uid ' + Uid)
+
+                    setMessage('Remote user joined with uid ' + Uid);
+                    setRemoteUid(Uid);
+                    setRemoteUserJoined(true)
+                },
+                onUserOffline: (_connection, Uid) => {
+                    console.log('Remote user left the channel. uid: ' + Uid)
+
+                    setMessage('Remote user left the channel. uid: ' + Uid);
+                    setRemoteUid(0);
+                },
+            });
+            agoraEngine.initialize({
+                appId: appId,
+                channelProfile: ChannelProfileType.ChannelProfileLiveBroadcasting,
+            });
+            agoraEngine.enableVideo();
+            if (!agoraEngine) {
+                throw new Error('Failed to initialize Agora Engine');
+            } else {
+                console.log("Video Call initilazed")
+                join();
+            }
+
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    const join = async () => {
+        console.log('Attempt to Join', channelName, parseInt(uid), token);
+        if (isJoined) {
+            console.log("joined");
+            return;
+        }
+        try {
+            agoraEngineRef.current?.setChannelProfile(
+                ChannelProfileType.ChannelProfileCommunication,
+            );
+            agoraEngineRef.current?.startPreview();
+            agoraEngineRef.current?.joinChannel(token, channelName, parseInt(uid), {
+                clientRoleType: ClientRoleType.ClientRoleBroadcaster,
+            });
+            GetFCMTokenOfRemoteUser(); // Get FCM Token of Remote User
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    const leave = () => {
+        try {
+            agoraEngineRef.current?.leaveChannel();
+            agoraEngineRef.current?.removeAllListeners();
+            agoraEngineRef.current?.release();
+            setRemoteUid(0);
+            setIsJoined(false);
+            stopTimer()
+            setMessage('You left the channel');
+            console.log("Video Call distoryed")
+            navigation.goBack()
+        } catch (e) {
+            console.log(e);
+        }
+    };
 
     const getPermission = async () => {
         if (Platform.OS === 'android') {
@@ -55,16 +145,12 @@ export default function VideoCallingScreen({ navigation }) {
     const GetFCMTokenOfRemoteUser = async () => {
         try {
             const res = await privateAPI.get(`/chat/getFirebaseTokenByuserId?userId=${parseInt(remoteUserId)}`);
-            console.log("FCM of Remote user", res.data.data)
+            console.log("FCM of Remote user", res.data.data, parseInt(remoteUserId))
             SendCalligNotifcationToRemoteUser(res.data.data)
         } catch (error) {
             console.error(error)
         }
     }
-
-    useEffect(() => {
-        setupVideoSDKEngine();
-    }, []);
 
     const SendCalligNotifcationToRemoteUser = async (FCMToken) => {
         try {
@@ -83,85 +169,6 @@ export default function VideoCallingScreen({ navigation }) {
         }
 
     }
-
-    const setupVideoSDKEngine = async () => {
-        try {
-            // use the helper function to get permissions
-            if (Platform.OS === 'android') { await getPermission() };
-            agoraEngineRef.current = createAgoraRtcEngine();
-            const agoraEngine = agoraEngineRef.current;
-            if (!agoraEngine) {
-                throw new Error('Failed to initialize Agora Engine');
-            } else {
-                console.log("Video Call initilazed")
-                join()
-            }
-
-            agoraEngine.registerEventHandler({
-                onJoinChannelSuccess: () => {
-                    setMessage('Successfully joined the channel ' + channelName);
-                    setIsJoined(true);
-                    console.log('Successfully joined the channel' , channelName)
-                    startTimer()
-                    GetFCMTokenOfRemoteUser()
-                },
-                onUserJoined: (_connection, Uid) => {
-                    setMessage('Remote user joined with uid ' + Uid);
-                    setRemoteUid(parseInt(Uid));
-                    setRemoteUserJoined(true)
-                    console.log('Remote user joined with uid ' + Uid)
-
-                },
-                onUserOffline: (_connection, Uid) => {
-                    setMessage('Remote user left the channel. uid: ' + Uid);
-                    setRemoteUid(null);
-                    console.log('Remote user left the channel. uid: ' + Uid)
-
-                },
-            });
-            agoraEngine.initialize({
-                appId: appId,
-                channelProfile: ChannelProfileType.ChannelProfileLiveBroadcasting,
-            });
-            agoraEngine.enableVideo();
-        } catch (e) {
-            console.log(e);
-        }
-    };
-
-
-    const join = async () => {
-        console.log('Attempt to JOin', channelName, token, uid)
-
-        if (isJoined) {
-            return;
-        }
-        try {
-            agoraEngineRef.current?.setChannelProfile(
-                ChannelProfileType.ChannelProfileCommunication,
-            );
-            agoraEngineRef.current?.startPreview();
-            agoraEngineRef.current?.joinChannel(token, channelName, parseInt(uid), {
-                clientRoleType: ClientRoleType.ClientRoleBroadcaster,
-            });
-        } catch (e) {
-            console.log(e);
-        }
-    };
-
-    const leave = () => {
-        try {
-            agoraEngineRef.current?.leaveChannel();
-            setRemoteUid(0);
-            setIsJoined(false);
-            stopTimer()
-            setMessage('You left the channel');
-            console.log("Video Call distoryed")
-            navigation.goBack()
-        } catch (e) {
-            console.log(e);
-        }
-    };
 
     useEffect(() => {
         let interval;
@@ -186,14 +193,11 @@ export default function VideoCallingScreen({ navigation }) {
         setTimer(0)
     };
 
-
     const formatTime = (timeInSeconds) => {
         const minutes = Math.floor(timeInSeconds / 60);
         const seconds = timeInSeconds % 60;
         return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     };
-
-
 
     if ((isJoined && remoteUserJoined && uid) || channelNameFromNotify) {
         return (
@@ -269,7 +273,6 @@ export default function VideoCallingScreen({ navigation }) {
 
 
     }
-
 }
 
 const styles = StyleSheet.create({

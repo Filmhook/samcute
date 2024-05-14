@@ -36,7 +36,7 @@ export default function GoLive() {
   const [isRunning, setIsRunning] = useState(false);
   const [token, setToken] = useState(null);
   const [channelName, setChannelName] = useState('');
-  const [liveChannelId , setLiveChannelId] = useState(null)
+  const [liveChannelId, setLiveChannelId] = useState(null)
 
   const [uid, setUid] = useState(null);
   const agoraEngineRef = useRef(null);
@@ -74,8 +74,8 @@ export default function GoLive() {
   const setupVideoSDKEngine = async () => {
     try {
       // use the helper function to get permissions
-    const UID = await AsyncStorage.getItem('id');
-    const Uname = await AsyncStorage.getItem('username');
+      const UID = await AsyncStorage.getItem('id');
+      const Uname = await AsyncStorage.getItem('username');
       if (Platform.OS === 'android') { await getPermission() };
       agoraEngineRef.current = createAgoraRtcEngine();
       const agoraEngine = agoraEngineRef.current;
@@ -86,8 +86,8 @@ export default function GoLive() {
       }
       agoraEngine.registerEventHandler({
         onJoinChannelSuccess: () => {
-        let tempChannelName = channelName || UID;
-            console.log('Successfully joined the channel ' + tempChannelName)
+          let tempChannelName = channelName || UID;
+          console.log('Successfully joined the channel ' + tempChannelName)
           setMessage('Successfully joined the channel ' + tempChannelName);
           setIsJoined(true);
           startTimer()
@@ -140,7 +140,7 @@ export default function GoLive() {
   };
 
   const join = async () => {
-    console.log('init live' ,token, channelName, uid, isJoined, isHost)
+    console.log('init live', token, channelName, uid, isJoined, isHost)
 
     if (isJoined) {
       return;
@@ -212,9 +212,9 @@ export default function GoLive() {
 
   const SaveRegisterChannel = async () => {
     try {
-    const liveId = uuid.v4();
-    setLiveChannelId(liveId)
-    const res = await privateAPI.post('/live/saveLiveChannelDetails', {
+      const liveId = uuid.v4();
+      setLiveChannelId(liveId)
+      const res = await privateAPI.post('/live/saveLiveChannelDetails', {
         userId: uid,
         channelName: channelName,
         startTime: new Date(),
@@ -249,7 +249,7 @@ export default function GoLive() {
     const getAllLives = async () => {
       try {
         const res = await privateAPI.post('/live/getLiveDetails', {});
-//        console.log(`Fetching live details  - ${JSON.stringify(res.data)}`)
+        //        console.log(`Fetching live details  - ${JSON.stringify(res.data)}`)
         let List = []
         for (let i = 0; i < res.data.length; i++) {
           if (res.data[i].token) {
@@ -258,7 +258,7 @@ export default function GoLive() {
           }
         }
       } catch (error) {
-        console.error("Error fetching live details" , error)
+        console.error("Error fetching live details", error)
       }
     }
     getAllLives()
@@ -443,7 +443,7 @@ export default function GoLive() {
               data={onLivePeople}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => {
-                JoinAsRemoteUser(item)
+                  JoinAsRemoteUser(item)
                 }}>
                   <View style={styles.ModalOnlIveUserBar}>
                     <AntDesign name="user" size={24} color="blue" />
