@@ -7993,10 +7993,10 @@ react-native-agora-chat@^1.2.1:
   resolved "https://registry.npmjs.org/react-native-agora-chat/-/react-native-agora-chat-1.2.1.tgz"
   integrity sha512-E/65WI+AOttrFWbD9F5yikLd/AHZsk/3I3h6GnJYnP9nbZIv7iv+yVoHNhoVL0Xf33xUAK19wj60iFbEfTfskA==
 
-react-native-agora@^4.3.0-build.1:
-  version "4.3.0-build.1"
-  resolved "https://registry.npmjs.org/react-native-agora/-/react-native-agora-4.3.0-build.1.tgz"
-  integrity sha512-Uvox1Xv1OBArAVr2DmreNr6VQ9bbrymiUd3FOMIXVlnl0XzHSs9SBqQW5mng+cDThqseb/J0XVPUN1e47WXG0Q==
+react-native-agora@4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-agora/-/react-native-agora-4.3.0.tgz#3649605719e51ef9daa8111e328891a18c9180ba"
+  integrity sha512-mvOjPdYcZSJk6amzccD8LLWXiOOrx6Lcc+nqyyiRgKD/2f/fCs42ucsh/qr2WEgSrIYT46LKABVdN9VCveVfrA==
   dependencies:
     buffer "^6.0.3"
     eventemitter3 "^5.0.1"
