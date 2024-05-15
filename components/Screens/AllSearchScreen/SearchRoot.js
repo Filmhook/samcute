@@ -7,7 +7,7 @@ import India from './Industry';
 
 
 import SubScreen from './ProducerSub';
-import Director from './UserData';
+import Director from './DirectorSub';
 import Dummy from './ReadyToPage';
 import Timeline from './FilmScreen';
 import DirectorSubb from './DirectorSubb';
@@ -85,10 +85,6 @@ import ShootingLocationPage from './ShootingLocation';
 
 
 import ShootinglocationPost2 from './ShootinglocationPost2';
-import MarketPost from './MarketPost';
-import SubProfession from './SubProfession';
-import UserData from './UserData';
-import UserProfileDetials from './UserProfileDetials';
 // import ShootinglocationPost from './ShootinglocationPost';
 
 
@@ -106,11 +102,11 @@ export default function SearchRoot() {
         <Stack.Screen component={India} name="Industry"  options={{headerShown:false}}/>
         {/* //<Stack.Screen component={Tollywood} name="Tollywood"/> */}
         <Stack.Screen component={Dummy} name="ReadyToPage" options={{headerShown:false}} />
-        <Stack.Screen component={SubProfession} name="SubProfession" options={{headerShown:false}} />
+
         <Stack.Screen component={IndustryScreen} name="ScreenOne" options={{headerShown:false}} />
         <Stack.Screen component={Timeline} name="Home" options={{headerShown:false}} />
         <Stack.Screen component={SubScreen} name="ProducerSub"  options={{headerShown:false}}/>
-        <Stack.Screen component={UserData} name="UserData" options={{headerShown:false}} />
+        <Stack.Screen component={Director} name="Director" options={{headerShown:false}} />
         <Stack.Screen component={DirectorSubb} name="DirectorSubb" options={{headerShown:false}} />
         <Stack.Screen component={MakeUpArtistSub} name="MakeUpArtistSub" options={{headerShown:false}} />
         <Stack.Screen component={CameramanSub} name="CameramanSub" options={{headerShown:false}} />
@@ -142,8 +138,6 @@ export default function SearchRoot() {
         <Stack.Screen component={ChoreographySub} name='ChoreographySub' options={{headerShown:false}}/>
         <Stack.Screen component={DigitalCreatorSub} name='DigitalCreatorSub' options={{headerShown:false}}/>
         <Stack.Screen component={Srilanka} name='Srilanka' options={{headerShown:false}}/>
-        <Stack.Screen component={MarketPost} name='MarketPost' options={{headerShown:false}}/>
-
 
         {/* ===================================== */}
 
@@ -190,8 +184,7 @@ export default function SearchRoot() {
          
           <Stack.Screen name='ShootinglocationPost2' component={ShootinglocationPost2} options={{headerShown:false}}/>
 
-          <Stack.Screen name='UserProfileDetials' component={UserProfileDetials} options={{headerShown:false}}/>
-
+        
 
      
 

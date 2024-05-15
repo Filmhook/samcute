@@ -24,7 +24,7 @@ export default function VideoCallingScreen({ navigation }) {
     const config = {
         appId: 'e0580e01a75e494db4c54b3f3e050bf2',
         channelName: 'demoApp',
-        token: '007eJxTYPC0qfiwcHWNWUZkk82tLSslY83WyFyQWK/2UyHv7PlteyQUGFINTC0MUg0ME81NU00sTVKSTJJNTZKM04yBEgZJaUa3PZzSGgIZGd4V1zEzMkAgiM/OkJKam+9YUMDAAACfNiCV'
+        token: '007eJxTYNCavHzqlrxnDBO7t5fGbjtnKS0/weSA49621olit6PeeyYpMKQamFoYpBoYJpqbpppYmqQkmSSbmiQZpxkDJQyS0owMVzunNQQyMsy9JcjEyACBID47Q0pqbr5jQQEDAwCgDCAY'
     }
 
     const route = useRoute();
@@ -44,6 +44,7 @@ export default function VideoCallingScreen({ navigation }) {
     const [timer, setTimer] = useState(0); // Timer in seconds
     const [isRunning, setIsRunning] = useState(false);
     const [remoteUserJoined, setRemoteUserJoined] = useState(false);
+    const [remoteUserFCMToken, setRemoteUserFCMToken] = useState();
 
     useEffect(() => {
         // Initialize Agora engine when the app starts
@@ -118,6 +119,7 @@ export default function VideoCallingScreen({ navigation }) {
     };
 
     const leave = () => {
+        SendCallDisconnectedNotifcationToRemoteUser(remoteUserFCMToken);
         try {
             agoraEngineRef.current?.leaveChannel();
             agoraEngineRef.current?.removeAllListeners();
@@ -146,6 +148,7 @@ export default function VideoCallingScreen({ navigation }) {
         try {
             const res = await privateAPI.get(`/chat/getFirebaseTokenByuserId?userId=${parseInt(remoteUserId)}`);
             console.log("FCM of Remote user", res.data.data, parseInt(remoteUserId))
+            setRemoteUserFCMToken(res.data.data)
             SendCalligNotifcationToRemoteUser(res.data.data)
         } catch (error) {
             console.error(error)
@@ -168,6 +171,23 @@ export default function VideoCallingScreen({ navigation }) {
             console.error("FCM Sedn Error", error)
         }
 
+    }
+
+    const SendCallDisconnectedNotifcationToRemoteUser = async (FCMToken) => {
+        try {
+            const res = await privateAPI.post('/chat/send-fcm-message', {
+                token: FCMToken,
+                callStatus: 'disconnected',
+                userName: loginedUsername,
+                callType: "video",
+                userId: loggedUserId.toString(),
+                channelName: channelName,
+                channelToken: token.toString()
+            });
+            console.log("calling notification status!", res.data)
+        } catch (error) {
+            console.error("FCM Sedn Error", error)
+        }
     }
 
     useEffect(() => {
