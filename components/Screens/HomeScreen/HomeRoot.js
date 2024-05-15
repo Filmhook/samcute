@@ -11,6 +11,8 @@ import Promote from './homepage_functions/Promote';
 import Postfeedcontainor from './postfeedcontainor';
 import GoLive from './homepage_functions/GoLive';
 import Status from './homepage_functions/Status';
+import UserProfile from '../UserProfile';
+
 
 // import { ScrollView } from 'react-native-gesture-handler';
 
@@ -34,6 +36,7 @@ export default function HomeRoot() {
                 {/* <ScrollView>
                   <View> */}
                 <Stack.Screen name="Status" component={Status} />
+                <Stack.Screen component={UserProfile} name='UserProfile' options={{ headerShown: false }} />
                
                 {/* </View>
                 </ScrollView> */}
