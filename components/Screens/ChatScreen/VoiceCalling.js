@@ -20,11 +20,18 @@ import privateAPI from '../../api/privateAPI';
 
 export default function VoiceCalling({ navigation }) {
 
+    const config = {
+        appId: 'e0580e01a75e494db4c54b3f3e050bf2',
+        channelName: 'demoApp',
+        token: '007eJxTYPC0qfiwcHWNWUZkk82tLSslY83WyFyQWK/2UyHv7PlteyQUGFINTC0MUg0ME81NU00sTVKSTJJNTZKM04yBEgZJaUa3PZzSGgIZGd4V1zEzMkAgiM/OkJKam+9YUMDAAACfNiCV'
+    }
+
     const route = useRoute();
     const { loginedUsername, remoteUserId, userName, loggedUserId, channelToken, channelNameFromNotify, randomchannelName } = route.params;
-    const appId = '49c68e633e9c4a738530b1e37818b759'
+    const appId = config.appId
     const [token, setToken] = useState(channelToken);
-    const channelName = channelNameFromNotify ? channelNameFromNotify : ( randomchannelName);
+    // const channelName = channelNameFromNotify ? channelNameFromNotify : ( randomchannelName);
+    const channelName = config.channelName
     const uid = parseInt(loggedUserId)
 
     const agoraEngineRef = useRef(null); // Agora engine instance
@@ -53,15 +60,14 @@ export default function VoiceCalling({ navigation }) {
             SendCalligNotifcationToRemoteUser(res.data.data)
             setFCMTokenOfRemoteUser(null)
             setFCMTokenOfRemoteUser(res.data.data)
-
-
         } catch (error) {
             console.error(error)
         }
     }
 
     useEffect(() => {
-        setupVideoSDKEngine();
+        // Initialize Agora engine when the app starts
+        setupVoiceSDKEngine();
     }, []);
 
     const SendCalligNotifcationToRemoteUser = async (FCMToken) => {
@@ -81,7 +87,7 @@ export default function VoiceCalling({ navigation }) {
 
     }
 
-    const setupVideoSDKEngine = async () => {
+    const setupVoiceSDKEngine = async () => {
         try {
             // use the helper function to get permissions
             if (Platform.OS === 'android') { await getPermission() };
@@ -90,7 +96,7 @@ export default function VoiceCalling({ navigation }) {
             if (!agoraEngine) {
                 throw new Error('Failed to initialize Agora Engine');
             } else {
-                console.log("Video Call initilazed")
+                console.log("Voice Call initilazed")
                 join()
             }
 
@@ -99,9 +105,7 @@ export default function VoiceCalling({ navigation }) {
                     setMessage('Successfully joined the channel ' + channelName);
                     setIsJoined(true);
                     console.log('Successfully joined the channel')
-                    startTimer()
-                    GetFCMTokenOfRemoteUser()
-
+                    startTimer();
                 },
                 onUserJoined: (_connection, Uid) => {
                     setMessage('Remote user joined with uid ' + Uid);
@@ -119,9 +123,7 @@ export default function VoiceCalling({ navigation }) {
             });
             agoraEngine.initialize({
                 appId: appId,
-                channelProfile: ChannelProfileType.ChannelProfileLiveBroadcasting,
             });
-            agoraEngine.enableVideo();
         } catch (e) {
             console.log(e);
         }
@@ -141,6 +143,7 @@ export default function VoiceCalling({ navigation }) {
             agoraEngineRef.current?.joinChannel(token, channelName, parseInt(uid), {
                 clientRoleType: ClientRoleType.ClientRoleBroadcaster,
             });
+            GetFCMTokenOfRemoteUser();
         } catch (e) {
             console.log(e);
         }
@@ -149,6 +152,8 @@ export default function VoiceCalling({ navigation }) {
     const leave = () => {
         try {
             agoraEngineRef.current?.leaveChannel();
+            agoraEngineRef.current?.removeAllListeners();
+            agoraEngineRef.current?.release();
             setRemoteUid(0);
             setIsJoined(false);
             stopTimer()
@@ -195,7 +200,8 @@ export default function VoiceCalling({ navigation }) {
         } else {
             agoraEngineRef.current?.enableLocalAudio();
         }
-    } 
+        setAudioEnable(!audioEnable);
+    }
 
     if (uid) {
         return (

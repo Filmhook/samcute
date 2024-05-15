@@ -217,20 +217,20 @@ console.log(`FormData : ${JSON.stringify(formData)}`)
         <View style={{ backgroundColor: '#ffffff', padding: responsiveWidth(2), borderRadius: responsiveWidth(2), }}>
           <TouchableOpacity style={{ padding: responsiveWidth(2) }}
             onPress={() => handleImageOption('camera')}>
-            <Text style={{ color: 'black', fontWeight: 'bold' }}>Open Camera</Text>
+            <Text>Open Camera</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{ padding: responsiveWidth(2) }}
             onPress={() => handleImageOption('gallery')}>
-            <Text style={{ color: 'black', fontWeight: 'bold' }}>Upload your Image</Text>
+            <Text>Upload your Image</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={{ padding: responsiveWidth(2) }}
             onPress={pickVideo}>
-            <Text style={{ color: 'black', fontWeight: 'bold' }}>Upload your Video</Text>
+            <Text>Upload your Video</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{ padding: responsiveWidth(2) }}
             onPress={() => setImagePickerModalVisible(false)}>
-            <Text style={{ color: 'black', fontWeight: 'bold' }}>Cancel</Text>
+            <Text>Cancel</Text>
           </TouchableOpacity>
 
         </View>

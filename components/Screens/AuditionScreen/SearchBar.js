@@ -1,15 +1,133 @@
-//SearchBar
+// import React, { useState } from 'react';
+// import { View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+// import { useNavigation } from '@react-navigation/native';
+// import { Button } from 'react-native-paper';
 
+// const SearchBar = () => {
+//   const navigation = useNavigation();
+//   const [searchText, setSearchText] = useState('');
+//   const [data, setData] = useState([
+//     'Accounts Team',
+//     'Action Dept',
+//     'Actor',
+//     'Actors Assistant',
+//     'Animator',
+//     'Art Dept',
+//     'Cameraman',
+//     'Casting Director',
+//     'Celebrity Manager',
+//     'ChoreoGraphy',
+//     'Costume Dept',
+//     'Crane Operator',
+//     'Digital Artist',
+//     'Digital Creator',
+//     'Digital Imagine Dept',
+//     'Director',
+//     'Dubbing',
+//     'Editor',
+//     'Lighting Dept',
+//     'Makeup & Hair Stylist',
+//     'Marketing Dept',
+//     'Music Dept',
+//     'Other',
+//     'Pro',
+//     'Producer',
+//     'Production Dept',
+//     'Prosthetic',
+//     'Sound Effect Engg',
+//     'Special Effects',
+//     'Still Photographer',
+//     'Technicians',
+//     'VFX Dept',
+//     'Writter',
+//     'publicity Designer',
+//   ]);
 
+//   const filteredData = data.filter(item =>
+//     item.toLowerCase().includes(searchText.toLowerCase())
+//   );
 
+//   const handleNavigation = (item) => {
+//     // Add logic to navigate based on the item selected
+//     switch(item) {
+//       case 'Accounts Team':
+//         navigation.navigate('AccountsTeamScreen'); // Replace 'AccountsTeamScreen' with your respective screen name
+//         break;
+//       case 'Action Dept':
+//         navigation.navigate('ActionDeptScreen'); // Replace 'ActionDeptScreen' with your respective screen name
+//         break;
+//       // Add cases for other items as needed
+//       default:
+//         navigation.navigate('DefaultScreen'); // Navigate to a default screen when no specific case matches
+//     }
+//   };
+
+//   const renderItem = ({ item }) => (
+//     <View style={styles.open}>
+//       <Button onPress={() => handleNavigation(item)}>
+//         <Text style={{borderWidth:2, borderRadius:20, padding:10, width:340, textAlign:'center', fontSize:19, alignSelf:'center',}}>{item}</Text>
+//       </Button>
+//     </View>
+//   );
+
+//   const handleFloatingButtonPress = () => {
+//     // Navigate to another screen when the button is pressed
+//     navigation.navigate('ScreenOne');
+//   };
+
+//   return (
+//     <View>
+//       <TextInput
+//         placeholder="Search..."
+//         onChangeText={text => setSearchText(text)}
+//         value={searchText}
+//         style = {{borderWidth:1,borderRadius:20,margin:5,}}
+//       />
+//       <FlatList
+//         data={filteredData}
+//         keyExtractor={(item, index) => index.toString()}
+//         renderItem={renderItem}
+//         style = {{height:620}}
+//       />
+//       {/* Floating Button */}
+//       <TouchableOpacity
+//         style={styles.floatingButton}
+//         onPress={handleFloatingButtonPress}
+//       >
+//         <Image
+//         source={require('../../Assets/Audition_Icons_Fonts/write_icon_148501-removebg.png')}
+//         style={{ width: 35, height: 36, tintColor: 'white', alignSelf:'center'}}
+//       />
+//       </TouchableOpacity>
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   floatingButton: {
+//     position: 'absolute',
+//     bottom: 90,
+//     right: 20,
+//     backgroundColor: 'blue',
+//     borderRadius: 70,
+//     padding: 10,
+//     width:60,
+//     height:60
+//   },
+//   open:{
+//     position:'relative',
+//     display:'flex',
+//   }
+// });
+
+// export default SearchBar;
+//=========================================================
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, ScrollView, ImageBackground, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from 'react-native-paper';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import Modal from 'react-native-modal';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -79,30 +197,10 @@ const SearchBar = () => {
   );
   // flatlist renderitem
 
-  const renderFloatingButton = () => {
-    if (usertype === 'IndustryUser') {
-      return (
-        <TouchableOpacity
-          style={styles.floatingButton}
-          onPress={handleFloatingButtonPress}
-        >
-          <Image
-            source={require('../../Assets/Audition_Icons_Fonts/write_icon_148501-removebg.png')}
-            style={styles.floatingButtonIcon}
-          />
-        </TouchableOpacity>
-      );
-    }
-    return null; // Return null if usertype is not 'industryuser'
-  };
-
-
+  //floatbuttonnavigation
   const handleFloatingButtonPress = () => {
-    if (usertype === 'IndustryUser') {
-      navigation.navigate('ScreenOne');
-    }
+    navigation.navigate('ScreenOne');
   };
-
   //floatbuttonnavigation
 
   //locationfunction
@@ -142,31 +240,6 @@ const SearchBar = () => {
     { key: '10', value: 'Kesavardhini,chennai' }
   ]
   //locationfunction
-  const [usertype, setusertype] = useState('');
-  console.log('266:usertype:', usertype)
-
-  useEffect(() => {
-    const getusertype = async () => {
-      try {
-        const value = await AsyncStorage.getItem('usertype');
-        if (value !== null) {
-          setusertype(value);
-        }
-        console.log('254:usertype', value)
-      } catch (e) {
-        // error reading value
-        console.log(e, "usertype not get from AsyncStorage")
-      }
-    };
-
-    getusertype();
-  }, []);
-
-  const [showTextInput, setShowTextInput] = useState(false);
-
-  const handlePress = () => {
-    setShowTextInput(!showTextInput);
-  };
 
   return (
     <>
@@ -227,12 +300,17 @@ const SearchBar = () => {
           </View>
 
           {/* Floating Button */}
-          {/* <View>
-      <Text style={styles.text}>userType: {usertype}</Text>
-    </View> */}
 
-          {renderFloatingButton()}
-
+          <TouchableOpacity
+            style={styles.floatingButton}
+            onPress={handleFloatingButtonPress}
+          >
+            <Image
+              source={require('../../Assets/Audition_Icons_Fonts/write_icon_148501-removebg.png')}
+              //   style={{ width: 35, height: 36, tintColor: 'white', alignSelf:'center'}}
+              style={{ width: responsiveWidth(9), height: responsiveWidth(9), borderRadius: responsiveWidth(9), alignSelf: 'center', }}
+            />
+          </TouchableOpacity>
 
 
         </View>
@@ -292,25 +370,49 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  // open: {
+  //   flexDirection: 'row',
+  //    justifyContent: 'center',
+  //   alignItems: 'center',
+  //   // marginBottom: responsiveHeight(2),
 
+  //   borderColor: 'gray',
+  //   borderWidth: responsiveWidth(0.4),
+  //   //  paddingHorizontal: responsiveWidth(8),
+  //    borderRadius: responsiveWidth(3),
+  //   height: responsiveHeight(8.5),
+  //   width: responsiveWidth(87.5),
+  //   // borderColor: 'gray',
+  //   margin: responsiveWidth(1)
+
+  // },
   inputContainer: {
+    // flexDirection: 'row',
+    // alignItems: 'center',this is working code
+    // borderColor: 'gray',
+    // height: responsiveHeight(8.6), 
+    // width: responsiveWidth(85.9),
+    // margin: responsiveWidth(1),
 
+    //
+    // marginBottom: responsiveHeight(2),
+    // justifyContent: 'center',
+    //borderWidth: responsiveWidth(0.4),
+    //  paddingHorizontal: responsiveWidth(8),
+    // borderRadius: responsiveWidth(1),
+    // borderColor: 'gray',
 
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: 'gray',
-
+    //  height: windowHeight * 0.099,
+    //  width: windowWidth * 0.890,
+    //  margin: windowWidth * 0.01,
     height: windowHeight * 0.085,
     width: windowWidth * 0.895,
     margin: windowWidth * 0.01,
 
   },
-  floatingButtonIcon: {
-    width: responsiveWidth(9),
-    height: responsiveWidth(9),
-    borderRadius: responsiveWidth(9),
-    alignSelf: 'center',
-  }
 });
 
 export default SearchBar;
