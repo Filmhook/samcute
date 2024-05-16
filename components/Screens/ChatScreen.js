@@ -293,9 +293,7 @@ const ChatScreen = ({ navigation }) => {
       // });
 
       const tempChannelNmae = 'testdemo'; ///mannual generation
-      const tempChannelToken =
-        '007eJxTYHBbwfzmxLdY7oQlG9n7YnL7xKqC+BXtzrreuch8b4YWS6MCg4llsplFqpmxcaplskmiubGFqbFBkmGqsbmFoUWSuamlyW7XtIZARobePj5mRgYIBPE5GEpSi0tSUnPzGRgADxAeEA==';
-
+      const tempChannelToken = '007eJxTYHBbwfzmxLdY7oQlG9n7YnL7xKqC+BXtzrreuch8b4YWS6MCg4llsplFqpmxcaplskmiubGFqbFBkmGqsbmFoUWSuamlyW7XtIZARobePj5mRgYIBPE5GEpSi0tSUnPzGRgADxAeEA=='
       if (type === 'video') {
         navigation.navigate('VideoCallingScreen', {
           loginedUsername,

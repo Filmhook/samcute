@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const privateAPI = axios.create({
      baseURL: 'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT',
-// baseURL: 'http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT',
+//  baseURL: 'http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT',
 });
 
 privateAPI.interceptors.request.use(async (config) => {
