@@ -69,7 +69,7 @@ export default function GoLive() {
     // Initialize Agora engine when the app starts
     setupVideoSDKEngine();
 
-  }, []);
+  });
 
   const setupVideoSDKEngine = async () => {
     try {
@@ -212,6 +212,7 @@ export default function GoLive() {
 
   const SaveRegisterChannel = async () => {
     try {
+    console.log('live saved - ' , uid , channelName ,token )
       const liveId = uuid.v4();
       setLiveChannelId(liveId)
       const res = await privateAPI.post('/live/saveLiveChannelDetails', {
@@ -221,7 +222,6 @@ export default function GoLive() {
         token: token,
         liveId
       });
-      console.log("live saved");
     } catch (error) {
       console.error(error)
     }
@@ -242,7 +242,6 @@ export default function GoLive() {
   const LeaveingRemoteUser = (item) => {
     setJoinningUser(false)
     leave()
-
   }
 
   useEffect(() => {
@@ -310,24 +309,19 @@ export default function GoLive() {
     }
   }
 
-
   return (
     <SafeAreaView style={styles.main}>
 
       <View style={styles.cameraView}>
 
-        <React.Fragment key={0}>
-          <RtcSurfaceView canvas={{ uid: joiningUse ? remoteUid : 0 }} style={styles.videoView} />
-          <></>
-        </React.Fragment>
-
-        {isJoined && !isHost ? (
-          <>
-          </>
-        ) : (
-          <></>
-        )}
-
+         {isJoined && isHost ? (
+                  <React.Fragment key={0}>
+                    <RtcSurfaceView canvas={{ uid: joiningUse ? remoteUid : 0 }} style={styles.videoView} />
+                    <></>
+                  </React.Fragment>
+                ) : (
+                  <></>
+                )}
 
         <Text style={styles.info}>{message}</Text>
         <View style={styles.BtnsFrontView}>

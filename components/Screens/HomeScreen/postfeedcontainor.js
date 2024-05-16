@@ -588,7 +588,7 @@ export default function Postfeedcontainor() {
             <View style={{}}>
               <Text style={{}}>
                 {/* <LongTextComponent > */}
-                <Text style={{ color: textColor }}>
+                <Text style={{ color: "black" }}>
                   {item.FileInfo.description}
                 </Text>
                 {/* </LongTextComponent> */}
