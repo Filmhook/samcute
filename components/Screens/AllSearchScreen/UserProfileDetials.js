@@ -9,6 +9,8 @@ import { Appearance } from 'react-native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import privateAPI from '../../api/privateAPI';
+
+
 const ProfilePic = (userId) => {
   const [filePaths, setFilePaths] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -64,7 +66,7 @@ const ProfilePic = (userId) => {
     const fetchProfilePic = async () => {
       try {
         const jwt = await AsyncStorage.getItem('jwt')
-        const response = await fetch('http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT/user/getProfilePic', {
+        const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getProfilePic', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -312,7 +314,7 @@ const Biography = (userId) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-      //  const userId = await AsyncStorage.getItem('userId');
+        //  const userId = await AsyncStorage.getItem('userId');
         const jwt = await AsyncStorage.getItem('jwt');
         const userType = await AsyncStorage.getItem('usertype');
 
@@ -693,8 +695,8 @@ const BodyMeasurement = (userId) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-       // const userId = await AsyncStorage.getItem('userId');
-     
+        // const userId = await AsyncStorage.getItem('userId');
+
         const jwt = await AsyncStorage.getItem('jwt');
 
         const response = await PublicAPI.get(
@@ -1565,7 +1567,7 @@ const Education = (userid) => {
         // const userIdString = userId.toString(); // Convert to string if needed
         const jwt = await AsyncStorage.getItem('jwt');
 
-       
+
 
         const response = await PublicAPI.get(`user/getUserByUserId?userId=${userid}`, {
           headers: {
@@ -1849,7 +1851,7 @@ const Profession = (userId) => {
   const fetchData = async () => {
     try {
       console.log('professionuserId', userId)
-     // const userId = await AsyncStorage.getItem('userId');
+      // const userId = await AsyncStorage.getItem('userId');
       console.log('check userid', userId)
       const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=${userId}`);
       const response = resp.data;
@@ -2185,7 +2187,8 @@ const styleProfession = StyleSheet.create({
   // },
 });
 
-// PROFILEpIC
+// chat
+
 
 
 
@@ -2196,9 +2199,9 @@ const styleProfession = StyleSheet.create({
 
 export default function UserProfileDetials({ route }) {
 
-  const { userId } = route.params;
+  const { userId, userName } = route.params;
 
-  console.log('useridddd', userId)
+  console.log('useridddd', userId, 'userName', userName)
 
   const [showIcons, setShowIcons] = useState(false);
 
@@ -2215,10 +2218,25 @@ export default function UserProfileDetials({ route }) {
     setShowIcons(!showIcons);
   };
 
+  const navigation = useNavigation();
+
+
+
+const handleChat=(userId, userName)=>{
+
+  const data={userId:userId, userName: userName}
+  console.log(data)
+ navigation.navigate('ChatScreen', {
+    data: data
+  })
+
+
+}
+
   const handlePressBlock = (userId) => {
 
 
-    const apiUrl = 'http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT/block/addBlock';
+    const apiUrl = 'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/block/addBlock';
 
 
     // const payload = {
@@ -2230,7 +2248,7 @@ export default function UserProfileDetials({ route }) {
       try {
         const userLoginId = await AsyncStorage.getItem('userId')
         const jwt = await AsyncStorage.getItem('jwt')
-        console.log('useridlogin' ,userLoginId , 'userId' , userId)
+        console.log('useridlogin', userLoginId, 'userId', userId)
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
@@ -2263,7 +2281,7 @@ export default function UserProfileDetials({ route }) {
     try {
       const body = {
         flag: 0,
-        pinProfile:283
+        pinProfile: 283
       }
       const response = await privateAPI.post('pin/addPin', body);
       console.log('profile pinned successfully:', response.data)
@@ -2272,11 +2290,27 @@ export default function UserProfileDetials({ route }) {
     }
   };
 
+  const handleFollow = async (userId) => {
+    try {
+        senderId = await AsyncStorage.getItem('id')
+        console.log("userId for folloow post ", userId)
+        const response = await privateAPI.post(`friendRequest/saveFriendRequest`, {
+            followersRequestSenderId:senderId,
+            followersRequestReceiverId: userId,
+        });
+      
+        console.log("Follow response", response.data)
+    } catch (error) {
+        console.error(error)
+    }
+};
+
 
   const handleIconClick = (icon) => {
     // Implement functionality for each icon
     switch (icon) {
       case 'Icon 1':
+handleFollow(userId)
         console.log('Functionality for Icon 1');
         break;
       case 'Icon 2':
@@ -2289,6 +2323,7 @@ export default function UserProfileDetials({ route }) {
         console.log('Functionality for Icon 3');
         break;
       case 'Icon 4':
+        handleChat(userId, userName)
         console.log('Functionality for Icon 4');
         break;
       case 'Icon 5':
@@ -2337,66 +2372,52 @@ export default function UserProfileDetials({ route }) {
 
 
   const handleStartDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || startDate;
+    setStartDate(currentDate);
     setStartPickerVisible(false);
-    if (selectedDate) {
-      setStartDate(selectedDate);
-    }
-  };
+};
 
-  const handleEndDateChange = (event, selectedDate) => {
+const handleEndDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || endDate;
+    setEndDate(currentDate);
     setEndPickerVisible(false);
-    if (selectedDate) {
-      setEndDate(selectedDate);
-    }
-  };
+};
 
   const saveBookingRequest = async () => {
-   
-    if (!projectName || !startDate || !endDate) {
-      alert('Please fill in all fields');
-      return;
-    }
-    console.log('projectName', projectName )
-    console.log('Start Date:', startDate);
-    console.log('End Date:', endDate);
-
-    const url = 'http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT/user/booking/saveBookingRequest';
-    const userIdLogin=await AsyncStorage.getItem('userId');
-    const jwt=await AsyncStorage.getItem('jwt');
-  
-    
-    const requestBody = {
-      currentUserId: userIdLogin,
-      bookingUserId: userId,
-      projectName: projectName,
-      fromDate: startDate,
-      toDate: endDate,
-      bookingStatus: "Pending"
-    };
-    
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${jwt}`
-        },
-        body: JSON.stringify(requestBody)
-      });
-  
-      if (response.ok) {
-        // Handle successful response
-        console.log('Booking request saved successfully');
-      } else {
-        // Handle error response
-        console.error('Failed to save booking request');
+
+      if (!projectName || !startDate || !endDate) {
+        alert('Please fill in all fields');
+        return;
       }
-    } catch (error) {
-      // Handle network error
-      console.error('Network error:', error);
+      console.log('projectName', projectName)
+      console.log('Start Date:', startDate);
+      console.log('End Date:', endDate);
+
+      const formattedStartDate = moment(startDate).format('DD-MM-YYYY');
+      const formattedEndDate = moment(endDate).format('DD-MM-YYYY');
+
+      console.log('Start Date:', formattedStartDate);
+      console.log('End Date:', formattedEndDate);
+
+      const response = await privateAPI.post('user/booking/saveBookingRequest', {
+        currentUserId: 3,
+        bookingUserId: 283,
+        projectName: projectName,
+        fromDate: formattedStartDate,
+        toDate: formattedEndDate,
+        bookingStatus: 'Pending'
+      },)
+      console.log('booked successfully:', response.data)
     }
-    setShowRequestModal(false);
+    catch (error) {
+      console.error('Error:', error);
+    }
+    finally {
+      setShowRequestModal(false);
+
+    }
+
   };
 
 
@@ -2483,7 +2504,7 @@ export default function UserProfileDetials({ route }) {
         />
       )}
 
-      
+
 
       {showIcons && (
         <View style={styles.iconGrid}>

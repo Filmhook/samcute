@@ -27,7 +27,7 @@ const SubProfession = ({route}) => {
       const jwt = await AsyncStorage.getItem('jwt');
 
 
-      const response = await fetch('http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT/user/getSubProfessionByProfession', {
+      const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getSubProfessionByProfession', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

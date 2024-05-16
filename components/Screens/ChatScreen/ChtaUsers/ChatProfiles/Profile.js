@@ -12,7 +12,7 @@ export default function Chatprofiles({ items }) {
 
   // navigation.getParent()?.setOptions({tabBarStyle: {display: 'hidden'}})
 
-  console.log(items)
+  console.log('items chatprofile', items )
 
   return (
 

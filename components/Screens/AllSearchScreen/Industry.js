@@ -1,94 +1,50 @@
-import React, { useState } from 'react';
-import { View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Image, Dimensions, useWindowDimensions, ImageBackground } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, FlatList, Text, TouchableOpacity, StyleSheet, Image, Dimensions, useWindowDimensions, ImageBackground, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { error } from 'console';
+import privateAPI from '../../api/privateAPI';
 
-
-
-
-const India = () => {
-  const { height, width, scale, fontScale } = useWindowDimensions();
-  //   const navigation = useNavigation();
-  //   const [searchText, setSearchText] = useState('');
-  //   const [data, setData] = useState([
-  //     'TOLLYWOOD',
-  //     'BHOJIWOOD',
-  //     'CHHOLLYWOOD',
-  //     'KONKANI CINEMA',
-  //     'DHOLLYWOOD',
-  //     'HARYANVI CINEMA',
-  //     'PAHARIWOOD',
-  //     'PAHARIWOOD',
-  //     'JHOLLYWOOD',
-  //     'SANDALWOOD',
-  //     'COSTALWOOD',
-  //     'KONKANI CINEMA',
-  //     'MOLLYWOOD',
-  //     'BOLLYWOOD',
-  //     'MOLLYWOOD',
-  //     'OLLYWOOD',
-  //     'POLLYWOOD',
-  //     'RAJJYWOOD',
-  //     'KOLLYWOOD',
-  //     'TOLLYWOOD',
-  //     'UTHARKHAND CINEMA',
-  //     'BENGALI CINEMA',
-  //   ]);
-
-  //   const filteredData = data.filter(item =>
-  //     item.toLowerCase().includes(searchText.toLowerCase())
-  //   );
-
-  //   const renderItem = ({ item }) => (
-  //     <View style ={styles.open}>
-  //         <Button onPress={() => navigation.navigate("Tollywood")}>
-  //     <Text style={{borderWidth:2, borderRadius:20, padding:10, width:340, textAlign:'center', fontSize:19, alignSelf:'center',}}>{item}</Text>
-  //     </Button>
-  //     </View>
-  //   );
-
-  //   return (
-  //     <View style ={{backgroundColor:'white'}}>
-  //         <View style={{height:100}}>
-  //         <TouchableOpacity
-  //         onPress={() => navigation.navigate("CountryPage")}
-  //         style={{ backgroundColor: 'white', borderRadius: 30, marginTop: 10, width: 55,height: 55, alignSelf: 'center', top:7, right:170}}
-  //       >
-  //        <Image
-  //         source={require('./components/images/computer-icons-clip-art-left-arrow-6f4a3e70f15284856f9524e8f47fe2af.png')}
-  //         style={{ width: 40, height: 40, alignSelf:'center', bottom:1}}
-  //       />
-  //         </TouchableOpacity>
-  //       <TextInput
-  //         placeholder="Search..."
-  //         onChangeText={text => setSearchText(text)}
-  //         value={searchText}
-  //         style = {{borderWidth:1,borderRadius:20,margin:3, width:300, left:80,bottom:50}}
-  //       />
-  //       </View>
-  //       <FlatList
-  //         data={filteredData}
-  //         keyExtractor={(item, index) => index.toString()}
-  //         renderItem={renderItem}
-  //         style = {{height:600}}
-  //       />
-  //       {/* Floating Button */}
-  //     </View>
-  //   );
-  // };
-
-  // const styles = StyleSheet.create({
-  //   open:{
-  //     position:'relative',
-  //     display:'flex',
-  //   }
-  // });
-
+const India = ({route}) => {
   const navigation = useNavigation();
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState('');
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const { selectedIds } = route.params;
+
+  console.log('selected ', selectedIds)
+
+  const [industries, setIndustries] = useState([]);
+
+  //console.log('indusss', industries)
+
+  useEffect(() => {
+    fetchIndustries();
+  }, []);
+
+  const fetchIndustries = async () => {
+    try {
+      const jwt =await AsyncStorage.getItem('jwt');
+     
+
+      const response = await privateAPI.post('user/getIndustryByCountry', {
+        countryIds: selectedIds // Assuming 78 is the ID for the country
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwt}` // Add your bearer token here
+        }
+      });
+  
+      if (response.data.status === 1) {
+        setIndustries(response.data.data[0].industryList);
+      }
+    } catch (error) {
+      console.error('Error fetching industries:', error);
+    }
+  };
 
   const india = [
     {
@@ -283,202 +239,128 @@ const India = () => {
 
 
   ];
-  //-------------------------------------------------------------
-  // const IndustryList = ({ industry, logo }) => (
-  //   <View style={styles.logowithText}>
-  //     <View style={{ display: 'flex', left: responsiveWidth(2), flexWrap: 'wrap' }}>
-  //       <Image source={logo} style={styles.logo} />
-  //     </View>
-  //     <Text style={styles.title}>{industry}</Text>
 
-  //   </View>
-  //----------------------------------------------------------------
-
-
-  const IndustryList = ({ industry, logo, state }) => (
-
-    <ImageBackground style={styles.inputContainer} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode='stretch'>
-      <View style={styles.inputContainer}>
-        <View style={styles.imageContainer} >
-
-          <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Bg-IMG.png')} style={styles.imgbg} resizeMode='stretch'>
-            <Image source={logo} style={styles.photo} resizeMode='stretch'/>
-          </ImageBackground>
-          <View style={styles.state}>
-            <Text style={styles.stateText}>{state}</Text>
-          </View>
-        </View>
-        <Text style={styles.title}>{industry}</Text>
-
-      </View>
-    </ImageBackground>
-  );
-
-  const [select, setSelect] = useState(india)
   const handleOnPress = (item) => {
-    const newItem = select.map((value) => {
-      if (item.industry == 'KOLLYWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'BHOJIWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      // else if(item.profession=='DIRECTOR'){
-      //   return(
-      //     navigation.navigate("Cart")
-      //   )
-      // }
-      else if (item.industry == 'CHHOLLYWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'KONKANI CINEMA') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'DHOLLYWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'HARYANVI CINEMA') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'PAHARIWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'JHOLLYWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'SANDALWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'COASTALWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'KONKANI CINEMA') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'MOLLYWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'BOLLYWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'OLLYWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'POLLYWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'RAJJYWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'TOLLYWOOD') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
+    // Check if item is already selected
+    const index = selectedItems.findIndex((selectedItem) => selectedItem.id === item.id);
 
-      else if (item.industry == 'UTHARKHAND CINEMA') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-      else if (item.industry == 'BENGALI CINEMA') {
-        return (
-          navigation.navigate("ScreenOne")
-        )
-      }
-
-
+    if (index === -1) {
+      // If item is not selected, add it to the selected items list
+      setSelectedItems([...selectedItems, item]);
+    } else {
+      // If item is already selected, remove it from the selected items list
+      const updatedSelectedItems = [...selectedItems];
+      updatedSelectedItems.splice(index, 1);
+      setSelectedItems(updatedSelectedItems);
     }
-    )
-    setSelect(newItem)
+  };
+
+  const handleNext = () => {
+    // const selectedIndIds=[1];
+    // const selectedIds=[78];
+    // navigation.navigate('ScreenOne', {selectedIndIds, selectedIds})
 
 
-  }
+  //  Log selected items to console
+    const selectedIndIds=selectedItems.map(item=> item.id)
+    console.log("Selected Items:", selectedItems.map(item=> item.id));
+
+
+    // Pass selected items to the next screen
+    //navigation.navigate('NextScreen', { selectedItems });
+    navigation.navigate('ScreenOne', {selectedIndIds, selectedIds})
+
+  };
 
   return (
-
     <View style={styles.container}>
       <View style={styles.searchBar}>
-        <TextInput style={styles.textInput}
+        <TextInput
+          style={styles.textInput}
+          placeholderTextColor='black'
           placeholder="Search..."
           value={search}
           onChangeText={(text) => setSearch(text)}
         />
       </View>
 
-      <View style={styles.flatListContainer} >
 
+      <View style={styles.flatListContainer}>
         <FlatList
-
-          data={india.filter((item) => ((item.industry).toLocaleLowerCase()).includes(search.toLocaleLowerCase()))}
+          data={industries.filter((item) => item.industryName.toLowerCase().includes(search.toLowerCase()))}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleOnPress(item)} style={styles.box}><IndustryList {...item} />
+            <TouchableOpacity onPress={() => handleOnPress(item)} style={styles.box}>
+              <IndustryList industryName={item.industryName}
+                image= {item.iconFilePath}
+                stateCode={item.stateCode} isSelected={selectedItems.some((selectedItem) => selectedItem.id === item.id)} />
             </TouchableOpacity>
           )}
         />
-
       </View>
 
+      <TouchableOpacity onPress={handleNext} 
+      disabled={selectedItems.length === 0} 
+      style={styles.nextContainer}>
+        <Text style={styles.next} >Next</Text>
+      </TouchableOpacity>
     </View>
-  )
+  );
 };
-export default India;
+
+console.log('image',  )
+
+const IndustryList = ({ industryName, image, stateCode, isSelected }) => (
+
+ 
+  <ImageBackground style={styles.inputContainer} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode='stretch'>
+    <View style={styles.inputContainer}>
+      <View style={styles.imageContainer} >
+        <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Bg-IMG.png')} style={styles.imgbg} resizeMode='stretch'>
+          <Image source={{ uri: image}} style={styles.photo} resizeMode='stretch' />
+        </ImageBackground>
+        <View style={styles.state}>
+          <Text style={styles.stateText}>{stateCode}</Text>
+        </View>
+      </View>
+      <Text style={styles.title}>{industryName}</Text>
+      {isSelected && (
+        <Image
+          source={require('../../Assets/Login_page/greenTickmark-FilmHook.png')} // Path to your checkmark icon
+          style={styles.checkmark}
+        />
+      )}
+    </View>
+  </ImageBackground>
+);
+
 
 const styles = StyleSheet.create({
-
-
   container: {
     flex: 1,
     flexDirection: 'column',
-    // borderWidth: 1,
-    // borderColor: 'red',
+    alignItems: 'center',
 
-
-    alignItems: 'center'
   },
-
+  checkmark: {
+    position: 'absolute',
+    top: responsiveHeight(3),
+    right: responsiveWidth(6),
+    width: responsiveWidth(6),
+    height: responsiveWidth(6),
+  },
   searchBar: {
     width: '100%',
     height: '8%',
     marginTop: '1%',
     justifyContent: 'center',
     alignItems: 'center',
-    //borderWidth: 1
   },
-
+  selectedContainer: {
+    width: '100%',
+    padding: 10,
+    backgroundColor: 'lightblue', // Change this to the desired selected background color
+  },
   textInput: {
     borderWidth: 1,
     width: '95%',
@@ -486,50 +368,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignContent: 'center',
     borderRadius: responsiveWidth(5)
-
   },
   imageContainer: {
     left: responsiveWidth(3),
     width: responsiveWidth(16),
     height: responsiveHeight(8),
-    // backgroundColor: '#edf1ed',
     borderRadius: responsiveWidth(35),
     alignItems: 'center',
     justifyContent: 'center',
-
-
-
-
   },
   flatListContainer: {
-    // borderWidth: 2,
-    // borderColor: 'yellow',
     width: '100%',
-    height: '90%',
+    height: '85%',
     alignItems: 'center',
     paddingTop: '1%'
-
   },
   box: {
-
-    // width: responsiveWidth(87.5),
-    // height: responsiveHeight(9),
-    //margin: responsiveHeight(0.3),
-    // borderRadius: responsiveWidth(5),
-
+    // Your box styles
   },
-
-  // logowithText: {
-  //   flex: 1,
-  //   flexDirection: 'row',
-  //   flexWrap: 'wrap',
-  //   alignItems: 'center',
-  //   margin: responsiveWidth(1),
-  //   width: responsiveWidth(70),
-  //   height: responsiveHeight(5),
-  // },
   logo: {
-
     backgroundColor: '#E9E5E5',
     bottom: responsiveHeight(0.4)
   },
@@ -545,9 +402,6 @@ const styles = StyleSheet.create({
     borderRadius: responsiveWidth(25),
     top: responsiveHeight(0.9),
     left: responsiveWidth(1.5),
-
-
-
   },
   inputContainer: {
     flexDirection: 'row',
@@ -566,20 +420,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#1c00d6',
     top: responsiveHeight(6),
     left: responsiveWidth(4.5),
-    //opacity:2
   },
   stateText: {
     textAlign: 'center',
     fontWeight: 'bold',
     color: 'white'
   },
+  nextContainer: {
+    width: responsiveWidth(20), borderWidth: 1, alignItems: 'center', justifyContent: 'center', height: responsiveHeight(4), borderRadius: responsiveWidth(3), backgroundColor: '#1c00d6',
+    left: responsiveWidth(34), margin: responsiveHeight(1)
+  },
+  next: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: 'white',
+    fontSize: responsiveFontSize(2)
+  },
   imgbg: {
     width: responsiveWidth(16),
     height: responsiveWidth(16),
-
   }
-
-
-
-
 });
+
+
+export default India;

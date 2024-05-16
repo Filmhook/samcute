@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ImageBackground, FlatList, TextInput, Image, Alert, } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ImageBackground, FlatList, TextInput, Image, Alert, useColorScheme, } from 'react-native';
 import { responsiveHeight, responsiveWidth, responsiveFontSize } from 'react-native-responsive-dimensions';
 import ImagePicker from 'react-native-image-crop-picker';
 
@@ -12,10 +12,19 @@ import privateAPI from '../../api/privateAPI';
 import { launchImageLibrary } from 'react-native-image-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useNavigation } from '@react-navigation/native';
-
-
+import { DefaultTheme, DarkTheme, Provider as PaperProvider, useTheme } from 'react-native-paper';
+import { color } from 'react-native-elements/dist/helpers';
 
 export default function SOne() {
+  const scheme = useColorScheme();
+  const theme = scheme === 'dark' ? DarkTheme : DefaultTheme;
+
+  // Ensure theme object exists and has colors property
+  const { colors } = theme || {};
+
+  // If theme or colors is undefined, provide default values
+  const backgroundColor = colors ? colors.background : 'white';
+  const textColor = colors ? colors.text : 'black';
 
 
 
@@ -108,7 +117,7 @@ export default function SOne() {
         onPress={() => handleItemPress(item.id)}
         style={{ padding: 8, backgroundColor: editingItemId === item.id ? 'lightgrey' : 'transparent' }}
       >
-        <Text>{`${item.id}: ${item.text}`}</Text>
+        <Text style={{color:'black'}}>{`${item.id}: ${item.text}`}</Text>
       </TouchableOpacity>
     );
   };
@@ -321,156 +330,172 @@ export default function SOne() {
 
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <PaperProvider theme={theme}>
+      <ScrollView contentContainerStyle={[styles.container, { color: backgroundColor }]} >
 
-      <Text style={styles.heading}>Create Ad</Text>
+        <Text style={[styles.heading, { color: textColor }]}>Create Ad</Text>
 
-      <View style={styles.formContainer}>
-        <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/new.png')} style={{
-          width: '112.6%',
+        <View style={styles.formContainer}>
+          <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/new.png')} style={{
+            width: '112.6%',
 
-          overflow: 'hidden',
-          // backgroundColor: "lightblue",
-          // borderRadius: responsiveWidth(2),
-          padding: responsiveWidth(5),
-          alignItems: 'center',
-        }} resizeMode="stretch">
+            overflow: 'hidden',
+            // backgroundColor: "lightblue",
+            // borderRadius: responsiveWidth(2),
+            padding: responsiveWidth(5),
+            alignItems: 'center',
+          }} resizeMode="stretch">
 
-          <View style={styles.input}>
+            <View style={styles.input}>
+              <Picker
+                selectedValue={selectedLabel}
+                onValueChange={(itemValue, itemIndex) =>
+                  setSelectedLabel(itemValue)
+                }
+              >
+                {labels.map((label) => (
+                  <Picker.Item
+                    key={label}
+                    label={label}
+                    value={label}
+                    style={{ color: textColor }} // Set the style here to change text color
+                  />
+                ))}
+              </Picker>
+              {/* <Text> {selectedLabel}</Text> */}
+            </View>
 
-            <Picker
-              selectedValue={selectedLabel}
-              onValueChange={(itemValue, itemIndex) =>
-                setSelectedLabel(itemValue)
-              }>
-              {labels.map((label) => (
-                <Picker.Item key={label} label={label} value={label} />
-              ))}
-            </Picker>
-            {/* <Text> {selectedLabel}</Text> */}
-          </View>
-          <View style={styles.input2}>
-            <TextInput
-              placeholder='Address'
-              onChangeText={(text) => setAddress(text)}
-              value={address}
-              multiline
-              style={{
-                overflow: 'scroll',
-              }}
-            />
-          </View>
-          <View style={styles.input2}>
-            <TextInput
-              placeholder='Messsage'
-              onChangeText={(text) => setMessage(text)}
-              value={Message}
-              multiline
-              style={{
-                overflow: 'scroll',
-              }}
-            />
+            <View style={styles.input2}>
+              <TextInput
+                placeholder='Address'
+                placeholderTextColor={textColor}
+                color='black'
+                onChangeText={(text) => setAddress(text)}
+                value={address}
+                multiline
+                style={{
+                  overflow: 'scroll',
+                }}
+              />
+            </View>
+            <View style={styles.input2}>
+              <TextInput
 
-          </View>
-
-          {/* <TouchableOpacity onPress={handleImageOption} style={styles.imagePickerButton}>
-          <Text style={styles.buttonText}>Upload Logo</Text>
-        </TouchableOpacity> */}
-          <View style={{ width: responsiveWidth(50), height: responsiveHeight(15), right: responsiveWidth(14.5), justifyContent: 'center', alignItems: 'center', borderWidth: 1, margin: responsiveHeight(1), top: responsiveHeight(-1), left: responsiveWidth(0.5) }}>
-            <View style={{ width: responsiveWidth(10), height: responsiveHeight(5), }}>
-              <TouchableOpacity onPress={edit_profile_pic} style={{ width: '500%', height: '300%', borderRadius: 5, right: responsiveWidth(20), top: responsiveHeight(-5) }}>
-                {profilepic ? (
-                  <Image source={{ uri: profilepic.uri }} style={{ width: '100%', height: '100%' }} resizeMode='stretch' />
-                ) : (
-                  <View style={{ alignItems: 'center', top: responsiveHeight(4.5) }}>
-                    <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-cameraicon.png')} style={{ width: '20%', height: '50%', top: responsiveHeight(5.4), left: responsiveWidth(20) }} resizeMode='stretch' />
-                    <Text style={{ top: responsiveHeight(-3), fontSize: 18 }}>Upload Logo</Text>
-                  </View>
-                )}
-              </TouchableOpacity>
+                placeholder='Messsage'
+                placeholderTextColor={textColor}
+                color='black'
+                onChangeText={(text) => setMessage(text)}
+                value={Message}
+                multiline
+                style={{
+                  overflow: 'scroll',
+                }}
+              />
 
             </View>
-          </View>
-          <View>
-            <SelectList
-              onSelect={() => alert(`Your candidate will be ${selected}`)}
-              setSelected={(val) => setSelected(val)}
-              data={data}
-              save="value"
-              inputStyles={{ color: 'black', }}
-              placeholder='Fresher/Experienced'
-              value={fresher}
-              onChangeText={setfresher}
-              search={false}
-              boxStyles={{ borderRadius: responsiveWidth(2), borderColor: '#004242', width: responsiveWidth(82), alignSelf: 'center', margin: 3 }}
-              dropdownStyles={{ borderRadius: responsiveWidth(2), height: responsiveHeight(10), width: responsiveWidth(81.5), backgroundColor: 'white', top: responsiveHeight(-1), alignSelf: 'center', }}
+
+            {/* <TouchableOpacity onPress={handleImageOption} style={styles.imagePickerButton}>
+          <Text style={styles.buttonText}>Upload Logo</Text>
+        </TouchableOpacity> */}
+            <View style={{ width: responsiveWidth(50), height: responsiveHeight(15), right: responsiveWidth(14.5), justifyContent: 'center', alignItems: 'center', borderWidth: 1, margin: responsiveHeight(1), top: responsiveHeight(-1), left: responsiveWidth(0.5) }}>
+              <View style={{ width: responsiveWidth(10), height: responsiveHeight(5), }}>
+                <TouchableOpacity onPress={edit_profile_pic} style={{ width: '500%', height: '300%', borderRadius: 5, right: responsiveWidth(20), top: responsiveHeight(-5) }}>
+                  {profilepic ? (
+                    <Image source={{ uri: profilepic.uri }} style={{ width: '100%', height: '100%' }} resizeMode='stretch' />
+                  ) : (
+                    <View style={{ alignItems: 'center', top: responsiveHeight(4.5), color: backgroundColor }}>
+                      <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-cameraicon.png')} style={{ width: '20%', height: '50%', top: responsiveHeight(5.4), left: responsiveWidth(20), color: backgroundColor, }} resizeMode='stretch' />
+                      <Text style={{ top: responsiveHeight(-3), fontSize: 18, color: textColor }}>Upload Logo</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+
+              </View>
+            </View>
+            <View>
+              <SelectList
+                onSelect={() => alert(`Your candidate will be ${selected}`)}
+                setSelected={(val) => setSelected(val)}
+                data={data}
+                save="value"
+                inputStyles={{ color: 'black', }}
+                placeholder='Fresher/Experienced'
+                value={fresher}
+                onChangeText={setfresher}
+                search={false}
+                boxStyles={{ borderRadius: responsiveWidth(2), borderColor: '#004242', width: responsiveWidth(82), alignSelf: 'center', margin: 3 }}
+                dropdownStyles={{ borderRadius: responsiveWidth(2), height: responsiveHeight(10), width: responsiveWidth(81.5), backgroundColor: 'white', top: responsiveHeight(-1), alignSelf: 'center', backgroundColor: textColor }}
+              />
+            </View>
+            <View style={{}}>
+              <Text style={styles.subHeading}>Roles:</Text>
+            </View>
+            <TextInput
+              multiline
+              maxLength={200}
+              placeholder=" Roles & responsibilties"
+              placeholderTextColor={textColor}
+              value={inputText}
+              onChangeText={(text) => setInputText(text)}
+              style={styles.listInput}
             />
-          </View>
-          <View style={{}}>
-            <Text style={styles.subHeading}>Roles:</Text>
-          </View>
-          <TextInput
-            multiline
-            maxLength={200}
-            placeholder=" Roles & responsibilties"
-            placeholderTextColor={'black'}
-            value={inputText}
-            onChangeText={(text) => setInputText(text)}
-            style={styles.listInput}
-          />
-          <TouchableOpacity onPress={addItem} style={styles.addButton}>
-            <Text style={styles.buttonText}>Add </Text>
-          </TouchableOpacity>
-          <View style={styles.requirementsContainer}>
-            <Text style={styles.requirementsHeading}>Your List of Requirements</Text>
-            <FlatList
-              data={items}
-
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={renderItem}
-            />
-            {editingItemId && (
-              <TouchableOpacity onPress={handleEditItem} style={{ padding: 8, backgroundColor: 'lightblue', marginTop: 10, borderRadius: responsiveWidth(2) }}>
-                <Text>Save</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          <View>
-            <Text style={{ color: 'black', fontWeight: 'bold', fontSize: responsiveWidth(4), right: responsiveWidth(19), top: responsiveHeight(-4) }}>Audition ends on</Text>
-          </View>
-          <View style={{ flexDirection: 'row', marginHorizontal: responsiveWidth(4), columnGap: responsiveWidth(10), top: responsiveHeight(-8) }}>
-            <TouchableOpacity onPress={showDatePicker} style={{ width: responsiveWidth(30), height: responsiveHeight(5), borderWidth: responsiveWidth(0.3), borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', flexDirection: 'row', columnGap: responsiveWidth(3), left: responsiveWidth(22), }} >
-              {/* <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/Booking.png')} style={{ width: responsiveWidth(6), height: responsiveHeight(3) }} /> */}
-
-
-              <Text style={styles.dateText}>{selectedDate ? selectedDate : 'YYYY-MM-DD'}</Text>
-
-              <Image source={require('../../Assets/Userprofile_And_Fonts/calander_icon.png')} style={{ width: responsiveWidth(6), height: responsiveHeight(3), right: responsiveWidth(6) }} />
+            <TouchableOpacity onPress={addItem} style={styles.addButton}>
+              <Text style={styles.buttonText}>Add </Text>
             </TouchableOpacity>
-            <DateTimePickerModal
-              isVisible={isDatePickerVisible}
-              mode="date"
-              // maximumDate={maximumDate}
-              // minimumDate={minimumDate}
-              onConfirm={handleConfirm}
-              onCancel={hideDatePicker}
-            />
+            <View style={styles.requirementsContainer}>
+              <Text style={styles.requirementsHeading}>Your List of Requirements</Text>
+              <FlatList
+                data={items}
 
-            {/* {dobError? <Text style={styles.errorMessage}>{dobError}</Text> : null } */}
-          </View>
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderItem}
+              />
+              {editingItemId && (
+                <TouchableOpacity onPress={handleEditItem} style={{ padding: 8, backgroundColor: 'lightblue', marginTop: 10, borderRadius: responsiveWidth(2) }}>
+                  <Text>Save</Text>
+                </TouchableOpacity>
+              )}
+            </View>
 
-          <View style={{ right: 105, }}>
-            <Text style={{ fontSize: responsiveFontSize(1.5), color: 'black', fontWeight: 'bold', right: responsiveWidth(8), top: responsiveHeight(-5) }}>Posted by:</Text>
-          </View>
-        </ImageBackground>
-      </View>
+            <View>
+              <Text style={{ color: textColor, fontWeight: 'bold', fontSize: responsiveWidth(4), right: responsiveWidth(19), top: responsiveHeight(-4) }}>Audition ends on</Text>
+            </View>
+            <View style={{ flexDirection: 'row', marginHorizontal: responsiveWidth(4), columnGap: responsiveWidth(10), top: responsiveHeight(-8) }}>
+              <TouchableOpacity onPress={showDatePicker} style={{ width: responsiveWidth(32), height: responsiveHeight(5), borderWidth: responsiveWidth(0.3), borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', flexDirection: 'row', columnGap: responsiveWidth(3), left: responsiveWidth(22), }} >
+                {/* <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Update/Booking.png')} style={{ width: responsiveWidth(6), height: responsiveHeight(3) }} /> */}
 
-      <TouchableOpacity style={{ backgroundColor: 'black', width: responsiveWidth(20), height: responsiveHeight(3.5), margin: 4, borderRadius: responsiveWidth(2), left: responsiveWidth(30) }} >
-        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: responsiveHeight(2), left: responsiveWidth(2.5), top: responsiveHeight(0.5) }} onPress={() => { post(); }} >Post Ad</Text>
-      </TouchableOpacity>
 
-    </ScrollView>
+                <Text style={{ color: textColor, fontSize: responsiveFontSize(1.5) }}>
+                  {selectedDate ? selectedDate : 'YYYY-MM-DD'}
+                </Text>
+
+
+                <Image source={require('../../Assets/Userprofile_And_Fonts/calander_icon.png')} style={{ width: responsiveWidth(6), height: responsiveHeight(3), right: responsiveWidth(2) }} />
+              </TouchableOpacity>
+              <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                mode="date"
+                // maximumDate={maximumDate}
+                // minimumDate={minimumDate}
+                onConfirm={handleConfirm}
+                onCancel={hideDatePicker}
+              />
+
+              {/* {dobError? <Text style={styles.errorMessage}>{dobError}</Text> : null } */}
+            </View>
+
+            <View style={{ right: 98, }}>
+              <Text style={{ fontSize: responsiveFontSize(1.5), color: textColor, fontWeight: 'bold', right: responsiveWidth(8), top: responsiveHeight(-5) }}>Posted by:</Text>
+            </View>
+          </ImageBackground>
+        </View>
+
+        <TouchableOpacity style={{ backgroundColor: 'grey', width: responsiveWidth(20), height: responsiveHeight(3.5), margin: 4, borderRadius: responsiveWidth(2), left: responsiveWidth(30) }} >
+          <Text style={{ color: textColor, fontWeight: 'bold', fontSize: responsiveHeight(2), left: responsiveWidth(2.5), top: responsiveHeight(0.5) }} onPress={() => { post(); }} >Post Ad</Text>
+        </TouchableOpacity>
+
+      </ScrollView>
+    </PaperProvider>
   );
 }
 
@@ -588,7 +613,7 @@ const styles = StyleSheet.create({
     width: '25%',
     height: responsiveHeight(4),
     marginBottom: responsiveHeight(2),
-    left: 135,
+    left: 120,
     top: responsiveHeight(-7)
   },
   requirementsContainer: {
@@ -611,6 +636,7 @@ const styles = StyleSheet.create({
     padding: responsiveWidth(2),
     // borderBottomWidth: 1,
     borderBottomColor: '#004242',
+    color: 'black'
 
   },
   buttonsContainer: {

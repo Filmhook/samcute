@@ -8,59 +8,18 @@ import { Appearance } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import privateAPI from '../api/privateAPI';
 const ProfilePic = ({ userId }) => {
+    const navigation = useNavigation();
     const [filePaths, setFilePaths] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const [filePath, setFilePath] = useState('');
+    const [followingCount, setFollowingCount] = useState(0);
+    const [followerCount, setFollowerCount] = useState(0);
 
 
-    useEffect(() => {
-        // Function to fetch data with bearer token
-        const fetchData = async () => {
-            try {
-                const id = userId;
-
-                const jwt = await AsyncStorage.getItem('jwt')
-                const response = await fetch('http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT/user/getCoverPic', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${jwt}`
-                    },
-                    body: JSON.stringify({
-                        userId: id
-                    })
-                });
-                const data = await response.json();
-                if (data.status === 1 && data.data.length > 0) {
-                    const paths = data.data.map(item => item.filePath);
-                    setFilePaths(paths);
-                }
-            } catch (error) {
-                console.error('Error fetching file paths:', error);
-            }
-        };
-
-        fetchData();
-    }, []); // Empty dependency array ensures this effect runs only once on mount
-
-
-    const renderItem = ({ item }) => (
-        <Image source={{ uri: item }} style={styleProfileCover.image} />
-    );
-
-    const handleNext = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % filePaths.length);
-    };
-
-    const handlePrev = () => {
-        setCurrentIndex((prevIndex) => (prevIndex === 0 ? filePaths.length - 1 : prevIndex - 1));
-    };
-
-
-    // ProfilePic
 
     useEffect(() => {
+        // Function to fetch profile picture
         const fetchProfilePicture = async () => {
             try {
                 const jwt = await AsyncStorage.getItem('jwt');
@@ -91,8 +50,101 @@ const ProfilePic = ({ userId }) => {
             }
         };
 
+        // Function to fetch data
+        const fetchData = async () => {
+            try {
+                const id = userId;
+
+                const jwt = await AsyncStorage.getItem('jwt')
+                const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getCoverPic', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${jwt}`
+                    },
+                    body: JSON.stringify({
+                        userId: id
+                    })
+                });
+                const data = await response.json();
+                if (data.status === 1 && data.data.length > 0) {
+                    const paths = data.data.map(item => item.filePath);
+                    setFilePaths(paths);
+                }
+            } catch (error) {
+                console.error('Error fetching file paths:', error);
+            }
+        };
+
+        // Function to count
+        const followingCount = async () => {
+            try {
+                const response = await privateAPI.get(`friendRequest/getFriendRequest?userId=${userId}`);
+                const data = response.data.data;
+                if (data && data.followingList) {
+                    setFollowingCount(data.followingList.length); // Set the count of following
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        const followerCount = async () => {
+            try {
+
+                const response = await privateAPI.get(`friendRequest/getFriendRequest?userId=${userId}`);
+                const data = response.data.data;
+                if (data && data.followersList) {
+                    setFollowerCount(data.followersList.length); // Set the count of following
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        // Call fetchProfilePicture, fetchData, and count functions
         fetchProfilePicture();
-    }, []);
+        fetchData();
+        followingCount();
+        followerCount();
+
+        // Set a timeout for 10 minutes to call the useEffect again
+        const timeout = setTimeout(() => {
+            fetchProfilePicture();
+            fetchData();
+            followingCount();
+            followerCount();
+
+        }, 10 * 60 * 1000); // 10 minutes in milliseconds
+
+        // Clean up function to clear the timeout
+        return () => clearTimeout(timeout);
+    }, []); // Empty dependency array ensures the effect runs only once
+
+
+
+
+
+    const renderItem = ({ item }) => (
+        <Image source={{ uri: item }} style={styleProfileCover.image} />
+    );
+
+    const handleNext = () => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % filePaths.length);
+    };
+
+    const handlePrev = () => {
+        setCurrentIndex((prevIndex) => (prevIndex === 0 ? filePaths.length - 1 : prevIndex - 1));
+    };
+
+
+    // ProfilePic
+
+
+
+
+
+
+
 
     const [userName, setUserName] = useState('');
     const [followStatus, setFollowStatus] = useState('follow');
@@ -100,16 +152,36 @@ const ProfilePic = ({ userId }) => {
 
     const handleFollow = async () => {
         try {
+            senderId = await AsyncStorage.getItem('id')
             console.log("userId for folloow post ", userId)
             const response = await privateAPI.post(`friendRequest/saveFriendRequest`, {
+                followersRequestSenderId:senderId,
                 followersRequestReceiverId: userId,
             });
-            setFollowStatus('following');
+          
             console.log("Follow response", response.data)
         } catch (error) {
             console.error(error)
         }
     };
+    const handleUnFollow = async () => {
+        try {
+            senderId = await AsyncStorage.getItem('id')
+
+            console.log("userId for UNfollow post ", userId); // Check the value of userId
+            const response = await privateAPI.put(`friendRequest/updateFriendRequest`, {
+                followersRequestSenderId: senderId,
+                followersRequestReceiverId: userId
+            });
+            console.log("Unfollow response", response.data);
+        } catch (error) {
+            console.error("Error while unfollowing:", error.response ? error.response.data : error.message);
+        }
+    };
+
+
+
+
 
 
 
@@ -159,13 +231,13 @@ const ProfilePic = ({ userId }) => {
                 <Text style={styleProfileCover.userName}>{userName}</Text>
             </View>
             <View style={{ flexDirection: "row", position: 'absolute', top: '92%', left: '43%' }}>
-                <TouchableOpacity style={styleProfileCover.followers}>
+                <TouchableOpacity style={styleProfileCover.followers} onPress={() => navigation.navigate('FollowersList', { userId })}>
 
-                    <Text style={styleProfileCover.followers_text}>10Followers</Text>
+                    <Text style={styleProfileCover.followers_text}>{followerCount} Followers</Text>
 
                 </TouchableOpacity>
-                <TouchableOpacity style={styleProfileCover.followings}>
-                    <Text style={styleProfileCover.followings_text}>10Followings</Text>
+                <TouchableOpacity style={styleProfileCover.followings} onPress={() => navigation.navigate('FollowingList', { userId })}>
+                    <Text style={styleProfileCover.followings_text}>{followingCount} Followings</Text>
                 </TouchableOpacity>
 
 
@@ -178,7 +250,12 @@ const ProfilePic = ({ userId }) => {
                 </View>
                 <TouchableOpacity style={styleProfileCover.follow} onPress={handleFollow}>
 
-                    <Text style={styleProfileCover.followers_text}>{followStatus}</Text>
+                    <Text style={styleProfileCover.followers_text}>Follow</Text>
+
+                </TouchableOpacity>
+                <TouchableOpacity style={styleProfileCover.Unfollow} onPress={handleUnFollow}>
+
+                    <Text style={styleProfileCover.followers_text}>UnFollow</Text>
 
                 </TouchableOpacity>
             </View>
@@ -211,7 +288,18 @@ const styleProfileCover = StyleSheet.create({
         width: responsiveWidth(26),
         borderRadius: responsiveWidth(2),
         marginTop: responsiveHeight(2),
-        marginLeft: responsiveWidth(18),
+        marginLeft: responsiveWidth(9),
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#949EE9"
+    },
+    Unfollow: {
+        borderWidth: 1,
+        height: responsiveHeight(4.8),
+        width: responsiveWidth(26),
+        borderRadius: responsiveWidth(2),
+        marginTop: responsiveHeight(2),
+        marginLeft: responsiveWidth(1),
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#949EE9"

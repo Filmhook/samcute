@@ -1,6 +1,6 @@
 import { View } from 'react-native'
 import React from 'react'
-import {createNativeStackNavigator} from '@react-navigation/native-stack'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Homecontents from './homecontents';
 import Posts from './Posts';
 import ProfileRoot from '../UserProfileScreen/ProfileMain/ProfileRoot';
@@ -12,6 +12,8 @@ import Postfeedcontainor from './postfeedcontainor';
 import GoLive from './homepage_functions/GoLive';
 import Status from './homepage_functions/Status';
 import UserProfile from '../UserProfile';
+import FollowingList from '../FollowingList';
+import FollowersList from '../FollowersList';
 
 
 // import { ScrollView } from 'react-native-gesture-handler';
@@ -21,28 +23,33 @@ import UserProfile from '../UserProfile';
 
 export default function HomeRoot() {
   const Stack = createNativeStackNavigator();
-  
+
   return (
-   <> 
-           <Stack.Navigator  >
-                <Stack.Screen name='homecontents' component={Homecontents} options={{headerShown:false}}/>
-                <Stack.Screen  name='Posts' component={Posts}  options={{headerShown:false}}/>
-                <Stack.Screen name='profilepage' component={ProfileRoot} options={{headerShown:false}} />
-                <Stack.Screen name='GoLive' component={GoLive} options={{headerShown:false}}/>
-                <Stack.Screen name='PromoteEdit' component={PromoteEdit} options={{headerShown:false}} />
-                <Stack.Screen name='Promote' component={Promote} options={{headerShown:false}} />
-                <Stack.Screen name='Link' component={Link} options={{headerShown:false}}/>
-                <Stack.Screen name='Homecontents' component={Homecontents} options={{headerShown:false}}/>
-                {/* <ScrollView>
+    <>
+      <Stack.Navigator  >
+        <Stack.Screen name='homecontents' component={Homecontents} options={{ headerShown: false }} />
+        <Stack.Screen name='Posts' component={Posts} options={{ headerShown: false }} />
+        <Stack.Screen name='profilepage' component={ProfileRoot} options={{ headerShown: false }} />
+        <Stack.Screen name='GoLive' component={GoLive} options={{ headerShown: false }} />
+        <Stack.Screen name='PromoteEdit' component={PromoteEdit} options={{ headerShown: false }} />
+        <Stack.Screen name='Promote' component={Promote} options={{ headerShown: false }} />
+        <Stack.Screen name='Link' component={Link} options={{ headerShown: false }} />
+        <Stack.Screen name='Homecontents' component={Homecontents} options={{ headerShown: false }} />
+        <Stack.Screen component={UserProfile} name='UserProfile' options={{ headerShown: false }} />
+        <Stack.Screen component={FollowingList} name='FollowingList' options={{ headerShown: false }} />
+        <Stack.Screen component={FollowersList} name='FollowersList' options={{ headerShown: false }} />
+
+
+
+        {/* <ScrollView>
                   <View> */}
-                <Stack.Screen name="Status" component={Status} />
-                <Stack.Screen component={UserProfile} name='UserProfile' options={{ headerShown: false }} />
-               
-                {/* </View>
+        <Stack.Screen name="Status" component={Status} />
+
+        {/* </View>
                 </ScrollView> */}
-           </Stack.Navigator>
-                    
-   </>
+      </Stack.Navigator>
+
+    </>
   )
 }
 
@@ -55,5 +62,5 @@ export default function HomeRoot() {
 //     <View>
 //       <Text>hi</Text>
 //     </View>
-//   )   
+//   )
 // }

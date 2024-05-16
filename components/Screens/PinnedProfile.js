@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity, Image, FlatList, StyleSheet } from 'react-native';
-import privateAPI from '../../api/privateAPI';
-import { responsiveFontSize } from 'react-native-responsive-dimensions';
+import privateAPI from '../api/privateAPI';
+
 
 const PinnedProfile = ({ onPress }) => {
   const [pinnedProfiles, setPinnedProfiles] = useState([]);
@@ -33,7 +33,7 @@ const PinnedProfile = ({ onPress }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f6f6f6' }}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text  style={{ marginLeft: 10, alignSelf: 'center', color: 'black', fontSize: responsiveFontSize(2), fontWeight: '500' }}>PinnedProfile</Text>
+          <Text  style={{ marginLeft: 10, alignSelf: 'center', color: 'black', fontSize: responsiveFontSize(2), fontWeight: '500' }}>PinnedProfil</Text>
           {/* <Text style={styles.subtitle}>
             Lorem ipsum dolor sit amet consectetur.
           </Text> */}
@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 24,
     paddingHorizontal: 24,
+    //backgroundColor:'red'
   },
   header: {
     marginBottom: 12,

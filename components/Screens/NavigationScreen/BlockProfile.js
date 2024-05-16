@@ -9,7 +9,7 @@ const BlockedProfile = ({  onPress }) => {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f6f6f6' }}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>BlockedProfile</Text>
+          <Text style={styles.title}>BlockedProfi</Text>
 
           <Text style={styles.subtitle}>
             Lorem ipsum dolor sit amet consectetur.

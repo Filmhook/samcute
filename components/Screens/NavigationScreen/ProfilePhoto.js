@@ -1,3 +1,4 @@
+
 // // import React from 'react'
 // // import { Image, StyleSheet, View,Text,TouchableOpacity } from 'react-native'
 
@@ -41,7 +42,7 @@
 
 //   const handleProfileToggle = () => {
 //     setHasProfile(!hasProfile);
-   
+
 //   };
 
 //   // const handleProfileNavigation = () =>{
@@ -114,46 +115,80 @@
 //         backgroundColor:"white",
 //     }
 // })
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { removeEmitHelper } from 'typescript';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import privateAPI from '../../api/privateAPI';
 
 export default function Profilephoto() {
- 
-         const navigation = useNavigation();
 
-      const handleProfileNavigation = () =>{
-        console.log('profilePic');
-          navigation.navigate('User Profile')
-        //  setIsVisible(!IsVisible)
+  const [filePath, setFilePath] = useState('');
+
+
+  const navigation = useNavigation();
+
+  const handleProfileNavigation = () => {
+    console.log('profilePic');
+    navigation.navigate('User Profile')
+    //  setIsVisible(!IsVisible)
+  }
+
+  const handle_profileedit = () => {
+    console.log('handle_profileedit');
+
+    navigation.navigate('ProfileEditPage')
+  }
+  const fetchProfilePicture = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('id');
+      const id = userId
+      console.log("idddddd", id)
+
+
+      const requestData = {
+        userId: id
+      };
+
+      const response = await privateAPI.post('user/getProfilePic', requestData);
+
+      const data = response.data; // Extract response data
+
+      if (data.status === 1) {
+        const profilePicUrl = data.data.filePath; // Extract filePath from response
+        setFilePath(profilePicUrl); // Update state with profile picture URL
+        console.log('Profile pic found successfully:', data);
+      } else {
+        throw new Error('Failed to fetch profile picture');
       }
+    } catch (error) {
+      console.error('Error fetching profile picture:', error);
+    }
+  };
+  useEffect(() => {
+    fetchProfilePicture();
+  });
 
-      const handle_profileedit=()=>{
-          console.log('handle_profileedit');
-
-          navigation.navigate('ProfileEditPage')
-      }
-      
- return (
-   <View style={styles.container}>
-        <TouchableOpacity style={styles.imgdiv} onPress={handleProfileNavigation}>
-            <Image source={require('../../../components/Assets/app_logo/8641606.jpg')} style={{width:'100%' , height:'100%'}} />
-        </TouchableOpacity>
-        <TouchableOpacity 
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.imgdiv} onPress={handleProfileNavigation}>
+        <Image source={{ uri: filePath }} style={{ width: '100%', height: '100%' }} />
+      </TouchableOpacity>
+      {/* <TouchableOpacity
         onPress={handle_profileedit}
-        style={{width:responsiveWidth(8),height:responsiveHeight(4),bottom:responsiveHeight(3)}}>
-           <Image source={require('../../../components/Assets/Audition_Icons_Fonts/write_icon.png')} style={{width:'100%',height:'100%'}} />
-           <Text style={{color:"white",width:responsiveWidth(16.4),right:-45,bottom:responsiveHeight(3)}}>EditProfile</Text>
-        </TouchableOpacity>
-        <View style={{bottom:responsiveHeight(2),width:responsiveWidth(18),height:responsiveHeight(4),backgroundColor:'black',borderRadius:responsiveWidth(3),flexDirection:'row',justifyContent:'center',alignItems:'center',columnGap:responsiveWidth(2)}}>
-          <Text style={{color:'white',fontWeight:'600',fontSize:responsiveFontSize(2)}}>9.9</Text>
-          <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/star_icon.png')} style={{width:responsiveWidth(4),height:responsiveHeight(3)}}></Image>
-        </View>
-      
+        style={{ width: responsiveWidth(8), height: responsiveHeight(4), bottom: responsiveHeight(3) }}>
+        <Image source={require('../../../components/Assets/Audition_Icons_Fonts/write_icon.png')} style={{ width: '100%', height: '100%' }} />
+        <Text style={{ color: "white", width: responsiveWidth(16.4), right: -45, bottom: responsiveHeight(3) }}>EditProfile</Text>
+      </TouchableOpacity> */}
+      <View style={{ bottom: responsiveHeight(2), width: responsiveWidth(18), height: responsiveHeight(4), backgroundColor: 'black', borderRadius: responsiveWidth(3), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', columnGap: responsiveWidth(2) }}>
+        <Text style={{ color: 'white', fontWeight: '600', fontSize: responsiveFontSize(2) }}>9.9</Text>
+        <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/star_icon.png')} style={{ width: responsiveWidth(4), height: responsiveHeight(3) }}></Image>
+      </View>
 
-        {/* <View 
+
+      {/* <View 
         style={{width:responsiveWidth(18),height:removeEmitHelper(5),borderRadius:responsiveWidth(3),backgroundColor:'#000000',left:responsiveWidth(25),bottom:responsiveHeight(10),flexDirection:'row',justifyContent:'center',alignItems:'center'}}
         >
             <Text 
@@ -162,8 +197,8 @@ export default function Profilephoto() {
             <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/star_icon.png')} style={{width:'100%',height:'100%'}} />
             </View>
         </View> */}
-   </View>
- );
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -172,23 +207,23 @@ const styles = StyleSheet.create({
     width: responsiveWidth(65),
     borderRadius: responsiveWidth(4),
     backgroundColor: '#3B3B3C',
-    
-    borderWidth:1,
-    borderColor:'white',
-    top:responsiveHeight(0.8),
-    justifyContent:'center',
-    alignItems:'center'
+
+    borderWidth: 1,
+    borderColor: 'white',
+    top: responsiveHeight(0.8),
+    justifyContent: 'center',
+    alignItems: 'center'
 
   },
   imgdiv: {
-    height:responsiveHeight(25),
-    width:responsiveWidth(50),
+    height: responsiveHeight(25),
+    width: responsiveWidth(50),
     borderRadius: responsiveWidth(3),
-    top:responsiveHeight(2),
-  
-  //  left:responsiveWidth(3),
-   
-    overflow: 'hidden', 
+    top: responsiveHeight(2),
+
+    //  left:responsiveWidth(3),
+
+    overflow: 'hidden',
     // Ensure the image stays within the borders
   }
-    });
+});

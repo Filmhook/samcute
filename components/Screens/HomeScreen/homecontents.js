@@ -6,6 +6,7 @@ import Postfeedcontainor from './postfeedcontainor'
 import Posts from './Posts'
 import StatusPost from './statusPost'
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
+import Stories from './Stories'
 
 
 
@@ -22,10 +23,11 @@ export default function Homecontents() {
               borderBottomColor: '#D7D7D7', 
               marginVertical: responsiveHeight(1)}}/>
 
-        {/* Story_containor */}
+    
        
              
-              <Storycontainor />
+              {/* <Storycontainor /> */}
+              <Stories/>
              
 
               <View style={{borderBottomWidth: responsiveWidth(1),

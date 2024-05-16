@@ -17,7 +17,7 @@ const UserData = ({ route }) => {
 
         try {
           const jwt = await AsyncStorage.getItem('jwt');
-          const response = await fetch('http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT/user/getFinalUserList', {
+          const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getFinalUserList', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const UserData = ({ route }) => {
               renderItem={({ item }) => (
                 <View style={styles.userContainer}>
                
-                    <TouchableOpacity onPress={() =>  navigation.navigate('UserProfileDetials', { userId: item.userId }) } style={styles.boxOne}>
+                    <TouchableOpacity onPress={() =>  navigation.navigate('UserProfileDetials', { userId: item.userId, userName: item.name }) } style={styles.boxOne}>
   
                       <View>
                         <Image source= {{ uri: item.userProfilePic }} style={styles.images} />

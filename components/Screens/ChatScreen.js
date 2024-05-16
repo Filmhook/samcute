@@ -39,6 +39,7 @@ const ChatScreen = ({ navigation }) => {
 
   const route = useRoute();
   const { data } = route.params;
+  console.log('datachat' , data)
   // Defines the variable.
   const title = 'chat';
   // Replaces <your appKey> with your app key.
@@ -291,9 +292,9 @@ const ChatScreen = ({ navigation }) => {
       //   expirationTimeInSeconds: 3600
       // });
 
-      const tempChannelNmae = 'ramloosupuuu'; ///mannual generation
+      const tempChannelNmae = 'testdemo'; ///mannual generation
       const tempChannelToken =
-        '007eJxTYPD0bmHrXeZ9RVqoozsyo5fZYo/xu1WSR7z5bDmfrNHuY1NgMLFMNrNINTM2TrVMNkk0N7YwNTZIMkw1NrcwtEgyN7Wcbmaf1hDIyPB631pWRgYIBPF5GIoSc3Py84tLC0pLSxkYAC8QH6c=';
+        '007eJxTYHBbwfzmxLdY7oQlG9n7YnL7xKqC+BXtzrreuch8b4YWS6MCg4llsplFqpmxcaplskmiubGFqbFBkmGqsbmFoUWSuamlyW7XtIZARobePj5mRgYIBPE5GEpSi0tSUnPzGRgADxAeEA==';
 
       if (type === 'video') {
         navigation.navigate('VideoCallingScreen', {

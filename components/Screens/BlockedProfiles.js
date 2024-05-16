@@ -2,66 +2,60 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import axios from 'axios';
+import privateAPI from '../api/privateAPI';
 
 const BlockedProfiles = () => {
-  const [data, setData] = useState([]);
+  const [blockedList, setBlockedList] = useState([]);
 
   useEffect(() => {
-    const fetchBlockData = async () => {
-      try {
-        const userId= await AsyncStorage.getItem('userId');
-        const jwt=await AsyncStorage.getItem('jwt')
-      //  const token = 'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyTmFtZSI6Inlhc3dhbnRoc2hhbmthcjI3MDVAZ21haWwuY29tIiwidXNlclR5cGUiOiJJbmR1c3RyeVVzZXIiLCJpYXQiOjE3MTU2MTEzMzAsImV4cCI6MTcxNTYxMjUzMH0.r9HsRlsddNw5t9BoDHXvfyi2oJPrT6dZYNugrnmv_43qD_N8nClOeMILt3EVjEbdDqMx0ApXDOHDkrzaqjWeLQ'; // Replace 'YOUR_BEARER_TOKEN_HERE' with your actual bearer token
-        const response = await fetch('http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT/block/getAllBlock', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${jwt}`
-          },
-          body: JSON.stringify({
-            blockedBy: userId
-          })
-        });
-        const jsonData = await response.json();
-        console.log(jsonData);
-        setData(jsonData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchBlockData();
+    fetchData();
   }, []);
 
-  const unblockUser = async (blockedUserId, blockedBy) => {
+  const fetchData = async () => {
+    const userId=await AsyncStorage.getItem('id')
+    const jwt =await AsyncStorage.getItem('jwt')
+    console.log('idblack',userId )
+    const url = 'http://3.27.207.83:8080/filmhook-0.0.1-SNAPSHOT/block/getAllBlock';
+    const token = 'your_token_here';
+    const requestData = {
+      blockedBy: userId
+    };
 
-    console.log('blockedUserId, blockedBy', blockedUserId)
     try {
-   
-      const token = 'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyTmFtZSI6Inlhc3dhbnRoc2hhbmthcjI3MDVAZ21haWwuY29tIiwidXNlclR5cGUiOiJJbmR1c3RyeVVzZXIiLCJpYXQiOjE3MTU2MTEzMzAsImV4cCI6MTcxNTYxMjUzMH0.r9HsRlsddNw5t9BoDHXvfyi2oJPrT6dZYNugrnmv_43qD_N8nClOeMILt3EVjEbdDqMx0ApXDOHDkrzaqjWeLQ'; 
-      const response = await fetch('http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT/block/unBlock', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          blockedBy: blockedBy,
-          blockedUser: blockedUserId
-        })
-      });
-      // Handle response as needed
-      console.log('Unblock response:', response);
+      const response = await privateAPI.post('/block/getAllBlock', requestData, );
+
+      setBlockedList(response.data);
     } catch (error) {
-      console.error('Error unblocking user:', error);
+      console.error('Error:', error);
     }
   };
 
+  const handleUnblock = async (blockedUser, blockedby) => {
+    const url = 'http://3.27.207.83:8080/filmhook-0.0.1-SNAPSHOT/block/unBlock';
+    const token = 'your_token_here';
+    const jwt =await AsyncStorage.getItem('jwt')
+    try {
+      const response = await privateAPI.post('/block/unBlock', {
+        blockedBy: blockedby,
+        blockedUser: blockedUser
+      }, );
+
+      console.log(response.data);
+
+      // After unblocking, fetch the updated list
+      fetchData();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+
   const renderItem = ({ item }) => (
     <View style={{ flexDirection: 'row', padding: responsiveWidth(3) }}>
-      <Image source={{ uri: item.profilePicUrl }} style={{ width: 50, height: 50, borderRadius: 25, borderColor: 'red', backgroundColor: 'gray' }} />
-      <Text style={{ marginLeft: 10, alignSelf: 'center', color: 'black', fontSize: responsiveFontSize(2), fontWeight: '500' }}>{item.userName}</Text>
-      <TouchableOpacity onPress={() => unblockUser(item.blockedUser, item.blockedBy)} style={{ marginLeft: 'auto', alignSelf: 'center', padding: 10, backgroundColor: 'blue', borderRadius: 5 }}>
+      <Image source={{ uri: item.blockedUserProfilePicUrl }} style={{ width: 50, height: 50, borderRadius: 25, borderColor: 'red', backgroundColor: 'gray' }} />
+      <Text style={{ marginLeft: 10, alignSelf: 'center', color: 'black', fontSize: responsiveFontSize(2), fontWeight: '500' }}>{item.blockedUserName}</Text>
+      <TouchableOpacity onPress={() => handleUnblock(item.blockedUser, item.blockedBy)} style={{ marginLeft: 'auto', alignSelf: 'center', padding: 10, backgroundColor: 'blue', borderRadius: 5 }}>
         <Text style={{ color: 'white' }}>Unblock</Text>
       </TouchableOpacity>
     </View>
@@ -73,7 +67,7 @@ const BlockedProfiles = () => {
         <Text style={styleBlock.headline}>Blocked Profile</Text>
       </View>
       <FlatList
-        data={data}
+        data={blockedList}
         renderItem={renderItem}
         keyExtractor={(item) => item.blockUserId}
       />

@@ -35,8 +35,8 @@ export default function Login() {
     password: 'Annular@234'
   }
 
-  const [email, setEmail] = useState(user1.email);
-  const [password, setPassword] = useState(user1.password);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState('');
   //yaswanthshankar2705@gmail.com
   //benishabeni21@gmail.com
@@ -80,6 +80,7 @@ export default function Login() {
       await AsyncStorage.setItem('jwt', jwt);
       await AsyncStorage.setItem('mail', emailId);
       await AsyncStorage.setItem('id', response.data.id.toString());
+      await AsyncStorage.setItem('userId', response.data.id.toString());
       await AsyncStorage.setItem('fcmToken', token);
       await AsyncStorage.setItem('username', response.data.username);
 
@@ -239,11 +240,11 @@ export default function Login() {
             <Text style={styles.loginButtonText}>Login</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
+          {/* <TouchableOpacity 
           style={styles.loginButton}
             onPress={switchUser2}>
             <Text style={styles.loginButtonText}>Switch User 2</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 
