@@ -73,6 +73,7 @@ const bio=()=>{
                   fontSize: responsiveFontSize(2),
                   color: '#000000',
                   fontWeight: '500',
+                  
                   fontFamily: 'Times New Roman',
                   top: responsiveHeight(-4.5),
                   textAlign:'center',

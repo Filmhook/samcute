@@ -18,6 +18,7 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PublicAPI from '../../../api/publicAPI';
+import privateAPI from '../../../api/privateAPI';
 const BodyMeasurement = () => {
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -47,14 +48,12 @@ const BodyMeasurement = () => {
       try {
         const userId = await AsyncStorage.getItem('userId');
         const userIdString = userId.toString(); // Convert to string if needed
-        const jwt = await AsyncStorage.getItem('jwt');
+
 
         console.log('bdym id', userId)
 
-        const response = await PublicAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
-          headers: {
-            'Authorization': `Bearer ${jwt}`
-          }
+        const response = await privateAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
+
         });
 
         // Handle response data as needed
@@ -84,38 +83,6 @@ const BodyMeasurement = () => {
   }, []);
 
 
-  // const handleSave = async () => {
-  //   try {
-  //     const userId = await AsyncStorage.getItem('userId');
-  //     const userIdString = userId.toString();
-  //     const jwt = await AsyncStorage.getItem('jwt');
-
-
-  //     const response = await PublicAPI.put(
-  //       `/user/updateBiologicalDetails`,
-  //       {
-  //         userId: userIdString,
-  //         height: height,
-  //         weight: weight,
-  //         skinTone: skinTone,
-  //         chestSize: chest,
-  //         waistSize: waist,
-  //         bicepsSize: biceps,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${jwt}`,
-  //         },
-  //       },
-  //     );
-  //     console.log('data saved successfully', response.data);
-
-  //     setIsEditing(false);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const handleUpdatePersonalInfo = async () => {
 
 
@@ -125,29 +92,19 @@ const BodyMeasurement = () => {
     const url = 'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/updateBiologicalDetails';
     const requestBody = {
       userId: userId,
-          height: height,
-          weight: weight,
-          skinTone: skinTone,
-          chestSize: chest,
-          waistSize: waist,
-          bicepsSize: biceps,
+      height: height,
+      weight: weight,
+      skinTone: skinTone,
+      chestSize: chest,
+      waistSize: waist,
+      bicepsSize: biceps,
     };
 
 
     try {
-      const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${jwt}` // Include the JWT token in the Authorization header
-        },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await privateAPI.put(`user/updateBiologicalDetails`, requestBody,{});
 
-      if (!response.ok) {
-        throw new Error('Failed to update personal info');
-      }
-
+     
 
       setIsEditing(false)
       Alert.alert('Success', 'Personal info updated successfully');
@@ -385,8 +342,8 @@ const BodyMeasurement = () => {
                           color: '#000000',
                           fontWeight: '500',
                           fontFamily: 'Times New Roman',
-                          textAlign:'center'
-                        //  left: responsiveWidth(10)
+                          textAlign: 'center'
+                          //  left: responsiveWidth(10)
 
                         }}
                         value={chest}
@@ -423,7 +380,7 @@ const BodyMeasurement = () => {
                   style={{ width: '100%', height: '100%' }}
                   source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
                   resizeMode="stretch">
-                  <View style={{justifyContent:'center',alignItems:'center'}}>
+                  <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                     {isEditing ? (
                       <TextInput
                         style={{
@@ -431,7 +388,7 @@ const BodyMeasurement = () => {
                           color: '#000000',
                           fontWeight: '500',
                           fontFamily: 'Times New Roman',
-                          textAlign:'center'
+                          textAlign: 'center'
                         }}
                         value={waist}
                         onChangeText={setWaist}
@@ -445,7 +402,7 @@ const BodyMeasurement = () => {
                           fontWeight: '500',
                           fontFamily: 'Times New Roman',
                           top: responsiveHeight(1),
-                        //  left:responsiveWidth(12)
+                          //  left:responsiveWidth(12)
 
                         }}>
                         {waist} Inch
@@ -467,7 +424,7 @@ const BodyMeasurement = () => {
                   style={{ width: '100%', height: '100%' }}
                   source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
                   resizeMode="stretch">
-                  <View style={{justifyContent:'center',alignItems:'center'}}>
+                  <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                     {isEditing ? (
                       <TextInput
                         style={{
@@ -475,7 +432,7 @@ const BodyMeasurement = () => {
                           color: '#000000',
                           fontWeight: '500',
                           fontFamily: 'Times New Roman',
-                          textAlign:'center'
+                          textAlign: 'center'
                         }}
                         value={biceps}
                         onChangeText={setBiceps}
@@ -489,8 +446,8 @@ const BodyMeasurement = () => {
                           fontWeight: '500',
                           fontFamily: 'Times New Roman',
                           top: responsiveHeight(1),
-                         // left:responsiveWidth(12),
-                          flexWrap:'wrap'
+                          // left:responsiveWidth(12),
+                          flexWrap: 'wrap'
 
                         }}>
                         {biceps} Inch
@@ -517,6 +474,7 @@ const getStyles = theme => {
       flexDirection: 'row',
       marginTop: responsiveHeight(0.2),
       flex: 1,
+
     },
     bio_title: {
       flex: responsiveWidth(0.2),
@@ -549,7 +507,7 @@ const getStyles = theme => {
       textDecorationLine: 'underline',
       alignSelf: 'flex-end',
       paddingRight: responsiveWidth(3),
-      color:'black'
+      color: 'black'
     },
     bio_content_section: {
       flexDirection: 'row',

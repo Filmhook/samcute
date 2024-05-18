@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, FlatList, Alert } from 'react-native';
 import Modal from 'react-native-modal';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -7,12 +7,14 @@ import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimen
 import { useNavigation } from '@react-navigation/native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import privateAPI from '../../api/privateAPI';
 
 export default function StoryContainer() {
   const navigation = useNavigation();
   const [stories, setStories] = useState([]);
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
-  const [profileImage, setProfileImage] = useState(require('../../Assets/app_logo/salman-Khan-header-1.jpg'));
+  const [imageURL, setImageURL] = useState(null);
+  const [profileImage, setProfileImage] = useState(null)
 
 
   const handleStoryPost = () => {
@@ -90,6 +92,40 @@ const handleImageOption = async (option) => {
     }
   };
 
+
+  useEffect(() => {
+    const fetchProfilePicture = async () => {
+      try {
+        const jwt = await AsyncStorage.getItem('jwt');
+        const id = await AsyncStorage.getItem('userId');
+
+        const myHeaders = {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwt
+        };
+
+        const requestData = {
+          userId: id
+        };
+
+        const response = await privateAPI.post('user/getProfilePic', requestData, { headers: myHeaders });
+
+        const data = response.data; // Extract response data
+
+        if (data.status === 1) {
+          const profilePicUrl = data.data.filePath; // Extract filePath from response
+          setImageURL(profilePicUrl); // Update state with profile picture URL
+          console.log('Profile pic found successfully:', profilePicUrl);
+        } else {
+          throw new Error('Failed to fetch profile picture');
+        }
+      } catch (error) {
+        console.error('Error fetching profile picture:', error);
+      }
+    };
+
+    fetchProfilePicture();
+  }, []);
   return (
     <>
       <View style={{ padding: responsiveWidth(1.5), flexDirection: 'row', height: responsiveHeight(19) }}>
@@ -108,13 +144,13 @@ const handleImageOption = async (option) => {
             }}>
          {profileImage ? (
               <Image
-                source={profileImage}
+                source={{uri: imageURL}}
                 style={{ width: '100%', height: '100%' }}
                 resizeMode='stretch'
               />
             ) : (
               <Image
-                source={require('../../Assets/app_logo/salman-Khan-header-1.jpg')}
+                source={{uri:imageURL}}
                 style={{ width: '100%', height: '100%' }}
                 resizeMode='stretch'
               />
@@ -164,10 +200,3 @@ const handleImageOption = async (option) => {
     </>
   );
 }
-
-
-
-
-
-
-

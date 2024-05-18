@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Image, ScrollView, Modal, ImageBackground, Alert } from 'react-native'
-// import Swiper from 'react-native-swiper'
 import Biography from './BioGraphy'
 import Bodymeasurement from './BodyMeasurements'
 import Professionalinfo from './Professional_Info'
@@ -9,24 +8,29 @@ import Profession from './Profession'
 import CurrentIndustry from './Current_Industry'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Swiper from 'react-native-swiper'
-// import MyActivities from './MyActivities'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-
 import ImagePicker from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
-// import MyActivities from './MyActivities'
 import Myactive from './Myactive'
-
-// for firebase sirestore 
-// import { getAuth, onAuthStateChanged } from 'firebase/auth';
-// import {getFirestore, query, collection, getDocs, where } from 'firebase/firestore';
-// import { app ,database } from '../../../../FirebaseConfig';
-// for firebase sirestore 
+import privateAPI from '../../../api/privateAPI'
+import { method } from 'lodash'
 
 export default function ProfileRoot() {
 
   const [userData, setUserData] = useState(null);
+  const [imageURL, setImageURL] = useState(null);
+
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const username = await AsyncStorage.getItem('username');
+      setUserName(username);
+    }
+    fetchUserName();
+  });
+
 
 
   // const [selectedImage, setSelectedImage] = useState('');
@@ -68,16 +72,114 @@ export default function ProfileRoot() {
       height: 500,
       compressImageQuality: 1,
     }).then(image => {
-      setSelectedImage({ uri: image.path });
+      let generateName = image.path.split("/")[image.path.split("/")?.length - 1]
+
+      setSelectedImage({ uri: image.path, type: image.mime, name: generateName });
       setShowGallery(false);
-      // Here you can send a request to your backend to update the profile picture
+      handleUpload(); // Call handleUpload to upload the selected profile picture
     }).catch(error => {
       console.log('ImagePicker Error: ', error);
     });
   };
 
+  const handleUpload = async () => {
+    try {
+      if (!selectedImage) return; // No image selected
+
+      const id = await AsyncStorage.getItem('userId');
+
+      const myHeaders = new Headers();
+      const jwt = await AsyncStorage.getItem('jwt');
+      myHeaders.append('Authorization', 'Bearer ' + jwt);
+
+      const formData = new FormData();
+      formData.append('userId', id);
+      const imageUriParts = selectedImage.uri.split('.');
+      const fileType = imageUriParts[imageUriParts.length - 1];
+      formData.append('profilePhoto.files', {
+        uri: selectedImage.uri,
+        type: `image/${fileType}`,
+        name: `image.${fileType}`,
+      });
+      formData.append('profilePhoto.description', 'Profile Pic');
+
+      const requestOptions = {
+        body: formData,
+        headers: myHeaders,
+        method: 'POST',
+        redirect: 'follow',
+      };
+
+      const response = await fetch(
+        'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/saveProfilePhoto',
+        requestOptions
+      );
+      const data = await response.json();
+
+      console.log('Profile pic upload response:', data); // Log the entire response object
+
+      if (data && data.status === 1) {
+        console.log('Profile pic uploaded successfully.');
+
+
+      } else {
+        console.error('Profile pic upload failed:', data.message);
+        // Handle upload failure
+      }
+    } catch (error) {
+      console.error('Error uploading profile picture:', error);
+      // Handle upload error
+    }
+  };
+  useEffect(() => {
+    const fetchProfilePicture = async () => {
+      try {
+        const jwt = await AsyncStorage.getItem('jwt');
+        const id = await AsyncStorage.getItem('userId');
+
+        const myHeaders = {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwt
+        };
+
+        const requestData = {
+          userId: id
+        };
+
+        const response = await privateAPI.post('user/getProfilePic', requestData, { headers: myHeaders });
+
+        const data = response.data; // Extract response data
+
+        if (data.status === 1) {
+          const profilePicUrl = data.data.filePath; // Extract filePath from response
+          setImageURL(profilePicUrl); // Update state with profile picture URL
+          console.log('Profile pic found successfully:', profilePicUrl);
+        } else {
+          throw new Error('Failed to fetch profile picture');
+        }
+      } catch (error) {
+        console.error('Error fetching profile picture:', error);
+      }
+    };
+
+    fetchProfilePicture();
+  }, []);
+
+
+
+
+
+
+
+
+
+
+
   const [showGalleryCover, setShowGalleryCover] = useState(false);
   const [selectedImageCover, setSelectedImageCover] = useState(null);
+  const [coverPicture, setCoverPicture] = useState(null);
+
+
 
   const openGalleryCover = () => {
     ImagePicker.openPicker({
@@ -86,146 +188,129 @@ export default function ProfileRoot() {
       height: 500,
       compressImageQuality: 1,
     }).then(image => {
-      setSelectedImage({ uri: image.path });
-      setShowGallery(false);
-      // Here you can send a request to your backend to update the profile picture
+      let generateName = image.path.split("/")[image.path.split("/")?.length - 1]
+
+      setSelectedImageCover({ uri: image.path, type: image.mime, name: generateName });
+      setShowGalleryCover(false);
+      handleUploadCover(); // Call handleUploadCover to upload the selected cover picture
     }).catch(error => {
       console.log('ImagePicker Error: ', error);
     });
   };
 
 
+  const handleUploadCover = async () => {
+    try {
+      if (!selectedImageCover) return; // No cover image selected
+
+      const id = await AsyncStorage.getItem('userId');
+
+      const myHeaders = new Headers();
+      const jwt = await AsyncStorage.getItem('jwt');
+      myHeaders.append('Authorization', 'Bearer ' + jwt);
+
+      const formData = new FormData();
+      formData.append('userId', id);
+      const imageUriParts = selectedImageCover.uri.split('.');
+      const fileType = imageUriParts[imageUriParts.length - 1];
+      formData.append('coverPhoto.files', {
+        uri: selectedImageCover.uri,
+        type: `image/${fileType}`,
+        name: `image.${fileType}`,
+      });
+      formData.append('coverPhoto.description', 'Cover Pic');
+
+      const requestOptions = {
+        body: formData,
+        headers: myHeaders,
+        method: 'POST',
+        redirect: 'follow',
+      };
+
+      const response = await fetch(
+        'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/saveCoverPhoto',
+        requestOptions
+      );
+      const data = await response.json();
+
+      console.log('Cover pic upload response:', data); // Log the entire response object
+
+      if (data && data.status === 1) {
+        console.log('Cover pic uploaded successfully.');
+      } else {
+        console.error('Cover pic upload failed:', data.message);
+        // Handle upload failure
+      }
+    } catch (error) {
+      console.error('Error uploading cover picture:', error);
+      // Handle upload error
+    }
+  };
 
 
-  //forfirebase data save 
+  const [coverPics, setCoverPics] = useState([]);
 
-  // const [fetchData, setFetchData] = useState([]);
-  // const [loading , setLoading] = useState(false);
+  useEffect(() => {
+    const fetchCover = async () => {
+      try {
+        const id = await AsyncStorage.getItem("userId");
+        console.log("userId from async", id);
+        const response = await privateAPI.post(`user/getCoverPic`, {
+          userId: id
+        });
+        const responseData = response.data;
 
-  // Accessing properties
-  //const user = fetchData[0]
-  // Accessing properties
+        // Log the entire responseData object to see its structure
+        console.log("Data from API:", responseData);
 
+        // Check if responseData contains 'data' property and it's an array
+        if (responseData && responseData.data && Array.isArray(responseData.data)) {
+          // Accessing the array of cover pic objects
+          const coverPicsData = responseData.data;
+          console.log("Cover pics data:", coverPicsData);
 
-  //   useEffect(() => {
-
-  //             const auth = getAuth(app);
-  //             let unsubscribe; 
-
-  //         const fetchUserData = async (userUid) => {
-  //               console.log(userUid);
-  //     // Firestore Schema
-  //         const firestore = getFirestore(app)
-  //         const collectionName = 'IndutryUser';
-  //         const collectionName1 = 'IndutryUser';
-  //         const collectionName2 = 'userProfile';
-  //    // Firestore Schema
-
-  //     try{
-  //       setLoading(true);
-
-  //       const postQuery = query(collection(firestore,collectionName),
-  //        where('AutoUid','==',userUid)
-  //        );
-
-  //       const querySnapshot = await getDocs(postQuery)
-
-  //       const data = querySnapshot.docs.map( doc => {
-  //         return {
-  //             ...doc.data()
-  //         }  
-  //       });
-
-  //       setFetchData(data);
-  //       setLoading(false);
-
-  //     }catch(err){
-  //        setLoading(false);
-  //        console.log('Error fetching data:',err);
-  //     }
-  //   }; 
-
-  //   const getUserUid = async () => {
-  //    unsubscribe = onAuthStateChanged(auth, (user) => {
-  //      if (user) {
-  //        const userUid = user.uid;
-  //        // Fetch user data using the obtained UID
-  //        fetchUserData(userUid);
-  //      }
-  //    });
-  //  };
-
-  //  getUserUid();
-
-  //  // Cleanup the subscription when the component is unmounted
-  //  return () => {
-  //    if (unsubscribe) {
-  //     unsubscribe();
-  //    }
-  //  };
-
-  // }, []);
-
-  const [coverPics, setCoverPics] = useState([
-    require('../../../Assets/app_logo/8641606.jpg'),
-    require('../../../Assets/app_logo/8641612.jpg'),
-    require('../../../Assets/app_logo/8641615.jpg'),
-    require('../../../Assets/app_logo/8641600.jpg'),
-    require('../../../Assets/app_logo/8641606.jpg'),
-    require('../../../Assets/app_logo/8641612.jpg'),
-    require('../../../Assets/app_logo/8641615.jpg'),
-    require('../../../Assets/app_logo/8641600.jpg'),
-    require('../../../Assets/app_logo/8641606.jpg'),
-    require('../../../Assets/app_logo/8641612.jpg'),
-    require('../../../Assets/app_logo/8641615.jpg'),
-    require('../../../Assets/app_logo/8641600.jpg'),
-    require('../../../Assets/app_logo/8641606.jpg'),
-    require('../../../Assets/app_logo/8641612.jpg'),
-    require('../../../Assets/app_logo/8641615.jpg'),
-    require('../../../Assets/app_logo/8641600.jpg'),
-  ]);
+          // Set coverPics state with the array of cover pic objects
+          setCoverPics(coverPicsData);
+        } else {
+          console.error("Invalid data format in API response.");
+        }
 
 
 
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchCover();
+  }, []);
 
 
   return (
     <>
 
       <ScrollView style={styles.container}>
-        {/* <TouchableOpacity style={style.bgprofile}>
-            <Image source={{ uri: coverPic }} style={style.coverimage} />
-          </TouchableOpacity>
-          <View style={style.profilPic}>
-            <TouchableOpacity >
-               <Image source={{ uri: profilePic }} style={style.profileimage} />
-            </TouchableOpacity>
-          </View> */}
+
+
         <Swiper
           style={styles.bgprofile}
           paginationStyle={styles.pagination}
           dot={styles.dotStyle}
         >
-          {coverPics.slice(0, 7).map((coverPic, index) => (
+          {/* Check if coverPics is an array before mapping */}
+          {Array.isArray(coverPics) && coverPics.length > 0 && coverPics.map((coverPic, index) => (
             <View key={index} style={styles.bgprofile}>
-              <Image source={coverPic} style={styles.coverimage} />
+              <TouchableOpacity onPress={openGalleryCover}>
+                <Image source={{ uri: coverPic.filePath }} style={styles.coverimage} />
+                <Icon name="camera" size={15} color="#fff" style={styles.cameraIconC} />
+              </TouchableOpacity>
             </View>
           ))}
         </Swiper>
 
 
-
-
-
-
-        {/* <View style={style.profilPic}>
-            <TouchableOpacity >
-              <Image source={{ uri: profilePic }} style={style.profileimage} />
-            </TouchableOpacity>
-          </View> */}
         <View style={styles.profilPic}>
           <TouchableOpacity onPress={openGallery}>
-            <Image source={selectedImage ? selectedImage : require('../../../Assets/app_logo/8641606.jpg')} style={styles.profileImage} resizeMode='stretch' />
+            <Image source={{ uri: imageURL }} style={styles.profileImage} resizeMode='stretch' />
             <Icon name="camera" size={11} color="#fff" style={styles.cameraIcon} />
           </TouchableOpacity>
           <Modal visible={showGallery} animationType="slide">
@@ -240,26 +325,8 @@ export default function ProfileRoot() {
             </View>
           </Modal>
         </View>
-        {/* ... Other components ... */}
-
-
-
-
-        {/* <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
-          <View style={style.modalContainer}>
-            <Image source={{ uri: selectedImage }} style={style.fullscreenImage} />
-            <TouchableOpacity style={style.closeButton} onPress={() => setModalVisible(false)}>
-              <Text style={style.closeButtonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal> */}
-        {/* //////////////////////////////////////////////////////*/}
-
-
-
-
         <View style={{ marginTop: responsiveHeight(-21), marginLeft: responsiveWidth(44), }}>
-          <Text style={styles.profile_name}>SRK</Text>
+          <Text style={styles.profile_name}>{userName}</Text>
 
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity style={styles.followers}>
@@ -282,7 +349,7 @@ export default function ProfileRoot() {
           </View>
         </View>
 
-        {/* <View style={{ position: 'absolute', top: responsiveHeight(60), marginLeft: responsiveWidth(5) }}>
+        <View style={{ position: 'absolute', top: responsiveHeight(60), marginLeft: responsiveWidth(5) }}>
           <TouchableOpacity onPress={() => openModal()}  >
             <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/Chats-Menu.png')} style={{ width: responsiveWidth(12), height: responsiveHeight(5) }} />
           </TouchableOpacity>
@@ -326,7 +393,7 @@ export default function ProfileRoot() {
 
             </View>
           </Modal>
-        </View> */}
+        </View> 
 
 
 

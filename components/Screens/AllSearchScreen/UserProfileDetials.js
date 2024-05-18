@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, Image, StyleSheet, TextInput, Button, Modal, Text, ImageBackground, Dimensions, FlatList } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Image, StyleSheet, TextInput, Button, Modal, Text, ImageBackground, Dimensions, FlatList, Alert } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
 import { responsiveFontSize, responsiveHeight, responsiveWidth, } from 'react-native-responsive-dimensions';
 import { useNavigation } from '@react-navigation/native';
@@ -2222,16 +2222,16 @@ export default function UserProfileDetials({ route }) {
 
 
 
-const handleChat=(userId, userName)=>{
+  const handleChat = (userId, userName) => {
 
-  const data={userId:userId, userName: userName}
-  console.log(data)
- navigation.navigate('ChatScreen', {
-    data: data
-  })
+    const data = { userId: userId, userName: userName }
+    console.log(data)
+    navigation.navigate('ChatScreen', {
+      data: data
+    })
 
 
-}
+  }
 
   const handlePressBlock = (userId) => {
 
@@ -2266,6 +2266,7 @@ const handleChat=(userId, userName)=>{
         }
 
         const data = await response.json();
+        Alert.alert('Success', 'Blocked Profile')
         console.log('Success:', data);
 
       } catch (error) {
@@ -2284,6 +2285,7 @@ const handleChat=(userId, userName)=>{
         pinProfile: 283
       }
       const response = await privateAPI.post('pin/addPin', body);
+      Alert.alert('Success', 'Added profile to pin')
       console.log('profile pinned successfully:', response.data)
     } catch (error) {
       console.log('Error pinning profile:', error);
@@ -2292,25 +2294,25 @@ const handleChat=(userId, userName)=>{
 
   const handleFollow = async (userId) => {
     try {
-        senderId = await AsyncStorage.getItem('id')
-        console.log("userId for folloow post ", userId)
-        const response = await privateAPI.post(`friendRequest/saveFriendRequest`, {
-            followersRequestSenderId:senderId,
-            followersRequestReceiverId: userId,
-        });
-      
-        console.log("Follow response", response.data)
+      senderId = await AsyncStorage.getItem('id')
+      console.log("userId for folloow post ", userId)
+      const response = await privateAPI.post(`friendRequest/saveFriendRequest`, {
+        followersRequestSenderId: senderId,
+        followersRequestReceiverId: userId,
+      });
+      Alert.alert('Success', 'Profile successfully followed')
+      console.log("Follow response", response.data)
     } catch (error) {
-        console.error(error)
+      console.error(error)
     }
-};
+  };
 
 
   const handleIconClick = (icon) => {
     // Implement functionality for each icon
     switch (icon) {
       case 'Icon 1':
-handleFollow(userId)
+        handleFollow(userId)
         console.log('Functionality for Icon 1');
         break;
       case 'Icon 2':
@@ -2341,6 +2343,7 @@ handleFollow(userId)
         setShowRequestModal(true);
         break;
       case 'Icon 9':
+        navigation.navigate('BuyRental' ,{userId})
         console.log('Functionality for Icon 9');
         break;
 
@@ -2375,13 +2378,13 @@ handleFollow(userId)
     const currentDate = selectedDate || startDate;
     setStartDate(currentDate);
     setStartPickerVisible(false);
-};
+  };
 
-const handleEndDateChange = (event, selectedDate) => {
+  const handleEndDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || endDate;
     setEndDate(currentDate);
     setEndPickerVisible(false);
-};
+  };
 
   const saveBookingRequest = async () => {
     try {
@@ -2396,18 +2399,21 @@ const handleEndDateChange = (event, selectedDate) => {
 
       const formattedStartDate = moment(startDate).format('DD-MM-YYYY');
       const formattedEndDate = moment(endDate).format('DD-MM-YYYY');
+      const userIdLogin=await AsyncStorage.getItem('id')
 
       console.log('Start Date:', formattedStartDate);
       console.log('End Date:', formattedEndDate);
 
       const response = await privateAPI.post('user/booking/saveBookingRequest', {
-        currentUserId: 3,
-        bookingUserId: 283,
+        currentUserId: userIdLogin,
+        bookingUserId: userId,
         projectName: projectName,
         fromDate: formattedStartDate,
         toDate: formattedEndDate,
         bookingStatus: 'Pending'
       },)
+
+      Alert.alert('Success', 'Booked Sucessfully')
       console.log('booked successfully:', response.data)
     }
     catch (error) {

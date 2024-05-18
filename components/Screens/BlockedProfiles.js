@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, FlatList, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import axios from 'axios';
 import privateAPI from '../api/privateAPI';
@@ -42,7 +42,7 @@ const BlockedProfiles = () => {
       }, );
 
       console.log(response.data);
-
+Alert.alert('Success' ,'Unblock successfully')
       // After unblocking, fetch the updated list
       fetchData();
     } catch (error) {

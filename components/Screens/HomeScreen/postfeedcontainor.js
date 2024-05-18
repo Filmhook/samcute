@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, FlatList, StyleSheet, TextInput, ScrollView, Share, useColorScheme } from 'react-native'
+import { View, Text, TouchableOpacity, Image, FlatList, StyleSheet, TextInput, ScrollView, Share, useColorScheme,Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-native-modal'
 import ImagePicker from 'react-native-image-crop-picker'
@@ -10,6 +10,7 @@ import { useSafeAreaFrame } from 'react-native-safe-area-context'
 import { error } from 'console'
 import { useNavigation } from '@react-navigation/native'
 import privateAPI from '../../api/privateAPI'
+import { color } from 'react-native-elements/dist/helpers'
 
 
 export default function Postfeedcontainor() {
@@ -31,7 +32,7 @@ export default function Postfeedcontainor() {
         const posts = await privateApi.get(`user/gallery/getGalleryFilesByAllUser`);
         setUserPost(posts.data.data);
         console.log("Fetched User Post");
-        console.log('post dataaa', posts.data);
+        console.log('post dataaa 35:', posts.data);
       } catch (e) {
         console.log("Fetching Failed in user post", e);
       }
@@ -143,11 +144,13 @@ export default function Postfeedcontainor() {
 
     const [postId, setPostId] = useState(null); // Add postId state
     const [userId, setUserId] = useState(null);
+    const [elapsedTime, setElapsedTime] = useState('');
 
     useEffect(() => {
       setPostId(item.FileInfo.id);
       setUserId(item.FileInfo.userId);
-// Set postId when item changes
+      setElapsedTime(item.FileInfo.elapsedTime);
+      // Set postId when item changes
     });
 
 
@@ -264,42 +267,8 @@ export default function Postfeedcontainor() {
     };
 
 
-    const LongTextComponent = ({ text }) => {
-      const [showFullText, setShowFullText] = useState(false);
-
-      const toggleTextVisibility = () => {
-        setShowFullText(!showFullText);
-      };
-
-      const handleSeeLess = () => {
-        setShowFullText(false);
-      };
-
-      return (
-        <View style={{
-          width: responsiveWidth(94), padding: responsiveWidth(1), left: responsiveWidth(2)
-        }}>
-          <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: "400", lineHeight: responsiveHeight(2.5), color: "#000000", textAlign: 'justify', flexDirection: 'row' }} numberOfLines={showFullText ? undefined : 3}>
-            {text}
-          </Text>
-          {text.length > 3 && (
-            <View>
-              {showFullText ? (
-                <TouchableOpacity onPress={handleSeeLess}>
-                  <Text style={{ color: 'blue' }}>See Less</Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity onPress={toggleTextVisibility}>
-                  <Text style={{ color: 'blue' }}>See More</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          )}
-        </View>
-      );
-    };
-
-
+  
+    
     const onSharePress = async () => {
 
       const options = {
@@ -332,21 +301,27 @@ export default function Postfeedcontainor() {
       setVisible(!visible)
     }
 
+  
+
     const pinPost = async (postId) => {
       try {
         const body = {
           flag: 1,
           pinMediaId: postId
         };
-
+    
         // Make API call to pin the post using postId
         const response = await privateAPI.post('/pin/addPin', body);
         // Handle response as needed
         console.log('Post pinned successfully:', response.data);
+    
+        // Show success alert
+        Alert.alert('Success', 'Post pinned successfully!');
       } catch (error) {
         console.error('Error pinning post:', error);
       }
     };
+    
 
     const reportPost = async (postId) => {
       try {
@@ -356,6 +331,7 @@ export default function Postfeedcontainor() {
         }
         const response = await privateAPI.post('/report/addPostReport', body);
         console.log('reported Post successfully:', response.data)
+        Alert.alert('Success', 'reported Post successfully!');
       } catch (error) {
         console.log('Error repoting post:', error);
       }
@@ -368,6 +344,7 @@ export default function Postfeedcontainor() {
         }
         const response = await privateAPI.post('pin/addPin', body);
         console.log('profile pinned successfully:', response.data)
+        Alert.alert('Success', 'profile pinned successfully!');
       } catch (error) {
         console.log('Error pinning profile:', error);
       }
@@ -408,7 +385,7 @@ export default function Postfeedcontainor() {
               <View
                 style={{ width: responsiveWidth(43), bottom: responsiveHeight(1.5) }}
               >
-                <TouchableOpacity onPress={() => navigation.navigate('UserProfile',{userId})}>
+                <TouchableOpacity onPress={() => navigation.navigate('SecondUserProfile')}>
                   <Text
                     style={{ fontSize: responsiveFontSize(1.8), fontWeight: "900", color: "#000000", letterSpacing: 0.5 }}>
                     {/* {name} */}
@@ -419,7 +396,7 @@ export default function Postfeedcontainor() {
                 <Text
                   style={{ fontWeight: "500", color: "black", fontSize: responsiveFontSize(1.4), top: 2 }}>
                   {/* {profession} */}
-                  Actor
+                  {item.platformNames}
                 </Text>
                 <View
                   style={{ width: responsiveWidth(30), height: responsiveHeight(2), top: responsiveHeight(0.6), flexDirection: 'row', right: responsiveWidth(1) }}>
@@ -438,7 +415,7 @@ export default function Postfeedcontainor() {
 
               <View
                 style={{ flexDirection: "row", width: responsiveWidth(32), justifyContent: "space-evenly", alignItems: "center", left: responsiveWidth(7.2), bottom: responsiveHeight(2) }}>
-                <Text style={{ fontWeight: "bold", color: "#000000" }} >10h</Text>
+                <Text style={{ fontWeight: "bold", color: "#000000" }} >{elapsedTime}</Text>
                 {/* <View
                   style={{ width: responsiveWidth(5), height: responsiveWidth(5), borderRadius: responsiveWidth(5) }}>
                   {view_type === 'public' ?
@@ -463,12 +440,18 @@ export default function Postfeedcontainor() {
                     </TouchableOpacity>
                     {visible ? (
                       <View
-                        style={{ position: "absolute", marginTop: responsiveHeight(4), right: responsiveWidth(2.2), width: responsiveWidth(35), height: responsiveHeight(10), backgroundColor: "#666666", borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', rowGap: responsiveHeight(1.1), zIndex: 3 }}>
+                        style={{ position: "absolute", marginTop: responsiveHeight(4), right: responsiveWidth(2.2), width: responsiveWidth(35), height: responsiveHeight(15), backgroundColor: "#666666", borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', rowGap: responsiveHeight(1.1), zIndex: 3 }}>
                         <TouchableOpacity onPress={() => pinPost(postId)}
                           style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }} >
                           <Image style={{ height: responsiveHeight(3), width: responsiveWidth(3), tintColor: 'white', zIndex: 3 }} source={require('../../Assets/Home_Icon_And_Fonts/pin_icon.png')} resizeMode='stretch'></Image>
                           <Text
                             style={{ color: '#ffffff' }}>Pin Post</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => pinProfile(userId)}
+                          style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }} >
+                          <Image style={{ height: responsiveHeight(3), width: responsiveWidth(3), tintColor: 'white', zIndex: 3 }} source={require('../../Assets/Home_Icon_And_Fonts/pin_icon.png')} resizeMode='stretch'></Image>
+                          <Text
+                            style={{ color: '#ffffff' }}>Pin Profile</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => reportPost(postId)}
                           style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), justifyContent: 'center', borderColor: 'white', alignItems: 'center', borderWidth: responsiveWidth(0.3) }}
@@ -477,12 +460,7 @@ export default function Postfeedcontainor() {
                             style={{ color: '#ffffff' }}
                           >Report Post</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => pinProfile(userId)}
-                          style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }} >
-                          <Image style={{ height: responsiveHeight(3), width: responsiveWidth(3), tintColor: 'white', zIndex: 3 }} source={require('../../Assets/Home_Icon_And_Fonts/pin_icon.png')} resizeMode='stretch'></Image>
-                          <Text
-                            style={{ color: '#ffffff' }}>Pin Profile</Text>
-                        </TouchableOpacity>
+                      
                       </View>
                     ) : null}
                   </View>
@@ -496,16 +474,13 @@ export default function Postfeedcontainor() {
                 flexDirection: "row", width: responsiveWidth(32), justifyContent: "space-evenly", marginLeft: responsiveWidth(1), bottom: responsiveHeight(1), marginTop: responsiveWidth(1)
 
               }}>
-              <Text
-                style={{
 
-                }}>
-                {/* <LongTextComponent > */}
-                <Text style={{ color: "black" }}>
+               
+              
+              <LongTextComponent item={item.FileInfo.description} color="black"/>
+              {/* <Text style={{ color: "black" }}>
                   {item.FileInfo.description}
-                </Text>
-                {/* </LongTextComponent> */}
-              </Text>
+                </Text> */}
             </View>
 
 
@@ -713,6 +688,44 @@ export default function Postfeedcontainor() {
 
   )
 }
+
+const LongTextComponent = ({ item,color  }) => {
+  console.log("item 691",item)
+  const [showFullText, setShowFullText] = useState(false);
+
+  const toggleTextVisibility = () => {
+    setShowFullText(!showFullText);
+  };
+
+  const handleSeeLess = () => {
+    setShowFullText(false);
+  };
+
+  if (!item) {
+    return null;
+  }
+
+  return (
+    <View style={{ width: responsiveWidth(94), padding: responsiveWidth(1), left: responsiveWidth(2) }}>
+      <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: "400", lineHeight: responsiveHeight(2.5), color: "#000000", textAlign: 'justify', flexDirection: 'row' }} numberOfLines={showFullText ? undefined : 3}>
+        {item}
+      </Text>
+      {item.length > 10 && (
+        <View>
+          {showFullText ? (
+            <TouchableOpacity onPress={handleSeeLess}>
+              <Text style={{ color: 'blue' }}>See Less</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={toggleTextVisibility}>
+              <Text style={{ color: 'blue' }}>See More</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   // container: {

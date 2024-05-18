@@ -97,8 +97,8 @@ function Neartome() {
   const navigation = useNavigation();
 
   const handle_Neartome = () => {
-    navigation.navigate('Neartome')
-    console.log('Neartome');
+    navigation.navigate('GetBookingList')
+    console.log('GetBookingList');
   }
 
   const style = StyleSheet.create({
@@ -123,7 +123,7 @@ function Neartome() {
     <View >
       <TouchableOpacity
         onPress={handle_Neartome}
-        style={style.containerFour}><Text style={style.text}>Near To Me</Text></TouchableOpacity>
+        style={style.containerFour}><Text style={style.text}>Get BookingList</Text></TouchableOpacity>
     </View>
   )
 }

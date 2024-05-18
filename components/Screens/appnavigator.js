@@ -50,6 +50,8 @@ import Biography from './UserProfileScreen/ProfileMain/BioGraphy';
 import fetchDataAndDisplayImage from './UsersLogState/test1';
 import FetchAndDisplayImage from './UsersLogState/test1';
 import BlockedProfiles from './BlockedProfiles';
+import GetBookingList from './GetBookingList';
+
 
 
 
@@ -86,7 +88,7 @@ export default function Appnavigator() {
           <Stack.Screen component={BlockedProfiles} name='BlockedProfiles' options={{ headerShown: false }} />
 
 
-
+          <Stack.Screen component={GetBookingList} name='GetBookingList' options={{ headerShown: false }} />
 
 
 

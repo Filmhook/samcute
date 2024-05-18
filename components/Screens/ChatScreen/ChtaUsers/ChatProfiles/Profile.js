@@ -25,9 +25,14 @@ export default function Chatprofiles({ items }) {
         })}>
           <View style={style.Chatprofiles}>
             <View style={style.Chatprofiles_Left}>
-              <Image
-                source={require("../../../../../components/Assets/Chats_Icon_And_Fonts/userprofile.png")}
-                style={style.Chatprofiles_photo} />
+            <Image
+                source={
+                  item.profilePictureUrls.length > 0
+                    ? { uri: item.profilePictureUrls[0] } // Use the first URL in the array
+                    : require("../../../../../components/Assets/Chats_Icon_And_Fonts/userprofile.png")
+                }
+                style={style.Chatprofiles_photo}
+              />
               <View style={style.Chatprofiles_name_ProView}>
                 <Text style={style.Chatprofiles_name}>{item.userName}</Text>
                 {/* <Text style={style.Chatprofiles_profession}> {item.Profession} </Text> */}

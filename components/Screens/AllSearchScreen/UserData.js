@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ImageBackground,ScrollView ,FlatList} from "react-native";
 import { Dimensions } from "react-native";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import privateAPI from "../../api/privateAPI";
 
 const UserData = ({ route }) => {
     const { selectedIndIds, selectedIds, selectedProfessionId, platfornId, selectedSubProfession } = route.params;
@@ -14,28 +15,32 @@ const UserData = ({ route }) => {
 
     useEffect(() => {
       const fetchData = async () => {
-
         try {
           const jwt = await AsyncStorage.getItem('jwt');
-          const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getFinalUserList', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${jwt}` // Include bearer token in the header
-            },
-            body: JSON.stringify({
+  
+        
+  
+          const response = await privateAPI.post(
+            'user/getFinalUserList',
+            {
               industryIds: [1, 2, 3],
               platformId: 1,
               professionIds: [1, 2, 3],
-              subProfessionIds: [1, 2]
-            })
-          });
+              subProfessionIds: [1, 2],
+            },
+           
+          );
   
-          const jsonData = await response.json();
+          const jsonData = response.data;
           if (jsonData.status === 1 && jsonData.data) {
             const categories = Object.keys(jsonData.data);
-            console.log('jsonData', jsonData)
-            setUserData(categories.map(category => ({ category, data: jsonData.data[category] })));
+            console.log('jsonData', jsonData);
+            setUserData(
+              categories.map((category) => ({
+                category,
+                data: jsonData.data[category],
+              }))
+            );
           } else {
             console.error('Error fetching user data');
           }

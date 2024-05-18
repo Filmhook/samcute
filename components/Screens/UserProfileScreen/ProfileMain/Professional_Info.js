@@ -42,7 +42,6 @@ export default function Professionalinfo() {
   const [newSister, setNewSister] = useState('');
   const [newChildren, setNewChildren] = useState('');
 
-
   const handleAddBrother = () => {
     if (newBrother.trim() !== '') {
       setBrother([...brother, newBrother]);
@@ -57,6 +56,7 @@ export default function Professionalinfo() {
       setShowAddSisterButton(false);
     }
   };
+
   const handleAddChildren = () => {
     if (newChildren.trim() !== '') {
       setDataArray([...dataArray, newChildren]);
@@ -72,32 +72,24 @@ export default function Professionalinfo() {
     const fetchData = async () => {
       try {
         const userId = await AsyncStorage.getItem('userId');
-        const userIdString = userId.toString(); // Convert to string if needed
+        const userIdString = userId.toString();
         const jwt = await AsyncStorage.getItem('jwt');
 
-        const response = await PublicAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
-          headers: {
-            'Authorization': `Bearer ${jwt}`
-          }
+        const response = await privateAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
+        
         });
-        console.log(userId)
-        // Handle response data as needed
-        console.log('User data:', response.data);
 
-        setDataArray(response.data.data.childrenNames);
-        setReligion(response.data.data.religion);
-        setCaste(response.data.data.caste);
-        setMarital(response.data.data.maritalStatus);
-        setSpouse(response.data.data.spouseName);
-        setMother(response.data.data.motherName);
-        setFather(response.data.data.fatherName);
-        setBrother(response.data.data.brotherNames);
-        setSister(response.data.data.sisterNames);
-
-
+        setDataArray(response.data.data.childrenNames || []);
+        setReligion(response.data.data.religion || '');
+        setCaste(response.data.data.caste || '');
+        setMarital(response.data.data.maritalStatus || '');
+        setSpouse(response.data.data.spouseName || '');
+        setMother(response.data.data.motherName || '');
+        setFather(response.data.data.fatherName || '');
+        setBrother(response.data.data.brotherNames || []);
+        setSister(response.data.data.sisterNames || []);
       } catch (error) {
         console.error('Error fetching user data:', error);
-        // Log additional details
         if (error.response) {
           console.error('Response status:', error.response.status);
           console.error('Response data:', error.response.data);
@@ -107,7 +99,6 @@ export default function Professionalinfo() {
 
     fetchData();
   }, []);
-
 
 
 
@@ -124,47 +115,31 @@ export default function Professionalinfo() {
 
 
   const handleUpdatePersonalInfo = async () => {
-    //  setIsLoading(true);
-
-    const userId = await AsyncStorage.getItem('userId');
-    const jwt = await AsyncStorage.getItem('jwt');
-
-    const url = 'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/updatePersonalInfo';
-    const requestBody = {
-      userId: userId,
-      religion: religion,
-      caste: caste,
-      maritalStatus: marital,
-      spouseName: spouse,
-      childrenNames: dataArray,
-      motherName: mother,
-      fatherName: father,
-      brotherNames: brother,
-      sisterNames: sister
-    };
-
-
     try {
-      const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${jwt}` // Include the JWT token in the Authorization header
-        },
-        body: JSON.stringify(requestBody),
+      const userId = await AsyncStorage.getItem('userId');
+ 
+      const requestBody = {
+        userId: userId,
+        religion: religion,
+        caste: caste,
+        maritalStatus: marital,
+        spouseName: spouse,
+        childrenNames: dataArray,
+        motherName: mother,
+        fatherName: father,
+        brotherNames: brother,
+        sisterNames: sister
+      };
+  
+      const response = await privateAPI.put(`user/updatePersonalInfo`, requestBody, {
+        
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to update personal info');
-      }
-
-
-      setIsEditing(false)
+  
+      setIsEditing(false);
       setShowAddButton(false);
       Alert.alert('Success', 'Personal info updated successfully');
     } catch (error) {
-      // setIsLoading(false);
-      Alert.alert('Error', error.message);
+      Alert.alert('Error', error.response ? error.response.data.message : error.message);
     }
   };
 
@@ -384,13 +359,12 @@ export default function Professionalinfo() {
             </View>
 
             <View style={{ rowGap: responsiveHeight(1) }}>
-              {dataArray.map((value, index) => (
+              {dataArray && dataArray.length > 0 && dataArray.map((value, index) => (
                 <ImageBackground
-
+                  key={index}
                   style={{
                     height: responsiveHeight(5.5),
                     width: responsiveWidth(53),
-                    // borderWidth: responsiveWidth(0.3),
                     borderColor: 'black',
                     borderRadius: responsiveWidth(2),
                     marginLeft: responsiveWidth(5.5),
@@ -400,21 +374,30 @@ export default function Professionalinfo() {
                   source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
                   resizeMode="stretch">
                   <Text
-                    key={index}
                     style={{
                       fontSize: responsiveFontSize(2),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
                       textAlign: 'center',
-                      // marginLeft: responsiveWidth(20), top: responsiveHeight(1)
                     }}>
                     {value}
                   </Text>
                 </ImageBackground>
               ))}
-               {isEditing && !showAddChildrenButton && (
-                <TouchableOpacity onPress={() => setShowAddChildrenButton(true)}>
+
+              {isEditing && !showAddChildrenButton && (
+                <TouchableOpacity onPress={() => setShowAddChildrenButton(true)} style={{
+                  height: responsiveHeight(5.5),
+                  width: responsiveWidth(53),
+                  borderWidth: responsiveWidth(0.3),
+                  borderColor: 'black',
+                  borderRadius: responsiveWidth(2),
+                  marginLeft: responsiveWidth(5.5),
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'blue'
+                }}>
                   <Text style={style.addButton}>Add children</Text>
                 </TouchableOpacity>
               )}
@@ -441,10 +424,38 @@ export default function Professionalinfo() {
                     />
                   </ImageBackground>
 
-                  <TouchableOpacity onPress={handleAddChildren}>
-                    <Text style={style.addButton}>Add</Text>
-                  </TouchableOpacity>
+
+                  {newChildren.trim() !== '' ? (
+                    <TouchableOpacity onPress={handleAddChildren} style={{
+                      height: responsiveHeight(5.5),
+                      width: responsiveWidth(53),
+                      borderWidth: responsiveWidth(0.3),
+                      borderColor: 'black',
+                      borderRadius: responsiveWidth(2),
+                      marginLeft: responsiveWidth(5.5),
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: 'blue'
+                    }}>
+                      <Text style={style.addButton}>Add</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={() => setShowAddChildrenButton(false)} style={{
+                      height: responsiveHeight(5.5),
+                      width: responsiveWidth(53),
+                      borderWidth: responsiveWidth(0.3),
+                      borderColor: 'black',
+                      borderRadius: responsiveWidth(2),
+                      marginLeft: responsiveWidth(5.5),
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: 'blue'
+                    }}>
+                      <Text style={style.addButton}>Cancel</Text>
+                    </TouchableOpacity>
+                  )}
                 </>
+
               )}
 
 
@@ -566,13 +577,12 @@ export default function Professionalinfo() {
               {/* <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
                             <View style={{rowGap:responsiveHeight(1)}}> */}
 
-              {brother.map((value, index) => (
+              {brother && brother.length > 0 && brother.map((value, index) => (
                 <ImageBackground
                   key={`brother-${index}`}
                   style={{
                     height: responsiveHeight(5.5),
                     width: responsiveWidth(53),
-                    // borderWidth: responsiveWidth(0.3),
                     borderColor: 'black',
                     borderRadius: responsiveWidth(2),
                     marginLeft: responsiveWidth(5.5),
@@ -582,7 +592,6 @@ export default function Professionalinfo() {
                   source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
                   resizeMode="stretch">
                   <Text
-                    key={index}
                     style={{
                       fontSize: responsiveFontSize(2),
                       color: '#000000',
@@ -594,8 +603,19 @@ export default function Professionalinfo() {
                   </Text>
                 </ImageBackground>
               ))}
+
               {isEditing && !showAddButton && (
-                <TouchableOpacity onPress={() => setShowAddButton(true)}>
+                <TouchableOpacity onPress={() => setShowAddButton(true)} style={{
+                  height: responsiveHeight(5.5),
+                  width: responsiveWidth(53),
+                  borderWidth: responsiveWidth(0.3),
+                  borderColor: 'black',
+                  borderRadius: responsiveWidth(2),
+                  marginLeft: responsiveWidth(5.5),
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'blue'
+                }}>
                   <Text style={style.addButton}>Add Brother</Text>
                 </TouchableOpacity>
               )}
@@ -621,10 +641,35 @@ export default function Professionalinfo() {
                       onChangeText={setNewBrother}
                     />
                   </ImageBackground>
-
-                  <TouchableOpacity onPress={handleAddBrother}>
-                    <Text style={style.addButton}>Add</Text>
-                  </TouchableOpacity>
+                  {newBrother.trim() !== '' ? (
+                    <TouchableOpacity onPress={handleAddBrother} style={{
+                      height: responsiveHeight(5.5),
+                      width: responsiveWidth(53),
+                      borderWidth: responsiveWidth(0.3),
+                      borderColor: 'black',
+                      borderRadius: responsiveWidth(2),
+                      marginLeft: responsiveWidth(5.5),
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: 'blue'
+                    }}>
+                      <Text style={style.addButton}>Add</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={() => setShowAddButton(false)} style={{
+                      height: responsiveHeight(5.5),
+                      width: responsiveWidth(53),
+                      borderWidth: responsiveWidth(0.3),
+                      borderColor: 'black',
+                      borderRadius: responsiveWidth(2),
+                      marginLeft: responsiveWidth(5.5),
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: 'blue'
+                    }}>
+                      <Text style={style.addButton}>Cancel</Text>
+                    </TouchableOpacity>
+                  )}
                 </>
               )}
 
@@ -645,12 +690,12 @@ export default function Professionalinfo() {
             </View>
 
             <View style={{ rowGap: responsiveHeight(1) }}>
-              {sister.map((value, index) => (
+              {sister && sister.length > 0 && sister.map((value, index) => (
                 <ImageBackground
+                  key={`sister-${index}`}
                   style={{
                     height: responsiveHeight(5.5),
                     width: responsiveWidth(53),
-                    // borderWidth: responsiveWidth(0.3),
                     borderColor: 'black',
                     borderRadius: responsiveWidth(2),
                     marginLeft: responsiveWidth(5.5),
@@ -660,7 +705,6 @@ export default function Professionalinfo() {
                   source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
                   resizeMode="stretch">
                   <Text
-                    key={index}
                     style={{
                       fontSize: responsiveFontSize(2),
                       color: '#000000',
@@ -672,8 +716,19 @@ export default function Professionalinfo() {
                   </Text>
                 </ImageBackground>
               ))}
-               {isEditing && !showAddSisterButton && (
-                <TouchableOpacity onPress={() => setShowAddSisterButton(true)}>
+
+              {isEditing && !showAddSisterButton && (
+                <TouchableOpacity onPress={() => setShowAddSisterButton(true)} style={{
+                  height: responsiveHeight(5.5),
+                  width: responsiveWidth(53),
+                  borderWidth: responsiveWidth(0.3),
+                  borderColor: 'black',
+                  borderRadius: responsiveWidth(2),
+                  marginLeft: responsiveWidth(5.5),
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'blue'
+                }}>
                   <Text style={style.addButton}>Add Sister</Text>
                 </TouchableOpacity>
               )}
@@ -700,9 +755,36 @@ export default function Professionalinfo() {
                     />
                   </ImageBackground>
 
-                  <TouchableOpacity onPress={handleAddSister}>
-                    <Text style={style.addButton}>Add</Text>
-                  </TouchableOpacity>
+
+                  {newSister.trim() !== '' ? (
+                    <TouchableOpacity onPress={handleAddSister} style={{
+                      height: responsiveHeight(5.5),
+                      width: responsiveWidth(53),
+                      borderWidth: responsiveWidth(0.3),
+                      borderColor: 'black',
+                      borderRadius: responsiveWidth(2),
+                      marginLeft: responsiveWidth(5.5),
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: 'blue'
+                    }}>
+                      <Text style={style.addButton}>Add</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={() => setShowAddSisterButton(false)} style={{
+                      height: responsiveHeight(5.5),
+                      width: responsiveWidth(53),
+                      borderWidth: responsiveWidth(0.3),
+                      borderColor: 'black',
+                      borderRadius: responsiveWidth(2),
+                      marginLeft: responsiveWidth(5.5),
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: 'blue'
+                    }}>
+                      <Text style={style.addButton}>Cancel</Text>
+                    </TouchableOpacity>
+                  )}
                 </>
               )}
 
@@ -727,12 +809,13 @@ export default function Professionalinfo() {
 const style = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: responsiveHeight(1)
     // height:responsiveHeight(71)
   },
   addButton: {
-    fontSize: 16,
-    color: 'blue',
-    marginBottom: 10,
+    fontSize: responsiveFontSize(2),
+    color: 'white',
+
   },
   bio_title: {
     flex: responsiveWidth(0.2),

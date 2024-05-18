@@ -117,6 +117,7 @@ export default function SignUp_Login() {
       // Log stored values for verification
       const storedJwt = await AsyncStorage.getItem('jwt');
       const storedId = await AsyncStorage.getItem('id');
+      
       console.log('Stored JWT token:', storedJwt);
       console.log('Stored ID:', storedId);
 

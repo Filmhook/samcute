@@ -31,11 +31,6 @@ const India = ({route}) => {
 
       const response = await privateAPI.post('user/getIndustryByCountry', {
         countryIds: selectedIds // Assuming 78 is the ID for the country
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${jwt}` // Add your bearer token here
-        }
       });
   
       if (response.data.status === 1) {

@@ -4,6 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Image, Text, TouchableOpacity, View, StyleSheet, ImageBackground } from "react-native";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import privateAPI from "../../api/privateAPI";
 
 
 
@@ -36,11 +37,7 @@ const IndustryScreen = ({route}) => {
     const fetchData = async () => {
         try {
             const jwt = await AsyncStorage.getItem('jwt');
-            const response = await axios.get('http://3.27.207.83:8080/filmhook-0.0.1-SNAPSHOT/masterData/getAllPlatform', {
-                headers: {
-                    Authorization: `Bearer ${jwt}`
-                }
-            });
+            const response = await privateAPI.get('masterData/getAllPlatform');
             const extractedData = response.data.data.map(item => ({
                 id: item.id,
                 name: item.platformName,

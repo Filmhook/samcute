@@ -3,6 +3,8 @@ import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, TextInput, I
 import { useNavigation } from "@react-navigation/native";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import privateAPI from "../../api/privateAPI";
 
 const Timeline = ({route}) => {
 
@@ -250,31 +252,30 @@ const Timeline = ({route}) => {
     fetchProfession();
   }, []);
 
-  const fetchProfession = async () => {
-    try {
-      const jwt =await AsyncStorage.getItem('jwt');
-     
+ const fetchProfession = async () => {
+  try {
+    const jwt = await AsyncStorage.getItem('jwt');
 
-      const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getProfessionByPlatform', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${jwt}` // Add your bearer token here
-        },
-        body: JSON.stringify({
-          platformId: platfornId // Assuming 78 is the ID for the country
-        }),
-      });
-
-      const responseData = await response.json();
-      if (responseData.status === 1) {
-        setProfessions(responseData.data[0].professionList);
-      }
-    } catch (error) {
-      console.error('Error fetching industries:', error);
+    if (!jwt) {
+      throw new Error('JWT token not found');
     }
-  };
 
+    const response = await privateAPI.post(
+      'user/getProfessionByPlatform',
+      { platformId: platfornId }, // Ensure platformId is defined and correct
+      
+    );
+
+    const responseData = response.data;
+    if (responseData.status === 1) {
+      setProfessions(responseData.data[0].professionList);
+    } else {
+      console.error('Unexpected response status:', responseData.status);
+    }
+  } catch (error) {
+    console.error('Error fetching professions:', error);
+  }
+};
   const handleOnPress = (item) => {
     // Check if item is already selected
     const index = selectedItems.findIndex((selectedItem) => selectedItem.id === item.id);

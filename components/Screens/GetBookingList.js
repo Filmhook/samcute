@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, Text, Button, Alert } from 'react-native';
+import { View, FlatList, Text, Button, Alert, StyleSheet } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 
 const GetBookingList = () => {
     const [bookings, setBookings] = useState([]);

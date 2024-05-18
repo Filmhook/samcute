@@ -3,6 +3,7 @@ import { View, Text, FlatList, TextInput, ImageBackground, TouchableOpacity, Ima
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import privateAPI from '../../api/privateAPI';
 
 const CountryPage = ({ navigation }) => {
   const [countries, setCountries] = useState([]);
@@ -12,10 +13,8 @@ const CountryPage = ({ navigation }) => {
   const fetchData = async () => {
     try {
       const jwt = await AsyncStorage.getItem('jwt');
-      const response = await axios.get('http://3.27.207.83:8080/filmhook-0.0.1-SNAPSHOT/masterData/getAllCountry', {
-        headers: {
-          Authorization: `Bearer ${jwt}`
-        } 
+      const response = await privateAPI.get('masterData/getAllCountry', {
+       
       });
       const extractedData = response.data.data.map(item => ({
         id: item.id,

@@ -89,6 +89,7 @@ import MarketPost from './MarketPost';
 import SubProfession from './SubProfession';
 import UserData from './UserData';
 import UserProfileDetials from './UserProfileDetials';
+import BuyRental from './BuyRental';
 // import ShootinglocationPost from './ShootinglocationPost';
 
 
@@ -191,7 +192,7 @@ export default function SearchRoot() {
           <Stack.Screen name='ShootinglocationPost2' component={ShootinglocationPost2} options={{headerShown:false}}/>
 
           <Stack.Screen name='UserProfileDetials' component={UserProfileDetials} options={{headerShown:false}}/>
-
+          <Stack.Screen component={BuyRental} name='BuyRental' options={{ headerShown: false }} />
 
      
 

@@ -1,11 +1,10 @@
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
-
-
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PublicAPI from '../../../api/publicAPI';
 import { TextInput } from 'react-native';
+import privateAPI from '../../../api/privateAPI';
 export default function Education() {
     const [expanded, setExpanded] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -27,10 +26,8 @@ export default function Education() {
 
                 console.log('idddd', userIdString)
 
-                const response = await PublicAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
-                    headers: {
-                        'Authorization': `Bearer ${jwt}`
-                    }
+                const response = await privateAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
+                  
                 });
 
                 // Handle response data as needed
@@ -249,7 +246,8 @@ const style = StyleSheet.create({
     container: {
         //  borderWidth:2,
         //  height: responsiveHeight(28),
-        flex: 1
+        flex: 1,
+        marginBottom:responsiveHeight(1)
 
     },
     headder_text: {
@@ -330,6 +328,7 @@ const style = StyleSheet.create({
     },
     editButton: {
         fontSize: 18,
+        color:'block',
         fontWeight: 'bold',
         marginBottom: 10,
         textDecorationLine: 'underline',
