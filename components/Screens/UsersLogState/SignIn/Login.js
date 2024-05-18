@@ -51,6 +51,11 @@ export default function Login() {
     setShowPassword(!showPassword);
   };
 
+//  useEffect(() => {
+//  navigation.navigate('IndustryTwo');
+//
+//  })
+
 
 
   //======================================================================

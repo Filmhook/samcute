@@ -730,7 +730,7 @@ console.log(`panAadharImg ${JSON.stringify(panAadharImg)}`)
         return [...v, res[0]]
       });
 
-      console.log('video', selectedVideo)
+//      console.log('video', selectedVideo)
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker
@@ -813,6 +813,7 @@ console.log(`User Id from IS Confirm ${id}`)
 console.log("HITT")
 let formData = new FormData()
 formData.append("userId", id);
+//formData.append("userId", '3');
 [...selectedImages].forEach(img => {
 formData.append("images" , img)
 });
@@ -835,7 +836,7 @@ const myHeaders = new Headers();
         body: formData,
         redirect: "follow"
       };
-
+console.log(`Posted Data - ${JSON.stringify(formData)}`)
       // Make a POST request using fetch
       fetch("https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/industryUser/saveIndustryUserFiles", requestOptions)
         .then((response) => response.json()) // Parse response JSON
@@ -1062,9 +1063,6 @@ const myHeaders = new Headers();
           <View style={{ height: responsiveHeight(3), width: responsiveWidth(40), backgroundColor: 'black', borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ color: 'white', lineHeight: responsiveHeight(2.5), fontSize: responsiveFontSize(1.2), fontWeight: '800' }}>Upload your 1 min Video</Text>
           </View>
-
-
-
 
           <TouchableOpacity onPress={pickVideo} style={{ backgroundColor: '#424242', height: responsiveHeight(3), width: responsiveWidth(18), borderRadius: responsiveWidth(2), justifyContent: 'center', alignItems: 'center', left: responsiveWidth(8.6), borderWidth: responsiveWidth(0.5), borderColor: 'black' }}>
             <Image style={{ height: responsiveHeight(1.5), width: responsiveWidth(3.5), position: 'absolute', right: responsiveWidth(13) }} source={require('../../../Assets/Login_page/FH_Upload.png')}></Image>
