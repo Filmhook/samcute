@@ -1,13 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ImageBackground,ScrollView ,FlatList} from "react-native";
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ImageBackground,ScrollView ,FlatList, Alert} from "react-native";
 import { Dimensions } from "react-native";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 import privateAPI from "../../api/privateAPI";
 
 const UserData = ({ route }) => {
     const { selectedIndIds, selectedIds, selectedProfessionId, platfornId, selectedSubProfession } = route.params;
+console.log('selectedIndIds', selectedIndIds)
+console.log('selectedProfessionId', selectedProfessionId)
+console.log('platfornId', platfornId)
+console.log('selectedSubProfession', selectedSubProfession)
 
     const navigation=useNavigation();
 
@@ -17,20 +21,14 @@ const UserData = ({ route }) => {
       const fetchData = async () => {
         try {
           const jwt = await AsyncStorage.getItem('jwt');
-  
-        
-  
-          const response = await privateAPI.post(
-            'user/getFinalUserList',
-            {
-              industryIds: [1, 2, 3],
-              platformId: 1,
-              professionIds: [1, 2, 3],
-              subProfessionIds: [1, 2],
-            },
-           
-          );
-  
+    
+          const response = await privateAPI.post('user/getFinalUserList', {
+            industryIds: selectedIndIds,
+            platformId: platfornId,
+            professionIds: selectedProfessionId,
+            subProfessionIds: selectedSubProfession,
+          });
+    
           const jsonData = response.data;
           if (jsonData.status === 1 && jsonData.data) {
             const categories = Object.keys(jsonData.data);
@@ -41,6 +39,8 @@ const UserData = ({ route }) => {
                 data: jsonData.data[category],
               }))
             );
+          } else if (jsonData.status === -1) {
+            Alert.alert('Message', jsonData.message || 'User(s) not found for all criteria...');
           } else {
             console.error('Error fetching user data');
           }
@@ -48,9 +48,9 @@ const UserData = ({ route }) => {
           console.error('Error fetching data:', error);
         }
       };
-  
+    
       fetchData();
-    }, []);
+    }, [selectedIndIds, platfornId, selectedProfessionId, selectedSubProfession]); 
   
     return (
       <ScrollView style={styles.container}>

@@ -271,12 +271,19 @@ export default function SignUpTwo() {
       console.log('Registration successful:', response.data);
       // navigation.navigate('IndustryTwo')
     } catch (error) {
-      Alert.alert('Registration failed');
-      console.error('Registration failed:', error);
+      if (error.response && error.response.status === 422) {
+        // Email is already registered
+        Alert.alert('Registration failed', 'Email is already registered.');
+      } else {
+        // Other errors
+        Alert.alert('Registration failed');
+        console.error('Registration failed:', error);
+      }
     } finally {
       setLoading(false); // Set loading state to false after response received
     }
   };
+  
 
   const emailOtp = async () => {
     try {

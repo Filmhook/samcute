@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, FlatList, StyleSheet, TextInput, ScrollView, Share, useColorScheme,Alert } from 'react-native'
+import { View, Text, TouchableOpacity, Image, FlatList, StyleSheet, TextInput, ScrollView, Share, useColorScheme, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Modal from 'react-native-modal'
 import ImagePicker from 'react-native-image-crop-picker'
@@ -10,7 +10,6 @@ import { useSafeAreaFrame } from 'react-native-safe-area-context'
 import { error } from 'console'
 import { useNavigation } from '@react-navigation/native'
 import privateAPI from '../../api/privateAPI'
-import { color } from 'react-native-elements/dist/helpers'
 
 
 export default function Postfeedcontainor() {
@@ -32,7 +31,7 @@ export default function Postfeedcontainor() {
         const posts = await privateApi.get(`user/gallery/getGalleryFilesByAllUser`);
         setUserPost(posts.data.data);
         console.log("Fetched User Post");
-        console.log('post dataaa 35:', posts.data);
+        console.log('post dataaa', posts.data);
       } catch (e) {
         console.log("Fetching Failed in user post", e);
       }
@@ -267,8 +266,42 @@ export default function Postfeedcontainor() {
     };
 
 
-  
-    
+    const LongTextComponent = ({ text }) => {
+      const [showFullText, setShowFullText] = useState(false);
+
+      const toggleTextVisibility = () => {
+        setShowFullText(!showFullText);
+      };
+
+      const handleSeeLess = () => {
+        setShowFullText(false);
+      };
+
+      return (
+        <View style={{
+          width: responsiveWidth(94), padding: responsiveWidth(1), left: responsiveWidth(2)
+        }}>
+          <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: "400", lineHeight: responsiveHeight(2.5), color: "#000000", textAlign: 'justify', flexDirection: 'row' }} numberOfLines={showFullText ? undefined : 3}>
+            {text}
+          </Text>
+          {text.length > 3 && (
+            <View>
+              {showFullText ? (
+                <TouchableOpacity onPress={handleSeeLess}>
+                  <Text style={{ color: 'blue' }}>See Less</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={toggleTextVisibility}>
+                  <Text style={{ color: 'blue' }}>See More</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+        </View>
+      );
+    };
+
+
     const onSharePress = async () => {
 
       const options = {
@@ -301,27 +334,22 @@ export default function Postfeedcontainor() {
       setVisible(!visible)
     }
 
-  
-
     const pinPost = async (postId) => {
       try {
         const body = {
           flag: 1,
           pinMediaId: postId
         };
-    
+
         // Make API call to pin the post using postId
         const response = await privateAPI.post('/pin/addPin', body);
         // Handle response as needed
         console.log('Post pinned successfully:', response.data);
-    
-        // Show success alert
-        Alert.alert('Success', 'Post pinned successfully!');
+        Alert.alert('success', 'Post pinned successfully')
       } catch (error) {
         console.error('Error pinning post:', error);
       }
     };
-    
 
     const reportPost = async (postId) => {
       try {
@@ -331,7 +359,7 @@ export default function Postfeedcontainor() {
         }
         const response = await privateAPI.post('/report/addPostReport', body);
         console.log('reported Post successfully:', response.data)
-        Alert.alert('Success', 'reported Post successfully!');
+        Alert.alert('success', 'reported Post successfully')
       } catch (error) {
         console.log('Error repoting post:', error);
       }
@@ -340,11 +368,11 @@ export default function Postfeedcontainor() {
       try {
         const body = {
           flag: 0,
-          pinProfile:userId
+          pinProfile: userId
         }
         const response = await privateAPI.post('pin/addPin', body);
         console.log('profile pinned successfully:', response.data)
-        Alert.alert('Success', 'profile pinned successfully!');
+        Alert.alert('success', 'profile pinned successfully')
       } catch (error) {
         console.log('Error pinning profile:', error);
       }
@@ -366,7 +394,7 @@ export default function Postfeedcontainor() {
                     // borderWidth: responsiveWidth(0.4),
                     borderRadius: responsiveWidth(14),
                   }}>
-                  <Image source={{ uri: item.profileUrl }}
+                  <Image source={{ uri: item.profileUrl}}
                     style={{ width: '100%', height: '100%', borderRadius: 50, }} resizeMode='stretch'
                   />
                 </TouchableOpacity>
@@ -385,7 +413,7 @@ export default function Postfeedcontainor() {
               <View
                 style={{ width: responsiveWidth(43), bottom: responsiveHeight(1.5) }}
               >
-                <TouchableOpacity onPress={() => navigation.navigate('SecondUserProfile')}>
+                <TouchableOpacity onPress={() => navigation.navigate('UserProfile', { userId })}>
                   <Text
                     style={{ fontSize: responsiveFontSize(1.8), fontWeight: "900", color: "#000000", letterSpacing: 0.5 }}>
                     {/* {name} */}
@@ -396,7 +424,7 @@ export default function Postfeedcontainor() {
                 <Text
                   style={{ fontWeight: "500", color: "black", fontSize: responsiveFontSize(1.4), top: 2 }}>
                   {/* {profession} */}
-                  {item.platformNames}
+                  {item.professionNames}
                 </Text>
                 <View
                   style={{ width: responsiveWidth(30), height: responsiveHeight(2), top: responsiveHeight(0.6), flexDirection: 'row', right: responsiveWidth(1) }}>
@@ -460,7 +488,7 @@ export default function Postfeedcontainor() {
                             style={{ color: '#ffffff' }}
                           >Report Post</Text>
                         </TouchableOpacity>
-                      
+
                       </View>
                     ) : null}
                   </View>
@@ -474,13 +502,16 @@ export default function Postfeedcontainor() {
                 flexDirection: "row", width: responsiveWidth(32), justifyContent: "space-evenly", marginLeft: responsiveWidth(1), bottom: responsiveHeight(1), marginTop: responsiveWidth(1)
 
               }}>
+              <Text
+                style={{
 
-               
-              
-              <LongTextComponent item={item.FileInfo.description} color="black"/>
-              {/* <Text style={{ color: "black" }}>
+                }}>
+                {/* <LongTextComponent > */}
+                <Text style={{ color: textColor }}>
                   {item.FileInfo.description}
-                </Text> */}
+                </Text>
+                {/* </LongTextComponent> */}
+              </Text>
             </View>
 
 
@@ -688,44 +719,6 @@ export default function Postfeedcontainor() {
 
   )
 }
-
-const LongTextComponent = ({ item,color  }) => {
-  console.log("item 691",item)
-  const [showFullText, setShowFullText] = useState(false);
-
-  const toggleTextVisibility = () => {
-    setShowFullText(!showFullText);
-  };
-
-  const handleSeeLess = () => {
-    setShowFullText(false);
-  };
-
-  if (!item) {
-    return null;
-  }
-
-  return (
-    <View style={{ width: responsiveWidth(94), padding: responsiveWidth(1), left: responsiveWidth(2) }}>
-      <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: "400", lineHeight: responsiveHeight(2.5), color: "#000000", textAlign: 'justify', flexDirection: 'row' }} numberOfLines={showFullText ? undefined : 3}>
-        {item}
-      </Text>
-      {item.length > 10 && (
-        <View>
-          {showFullText ? (
-            <TouchableOpacity onPress={handleSeeLess}>
-              <Text style={{ color: 'blue' }}>See Less</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity onPress={toggleTextVisibility}>
-              <Text style={{ color: 'blue' }}>See More</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   // container: {

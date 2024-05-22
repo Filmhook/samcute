@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { launchImageLibrary } from 'react-native-image-picker'
 import ImageCropPicker from 'react-native-image-crop-picker'
 import { useNavigation } from '@react-navigation/native'
+import axios from 'axios'
 
 
 
@@ -124,7 +125,11 @@ const fetchData = async () => {
       dailySalary: item.dailySalary,
       platformPermanentId: item.platformPermanentId,
       platformImageURL: `data:image/jpeg;base64,${item.platformImage}`, // Decode base64 to image URL
-      filePaths: item.outputWebModelList.map(file => file.filePath), // Add filePaths array from response
+      filePaths: item.outputWebModelList.map(file => ({
+        filePath: file.filePath,
+        description: file.description,
+      })),
+
     }));
 
     setPlatformData(modifiedData);
@@ -143,7 +148,7 @@ const fetchData = async () => {
 const [openingImagePicker, setOpeningImagePicker] = useState(false);
 
 const project = (platformId) => {
-  console.log('platformId', platformId);
+  console.log('platformId', platformId)
   if (platformId === projectPlatformId) {
     // Save changes and exit edit mode
     openImagePicker(platformId);
@@ -154,8 +159,88 @@ const project = (platformId) => {
   }
 };
 
-const openImagePicker = (platformId) => {
-  setOpeningImagePicker(true);
+// const openImagePicker = (platformId) => {
+//   setOpeningImagePicker(true);
+//   const options = {
+//     mediaType: 'photo',
+//     includeBase64: false,
+//     maxHeight: 300,
+//     maxWidth: 300,
+//   };
+
+//   launchImageLibrary(options, async (response) => {
+//     setOpeningImagePicker(false);
+//     if (response.didCancel) {
+//       console.log('User cancelled image picker');
+//     } else if (response.error) {
+//       console.log('Image picker error: ', response.error);
+//     } else {
+//       const selectedImage = response.assets[0];
+//       setSelectedImage(selectedImage);
+//       try {
+//         await addImageWithTitle(platformId);
+//       } catch (error) {
+//         console.error('Failed to upload image:', error);
+//       }
+//     }
+//   });
+// };
+
+
+
+// const addImageWithTitle = async (platformId) => {
+//   if (!selectedImage) {
+//     throw new Error('No image selected.');
+//   }
+//   const userId = await AsyncStorage.getItem('userId');
+//   const jwt = await AsyncStorage.getItem('jwt');
+
+//   console.log('usedidddd ',userId )
+//   const myHeaders = new Headers();
+//   myHeaders.append('Authorization', 'Bearer ' + jwt);
+
+//   const formData = new FormData();
+ 
+//   formData.append('userId', userId);
+//   formData.append('platformPermanentId', platformId);
+
+//   const imageUriParts = selectedImage.uri.split('.');
+//   const fileType = imageUriParts[imageUriParts.length - 1];
+//   formData.append(`fileInputWebModel.files[0]`, {
+//     uri: selectedImage.uri,
+//     name: `image.${fileType}`,
+//     type: `image/${fileType}`,
+//   });
+
+//   const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/IndustryUser/project/saveProjectFiles', {
+//     method: 'POST',
+//     body: formData,
+//     headers: myHeaders
+//   });
+
+//   if (!response.ok) {
+//     throw new Error('Failed to upload image. HTTP Error: ' + response.status);
+//   }
+
+//   const data = await response.json();
+//   if (data.status !== 1) {
+//     throw new Error('Failed to upload image. Server returned status: ' + data.status);
+//   }
+
+//   Alert.alert('Posted');
+// };
+
+const toggleExpanded = () => {
+  setExpanded(!expanded);
+};
+
+//project
+
+const [description, setDescription] = useState('');
+const [platformId, setPlatformId] = useState(null);
+
+const openImagePicker = (id) => {
+  setPlatformId(id);
   const options = {
     mediaType: 'photo',
     includeBase64: false,
@@ -163,70 +248,71 @@ const openImagePicker = (platformId) => {
     maxWidth: 300,
   };
 
-  launchImageLibrary(options, async (response) => {
-    setOpeningImagePicker(false);
+  launchImageLibrary(options, (response) => {
     if (response.didCancel) {
       console.log('User cancelled image picker');
-    } else if (response.error) {
-      console.log('Image picker error: ', response.error);
+    } else if (response.errorCode) {
+      console.log('Image picker error: ', response.errorMessage);
     } else {
       const selectedImage = response.assets[0];
       setSelectedImage(selectedImage);
-      try {
-        await addImageWithTitle(platformId);
-      } catch (error) {
-        console.error('Failed to upload image:', error);
-      }
+      setModalVisible(true);  // Show the modal to enter description
     }
   });
 };
 
-
-
-const addImageWithTitle = async (platformId) => {
+const uploadImage = async () => {
   if (!selectedImage) {
-    throw new Error('No image selected.');
+    Alert.alert('No image selected', 'Please select an image first.');
+    return;
   }
-  const userId = await AsyncStorage.getItem('userId');
-  const jwt = await AsyncStorage.getItem('jwt');
-
-  console.log('usedidddd ',userId )
-  const myHeaders = new Headers();
-  myHeaders.append('Authorization', 'Bearer ' + jwt);
-
-  const formData = new FormData();
- 
-  formData.append('userId', userId);
-  formData.append('platformPermanentId', platformId);
-
-  const imageUriParts = selectedImage.uri.split('.');
-  const fileType = imageUriParts[imageUriParts.length - 1];
-  formData.append(`fileInputWebModel.files[0]`, {
-    uri: selectedImage.uri,
-    name: `image.${fileType}`,
-    type: `image/${fileType}`,
-  });
-
-  const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/IndustryUser/project/saveProjectFiles', {
-    method: 'POST',
-    body: formData,
-    headers: myHeaders
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to upload image. HTTP Error: ' + response.status);
+  if (!description.trim()) {
+    Alert.alert('No description', 'Please enter a description.');
+    return;
   }
 
-  const data = await response.json();
-  if (data.status !== 1) {
-    throw new Error('Failed to upload image. Server returned status: ' + data.status);
+  try {
+    const userId = await AsyncStorage.getItem('userId');
+    const jwt = await AsyncStorage.getItem('jwt');
+
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('platformPermanentId', '2'); // Replace with actual platform ID
+    formData.append('fileInputWebModel.description', description);
+
+    const imageUriParts = selectedImage.uri.split('.');
+    const fileType = imageUriParts[imageUriParts.length - 1];
+    formData.append('fileInputWebModel.files[0]', {
+      uri: selectedImage.uri,
+      name: `image.${fileType}`,
+      type: `image/${fileType}`,
+    });
+
+    const response = await axios.post(
+      'http://3.27.207.83:8080/filmhook-0.0.1-SNAPSHOT/IndustryUser/project/saveProjectFiles',
+      formData,
+      {
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    if (response.data.status === 1) {
+      Alert.alert('Success', 'Image uploaded successfully.');
+    } else {
+      Alert.alert('Upload failed', `Server returned status: ${response.data.status}`);
+    }
+  } catch (error) {
+    console.error('Failed to upload image:', error);
+    Alert.alert('Error', 'Failed to upload image. Please try again.');
   }
 
-  Alert.alert('Posted');
-};
-
-const toggleExpanded = () => {
-  setExpanded(!expanded);
+  // Reset state
+  setSelectedImage(null);
+  setDescription('');
+  setModalVisible(false);
 };
 
 
@@ -370,14 +456,49 @@ const toggleExpanded = () => {
               </View>
               <ScrollView horizontal contentContainerStyle={{ margin: 1 }} style={{ width: '100%', padding: responsiveWidth(1) }}>
                 <View style={{ marginRight: responsiveWidth(2) }}>
-                  <TouchableOpacity onPress={() => project(platform.platformPermanentId)} style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5", }} >
+                  <TouchableOpacity onPress={() => openImagePicker(platform.platformPermanentId)} style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5", }} >
                     <Image source={require('../../../Assets/Home_Icon_And_Fonts/plus_icon.png')} style={{ width: 80, height: 80, alignSelf: 'center', top: 29 }} />
                   </TouchableOpacity>
+                  <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalView}>
+          {selectedImage && (
+            <Image source={{ uri: selectedImage.uri }} style={styles.image} />
+          )}
+          <TextInput
+            style={styles.textInput}
+            placeholder="Enter description"
+            value={description}
+            onChangeText={setDescription}
+          />
+          <TouchableOpacity
+            style={styles.uploadButton}
+            onPress={uploadImage}
+          >
+            <Text style={styles.textStyle}>Upload Image</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => setModalVisible(!modalVisible)}
+          >
+            <Text style={styles.textStyle}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
                 </View>
                               
-              {platform.filePaths.map((url, index) => (       
+              {platform.filePaths.map((file, index) => (       
               <View style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5",marginRight:responsiveWidth(2)}} >  
-              <Image key={index} source={{ uri: url }} style={{ width: '100%', height: '100%' }} resizeMode='stretch'/>
+              <Image key={index} source={{ uri: file.filePath }} style={{ width: '100%', height: '100%' }} resizeMode='stretch'/>
+              <View style={{borderWidth:1}}>
+              <Text style={styles.fileDescription}>{file.description}</Text>
+              </View>
                               
               </View>
               ))} 
@@ -483,6 +604,52 @@ const styles = StyleSheet.create({
     color:'black',
      textAlign:'center'
     // marginLeft: 10,
+  },
+  image: {
+    alignSelf:'center',
+    width: 300,
+    height: 300,
+   // marginVertical: 16,
+  },
+  textInput: {
+    width: '100%',
+    padding: 8,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginVertical: 8,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  uploadButton: {
+    backgroundColor: '#2196F3',
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  cancelButton: {
+    backgroundColor: '#f44336',
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    marginTop: 10,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   // border: {
 

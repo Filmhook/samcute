@@ -7,122 +7,488 @@ import moment from 'moment';
 import { Appearance } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import privateAPI from '../api/privateAPI';
+// const ProfilePic = ({ userId }) => {
+//     const navigation = useNavigation();
+//     const [filePaths, setFilePaths] = useState([]);
+//     const [currentIndex, setCurrentIndex] = useState(0);
+
+//     const [filePath, setFilePath] = useState('');
+//     const [followingCount, setFollowingCount] = useState(0);
+//     const [followerCount, setFollowerCount] = useState(0);
+
+
+
+//     useEffect(() => {
+//         // Function to fetch profile picture
+//         const fetchProfilePicture = async () => {
+//             try {
+//                 const jwt = await AsyncStorage.getItem('jwt');
+//                 const id = userId
+//                 console.log("idddddd", id)
+//                 const myHeaders = {
+//                     'Content-Type': 'application/json',
+//                     'Authorization': 'Bearer ' + jwt
+//                 };
+
+//                 const requestData = {
+//                     userId: id
+//                 };
+
+//                 const response = await privateAPI.post('user/getProfilePic', requestData, { headers: myHeaders });
+
+//                 const data = response.data; // Extract response data
+
+//                 if (data.status === 1) {
+//                     const profilePicUrl = data.data.filePath; // Extract filePath from response
+//                     setFilePath(profilePicUrl); // Update state with profile picture URL
+//                     console.log('Profile pic found successfully:', data);
+//                 } else {
+//                     throw new Error('Failed to fetch profile picture');
+//                 }
+//             } catch (error) {
+//                 console.error('Error fetching profile picture:', error);
+//             }
+//         };
+
+//         // Function to fetch data
+//         const fetchData = async () => {
+//             try {
+//                 const id = userId;
+
+//                 const jwt = await AsyncStorage.getItem('jwt')
+//                 const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getCoverPic', {
+//                     method: 'POST',
+//                     headers: {
+//                         'Content-Type': 'application/json',
+//                         Authorization: `Bearer ${jwt}`
+//                     },
+//                     body: JSON.stringify({
+//                         userId: id
+//                     })
+//                 });
+//                 const data = await response.json();
+//                 if (data.status === 1 && data.data.length > 0) {
+//                     const paths = data.data.map(item => item.filePath);
+//                     setFilePaths(paths);
+//                 }
+//             } catch (error) {
+//                 console.error('Error fetching file paths:', error);
+//             }
+//         };
+
+//         // Function to count
+//         const followingCount = async () => {
+//             try {
+//                 const response = await privateAPI.get(`friendRequest/getFriendRequest?userId=${userId}`);
+//                 const data = response.data.data;
+//                 if (data && data.followingList) {
+//                     setFollowingCount(data.followingList.length); // Set the count of following
+//                 }
+//             } catch (error) {
+//                 console.error("Error fetching data:", error);
+//             }
+//         };
+//         const followerCount = async () => {
+//             try {
+
+//                 const response = await privateAPI.get(`friendRequest/getFriendRequest?userId=${userId}`);
+//                 const data = response.data.data;
+//                 if (data && data.followersList) {
+//                     setFollowerCount(data.followersList.length); // Set the count of following
+//                 }
+//             } catch (error) {
+//                 console.error("Error fetching data:", error);
+//             }
+//         };
+
+//         // Call fetchProfilePicture, fetchData, and count functions
+//         fetchProfilePicture();
+//         fetchData();
+//         followingCount();
+//         followerCount();
+
+//         // Set a timeout for 10 minutes to call the useEffect again
+//         const timeout = setTimeout(() => {
+//             fetchProfilePicture();
+//             fetchData();
+//             followingCount();
+//             followerCount();
+
+//         }, 10 * 60 * 1000); // 10 minutes in milliseconds
+
+//         // Clean up function to clear the timeout
+//         return () => clearTimeout(timeout);
+//     }, []); // Empty dependency array ensures the effect runs only once
+
+
+
+
+
+//     const renderItem = ({ item }) => (
+//         <Image source={{ uri: item }} style={styleProfileCover.image} />
+//     );
+
+//     const handleNext = () => {
+//         setCurrentIndex((prevIndex) => (prevIndex + 1) % filePaths.length);
+//     };
+
+//     const handlePrev = () => {
+//         setCurrentIndex((prevIndex) => (prevIndex === 0 ? filePaths.length - 1 : prevIndex - 1));
+//     };
+
+
+//     // ProfilePic
+
+
+
+
+
+
+
+
+//     const [userName, setUserName] = useState('');
+//     const [followStatus, setFollowStatus] = useState('follow');
+
+
+//     const handleFollow = async () => {
+//         try {
+//             senderId = await AsyncStorage.getItem('id')
+//             console.log("userId for folloow post ", userId)
+//             const response = await privateAPI.post(`friendRequest/saveFriendRequest`, {
+//                 followersRequestSenderId:senderId,
+//                 followersRequestReceiverId: userId,
+//             });
+
+//             console.log("Follow response", response.data)
+//         } catch (error) {
+//             console.error(error)
+//         }
+//     };
+//     const handleUnFollow = async () => {
+//         try {
+//             senderId = await AsyncStorage.getItem('id')
+
+//             console.log("userId for UNfollow post ", userId); // Check the value of userId
+//             const response = await privateAPI.put(`friendRequest/updateFriendRequest`, {
+//                 followersRequestSenderId: senderId,
+//                 followersRequestReceiverId: userId
+//             });
+//             console.log("Unfollow response", response.data);
+//         } catch (error) {
+//             console.error("Error while unfollowing:", error.response ? error.response.data : error.message);
+//         }
+//     };
+
+
+
+
+
+
+
+
+
+
+//     return (
+//         <View style={styleProfileCover.container}>
+//             {filePaths.length > 0 && (
+//                 <FlatList
+//                     data={filePaths}
+//                     renderItem={renderItem}
+//                     horizontal
+//                     pagingEnabled
+//                     showsHorizontalScrollIndicator={false}
+//                     keyExtractor={(item, index) => index.toString()}
+//                     onMomentumScrollEnd={(event) => {
+//                         const width = Dimensions.get('window').width;
+//                         const newIndex = Math.floor(event.nativeEvent.contentOffset.x / width);
+//                         setCurrentIndex(newIndex);
+//                     }}
+//                 />
+//             )}
+//             <View style={styleProfileCover.indicatorContainer}>
+//                 {filePaths.map((_, index) => (
+//                     <TouchableOpacity
+//                         key={index}
+//                         style={[styleProfileCover.indicator, currentIndex === index && styleProfileCover.activeIndicator]}
+//                         onPress={() => { }}
+//                     />
+//                 ))}
+//             </View>
+//             <TouchableOpacity style={styleProfileCover.prevButton} onPress={handlePrev}>
+//                 {/* You can use your own icons for navigation buttons */}
+//                 <Text>Prev</Text>
+//             </TouchableOpacity>
+//             <TouchableOpacity style={styleProfileCover.nextButton} onPress={handleNext}>
+//                 {/* You can use your own icons for navigation buttons */}
+//                 <Text>Next</Text>
+//             </TouchableOpacity>
+//             <View style={styleProfileCover.profilPic}>
+//                 {filePath ? (
+//                     <Image source={{ uri: filePath }} style={styleProfileCover.imagePic} />
+//                 ) : null}
+//             </View>
+//             <View>
+//                 <Text style={styleProfileCover.userName}>{userName}</Text>
+//             </View>
+//             <View style={{ flexDirection: "row", position: 'absolute', top: '92%', left: '43%' }}>
+//                 <TouchableOpacity style={styleProfileCover.followers} onPress={() => navigation.navigate('FollowersList', { userId })}>
+
+//                     <Text style={styleProfileCover.followers_text}>{followerCount} Followers</Text>
+
+//                 </TouchableOpacity>
+//                 <TouchableOpacity style={styleProfileCover.followings} onPress={() => navigation.navigate('FollowingList', { userId })}>
+//                     <Text style={styleProfileCover.followings_text}>{followingCount} Followings</Text>
+//                 </TouchableOpacity>
+
+
+//             </View>
+//             <View style={{ flexDirection: "row", position: "absolute", top: '110%', left: '5%' }}>
+//                 <Text style={styleProfileCover.review}>Reviews </Text>
+//                 <View style={styleProfileCover.review_box}>
+//                     <Text style={styleProfileCover.review_num}>9.9</Text>
+//                     <Image source={require("../Assets/Userprofile_And_Fonts/star.png")} style={styleProfileCover.review_img} />
+//                 </View>
+//                 <TouchableOpacity style={styleProfileCover.follow} onPress={handleFollow}>
+
+//                     <Text style={styleProfileCover.followers_text}>Follow</Text>
+
+//                 </TouchableOpacity>
+//                 <TouchableOpacity style={styleProfileCover.Unfollow} onPress={handleUnFollow}>
+
+//                     <Text style={styleProfileCover.followers_text}>UnFollow</Text>
+
+//                 </TouchableOpacity>
+//             </View>
+
+//         </View>
+//     );
+// };
+
+
+// const styleProfileCover = StyleSheet.create({
+//     container: {
+//         //top: 100,
+//         // borderWidth: 1,
+//         // backgroundColor: 'red',
+
+//         flex: 1
+//     },
+//     followers: {
+//         borderWidth: 1,
+//         height: responsiveHeight(4.8),
+//         width: responsiveWidth(26),
+//         borderRadius: responsiveWidth(2),
+//         marginTop: responsiveHeight(2),
+//         alignItems: "center",
+//         justifyContent: "center",
+//         backgroundColor: "#949EE9"
+//     }, follow: {
+//         borderWidth: 1,
+//         height: responsiveHeight(4.8),
+//         width: responsiveWidth(26),
+//         borderRadius: responsiveWidth(2),
+//         marginTop: responsiveHeight(2),
+//         marginLeft: responsiveWidth(9),
+//         alignItems: "center",
+//         justifyContent: "center",
+//         backgroundColor: "#949EE9"
+//     },
+//     Unfollow: {
+//         borderWidth: 1,
+//         height: responsiveHeight(4.8),
+//         width: responsiveWidth(26),
+//         borderRadius: responsiveWidth(2),
+//         marginTop: responsiveHeight(2),
+//         marginLeft: responsiveWidth(1),
+//         alignItems: "center",
+//         justifyContent: "center",
+//         backgroundColor: "#949EE9"
+//     },
+//     followings: {
+//         borderWidth: 1,
+//         height: responsiveHeight(4.8),
+//         width: responsiveWidth(26),
+//         borderRadius: responsiveWidth(2),
+//         marginLeft: responsiveWidth(2),
+//         marginTop: responsiveHeight(2),
+//         alignItems: "center",
+//         justifyContent: "center",
+//         backgroundColor: "#999999"
+//     },
+//     followings_text: {
+//         fontSize: responsiveFontSize(1.8),
+//         fontWeight: "bold",
+//         color: "#E4E4E4",
+//     },
+//     followers_text: {
+//         fontSize: responsiveFontSize(1.8),
+//         fontWeight: "bold",
+//         color: "#001AD9",
+//     },
+
+//     review: {
+//         fontSize: responsiveFontSize(2.3),
+//         color: "#323232",
+//         marginTop: responsiveHeight(0.7),
+//         //fontWeight:"bold"
+//     },
+//     review_box: {
+//         marginTop: responsiveHeight(0.8),
+//         backgroundColor: "black",
+//         width: responsiveWidth(12),
+//         height: responsiveHeight(3.3),
+//         borderRadius: responsiveWidth(2)
+//     },
+//     review_num: {
+//         fontSize: responsiveFontSize(1.8),
+//         color: "#FFFF",
+//         marginLeft: responsiveWidth(1.5),
+//         marginTop: responsiveHeight(0.4),
+//         fontWeight: "bold"
+//     },
+//     review_img: {
+//         position: 'absolute',
+//         width: responsiveWidth(3),
+//         height: responsiveHeight(2),
+//         left: responsiveWidth(7),
+//         top: responsiveHeight(0.5)
+
+//     },
+//     userName: {
+//         fontWeight: "bold",
+//         fontSize: responsiveFontSize(3.5),
+//         color: "#323232",
+//         left: responsiveWidth(38),
+//         margin: responsiveHeight(2)
+
+//     },
+//     profilPic: {
+//         position: 'absolute',
+//         height: responsiveHeight(22),
+//         width: responsiveWidth(38),
+//         marginLeft: responsiveWidth(1),
+//         borderRadius: 3,
+//         // borderWidth: 1,
+//         top: responsiveHeight(15),
+//         // right: responsiveWidth(60),
+//         // bottom: responsiveHeight(10),
+
+
+
+//         // left: responsiveWidth(0.5),
+//         // backgroundColor: "#C1E7FA"
+//     },
+//     imagePic: {
+//         width: '100%',
+//         height: '100%',
+//         resizeMode: 'stretch',
+//         //  backgroundColor:'red'
+//     },
+//     image: {
+//         width: Dimensions.get('window').width,
+//         height: responsiveHeight(27),
+//         resizeMode: 'cover',
+//     },
+//     indicatorContainer: {
+//         flexDirection: 'row',
+//         position: 'absolute',
+//         top: '70%',
+//         right: responsiveWidth(50),
+//         // borderWidth:1
+//     },
+//     indicator: {
+//         width: 8,
+//         height: 8,
+//         borderRadius: 4,
+//         backgroundColor: '#ccc',
+//         marginHorizontal: 5,
+//     },
+//     activeIndicator: {
+//         backgroundColor: '#333',
+//     },
+//     prevButton: {
+//         position: 'absolute',
+//         left: 10,
+//         top: '40%',
+//         transform: [{ translateY: -20 }],
+//     },
+//     nextButton: {
+//         position: 'absolute',
+//         right: 10,
+//         top: '40%',
+//         transform: [{ translateY: -20 }],
+
+//     },
+// });
+
+
 const ProfilePic = ({ userId }) => {
-    const navigation = useNavigation();
     const [filePaths, setFilePaths] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-
     const [filePath, setFilePath] = useState('');
-    const [followingCount, setFollowingCount] = useState(0);
-    const [followerCount, setFollowerCount] = useState(0);
-
-
+    const [userName, setUserName] = useState('');
+    const [noCoverPic, setNoCoverPic] = useState(false);
+    const [noProfilePic, setNoProfilePic] = useState(false);
+    const navigation = useNavigation();
 
     useEffect(() => {
-        // Function to fetch profile picture
-        const fetchProfilePicture = async () => {
-            try {
-                const jwt = await AsyncStorage.getItem('jwt');
-                const id = userId
-                console.log("idddddd", id)
-                const myHeaders = {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + jwt
-                };
-
-                const requestData = {
-                    userId: id
-                };
-
-                const response = await privateAPI.post('user/getProfilePic', requestData, { headers: myHeaders });
-
-                const data = response.data; // Extract response data
-
-                if (data.status === 1) {
-                    const profilePicUrl = data.data.filePath; // Extract filePath from response
-                    setFilePath(profilePicUrl); // Update state with profile picture URL
-                    console.log('Profile pic found successfully:', data);
-                } else {
-                    throw new Error('Failed to fetch profile picture');
-                }
-            } catch (error) {
-                console.error('Error fetching profile picture:', error);
-            }
-        };
-
-        // Function to fetch data
         const fetchData = async () => {
             try {
-                const id = userId;
+                const jwt = await AsyncStorage.getItem('jwt');
+                const response = await privateAPI.post(
+                    'http://3.27.207.83:8080/filmhook-0.0.1-SNAPSHOT/user/getCoverPic',
+                    { userId },
 
-                const jwt = await AsyncStorage.getItem('jwt')
-                const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getCoverPic', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${jwt}`
-                    },
-                    body: JSON.stringify({
-                        userId: id
-                    })
-                });
-                const data = await response.json();
+                );
+                const data = response.data;
                 if (data.status === 1 && data.data.length > 0) {
                     const paths = data.data.map(item => item.filePath);
                     setFilePaths(paths);
+                    setNoCoverPic(false);
+                } else {
+                    setNoCoverPic(true);
                 }
             } catch (error) {
                 console.error('Error fetching file paths:', error);
+                setNoCoverPic(true);
             }
         };
 
-        // Function to count
-        const followingCount = async () => {
-            try {
-                const response = await privateAPI.get(`friendRequest/getFriendRequest?userId=${userId}`);
-                const data = response.data.data;
-                if (data && data.followingList) {
-                    setFollowingCount(data.followingList.length); // Set the count of following
-                }
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-        const followerCount = async () => {
-            try {
-
-                const response = await privateAPI.get(`friendRequest/getFriendRequest?userId=${userId}`);
-                const data = response.data.data;
-                if (data && data.followersList) {
-                    setFollowerCount(data.followersList.length); // Set the count of following
-                }
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-
-        // Call fetchProfilePicture, fetchData, and count functions
-        fetchProfilePicture();
         fetchData();
-        followingCount();
-        followerCount();
+    }, [userId]);
 
-        // Set a timeout for 10 minutes to call the useEffect again
-        const timeout = setTimeout(() => {
-            fetchProfilePicture();
-            fetchData();
-            followingCount();
-            followerCount();
+    useEffect(() => {
+        const fetchProfilePic = async () => {
+            try {
+                const jwt = await AsyncStorage.getItem('jwt');
+                const response = await privateAPI.post(
+                    'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getProfilePic',
+                    { userId },
 
-        }, 10 * 60 * 1000); // 10 minutes in milliseconds
+                );
+                const data = response.data;
+                if (data.status === 1 && data.data) {
+                    setFilePath(data.data.filePath);
+                    setNoProfilePic(false);
+                } else {
+                    setNoProfilePic(true);
+                }
+            } catch (error) {
+                console.error('Error fetching profile picture:', error);
+                setNoProfilePic(true);
+            }
+        };
 
-        // Clean up function to clear the timeout
-        return () => clearTimeout(timeout);
-    }, []); // Empty dependency array ensures the effect runs only once
+        fetchProfilePic();
+    }, [userId]);
 
-
-
-
+    useEffect(() => {
+        const fetchUserName = async () => {
+            const username = await AsyncStorage.getItem('username');
+            setUserName(username);
+        };
+        fetchUserName();
+    }, [userName]);
 
     const renderItem = ({ item }) => (
         <Image source={{ uri: item }} style={styleProfileCover.image} />
@@ -135,30 +501,53 @@ const ProfilePic = ({ userId }) => {
     const handlePrev = () => {
         setCurrentIndex((prevIndex) => (prevIndex === 0 ? filePaths.length - 1 : prevIndex - 1));
     };
+    const [followingCount, setFollowingCount] = useState(0);
+    const [followerCount, setFollowerCount] = useState(0);
+    useEffect(() => {
+        const followingCount = async () => {
+            try {
+                const response = await privateAPI.get(`friendRequest/getFriendRequest?userId=${userId}`);
+                const data = response.data.data;
+                if (data && data.followingList) {
+                    setFollowingCount(data.followingList.length); // Set the count of following
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        followingCount()
+    }, [followingCount])
+
+    useEffect(() => {
+        const followerCount = async () => {
+            try {
+
+                const response = await privateAPI.get(`friendRequest/getFriendRequest?userId=${userId}`);
+                const data = response.data.data;
+                if (data && data.followersList) {
+                    setFollowerCount(data.followersList.length); // Set the count of following
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        followerCount()
+    }, [followerCount])
 
 
-    // ProfilePic
 
-
-
-
-
-
-
-
-    const [userName, setUserName] = useState('');
     const [followStatus, setFollowStatus] = useState('follow');
 
 
     const handleFollow = async () => {
         try {
-            senderId = await AsyncStorage.getItem('id')
+            senderId = await AsyncStorage.getItem('userId')
             console.log("userId for folloow post ", userId)
             const response = await privateAPI.post(`friendRequest/saveFriendRequest`, {
-                followersRequestSenderId:senderId,
+                followersRequestSenderId: senderId,
                 followersRequestReceiverId: userId,
             });
-          
+            setFollowStatus('following');
             console.log("Follow response", response.data)
         } catch (error) {
             console.error(error)
@@ -166,7 +555,7 @@ const ProfilePic = ({ userId }) => {
     };
     const handleUnFollow = async () => {
         try {
-            senderId = await AsyncStorage.getItem('id')
+            senderId = await AsyncStorage.getItem('userId')
 
             console.log("userId for UNfollow post ", userId); // Check the value of userId
             const response = await privateAPI.put(`friendRequest/updateFriendRequest`, {
@@ -182,96 +571,81 @@ const ProfilePic = ({ userId }) => {
 
 
 
-
-
-
-
-
-
     return (
         <View style={styleProfileCover.container}>
-            {filePaths.length > 0 && (
-                <FlatList
-                    data={filePaths}
-                    renderItem={renderItem}
-                    horizontal
-                    pagingEnabled
-                    showsHorizontalScrollIndicator={false}
-                    keyExtractor={(item, index) => index.toString()}
-                    onMomentumScrollEnd={(event) => {
-                        const width = Dimensions.get('window').width;
-                        const newIndex = Math.floor(event.nativeEvent.contentOffset.x / width);
-                        setCurrentIndex(newIndex);
-                    }}
-                />
-            )}
-            <View style={styleProfileCover.indicatorContainer}>
-                {filePaths.map((_, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={[styleProfileCover.indicator, currentIndex === index && styleProfileCover.activeIndicator]}
-                        onPress={() => { }}
-                    />
-                ))}
+
+            <View style={{ height: responsiveHeight(27),borderWidth:1 }}>
+                {filePaths.length > 0 ? (
+                    <>
+                        <FlatList
+                            data={filePaths}
+                            renderItem={renderItem}
+                            horizontal
+                            pagingEnabled
+                            showsHorizontalScrollIndicator={false}
+                            keyExtractor={(item, index) => index.toString()}
+                            onMomentumScrollEnd={(event) => {
+                                const width = Dimensions.get('window').width;
+                                const newIndex = Math.floor(event.nativeEvent.contentOffset.x / width);
+                                setCurrentIndex(newIndex);
+                            }}
+                        />
+                    </>
+                ) : noCoverPic ? (
+                    <Text style={styleProfileCover.noCoverText}>No cover picture available</Text>
+                ) : null}
+
             </View>
-            <TouchableOpacity style={styleProfileCover.prevButton} onPress={handlePrev}>
-                {/* You can use your own icons for navigation buttons */}
-                <Text>Prev</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styleProfileCover.nextButton} onPress={handleNext}>
-                {/* You can use your own icons for navigation buttons */}
-                <Text>Next</Text>
-            </TouchableOpacity>
-            <View style={styleProfileCover.profilPic}>
+            <View style={styleProfileCover.profilePic}>
                 {filePath ? (
                     <Image source={{ uri: filePath }} style={styleProfileCover.imagePic} />
+                ) : noProfilePic ? (
+                    <Text style={styleProfileCover.noProfileText}>No profile pic</Text>
                 ) : null}
             </View>
             <View>
                 <Text style={styleProfileCover.userName}>{userName}</Text>
             </View>
-            <View style={{ flexDirection: "row", position: 'absolute', top: '92%', left: '43%' }}>
+            <View style={{ flexDirection: 'row', position: 'absolute', top: '92%', left: '43%' }}>
                 <TouchableOpacity style={styleProfileCover.followers} onPress={() => navigation.navigate('FollowersList', { userId })}>
-
                     <Text style={styleProfileCover.followers_text}>{followerCount} Followers</Text>
-
                 </TouchableOpacity>
                 <TouchableOpacity style={styleProfileCover.followings} onPress={() => navigation.navigate('FollowingList', { userId })}>
                     <Text style={styleProfileCover.followings_text}>{followingCount} Followings</Text>
                 </TouchableOpacity>
-
-
             </View>
-            <View style={{ flexDirection: "row", position: "absolute", top: '110%', left: '5%' }}>
-                <Text style={styleProfileCover.review}>Reviews </Text>
+            <View style={{ flexDirection: 'row', position: 'absolute', top: '105%', left: '5%' }}>
+                <Text style={styleProfileCover.review}>Reviews</Text>
                 <View style={styleProfileCover.review_box}>
                     <Text style={styleProfileCover.review_num}>9.9</Text>
-                    <Image source={require("../Assets/Userprofile_And_Fonts/star.png")} style={styleProfileCover.review_img} />
+                    <Image source={require('../Assets/Userprofile_And_Fonts/star.png')} style={styleProfileCover.review_img} />
                 </View>
-                <TouchableOpacity style={styleProfileCover.follow} onPress={handleFollow}>
+            </View>
+            <View style={{ flexDirection: 'row', position: 'absolute', top: '110%', left: '43%' ,columnGap:responsiveWidth(2)}}>
+            <TouchableOpacity style={styleProfileCover.followers} onPress={handleFollow}>
 
-                    <Text style={styleProfileCover.followers_text}>Follow</Text>
+                <Text style={styleProfileCover.followers_text}>Follow</Text>
 
-                </TouchableOpacity>
-                <TouchableOpacity style={styleProfileCover.Unfollow} onPress={handleUnFollow}>
+            </TouchableOpacity>
 
-                    <Text style={styleProfileCover.followers_text}>UnFollow</Text>
+            <TouchableOpacity style={styleProfileCover.followers} onPress={handleUnFollow}>
 
-                </TouchableOpacity>
+                <Text style={styleProfileCover.followers_text}>UnFollow</Text>
+
+            </TouchableOpacity>
             </View>
 
+           
         </View>
     );
 };
 
-
 const styleProfileCover = StyleSheet.create({
     container: {
-        //top: 100,
-        // borderWidth: 1,
-        // backgroundColor: 'red',
-
-        flex: 1
+        flex: 1,
+        marginBottom: responsiveHeight(10)
+        //  height:'20%', 
+        //  borderWidth:1
     },
     followers: {
         borderWidth: 1,
@@ -279,30 +653,9 @@ const styleProfileCover = StyleSheet.create({
         width: responsiveWidth(26),
         borderRadius: responsiveWidth(2),
         marginTop: responsiveHeight(2),
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#949EE9"
-    }, follow: {
-        borderWidth: 1,
-        height: responsiveHeight(4.8),
-        width: responsiveWidth(26),
-        borderRadius: responsiveWidth(2),
-        marginTop: responsiveHeight(2),
-        marginLeft: responsiveWidth(9),
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#949EE9"
-    },
-    Unfollow: {
-        borderWidth: 1,
-        height: responsiveHeight(4.8),
-        width: responsiveWidth(26),
-        borderRadius: responsiveWidth(2),
-        marginTop: responsiveHeight(2),
-        marginLeft: responsiveWidth(1),
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#949EE9"
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#949EE9'
     },
     followings: {
         borderWidth: 1,
@@ -311,40 +664,38 @@ const styleProfileCover = StyleSheet.create({
         borderRadius: responsiveWidth(2),
         marginLeft: responsiveWidth(2),
         marginTop: responsiveHeight(2),
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#999999"
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#999999'
     },
     followings_text: {
         fontSize: responsiveFontSize(1.8),
-        fontWeight: "bold",
-        color: "#E4E4E4",
+        fontWeight: 'bold',
+        color: '#E4E4E4'
     },
     followers_text: {
         fontSize: responsiveFontSize(1.8),
-        fontWeight: "bold",
-        color: "#001AD9",
+        fontWeight: 'bold',
+        color: '#001AD9'
     },
-
     review: {
         fontSize: responsiveFontSize(2.3),
-        color: "#323232",
-        marginTop: responsiveHeight(0.7),
-        //fontWeight:"bold"
+        color: '#323232',
+        marginTop: responsiveHeight(0.7)
     },
     review_box: {
         marginTop: responsiveHeight(0.8),
-        backgroundColor: "black",
+        backgroundColor: 'black',
         width: responsiveWidth(12),
         height: responsiveHeight(3.3),
         borderRadius: responsiveWidth(2)
     },
     review_num: {
         fontSize: responsiveFontSize(1.8),
-        color: "#FFFF",
+        color: '#FFFF',
         marginLeft: responsiveWidth(1.5),
         marginTop: responsiveHeight(0.4),
-        fontWeight: "bold"
+        fontWeight: 'bold'
     },
     review_img: {
         position: 'absolute',
@@ -352,73 +703,80 @@ const styleProfileCover = StyleSheet.create({
         height: responsiveHeight(2),
         left: responsiveWidth(7),
         top: responsiveHeight(0.5)
-
     },
     userName: {
-        fontWeight: "bold",
+        fontWeight: 'bold',
         fontSize: responsiveFontSize(3.5),
-        color: "#323232",
-        left: responsiveWidth(38),
+        color: '#323232',
+        left: responsiveWidth(39),
         margin: responsiveHeight(2)
-
     },
-    profilPic: {
+    profilePic: {
         position: 'absolute',
         height: responsiveHeight(22),
         width: responsiveWidth(38),
         marginLeft: responsiveWidth(1),
-        borderRadius: 3,
-        // borderWidth: 1,
+        borderRadius: responsiveWidth(6),
         top: responsiveHeight(15),
-        // right: responsiveWidth(60),
-        // bottom: responsiveHeight(10),
-
-
-
-        // left: responsiveWidth(0.5),
-        // backgroundColor: "#C1E7FA"
+        borderWidth: 1
     },
     imagePic: {
         width: '100%',
         height: '100%',
-        resizeMode: 'stretch',
-        //  backgroundColor:'red'
+        resizeMode: 'stretch'
     },
     image: {
         width: Dimensions.get('window').width,
         height: responsiveHeight(27),
         resizeMode: 'cover',
+        backgroundColor: 'red',
+
+
+
     },
     indicatorContainer: {
         flexDirection: 'row',
         position: 'absolute',
-        top: '70%',
+        top: '104%',
         right: responsiveWidth(50),
-        // borderWidth:1
+        borderWidth: 1
     },
     indicator: {
         width: 8,
         height: 8,
         borderRadius: 4,
         backgroundColor: '#ccc',
-        marginHorizontal: 5,
+        marginHorizontal: 5
     },
     activeIndicator: {
-        backgroundColor: '#333',
+        backgroundColor: 'red'
     },
     prevButton: {
+        borderWidth: 1,
         position: 'absolute',
         left: 10,
         top: '40%',
-        transform: [{ translateY: -20 }],
+        transform: [{ translateY: -20 }]
     },
     nextButton: {
         position: 'absolute',
         right: 10,
         top: '40%',
-        transform: [{ translateY: -20 }],
-
+        transform: [{ translateY: -20 }]
     },
+    noCoverText: {
+        fontSize: responsiveFontSize(2.3),
+        color: 'black',
+        textAlign: 'center',
+        marginTop: responsiveHeight(10),
+        //  borderWidth:1
+    },
+    noProfileText: {
+        fontSize: responsiveFontSize(2.3),
+        color: 'black',
+        textAlign: 'center',
+        marginTop: responsiveHeight(12)
+    }
 });
 
 const Biography = ({ userId }) => {
@@ -2453,7 +2811,9 @@ export default function UserProfile({ route }) {
         <View style={{ flex: 1 }}>
 
             <ScrollView>
+
                 {ProfilePic({ userId })}
+
 
                 {Biography({ userId })}
 

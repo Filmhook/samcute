@@ -125,32 +125,27 @@ export default function Industry_S_One() {
   };
   const SubProfessionOpen = async () => {
     try {
-      const requests = selectedProfessionId.map(async id => {
-        const response = await PublicAPI.post('/Film/getProfessionList', {
-          filmProfesssionId: id,
-        });
-        return response.data;
-      });
-      const responses = await Promise.all(requests);
-      const newSubProfessions = responses.reduce((acc, curr) => {
-        if (curr.status) {
-          const subProfessionsForId = curr.subProfessionName.map(
-            subProfession => ({
-              label: subProfession,
-              value: subProfession,
-            }),
-          );
-          acc = [...acc, ...subProfessionsForId];
-        } else {
-          console.error('Error fetching data');
-        }
-        return acc;
-      }, []);
-      setSubProfessionData(newSubProfessions);
+      let allSubProfessions = [];
+      for (let id of selectedProfessionId) {
+        const response = await PublicAPI.post(
+          'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/Film/getProfessionList',
+          { filmProfesssionId: id },
+         
+        );
+        const data = response.data;
+        allSubProfessions = [...allSubProfessions, ...data.subProfessionName];
+      }
+      const uniqueSubProfessions = [...new Set(allSubProfessions)].map((name, index) => ({
+        label: name,
+        value: name,
+      }));
+     // setItems(uniqueSubProfessions);
+      setSubProfessionData(uniqueSubProfessions);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+
   // empty dependency array to ensure useEffect runs only once
 
   const handleProfessionChange = selectedProfessionId => {

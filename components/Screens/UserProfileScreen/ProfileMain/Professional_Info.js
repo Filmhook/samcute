@@ -80,12 +80,12 @@ export default function Professionalinfo() {
         });
 
         setDataArray(response.data.data.childrenNames || []);
-        setReligion(response.data.data.religion || '');
-        setCaste(response.data.data.caste || '');
-        setMarital(response.data.data.maritalStatus || '');
-        setSpouse(response.data.data.spouseName || '');
-        setMother(response.data.data.motherName || '');
-        setFather(response.data.data.fatherName || '');
+        setReligion(response.data.data.religion || 'N/A');
+        setCaste(response.data.data.caste || 'N/A');
+        setMarital(response.data.data.maritalStatus || 'N/A');
+        setSpouse(response.data.data.spouseName || 'N/A');
+        setMother(response.data.data.motherName || 'N/A');
+        setFather(response.data.data.fatherName || 'N/A');
         setBrother(response.data.data.brotherNames || []);
         setSister(response.data.data.sisterNames || []);
       } catch (error) {
@@ -568,120 +568,116 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
-            <View style={style.Lhs}>
-              <Text style={style.Lhs_text}> Brother </Text>
-            </View>
+  <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
+    <View style={style.Lhs}>
+      <Text style={style.Lhs_text}> Brother </Text>
+    </View>
 
-            <View style={{ rowGap: responsiveHeight(1) }}>
-              {/* <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                            <View style={{rowGap:responsiveHeight(1)}}> */}
+    <View style={{ rowGap: responsiveHeight(1) }}>
+      {brother && brother.length > 0 ? (
+        brother.map((value, index) => (
+          <ImageBackground
+            key={`brother-${index}`}
+            style={{
+              height: responsiveHeight(5.5),
+              width: responsiveWidth(53),
+              borderColor: 'black',
+              borderRadius: responsiveWidth(2),
+              marginLeft: responsiveWidth(5.5),
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+            resizeMode="stretch">
+            <Text
+              style={{
+                fontSize: responsiveFontSize(2),
+                color: '#000000',
+                fontWeight: '500',
+                fontFamily: 'Times New Roman',
+                textAlign: 'center',
+              }}>
+              {value}
+            </Text>
+          </ImageBackground>
+        ))
+      ) : (
+        <Text style={{ marginLeft: responsiveWidth(5.5) }}>N/A</Text>
+      )}
 
-              {brother && brother.length > 0 && brother.map((value, index) => (
-                <ImageBackground
-                  key={`brother-${index}`}
-                  style={{
-                    height: responsiveHeight(5.5),
-                    width: responsiveWidth(53),
-                    borderColor: 'black',
-                    borderRadius: responsiveWidth(2),
-                    marginLeft: responsiveWidth(5.5),
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-                  resizeMode="stretch">
-                  <Text
-                    style={{
-                      fontSize: responsiveFontSize(2),
-                      color: '#000000',
-                      fontWeight: '500',
-                      fontFamily: 'Times New Roman',
-                      textAlign: 'center',
-                    }}>
-                    {value}
-                  </Text>
-                </ImageBackground>
-              ))}
-
-              {isEditing && !showAddButton && (
-                <TouchableOpacity onPress={() => setShowAddButton(true)} style={{
-                  height: responsiveHeight(5.5),
-                  width: responsiveWidth(53),
-                  borderWidth: responsiveWidth(0.3),
-                  borderColor: 'black',
-                  borderRadius: responsiveWidth(2),
-                  marginLeft: responsiveWidth(5.5),
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: 'blue'
-                }}>
-                  <Text style={style.addButton}>Add Brother</Text>
-                </TouchableOpacity>
-              )}
-              {isEditing && showAddButton && (
-                <>
-                  <ImageBackground
-                    style={{
-                      height: responsiveHeight(5.5),
-                      width: responsiveWidth(53),
-                      // borderWidth: responsiveWidth(0.3),
-                      borderColor: 'black',
-                      borderRadius: responsiveWidth(2),
-                      marginLeft: responsiveWidth(5.5),
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                    source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-                    resizeMode="stretch">
-                    <TextInput
-                      style={style.textInput}
-                      placeholder="Enter brother's name"
-                      value={newBrother}
-                      onChangeText={setNewBrother}
-                    />
-                  </ImageBackground>
-                  {newBrother.trim() !== '' ? (
-                    <TouchableOpacity onPress={handleAddBrother} style={{
-                      height: responsiveHeight(5.5),
-                      width: responsiveWidth(53),
-                      borderWidth: responsiveWidth(0.3),
-                      borderColor: 'black',
-                      borderRadius: responsiveWidth(2),
-                      marginLeft: responsiveWidth(5.5),
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: 'blue'
-                    }}>
-                      <Text style={style.addButton}>Add</Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={() => setShowAddButton(false)} style={{
-                      height: responsiveHeight(5.5),
-                      width: responsiveWidth(53),
-                      borderWidth: responsiveWidth(0.3),
-                      borderColor: 'black',
-                      borderRadius: responsiveWidth(2),
-                      marginLeft: responsiveWidth(5.5),
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: 'blue'
-                    }}>
-                      <Text style={style.addButton}>Cancel</Text>
-                    </TouchableOpacity>
-                  )}
-                </>
-              )}
-
-
-
-
-
+      {isEditing && !showAddButton && (
+        <TouchableOpacity onPress={() => setShowAddButton(true)} style={{
+          height: responsiveHeight(5.5),
+          width: responsiveWidth(53),
+          borderWidth: responsiveWidth(0.3),
+          borderColor: 'black',
+          borderRadius: responsiveWidth(2),
+          marginLeft: responsiveWidth(5.5),
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'blue'
+        }}>
+          <Text style={style.addButton}>Add Brother</Text>
+        </TouchableOpacity>
+      )}
+      {isEditing && showAddButton && (
+        <>
+          <ImageBackground
+            style={{
+              height: responsiveHeight(5.5),
+              width: responsiveWidth(53),
+              borderColor: 'black',
+              borderRadius: responsiveWidth(2),
+              marginLeft: responsiveWidth(5.5),
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+            resizeMode="stretch">
+            <TextInput
+              style={style.textInput}
+              placeholder="Enter brother's name"
+              value={newBrother}
+              onChangeText={setNewBrother}
+            />
+          </ImageBackground>
+          {newBrother.trim() !== '' ? (
+            <TouchableOpacity onPress={handleAddBrother} style={{
+              height: responsiveHeight(5.5),
+              width: responsiveWidth(53),
+              borderWidth: responsiveWidth(0.3),
+              borderColor: 'black',
+              borderRadius: responsiveWidth(2),
+              marginLeft: responsiveWidth(5.5),
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'blue'
+            }}>
+              <Text style={style.addButton}>Add</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={() => setShowAddButton(false)} style={{
+              height: responsiveHeight(5.5),
+              width: responsiveWidth(53),
+              borderWidth: responsiveWidth(0.3),
+              borderColor: 'black',
+              borderRadius: responsiveWidth(2),
+              marginLeft: responsiveWidth(5.5),
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'blue'
+            }}>
+              <Text style={style.addButton}>Cancel</Text>
+            </TouchableOpacity>
+          )}
+        </>
+      )}
+    </View>
+  </View>
+)}
 
 
-            </View>
-          </View>
-        )}
+
         {/* -------------------------------------------------- */}
         {expanded && (
           <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
@@ -796,9 +792,6 @@ export default function Professionalinfo() {
           </View>
         )}
 
-        {/* <View>
-          <Button title="Update Personal Info" onPress={handleUpdatePersonalInfo} disabled={isLoading} />
-        </View> */}
       </View>
 
       {/* <View style={style.hr_tag} /> */}

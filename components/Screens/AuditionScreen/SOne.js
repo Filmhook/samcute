@@ -117,7 +117,7 @@ export default function SOne() {
         onPress={() => handleItemPress(item.id)}
         style={{ padding: 8, backgroundColor: editingItemId === item.id ? 'lightgrey' : 'transparent' }}
       >
-        <Text style={{color:'black'}}>{`${item.id}: ${item.text}`}</Text>
+        <Text>{`${item.id}: ${item.text}`}</Text>
       </TouchableOpacity>
     );
   };
@@ -163,7 +163,7 @@ export default function SOne() {
 
   const [selectedLabel, setSelectedLabel] = useState('Accounts Team');
   const [address, setAddress] = useState('');
-  const [Message, setMessage] = useState('');
+  const [Message, setMessage] = useState(null);
   const labels = [
     'Accounts Team',
     'Action Dept',
@@ -206,26 +206,27 @@ export default function SOne() {
     try {
       const id = await AsyncStorage.getItem('userId');
       const jwt = await AsyncStorage.getItem("jwt");
-
-      const textValues = items.map(item => item.text).join(', ');
-      console.log(textValues);
-
-
+  
+      const textValues = items.map(item => item.text).join(',');
+      console.log(textValues, "textValues");
+      // const textnew=[textValues]
+      // console.log(textnew,"212 text")
+  
       const myHeaders = new Headers();
       myHeaders.append("Authorization", "Bearer " + jwt);
       myHeaders.append("Content-Type", "multipart/form-data"); // Set Content-Type header
-
+  
       const formData = new FormData();
       formData.append("auditionCreatedBy", id); // Use id fetched from AsyncStorage
       formData.append("auditionTitle", selectedLabel);
       formData.append("auditionExperience", selected);
       formData.append("auditionCategory", "2");
       formData.append("auditionExpireOn", selectedDate); // Correct date format
-      formData.append("auditionRoles", textValues); // Corrected
+      formData.append("auditionRoles",  textnew); // Append roles as a single string
       formData.append("fileInputWebModelcategory", "Audition");
       formData.append("auditionAddress", address);
       formData.append("auditionMessage", Message);
-
+  
       if (profilepic) {
         const imageUriParts = profilepic.uri.split('.');
         const fileType = imageUriParts[imageUriParts.length - 1];
@@ -235,21 +236,19 @@ export default function SOne() {
           type: `image/${fileType}`,
         });
       }
-
+  
       const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/audition/saveAudition', {
         method: 'POST',
         body: formData,
         headers: myHeaders
       });
-
+  
       if (response.ok) {
         const responseData = await response.json(); // Parse response data
         console.log('posted', responseData);
         Alert.alert('Posted successfully');
         makePayment();
         navigation.navigate('SearchBars');
-
-
       } else {
         console.log('Response Error:', response.status);
         Alert.alert('Posted unsuccessfully');
@@ -257,7 +256,7 @@ export default function SOne() {
     } catch (error) {
       console.log('Error response', error);
       Alert.alert('Posted unsuccessfully');
-
+  
       if (error.response) {
         console.log('Status:', error.response.status);
         console.log('Data:', error.response.data);
@@ -265,7 +264,6 @@ export default function SOne() {
       }
     }
   };
-
 
 
 
@@ -302,22 +300,12 @@ export default function SOne() {
     });
   }
   const [selectedDate, setSelectedDate] = useState(null);
-  const [editedDate, setEditedDate] = useState('');
-
-  console.log('dddd', selectedDate)
-
-
-
-
-
-
-
-
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
+
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
@@ -328,6 +316,7 @@ export default function SOne() {
     hideDatePicker();
   };
 
+  const currentDate = new Date();
 
   return (
     <PaperProvider theme={theme}>
@@ -367,7 +356,7 @@ export default function SOne() {
 
             <View style={styles.input2}>
               <TextInput
-                placeholder='Address'
+                placeholder='Address Full Details'
                 placeholderTextColor={textColor}
                 color='black'
                 onChangeText={(text) => setAddress(text)}
@@ -378,7 +367,7 @@ export default function SOne() {
                 }}
               />
             </View>
-            <View style={styles.input2}>
+            {/* <View style={styles.input2}>
               <TextInput
 
                 placeholder='Messsage'
@@ -392,7 +381,7 @@ export default function SOne() {
                 }}
               />
 
-            </View>
+            </View> */}
 
             {/* <TouchableOpacity onPress={handleImageOption} style={styles.imagePickerButton}>
           <Text style={styles.buttonText}>Upload Logo</Text>
@@ -473,15 +462,14 @@ export default function SOne() {
                 <Image source={require('../../Assets/Userprofile_And_Fonts/calander_icon.png')} style={{ width: responsiveWidth(6), height: responsiveHeight(3), right: responsiveWidth(2) }} />
               </TouchableOpacity>
               <DateTimePickerModal
-                isVisible={isDatePickerVisible}
-                mode="date"
-                // maximumDate={maximumDate}
-                // minimumDate={minimumDate}
-                onConfirm={handleConfirm}
-                onCancel={hideDatePicker}
-              />
+        isVisible={isDatePickerVisible}
+        mode="date"
+        minimumDate={currentDate}
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+      />
 
-              {/* {dobError? <Text style={styles.errorMessage}>{dobError}</Text> : null } */}
+            
             </View>
 
             <View style={{ right: 98, }}>
@@ -610,11 +598,11 @@ const styles = StyleSheet.create({
     borderRadius: responsiveWidth(2),
     justifyContent: 'center',
     alignItems: 'center',
-    width: '25%',
-    height: responsiveHeight(4),
+    width: '20%',
+    height: responsiveHeight(5),
     marginBottom: responsiveHeight(2),
-    left: 120,
-    top: responsiveHeight(-7)
+    left: 130,
+    top: responsiveHeight(-7.3)
   },
   requirementsContainer: {
     borderWidth: 1,
@@ -667,6 +655,11 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
   },
+  dateText: {
+    fontSize: 18,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    color:'black'
+   
+  },
 });
-
-// //---------------------------------------------------------------//

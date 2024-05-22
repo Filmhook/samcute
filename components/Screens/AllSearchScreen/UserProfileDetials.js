@@ -14,38 +14,69 @@ import privateAPI from '../../api/privateAPI';
 const ProfilePic = (userId) => {
   const [filePaths, setFilePaths] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const [filePath, setFilePath] = useState('');
-
+  const [userName, setUserName] = useState('');
+  const [noCoverPic, setNoCoverPic] = useState(false);
+  const [noProfilePic, setNoProfilePic] = useState(false);
 
   useEffect(() => {
-    // Function to fetch data with bearer token
     const fetchData = async () => {
       try {
+        const jwt = await AsyncStorage.getItem('jwt');
+        const response = await privateAPI.post(
+          'http://3.27.207.83:8080/filmhook-0.0.1-SNAPSHOT/user/getCoverPic',
+          { userId },
 
-        const jwt = await AsyncStorage.getItem('jwt')
-        const response = await fetch('http://3.27.162.120:8080/filmhook-0.0.1-SNAPSHOT/user/getCoverPic', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${jwt}`
-          },
-          body: JSON.stringify({
-            userId: userId
-          })
-        });
-        const data = await response.json();
+        );
+        const data = response.data;
         if (data.status === 1 && data.data.length > 0) {
           const paths = data.data.map(item => item.filePath);
           setFilePaths(paths);
+          setNoCoverPic(false);
+        } else {
+          setNoCoverPic(true);
         }
       } catch (error) {
         console.error('Error fetching file paths:', error);
+        setNoCoverPic(true);
       }
     };
 
     fetchData();
-  }, []); // Empty dependency array ensures this effect runs only once on mount
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchProfilePic = async () => {
+      try {
+        const jwt = await AsyncStorage.getItem('jwt');
+        const response = await privateAPI.post(
+          'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getProfilePic',
+          { userId },
+
+        );
+        const data = response.data;
+        if (data.status === 1 && data.data) {
+          setFilePath(data.data.filePath);
+          setNoProfilePic(false);
+        } else {
+          setNoProfilePic(true);
+        }
+      } catch (error) {
+        console.error('Error fetching profile picture:', error);
+        setNoProfilePic(true);
+      }
+    };
+
+    fetchProfilePic();
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const username = await AsyncStorage.getItem('username');
+      setUserName(username);
+    };
+    fetchUserName();
+  }, [userName]);
 
   const renderItem = ({ item }) => (
     <Image source={{ uri: item }} style={styleProfileCover.image} />
@@ -58,119 +89,95 @@ const ProfilePic = (userId) => {
   const handlePrev = () => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? filePaths.length - 1 : prevIndex - 1));
   };
-
-
-  // ProfilePic
-
-  useEffect(() => {
-    const fetchProfilePic = async () => {
+  const [followingCount, setFollowingCount] = useState(0);
+  const [followerCount, setFollowerCount] = useState(0);
+  useEffect(()=>{
+    const followingCount = async () => {
       try {
-        const jwt = await AsyncStorage.getItem('jwt')
-        const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getProfilePic', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${jwt}`
-          },
-          body: JSON.stringify({
-            userId: userId
-          })
-        });
-        const data = await response.json();
-        if (data.status === 1 && data.data) {
-          setFilePath(data.data.filePath);
+        const response = await privateAPI.get(`friendRequest/getFriendRequest?userId=${userId}`);
+        const data = response.data.data;
+        if (data && data.followingList) {
+          setFollowingCount(data.followingList.length); // Set the count of following
         }
       } catch (error) {
-        console.error('Error fetching profile picture:', error);
+        console.error("Error fetching data:", error);
       }
     };
-
-    fetchProfilePic();
-  }, []);
-
-  const [userName, setUserName] = useState('');
-
+  },[followingCount])
+ 
   useEffect(() => {
-    const fetchUserName = async () => {
-      const username = await AsyncStorage.getItem('username');
-      setUserName(username);
-    }
-    fetchUserName();
-  });
+    const followerCount = async () => {
+      try {
+
+        const response = await privateAPI.get(`friendRequest/getFriendRequest?userId=${userId}`);
+        const data = response.data.data;
+        if (data && data.followersList) {
+          setFollowerCount(data.followersList.length); // Set the count of following
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    followerCount()
+  }, [followerCount])
 
 
   return (
     <View style={styleProfileCover.container}>
-      {filePaths.length > 0 && (
-        <FlatList
-          data={filePaths}
-          renderItem={renderItem}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
-          onMomentumScrollEnd={(event) => {
-            const width = Dimensions.get('window').width;
-            const newIndex = Math.floor(event.nativeEvent.contentOffset.x / width);
-            setCurrentIndex(newIndex);
-          }}
-        />
-      )}
-      <View style={styleProfileCover.indicatorContainer}>
-        {filePaths.map((_, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[styleProfileCover.indicator, currentIndex === index && styleProfileCover.activeIndicator]}
-            onPress={() => { }}
-          />
-        ))}
-      </View>
-      <TouchableOpacity style={styleProfileCover.prevButton} onPress={handlePrev}>
-        {/* You can use your own icons for navigation buttons */}
-        <Text>Prev</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styleProfileCover.nextButton} onPress={handleNext}>
-        {/* You can use your own icons for navigation buttons */}
-        <Text>Next</Text>
-      </TouchableOpacity>
-      <View style={styleProfileCover.profilPic}>
-        {filePath ? (
-          <Image source={{ uri: filePath }} style={styleProfileCover.imagePic} />
-        ) : null}
-      </View>
-      <View>
-        <Text style={styleProfileCover.userName}>{userName}</Text>
-      </View>
-      <View style={{ flexDirection: "row", position: 'absolute', top: '92%', left: '43%' }}>
-        <TouchableOpacity style={styleProfileCover.followers}>
 
-          <Text style={styleProfileCover.followers_text}>10Followers</Text>
+<View style={{ height: responsiveHeight(27),borderWidth:1 }}>
+                {filePaths.length > 0 ? (
+                    <>
+                        <FlatList
+                            data={filePaths}
+                            renderItem={renderItem}
+                            horizontal
+                            pagingEnabled
+                            showsHorizontalScrollIndicator={false}
+                            keyExtractor={(item, index) => index.toString()}
+                            onMomentumScrollEnd={(event) => {
+                                const width = Dimensions.get('window').width;
+                                const newIndex = Math.floor(event.nativeEvent.contentOffset.x / width);
+                                setCurrentIndex(newIndex);
+                            }}
+                        />
+                    </>
+                ) : noCoverPic ? (
+                    <Text style={styleProfileCover.noCoverText}>No cover picture available</Text>
+                ) : null}
 
-        </TouchableOpacity>
-        <TouchableOpacity style={styleProfileCover.followings}>
-          <Text style={styleProfileCover.followings_text}>10Followings</Text>
-        </TouchableOpacity>
-
-      </View>
-      <View style={{ flexDirection: "row", position: "absolute", top: '110%', left: '5%' }}>
-        <Text style={styleProfileCover.review}>Reviews </Text>
-        <View style={styleProfileCover.review_box}>
-          <Text style={styleProfileCover.review_num}>9.9</Text>
-          <Image source={require("../../Assets/Userprofile_And_Fonts/star.png")} style={styleProfileCover.review_img} />
-        </View>
-      </View>
-
+            </View>
+            <View style={styleProfileCover.profilePic}>
+                {filePath ? (
+                    <Image source={{ uri: filePath }} style={styleProfileCover.imagePic} />
+                ) : noProfilePic ? (
+                    <Text style={styleProfileCover.noProfileText}>No profile pic</Text>
+                ) : null}
+            </View>
+            <View>
+                <Text style={styleProfileCover.userName}>{userName}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', position: 'absolute', top: '92%', left: '43%' }}>
+                <TouchableOpacity style={styleProfileCover.followers} onPress={() => navigation.navigate('FollowersList', { userId })}>
+                    <Text style={styleProfileCover.followers_text}>{followerCount} Followers</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styleProfileCover.followings} onPress={() => navigation.navigate('FollowingList', { userId })}>
+                    <Text style={styleProfileCover.followings_text}>{followingCount} Followings</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: 'row', position: 'absolute', top: '105%', left: '5%' }}>
+                <Text style={styleProfileCover.review}>Reviews</Text>
+                <View style={styleProfileCover.review_box}>
+                    <Text style={styleProfileCover.review_num}>9.9</Text>
+                    <Image source={require('../../Assets/Userprofile_And_Fonts/star.png')} style={styleProfileCover.review_img} />
+                </View>
+            </View>
     </View>
   );
 };
 
-
 const styleProfileCover = StyleSheet.create({
   container: {
-    //top: 100,
-    // borderWidth: 1,
-    // backgroundColor: 'red',
-
     flex: 1
   },
   followers: {
@@ -179,9 +186,9 @@ const styleProfileCover = StyleSheet.create({
     width: responsiveWidth(26),
     borderRadius: responsiveWidth(2),
     marginTop: responsiveHeight(2),
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#949EE9"
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#949EE9'
   },
   followings: {
     borderWidth: 1,
@@ -190,40 +197,38 @@ const styleProfileCover = StyleSheet.create({
     borderRadius: responsiveWidth(2),
     marginLeft: responsiveWidth(2),
     marginTop: responsiveHeight(2),
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#999999"
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#999999'
   },
   followings_text: {
     fontSize: responsiveFontSize(1.8),
-    fontWeight: "bold",
-    color: "#E4E4E4",
+    fontWeight: 'bold',
+    color: '#E4E4E4'
   },
   followers_text: {
     fontSize: responsiveFontSize(1.8),
-    fontWeight: "bold",
-    color: "#001AD9",
+    fontWeight: 'bold',
+    color: '#001AD9'
   },
-
   review: {
     fontSize: responsiveFontSize(2.3),
-    color: "#323232",
-    marginTop: responsiveHeight(0.7),
-    //fontWeight:"bold"
+    color: '#323232',
+    marginTop: responsiveHeight(0.7)
   },
   review_box: {
     marginTop: responsiveHeight(0.8),
-    backgroundColor: "black",
+    backgroundColor: 'black',
     width: responsiveWidth(12),
     height: responsiveHeight(3.3),
     borderRadius: responsiveWidth(2)
   },
   review_num: {
     fontSize: responsiveFontSize(1.8),
-    color: "#FFFF",
+    color: '#FFFF',
     marginLeft: responsiveWidth(1.5),
     marginTop: responsiveHeight(0.4),
-    fontWeight: "bold"
+    fontWeight: 'bold'
   },
   review_img: {
     position: 'absolute',
@@ -231,73 +236,78 @@ const styleProfileCover = StyleSheet.create({
     height: responsiveHeight(2),
     left: responsiveWidth(7),
     top: responsiveHeight(0.5)
-
   },
   userName: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: responsiveFontSize(3.5),
-    color: "#323232",
+    color: '#323232',
     left: responsiveWidth(38),
     margin: responsiveHeight(2)
-
   },
-  profilPic: {
+  profilePic: {
     position: 'absolute',
     height: responsiveHeight(22),
     width: responsiveWidth(38),
     marginLeft: responsiveWidth(1),
-    borderRadius: 3,
-    // borderWidth: 1,
+    borderRadius: responsiveWidth(6),
     top: responsiveHeight(15),
-    // right: responsiveWidth(60),
-    // bottom: responsiveHeight(10),
-
-
-
-    // left: responsiveWidth(0.5),
-    // backgroundColor: "#C1E7FA"
+    borderWidth: 1
   },
   imagePic: {
     width: '100%',
     height: '100%',
-    resizeMode: 'stretch',
-    //  backgroundColor:'red'
+    resizeMode: 'stretch'
   },
   image: {
     width: Dimensions.get('window').width,
     height: responsiveHeight(27),
     resizeMode: 'cover',
+    backgroundColor: 'red'
+
   },
   indicatorContainer: {
     flexDirection: 'row',
     position: 'absolute',
-    top: '70%',
+    top: '104%',
     right: responsiveWidth(50),
-    // borderWidth:1
+    borderWidth: 1
   },
   indicator: {
     width: 8,
     height: 8,
     borderRadius: 4,
     backgroundColor: '#ccc',
-    marginHorizontal: 5,
+    marginHorizontal: 5
   },
   activeIndicator: {
-    backgroundColor: '#333',
+    backgroundColor: 'red'
   },
   prevButton: {
+    borderWidth: 1,
     position: 'absolute',
     left: 10,
     top: '40%',
-    transform: [{ translateY: -20 }],
+    transform: [{ translateY: -20 }]
   },
   nextButton: {
     position: 'absolute',
     right: 10,
     top: '40%',
-    transform: [{ translateY: -20 }],
-
+    transform: [{ translateY: -20 }]
   },
+  noCoverText: {
+    fontSize: responsiveFontSize(2.3),
+    color: 'black',
+    textAlign: 'center',
+    marginTop: responsiveHeight(10),
+    //  borderWidth:1
+  },
+  noProfileText: {
+    fontSize: responsiveFontSize(2.3),
+    color: 'black',
+    textAlign: 'center',
+    marginTop: responsiveHeight(12)
+  }
 });
 
 const Biography = (userId) => {
@@ -2343,7 +2353,7 @@ export default function UserProfileDetials({ route }) {
         setShowRequestModal(true);
         break;
       case 'Icon 9':
-        navigation.navigate('BuyRental' ,{userId})
+        navigation.navigate('BuyRental', { userId })
         console.log('Functionality for Icon 9');
         break;
 
@@ -2399,7 +2409,7 @@ export default function UserProfileDetials({ route }) {
 
       const formattedStartDate = moment(startDate).format('DD-MM-YYYY');
       const formattedEndDate = moment(endDate).format('DD-MM-YYYY');
-      const userIdLogin=await AsyncStorage.getItem('id')
+      const userIdLogin = await AsyncStorage.getItem('id')
 
       console.log('Start Date:', formattedStartDate);
       console.log('End Date:', formattedEndDate);

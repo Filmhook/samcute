@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import privateAPI from '../../api/privateAPI';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const FriendStories = () => {
   const [storyData, setStoryData] = useState([]);
   const navigation = useNavigation();
@@ -11,7 +12,8 @@ const FriendStories = () => {
     const fetchData = async () => {
       try {
         // Fetch user data
-        const response = await privateAPI.get('user/stories/getUserIdAndName');
+        const id=await AsyncStorage.getItem('userId')
+        const response = await privateAPI.get(`user/stories/getUserIdAndName?userId=${id}`);
         if (response.data && Array.isArray(response.data.data)) {
           const stories = response.data.data.map(item => ({
             id: item.userId,

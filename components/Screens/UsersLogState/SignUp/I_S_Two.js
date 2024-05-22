@@ -1,3 +1,5 @@
+
+
 // import { useNavigation } from "@react-navigation/native";
 // import { Verify } from "crypto";
 // import React, { useState, useEffect } from "react";
@@ -192,19 +194,27 @@
 // try {
 //       const id = await AsyncStorage.getItem('userId');
 
+     
+
 // console.log(`User Id from IS Confirm ${id}`)
 // console.log("HITT")
 // let formData = new FormData()
 // formData.append("userId", id);
-// formData.append("images" , selectedImages[0]);
-// formData.append("videos", selectedVideo[0]);
+// [...selectedImages].forEach(img => {
+// formData.append("images" , img)
+// });
+// //formData.append("images" , selectedImages[0]);
+// [...selectedVideo].forEach(vid => {
+// formData.append("videos" , vid)
+// });
+// //formData.append("videos", selectedVideo[0]);
 // formData.append("panCard", panAadharImg[0]);
 // formData.append("adharCard", panAadharImg[0]);
 
-// console.log("Data being posted:", formData);
+// console.log("Data being posted:", JSON.stringify(formData));
 // const myHeaders = new Headers();
 //       const jwt = await AsyncStorage.getItem("jwt");
-//       myHeaders.append("Authorization", "Bearer " + jwt);
+// //      myHeaders.append("Authorization", "Bearer " + jwt);
 //       // Define requestOptions with method, headers, body, and redirect options
 //       const requestOptions = {
 //         method: "POST",
@@ -225,7 +235,7 @@
 //             const filePath = data.data.filePath;
 //             // Use fileId, fileName, filePath, etc. as needed
 //             Alert.alert('Posted Success', `File ${fileName} saved successfully.`);
-//                   navigation.navigate('Login');
+//                   navigation.navigate('Tabbar');
 //           } else {
 //             // Handle unsuccessful response
 //             Alert.alert('Posted Error', data.message);
@@ -460,21 +470,6 @@
 //         </TouchableOpacity>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //         {/* <View style={{ flexDirection: 'row', margin: responsiveHeight(4), columnGap: responsiveWidth(18) }}>
 //           <TouchableOpacity onPress={() => navigation.navigate('IndustryOne', { nationality, selected })} style={styles.backButton}>
 //             <Text style={{ color: 'white', fontWeight: 'bold', fontSize: responsiveFontSize(2) }}>Back</Text>
@@ -622,9 +617,10 @@ import { responsiveFontSize, responsiveHeight, responsiveScreenHeight, responsiv
 import Modal from 'react-native-modal';
 import ImagePicker from 'react-native-image-crop-picker';
 import DocumentPicker from 'react-native-document-picker';
-import { Axios } from "axios";
+import axios, { Axios } from "axios";
 import PublicAPI from "../../../api/publicAPI";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import privateAPI from "../../../api/privateAPI";
 
 
 export default function Industry_S_Two({ route }) {
@@ -730,7 +726,7 @@ console.log(`panAadharImg ${JSON.stringify(panAadharImg)}`)
         return [...v, res[0]]
       });
 
-      console.log('video', selectedVideo)
+//      console.log('video', selectedVideo)
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker
@@ -806,13 +802,14 @@ const handleSubmit =async () => {
 
 try {
       const id = await AsyncStorage.getItem('userId');
-
+const idDemo=3;
      
 
 console.log(`User Id from IS Confirm ${id}`)
 console.log("HITT")
 let formData = new FormData()
-formData.append("userId", id);
+formData.append("userId", idDemo);
+//formData.append("userId", '3');
 [...selectedImages].forEach(img => {
 formData.append("images" , img)
 });
@@ -835,7 +832,7 @@ const myHeaders = new Headers();
         body: formData,
         redirect: "follow"
       };
-
+console.log(`Posted Data - ${JSON.stringify(formData)}`)
       // Make a POST request using fetch
       fetch("https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/industryUser/saveIndustryUserFiles", requestOptions)
         .then((response) => response.json()) // Parse response JSON
@@ -866,6 +863,54 @@ const myHeaders = new Headers();
 
 }
 
+//FilmhookIdmailSend
+const [filmHookCode, setFilmHookCode] = useState('');
+const sendFilmHookCode = async () => {
+  if (!filmHookCode.trim()) {
+    Alert.alert('Error', 'Enter Filmhook code');
+    return;
+  }
+
+  const url = 'industryUser/emailSendFilmHookCode';
+  const payload = { filmHookCode :filmHookCode };
+
+  try {
+    const res = await privateAPI.post(url, payload, {
+     
+    });
+    Alert.alert('Success', res.data)
+   
+    console.log('Response:', res.data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+//VerifyOtp
+const [filmHookOtp, setFilmHookOtp] = useState('');
+const sendFilmHookOtpCode = async () => {
+ 
+
+  if (!filmHookOtp.trim()) {
+    Alert.alert('Error', 'Enter Referal Code');
+    return;
+  }
+
+  const url = 'industryUser/verifyFilmHookCode';
+  const payload = {
+    
+    filmHookOtp: filmHookOtp
+  };
+
+  try {
+    const res = await privateAPI.post(url, payload, {
+     
+    });
+  Alert.alert("Success", res.data.message)
+    console.log('Response:', res.data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
 
   //=============================================
 
@@ -1035,21 +1080,25 @@ const myHeaders = new Headers();
         <View style={{ height: responsiveHeight(3.5), flexDirection: 'row', borderWidth: 1, width: responsiveWidth(42), alignItems: 'center', bottom: responsiveWidth(5) }}>
           <TextInput
             placeholder="Enter your Friends filmhook ID"
+            value={filmHookCode}
+            onChangeText={setFilmHookCode}
 
             style={{ height: responsiveHeight(5), fontSize: responsiveFontSize(1.2) }}
           />
-          <TouchableOpacity style={{ width: responsiveWidth(4), }}>
+          <TouchableOpacity style={{ width: responsiveWidth(4), }} onPress={sendFilmHookCode}>
             <Image style={{ width: responsiveWidth(5), height: responsiveHeight(2) }} source={require('../../../Assets/Login_page/Send_icon.png')}></Image>
           </TouchableOpacity>
         </View>
         <View style={{ height: responsiveHeight(3.5), flexDirection: 'row', borderWidth: 1, width: responsiveWidth(25), alignItems: 'center', bottom: responsiveWidth(4), right: responsiveWidth(8.3) }}>
           <TextInput
             placeholder="Enter Referal code"
-
+            value={filmHookOtp}
+            onChangeText={setFilmHookOtp}
+            keyboardType="numeric"
             style={{ height: responsiveHeight(5), fontSize: responsiveFontSize(1.2) }}
           />
           <View>
-            <TouchableOpacity style={{ backgroundColor: '#001adc', borderColor: 'black', opacity: 0.8, borderWidth: responsiveWidth(0.3), width: responsiveWidth(15), height: responsiveHeight(3), borderRadius: responsiveWidth(2), justifyContent: 'center', alignItems: 'center', left: responsiveWidth(20.8) }}>
+            <TouchableOpacity style={{ backgroundColor: '#001adc', borderColor: 'black', opacity: 0.8, borderWidth: responsiveWidth(0.3), width: responsiveWidth(15), height: responsiveHeight(3), borderRadius: responsiveWidth(2), justifyContent: 'center', alignItems: 'center', left: responsiveWidth(20.8) }} onPress={sendFilmHookOtpCode}>
               <Text style={{ color: 'white', fontSize: responsiveFontSize(1.2), fontWeight: 'bold' }}>Submit</Text>
             </TouchableOpacity>
           </View>
@@ -1062,9 +1111,6 @@ const myHeaders = new Headers();
           <View style={{ height: responsiveHeight(3), width: responsiveWidth(40), backgroundColor: 'black', borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ color: 'white', lineHeight: responsiveHeight(2.5), fontSize: responsiveFontSize(1.2), fontWeight: '800' }}>Upload your 1 min Video</Text>
           </View>
-
-
-
 
           <TouchableOpacity onPress={pickVideo} style={{ backgroundColor: '#424242', height: responsiveHeight(3), width: responsiveWidth(18), borderRadius: responsiveWidth(2), justifyContent: 'center', alignItems: 'center', left: responsiveWidth(8.6), borderWidth: responsiveWidth(0.5), borderColor: 'black' }}>
             <Image style={{ height: responsiveHeight(1.5), width: responsiveWidth(3.5), position: 'absolute', right: responsiveWidth(13) }} source={require('../../../Assets/Login_page/FH_Upload.png')}></Image>

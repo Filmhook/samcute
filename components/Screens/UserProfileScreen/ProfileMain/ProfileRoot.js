@@ -65,22 +65,55 @@ export default function ProfileRoot() {
   const [showGallery, setShowGallery] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
+
+
+  const handleImageOption = async (option) => {
+    try {
+      let image = null;
+      if (option === 'camera') {
+        image = await ImagePicker.openCamera({ cropping: true });
+      } else if (option === 'gallery') {
+        image = await ImagePicker.openPicker({ cropping: true, multiple: true});
+      }
+  
+      const formatedImg = image?.map(im => {
+      return { uri: im.path, type: im.mime, name: im.path.split('/').pop() }
+      })
+      console.log(`Select Story Images: ${JSON.stringify(formatedImg)}`)
+  
+      // Move the uploadStory function call here
+      setSelectedImage(formatedImg);
+    } catch (error) {
+      console.log('Image picker operation canceled or failed:', error);
+    } finally {
+      setShowGallery(false);
+    }
+  };
+  
+
   const openGallery = () => {
     ImagePicker.openPicker({
       cropping: true,
       width: 400,
       height: 500,
       compressImageQuality: 1,
-    }).then(image => {
-      let generateName = image.path.split("/")[image.path.split("/")?.length - 1]
-
-      setSelectedImage({ uri: image.path, type: image.mime, name: generateName });
-      setShowGallery(false);
-      handleUpload(); // Call handleUpload to upload the selected profile picture
-    }).catch(error => {
-      console.log('ImagePicker Error: ', error);
-    });
+    })
+      .then((image) => {
+        let generateName = image.path.split('/')[image.path.split('/')?.length - 1];
+        setSelectedImage({ uri: image.path, type: image.mime, name: generateName });
+        console.log('images', { uri: image.path, type: image.mime, name: generateName });
+        setShowGallery(false);
+      })
+      .catch((error) => {
+        console.log('ImagePicker Error: ', error);
+      });
   };
+
+  useEffect(() => {
+    if (selectedImage) {
+      handleUpload();
+    }
+  }, [selectedImage]);
 
   const handleUpload = async () => {
     try {
@@ -120,15 +153,12 @@ export default function ProfileRoot() {
 
       if (data && data.status === 1) {
         console.log('Profile pic uploaded successfully.');
-
-
-      } else {
-        console.error('Profile pic upload failed:', data.message);
-        // Handle upload failure
-      }
+        Alert.alert('Success', 'Profile picture updated successfully.');
+      } 
     } catch (error) {
       console.error('Error uploading profile picture:', error);
       // Handle upload error
+      Alert.alert('Error', 'There was an error uploading the profile picture. Please try again.');
     }
   };
   useEffect(() => {
@@ -139,23 +169,28 @@ export default function ProfileRoot() {
 
         const myHeaders = {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + jwt
+          Authorization: `Bearer ${jwt}`
         };
 
         const requestData = {
           userId: id
         };
 
-        const response = await privateAPI.post('user/getProfilePic', requestData, { headers: myHeaders });
+        const response = await axios.post(
+          'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getProfilePic',
+          requestData,
+          { headers: myHeaders }
+        );
 
-        const data = response.data; // Extract response data
+        const data = response.data;
 
         if (data.status === 1) {
-          const profilePicUrl = data.data.filePath; // Extract filePath from response
-          setImageURL(profilePicUrl); // Update state with profile picture URL
+          const profilePicUrl = data.data.filePath;
+          setImageURL(profilePicUrl);
           console.log('Profile pic found successfully:', profilePicUrl);
         } else {
-          throw new Error('Failed to fetch profile picture');
+          setImageURL(null);
+          console.log('Profile pic not found:', data.message);
         }
       } catch (error) {
         console.error('Error fetching profile picture:', error);
@@ -175,33 +210,50 @@ export default function ProfileRoot() {
 
 
 
+
   const [showGalleryCover, setShowGalleryCover] = useState(false);
   const [selectedImageCover, setSelectedImageCover] = useState(null);
   const [coverPicture, setCoverPicture] = useState(null);
 
 
 
+  const [selectedImagesCover, setSelectedImagesCover] = useState([]);
+ 
+
   const openGalleryCover = () => {
     ImagePicker.openPicker({
+      multiple: true,
       cropping: true,
       width: 400,
       height: 500,
       compressImageQuality: 1,
-    }).then(image => {
-      let generateName = image.path.split("/")[image.path.split("/")?.length - 1]
+    })
+      .then((images) => {
+        const formattedImages = images.map((image) => {
+          let generateName = image.path.split('/')[image.path.split('/')?.length - 1];
+          return { uri: image.path, type: image.mime, name: generateName };
+        });
 
-      setSelectedImageCover({ uri: image.path, type: image.mime, name: generateName });
-      setShowGalleryCover(false);
-      handleUploadCover(); // Call handleUploadCover to upload the selected cover picture
-    }).catch(error => {
-      console.log('ImagePicker Error: ', error);
-    });
+        setSelectedImagesCover(formattedImages);
+        console.log('Selected images:', formattedImages);
+        setShowGalleryCover(false);
+      })
+      .catch((error) => {
+        console.log('ImagePicker Error: ', error);
+      });
   };
 
+  useEffect(() => {
+    if (selectedImagesCover.length > 0) {
+      selectedImagesCover.forEach(image => {
+        handleUploadCover(image);
+      });
+    }
+  }, [selectedImagesCover]);
 
-  const handleUploadCover = async () => {
+  const handleUploadCover = async (image) => {
     try {
-      if (!selectedImageCover) return; // No cover image selected
+      if (!image) return; // No image provided
 
       const id = await AsyncStorage.getItem('userId');
 
@@ -211,10 +263,10 @@ export default function ProfileRoot() {
 
       const formData = new FormData();
       formData.append('userId', id);
-      const imageUriParts = selectedImageCover.uri.split('.');
+      const imageUriParts = image.uri.split('.');
       const fileType = imageUriParts[imageUriParts.length - 1];
       formData.append('coverPhoto.files', {
-        uri: selectedImageCover.uri,
+        uri: image.uri,
         type: `image/${fileType}`,
         name: `image.${fileType}`,
       });
@@ -237,13 +289,14 @@ export default function ProfileRoot() {
 
       if (data && data.status === 1) {
         console.log('Cover pic uploaded successfully.');
+        Alert.alert('Success', 'Cover picture updated successfully.');
       } else {
         console.error('Cover pic upload failed:', data.message);
-        // Handle upload failure
+        Alert.alert('Error', 'Cover picture upload failed. Please try again.');
       }
     } catch (error) {
       console.error('Error uploading cover picture:', error);
-      // Handle upload error
+      Alert.alert('Error', 'There was an error uploading the cover picture. Please try again.');
     }
   };
 
@@ -284,6 +337,40 @@ export default function ProfileRoot() {
     fetchCover();
   }, []);
 
+  const [followingCount, setFollowingCount] = useState(0);
+  const [followerCount, setFollowerCount] = useState(0);
+  useEffect(() => {
+    const followingCount = async () => {
+      try {
+        const id = await AsyncStorage.getItem("userId");
+        const response = await privateAPI.get(`friendRequest/getFriendRequest?userId=${id}`);
+        const data = response.data.data;
+        if (data && data.followingList) {
+          setFollowingCount(data.followingList.length); // Set the count of following
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    followingCount()
+  }, [followingCount])
+
+  useEffect(() => {
+    const followerCount = async () => {
+      try {
+        const id = await AsyncStorage.getItem("userId");
+        const response = await privateAPI.get(`friendRequest/getFriendRequest?userId=${id}`);
+        const data = response.data.data;
+        if (data && data.followersList) {
+          setFollowerCount(data.followersList.length); // Set the count of following
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    followerCount()
+  }, [followerCount])
+
 
   return (
     <>
@@ -299,20 +386,22 @@ export default function ProfileRoot() {
           {/* Check if coverPics is an array before mapping */}
           {Array.isArray(coverPics) && coverPics.length > 0 && coverPics.map((coverPic, index) => (
             <View key={index} style={styles.bgprofile}>
-              <TouchableOpacity onPress={openGalleryCover}>
-                <Image source={{ uri: coverPic.filePath }} style={styles.coverimage} />
-                <Icon name="camera" size={15} color="#fff" style={styles.cameraIconC} />
-              </TouchableOpacity>
+              <Image source={{ uri: coverPic.filePath }} style={styles.coverimage} />
             </View>
           ))}
         </Swiper>
+        <TouchableOpacity onPress={openGalleryCover}>
+
+          <Icon name="camera" size={15} color="#fff" style={styles.cameraIconC} />
+        </TouchableOpacity>
 
 
         <View style={styles.profilPic}>
-          <TouchableOpacity onPress={openGallery}>
+          {imageURL ? (
             <Image source={{ uri: imageURL }} style={styles.profileImage} resizeMode='stretch' />
-            <Icon name="camera" size={11} color="#fff" style={styles.cameraIcon} />
-          </TouchableOpacity>
+          ) : (
+            <Text style={styles.noProfileText}>No profile pic</Text>
+          )}
           <Modal visible={showGallery} animationType="slide">
             <View style={styles.modalContainerP}>
               <Text style={styles.title}>Select Profile Picture</Text>
@@ -325,17 +414,21 @@ export default function ProfileRoot() {
             </View>
           </Modal>
         </View>
+        <TouchableOpacity onPress={openGallery} style={{ width: responsiveWidth(8), height: responsiveWidth(8), borderRadius: responsiveWidth(8), position: 'absolute', top: responsiveHeight(32), left: responsiveWidth(31), justifyContent: 'center', alignItems: 'center' }} >
+
+          <Icon name="camera" size={11} color="#fff" style={styles.cameraIcon} />
+        </TouchableOpacity>
         <View style={{ marginTop: responsiveHeight(-21), marginLeft: responsiveWidth(44), }}>
           <Text style={styles.profile_name}>{userName}</Text>
 
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity style={styles.followers}>
+            <TouchableOpacity style={styles.followers} >
 
-              <Text style={styles.followers_text}>10Followers</Text>
+              <Text style={styles.followers_text}>{followerCount} Followers</Text>
 
             </TouchableOpacity>
             <TouchableOpacity style={styles.followings}>
-              <Text style={styles.followings_text}>10Followings</Text>
+              <Text style={styles.followings_text}>{followingCount} Followings</Text>
             </TouchableOpacity>
 
           </View>
@@ -347,9 +440,25 @@ export default function ProfileRoot() {
               <Image source={require("../../../Assets/Userprofile_And_Fonts/star.png")} style={styles.review_img} />
             </View>
           </View>
+
+          {/* <Modal isVisible={showGallery} onBackdropPress={() => setShowGallery(false)}>
+          <View style={{ backgroundColor: '#ffffff', padding: responsiveWidth(2), borderRadius: responsiveWidth(2) }}>
+            <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={() => handleImageOption('camera')}>
+              <Text>Open Camera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={() => handleImageOption('gallery')}>
+              <Text>Upload your Image</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={() => setShowGallery(false)}>
+              <Text>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal> */}
         </View>
 
-        <View style={{ position: 'absolute', top: responsiveHeight(60), marginLeft: responsiveWidth(5) }}>
+       
+
+        {/* <View style={{ position: 'absolute', top: responsiveHeight(60), marginLeft: responsiveWidth(5) }}>
           <TouchableOpacity onPress={() => openModal()}  >
             <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/Chats-Menu.png')} style={{ width: responsiveWidth(12), height: responsiveHeight(5) }} />
           </TouchableOpacity>
@@ -393,7 +502,7 @@ export default function ProfileRoot() {
 
             </View>
           </Modal>
-        </View> 
+        </View>  */}
 
 
 
@@ -412,7 +521,7 @@ export default function ProfileRoot() {
         <Profession />
 
         {/* <MyActivities /> */}
-        {/* <Myactive /> */}
+        <Myactive />
 
 
       </ScrollView>
@@ -435,11 +544,19 @@ const styles = StyleSheet.create({
   profilPic: {
     height: responsiveHeight(25),
     width: responsiveWidth(35),
-    borderRadius: responsiveWidth(5),
+    borderRadius: responsiveWidth(6),
     // borderWidth:1,
     top: responsiveHeight(-12),
     left: responsiveWidth(0.5),
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1
     // backgroundColor: "#C1E7FA"
+  },
+  noProfileText: {
+    color: 'black',
+    fontSize: responsiveFontSize(2),
+    top: responsiveHeight(1)
   },
   modalContainer: {
     // flex: 1,
@@ -466,6 +583,14 @@ const styles = StyleSheet.create({
   coverimage: {
     width: "100%",
     height: "100%",
+  },
+  cameraIconC: {
+    position: 'absolute',
+    bottom: 1,
+    right: 10,
+    zIndex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+
   },
   profileimage: {
     width: "100%",
@@ -517,9 +642,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#949EE9"
   },
   cameraIcon: {
-    position: 'absolute',
-    right: -19,
-    bottom: 0,
+    top: responsiveHeight(2),
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     padding: 8,
     borderRadius: 12,
@@ -592,129 +715,10 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2),
     fontWeight: '500',
   },
+  
 
 
 })
 
 
-// import React, { useState } from 'react';
-// import { StyleSheet, View, Image, TouchableOpacity, Modal, Text } from 'react-native';
-// import Swiper from 'react-native-swiper';
-// import Icon from 'react-native-vector-icons/FontAwesome';
-// import ImagePicker from 'react-native-image-crop-picker'; // Import the image picker library
 
-// const MyComponent = () => {
-//   const [showGallery, setShowGallery] = useState(false);
-//   const [selectedImage, setSelectedImage] = useState(null);
-
-//   // Example coverPics array with local images, replace these with your actual image sources
-//   const coverPics = [
-//     require('../../../Assets/app_logo/8641600.jpg'),
-//     require('../../../Assets/app_logo/8641600.jpg'),
-//     require('../../../Assets/app_logo/8641600.jpg'),
-//     // Add more images as needed
-//   ];
-
-//   const openGallery = () => {
-//     // Function to open the device's image gallery
-//     ImagePicker.openPicker({
-//       mediaType: 'photo',
-//     }).then(image => {
-//       // Set the selected image URI to the response URI
-//       setSelectedImage({ uri: image.path });
-//       // Close the gallery modal
-//       setShowGallery(false);
-//     }).catch(error => {
-//       console.log('ImagePicker Error: ', error);
-//     });
-//   };
-
-//   return (
-//     <View style={{ flex: 1 }}>
-//       <TouchableOpacity onPress={() => setShowGallery(true)}>
-//         <Swiper
-//           style={styles.bgprofile}
-//           paginationStyle={styles.pagination}
-//           dot={<View style={styles.dotStyle} />}
-//           activeDot={<View style={styles.activeDotStyle} />}
-//         >
-//           {coverPics.slice(0, 7).map((coverPic, index) => (
-//             <View key={index} style={styles.bgprofile}>
-//               <Image source={coverPic} style={styles.coverimage} />
-//             </View>
-//           ))}
-//         </Swiper>
-//       </TouchableOpacity>
-//       <Modal visible={showGallery} animationType="slide">
-//         <View style={styles.modalContainerP}>
-//           <Text style={styles.title}>Select Profile Picture</Text>
-//           <TouchableOpacity onPress={openGallery} style={styles.selectButton}>
-//             <Text style={styles.selectButtonText}>Select from Gallery</Text>
-//           </TouchableOpacity>
-//           <TouchableOpacity onPress={() => setShowGallery(false)} style={styles.cancelButton}>
-//             <Text style={styles.cancelButtonText}>Cancel</Text>
-//           </TouchableOpacity>
-//         </View>
-//       </Modal>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   modalContainerP: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#f5f5f5',
-//   },
-//   title: {
-//     fontSize: 20,
-//     marginBottom: 20,
-//   },
-//   selectButton: {
-//     padding: 10,
-//     backgroundColor: '#007bff',
-//     borderRadius: 5,
-//   },
-//   selectButtonText: {
-//     color: '#ffffff',
-//   },
-//   cancelButton: {
-//     marginTop: 20,
-//     padding: 10,
-//     backgroundColor: '#6c757d',
-//     borderRadius: 5,
-//   },
-//   cancelButtonText: {
-//     color: '#ffffff',
-//   },
-//   bgprofile: {
-//     flex: 1,
-//     borderWidth:1
-//   },
-//   coverimage: {
-//     width: '100%',
-//     height: '100%',
-//   },
-//   pagination: {
-//     bottom: 10,
-//   },
-//   dotStyle: {
-//     backgroundColor: 'rgba(0,0,0,.2)',
-//     width: 8,
-//     height: 8,
-//     borderRadius: 4,
-//     marginLeft: 3,
-//     marginRight: 3,
-//   },
-//   activeDotStyle: {
-//     backgroundColor: '#007aff',
-//     width: 8,
-//     height: 8,
-//     borderRadius: 4,
-//     marginLeft: 3,
-//     marginRight: 3,
-//   },
-// });
-
-// export default MyComponent;

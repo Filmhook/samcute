@@ -4,6 +4,7 @@ import { View, Text, Image, TouchableOpacity, ScrollView, TextInput } from 'reac
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import privateAPI from '../../../api/privateAPI'; // Import your API module
 import Video from 'react-native-video';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Promote() {
   const navigation = useNavigation();
@@ -18,12 +19,15 @@ export default function Promote() {
     const fetchImages = async () => {
       try {
         // Fetch images from the API
-        const response = await privateAPI.get('user/gallery/getGalleryFilesByAllUser');
+        const userId = await AsyncStorage.getItem('userId');
+
+        const response = await privateAPI.get(`user/gallery/getGalleryFilesByUserId?userId=${userId}`);
         // Check if the response is successful and contains image data
         if (response.data && Array.isArray(response.data.data)) {
           // Extract image URLs from the response data
-          const fetchedImages = response.data.data.map(item => item.filePath);
-          const fetchImageId = response.data.data.map(item => item.id);
+          const fetchedImages = response.data.data.map(item => item.FileInfo.filePath);
+          const fetchImageId = response.data.data.map(item => item.FileInfo.id);
+          console.log("image for promote", )
           // Set the fetched images to state
           setImages(fetchedImages);
           setId(fetchImageId);
@@ -47,11 +51,15 @@ export default function Promote() {
  
   const handlePromote = () => {
     const currentImageId = id[currentIndex]; // Get the ID of the current image
-    setcurrentIndexId(currentImageId); // Set the currentIndexId state
+    setcurrentIndexId(currentImageId);
+    const imageNav = images[currentIndex]// Set the currentIndexId state
     navigation.navigate('PromoteEdit', {
-      currentIndex,
+      imageNav,
       id: currentImageId // Pass only the ID of the current image
+      
     });
+    console.log("current index image", images[currentIndex])
+
   };
 
 
