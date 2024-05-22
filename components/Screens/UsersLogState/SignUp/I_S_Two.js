@@ -727,6 +727,7 @@ console.log(`panAadharImg ${JSON.stringify(panAadharImg)}`)
       });
 
 //      console.log('video', selectedVideo)
+//      console.log('video', selectedVideo)
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User cancelled the picker
@@ -832,6 +833,7 @@ const myHeaders = new Headers();
         body: formData,
         redirect: "follow"
       };
+console.log(`Posted Data - ${JSON.stringify(formData)}`)
 console.log(`Posted Data - ${JSON.stringify(formData)}`)
       // Make a POST request using fetch
       fetch("https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/industryUser/saveIndustryUserFiles", requestOptions)
