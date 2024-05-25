@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -6,7 +6,7 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import { PermissionsAndroid, Platform } from 'react-native';
+import {PermissionsAndroid, Platform} from 'react-native';
 import {
   ClientRoleType,
   createAgoraRtcEngine,
@@ -16,17 +16,16 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useRoute } from '@react-navigation/native'; // Import useRoute hook
+import {useRoute} from '@react-navigation/native'; // Import useRoute hook
 import privateAPI from '../../api/privateAPI';
 import {
   ZegoUIKitPrebuiltCall,
-  ONE_ON_ONE_VIDEO_CALL_CONFIG,
+  ONE_ON_ONE_VOICE_CALL_CONFIG,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
 import messaging from '@react-native-firebase/messaging';
 
-
-export default function VideoCallingScreen({ navigation }) {
+export default function VideoCallingScreen({navigation}) {
   const config = {
     appId: 'e0580e01a75e494db4c54b3f3e050bf2',
     channelName: 'demoApp',
@@ -35,27 +34,22 @@ export default function VideoCallingScreen({ navigation }) {
   };
 
   const route = useRoute();
-  const {
-    loginedUsername,
-    remoteUserId,
-    userName,
-    loggedUserId,
-    channelToken,
-  } = route.params;
+  const {loginedUsername, remoteUserId, userName, loggedUserId, channelToken} =
+    route.params;
   const appId = config.appId;
   //    const [token, setToken] = useState(channelToken);
   //    const channelName = channelNameFromNotify ? channelNameFromNotify : ( randomchannelName);
   const [token, setToken] = useState(config.token);
   const channelName = config.channelName;
 
-  console.log("Tamilan da",
+  console.log(
+    'Tamilan da',
     loginedUsername,
     remoteUserId,
     userName,
     loggedUserId,
-    channelToken
-  )
-
+    channelToken,
+  );
 
   const UserName = loginedUsername ? loginedUsername : userName;
 
@@ -79,7 +73,6 @@ export default function VideoCallingScreen({ navigation }) {
   };
 
   const SendCalligNotifcationToRemoteUser = async FCMToken => {
-
     const loogedUserToken = await messaging().getToken();
 
     try {
@@ -106,17 +99,23 @@ export default function VideoCallingScreen({ navigation }) {
           appSign={
             '36cdde30bd0ab6eca6af412d454b7b199b21fa52a9645fce8b9a856eef165d45'
           }
-          userID={channelToken ? remoteUserId.toString()+'123' : loggedUserId.toString()} // userID can be something like a phone number or the user id on your own user system.
+          userID={
+            channelToken
+              ? remoteUserId.toString() + '123'
+              : loggedUserId.toString()
+          } // userID can be something like a phone number or the user id on your own user system.
           userName={'32'}
-          callID={channelToken ? remoteUserId.toString() : loggedUserId.toString()} // callID can be any unique string.
+          callID={
+            channelToken ? remoteUserId.toString() : loggedUserId.toString()
+          } // callID can be any unique string.
           config={{
             // You can also use ONE_ON_ONE_VOICE_CALL_CONFIG/GROUP_VIDEO_CALL_CONFIG/GROUP_VOICE_CALL_CONFIG to make more types of calls.
-            ...ONE_ON_ONE_VIDEO_CALL_CONFIG,
+            ...ONE_ON_ONE_VOICE_CALL_CONFIG,
             onOnlySelfInRoom: () => {
-              navigation.goBack()
+              navigation.goBack();
             },
             onHangUp: () => {
-              navigation.goBack()
+              navigation.goBack();
             },
           }}
         />
@@ -126,14 +125,14 @@ export default function VideoCallingScreen({ navigation }) {
     return (
       <View style={styles.VideoCallWaitingScreen}>
         <View
-          style={[styles.VideoCallWaitinConat, { justifyContent: 'flex-start' }]}>
+          style={[styles.VideoCallWaitinConat, {justifyContent: 'flex-start'}]}>
           <AntDesign name="videocamera" size={24} color="blue" onPress={join} />
           <Text style={styles.VideoCallText}> Video Call</Text>
         </View>
         <View
           style={[
             styles.VideoCallWaitinConat,
-            { flex: 1, flexDirection: 'column' },
+            {flex: 1, flexDirection: 'column'},
           ]}>
           <TouchableOpacity style={styles.VideoallConatctCircle} onPress={join}>
             <AntDesign name="user" size={70} color="black" />
@@ -196,15 +195,15 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
 
-  main: { flex: 1, alignItems: 'center', height: '100%' },
+  main: {flex: 1, alignItems: 'center', height: '100%'},
   cameraView: {
     flex: 1,
     backgroundColor: '#ddeeff',
     width: '100%',
     height: '100%',
   },
-  scrollContainer: { alignItems: 'center' },
-  videoView: { width: '100%', height: '100%' },
+  scrollContainer: {alignItems: 'center'},
+  videoView: {width: '100%', height: '100%'},
   BtnsFrontView: {
     position: 'absolute',
     height: '100%',
@@ -270,7 +269,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  btnContainer: { flexDirection: 'row', justifyContent: 'center' },
-  head: { fontSize: 20, color: 'black' },
-  info: { backgroundColor: '#ffffe0', paddingHorizontal: 8, color: '#0000ff' },
+  btnContainer: {flexDirection: 'row', justifyContent: 'center'},
+  head: {fontSize: 20, color: 'black'},
+  info: {backgroundColor: '#ffffe0', paddingHorizontal: 8, color: '#0000ff'},
 });

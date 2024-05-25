@@ -33,8 +33,8 @@ export default function Login() {
     password: 'Annular@234',
   };
 
-  const [email, setEmail] = useState('yaswanthshankar2705@gmail.com');
-  const [password, setPassword] = useState('A@12345a');
+  const [email, setEmail] = useState('tej@gmail.com');
+  const [password, setPassword] = useState('Annular@234');
   const [showPassword, setShowPassword] = useState('');
   //yaswanthshankar2705@gmail.com
   //benishabeni21@gmail.com
