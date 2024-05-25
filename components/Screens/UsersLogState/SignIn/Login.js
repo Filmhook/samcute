@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   TextInput,
@@ -10,7 +10,7 @@ import {
   ImageBackground,
   Image,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   responsiveFontSize,
@@ -19,24 +19,22 @@ import {
 } from 'react-native-responsive-dimensions';
 
 import PublicAPI from '../../../api/publicAPI';
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 
-
 export default function Login() {
-
   const user1 = {
     email: 'yaswanthshankar2705@gmail.com',
-    password: 'maninew'
-  }
+    password: 'maninew',
+  };
 
   const user2 = {
     email: 'benishabeni21@gmail.com',
-    password: 'Annular@234'
-  }
+    password: 'Annular@234',
+  };
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('yaswanthshankar2705@gmail.com');
+  const [password, setPassword] = useState('A@12345a');
   const [showPassword, setShowPassword] = useState('');
   //yaswanthshankar2705@gmail.com
   //benishabeni21@gmail.com
@@ -51,10 +49,6 @@ export default function Login() {
     setShowPassword(!showPassword);
   };
 
-  
-
-
-
   //======================================================================
 
   const handlePasswordChange = text => {
@@ -66,7 +60,7 @@ export default function Login() {
       const response = await PublicAPI.post('/user/login', {
         email: email,
         password: password,
-        firebaseDeviceToken: token
+        firebaseDeviceToken: token,
       });
       const jwt = response.data.jwt;
       const emailId = response.data.email;
@@ -77,8 +71,11 @@ export default function Login() {
       await AsyncStorage.setItem('fcmToken', token);
       await AsyncStorage.setItem('username', response.data.username);
 
-      console.log("Yaswanth id:", response.data.id.toString(), response.data.username)
-
+      console.log(
+        'Yaswanth id:',
+        response.data.id.toString(),
+        response.data.username,
+      );
 
       //   161 basein, Benisha Bm
       //  3   yaswin, Wdwdwd
@@ -90,7 +87,7 @@ export default function Login() {
 
       // Handle response as needed
     } catch (error) {
-      Alert.alert('Error', "Invalid User Info");
+      Alert.alert('Error', 'Invalid User Info');
       console.error('Login failed:', error);
       // Handle error as needed
     }
@@ -111,7 +108,6 @@ export default function Login() {
     } else if (!password.trim()) {
       Alert.alert('Error', 'Please enter password');
       return;
-
     } else {
       loginUser();
     }
@@ -121,18 +117,18 @@ export default function Login() {
   const switchUser2 = async () => {
     const token = await messaging().getToken();
     try {
-      console.log(`generated fcm token for login user - ${token}`)
+      console.log(`generated fcm token for login user - ${token}`);
       console.log('/user/login', {
         email: user2.email,
         password: user2.password,
         //        userType: 'commonUser',
-        firebaseDeviceToken: token
-      })
+        firebaseDeviceToken: token,
+      });
       const response = await PublicAPI.post('/user/login', {
         email: user2.email,
         password: user2.password,
         //        userType: 'commonUser',
-        firebaseDeviceToken: token
+        firebaseDeviceToken: token,
       });
       const jwt = response.data.jwt;
       const emailId = response.data.email;
@@ -143,8 +139,11 @@ export default function Login() {
       await AsyncStorage.setItem('fcmToken', token);
       await AsyncStorage.setItem('username', response.data.username);
 
-      console.log("User2 Benisha id:", response.data.id.toString(), response.data.username)
-
+      console.log(
+        'User2 Benisha id:',
+        response.data.id.toString(),
+        response.data.username,
+      );
 
       //   161 basein
       //  3   yaswin
@@ -156,44 +155,62 @@ export default function Login() {
     } catch {
       Alert.alert('Failed', 'Login Failed');
     }
-  }
+  };
 
   return (
-
     <View style={styles.container}>
       <View style={styles.formContainer}>
-
         <View style={styles.headerContainer}>
-          <Image style={{
-            height: responsiveHeight(25),
-            width: responsiveWidth(41), alignSelf: 'center'
-          }} source={require("../../../Assets/Login_page/FH_logos.png")} />
+          <Image
+            style={{
+              height: responsiveHeight(25),
+              width: responsiveWidth(41),
+              alignSelf: 'center',
+            }}
+            source={require('../../../Assets/Login_page/FH_logos.png')}
+          />
           {/* <Text style={styles.header}>Login</Text> */}
         </View>
-        <View style={{ height: responsiveHeight(8), width: responsiveWidth(85), marginBottom: responsiveHeight(2), justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
-          <Image style={{ height: responsiveHeight(7), width: responsiveWidth(85) }} source={require('../../../Assets/Login_page/Film_hook.png')} resizeMode="stretch" />
-
+        <View
+          style={{
+            height: responsiveHeight(8),
+            width: responsiveWidth(85),
+            marginBottom: responsiveHeight(2),
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+          }}>
+          <Image
+            style={{height: responsiveHeight(7), width: responsiveWidth(85)}}
+            source={require('../../../Assets/Login_page/Film_hook.png')}
+            resizeMode="stretch"
+          />
         </View>
 
         <View style={styles.boxContent}>
           {/* <Icon name="envelope" size={responsiveFontSize(5)} color="gray" style={styles.icon} /> */}
-          <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/newBoxImage.png')} resizeMode="stretch">
+          <ImageBackground
+            style={styles.inputContainer}
+            source={require('../../../Assets/Login_page/newBoxImage.png')}
+            resizeMode="stretch">
             <TextInput
               placeholder="Email Address"
               value={email}
-              onChangeText={(text) => setEmail(text)}
+              onChangeText={text => setEmail(text)}
               style={styles.input}
               placeholderTextColor="black"
               // placeholderTextColor={'black'}
-              keyboardType='email-address'
-              autoCapitalize='none'
-            //onLongPress={handlePaste}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              //onLongPress={handlePaste}
             />
           </ImageBackground>
-
         </View>
         <View style={styles.boxContent}>
-          <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/newBoxImage.png')} resizeMode="stretch">
+          <ImageBackground
+            style={styles.inputContainer}
+            source={require('../../../Assets/Login_page/newBoxImage.png')}
+            resizeMode="stretch">
             {/* <Icon name="lock" size={20} color="gray" style={styles.icon} /> */}
 
             {/* <TextInput
@@ -212,24 +229,35 @@ export default function Login() {
               style={styles.input}
             />
 
-
-
-
-
-            <TouchableOpacity onPress={toggleShowPassword} style={{ position: 'absolute', right: responsiveWidth(6), height: responsiveHeight(2.8), width: responsiveWidth(7) }}>
-              {showPassword ? <Image source={require("../../../Assets/SignIn&Up_And_Font/password_eye_show.png")} style={{ width: "100%", height: "100%" }} /> : <Image source={require("../../../Assets/SignIn&Up_And_Font/eye.png")} style={{ width: "100%", height: "100%" }} />}
+            <TouchableOpacity
+              onPress={toggleShowPassword}
+              style={{
+                position: 'absolute',
+                right: responsiveWidth(6),
+                height: responsiveHeight(2.8),
+                width: responsiveWidth(7),
+              }}>
+              {showPassword ? (
+                <Image
+                  source={require('../../../Assets/SignIn&Up_And_Font/password_eye_show.png')}
+                  style={{width: '100%', height: '100%'}}
+                />
+              ) : (
+                <Image
+                  source={require('../../../Assets/SignIn&Up_And_Font/eye.png')}
+                  style={{width: '100%', height: '100%'}}
+                />
+              )}
             </TouchableOpacity>
-
           </ImageBackground>
         </View>
 
-
-        <TouchableOpacity style={styles.forgotPasswordButton}
-          onPress={handle_forgotpass} >
+        <TouchableOpacity
+          style={styles.forgotPasswordButton}
+          onPress={handle_forgotpass}>
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.loginButton}
-          onPress={handleLogin}>
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
 
@@ -238,40 +266,34 @@ export default function Login() {
             onPress={switchUser2}>
             <Text style={styles.loginButtonText}>Switch User 2</Text>
           </TouchableOpacity> */}
-        <View style={{ flexDirection: 'row', top: responsiveHeight(20) }}>
-
+        <View style={{flexDirection: 'row', top: responsiveHeight(20)}}>
           <Text style={styles.signupTopic}>I don't have an account?/</Text>
           <TouchableOpacity
-
-            onPress={() => navigation.navigate('SignUpOne')} style={styles.IndustryButton}
-          >
+            onPress={() => navigation.navigate('SignUpOne')}
+            style={styles.IndustryButton}>
             <Text style={styles.signUpButtonText}>Create Account</Text>
           </TouchableOpacity>
         </View>
       </View>
     </View>
-
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-
     flex: 1,
     // justifyContent: 'center',
     alignItems: 'center',
     // padding: responsiveWidth(3),
     backgroundColor: '#f5f5f5',
 
-
     width: '100%',
-    height: '100%'
-
+    height: '100%',
   },
   icon: {
     marginRight: 10,
     width: responsiveWidth(4),
-    height: responsiveHeight(7)
+    height: responsiveHeight(7),
   },
 
   boxContent: {
@@ -289,8 +311,6 @@ const styles = StyleSheet.create({
     // shadowRadius: 2, // Shadow radius
     // elevation: 0.2,
     // shadowColor: 'gray',
-
-
   },
 
   inputContainer: {
@@ -304,16 +324,12 @@ const styles = StyleSheet.create({
     //   margin: responsiveWidth(1),
     color: 'black',
     resizeMode: 'cover',
-
   },
   inputContainerO: {
     height: responsiveHeight(8),
     width: responsiveWidth(84),
-
-
   },
   formContainer: {
-
     width: '100%',
 
     // padding: responsiveWidth(3),
@@ -323,24 +339,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: responsiveHeight(3),
     // borderWidth:1
-
-
   },
   forgotPasswordButton: {
-
     bottom: responsiveHeight(1),
 
-    left: responsiveWidth(22)
-
+    left: responsiveWidth(22),
   },
   header: {
-
     color: 'black',
     fontFamily: 'Italic-trial',
     fontSize: responsiveFontSize(4),
     marginBottom: responsiveHeight(2),
     // borderWidth:1,
-
   },
   headerContainer: {
     // flexDirection: 'row',
@@ -350,12 +360,9 @@ const styles = StyleSheet.create({
 
     height: responsiveHeight(25),
     width: responsiveWidth(35),
-    bottom: responsiveHeight(1)
-
-
+    bottom: responsiveHeight(1),
   },
   input: {
-
     height: responsiveHeight(5.6),
     borderColor: 'black',
     width: '93%',
@@ -364,12 +371,9 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: '500',
     //backgroundColor: 'rgba(162,161,151,0.18)'
-
-
   },
 
   forgotPasswordText: {
-
     color: 'blue',
     fontSize: responsiveFontSize(2.1),
     // left: responsiveWidth(15),
@@ -378,7 +382,6 @@ const styles = StyleSheet.create({
     //  textDecorationLine: "underline"
   },
   loginButton: {
-
     backgroundColor: 'black',
     borderRadius: responsiveWidth(2),
     justifyContent: 'center',
@@ -389,29 +392,25 @@ const styles = StyleSheet.create({
     height: responsiveHeight(6),
   },
   loginButtonText: {
-
     color: 'white',
     fontSize: responsiveFontSize(2.3),
     fontWeight: '800',
-    fontStyle:'italic'
+    fontStyle: 'italic',
   },
   signUpButton: {
     // alignSelf: 'center',
     // bottom: responsiveHeight(1.8)
-
   },
   signUpButtonText: {
-
     color: 'blue',
     fontSize: responsiveFontSize(2.1),
     fontWeight: 'bold',
-    textDecorationLine: "underline",
+    textDecorationLine: 'underline',
     // top:responsiveHeight(0.1)
   },
   signupTopic: {
     color: 'black',
     fontSize: responsiveFontSize(2.1),
     fontWeight: 'bold',
-
-  }
+  },
 });
