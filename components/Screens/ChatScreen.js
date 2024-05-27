@@ -104,21 +104,14 @@ const ChatScreen = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const SaveMessages = async () => {
+ const SaveMessages = async () => {
     setContent('')
     try {
       const res = await privateAPI.post('/chat/saveMessage', {
         message: content,
-        chatCreatedBy: 3,
-        chatCreatedOn: new Date(),
-        userType: "commonUser",
-        timeStamp: new Date(),
-        chatSenderId: 3,
         chatReceiverId: username,
-        chatIsActive: true,
-
       });
+      console.log(res.data)
       GetAllMessages()
     } catch (error) {
       console.error(error)
@@ -128,8 +121,9 @@ const ChatScreen = ({ navigation }) => {
   }
   const GetAllMessages = async () => {
     try {
-      const res = await privateAPI.post('/chat/getMessageByUserId', {});
-      setChatMessageStatus(res.data)
+      const res = await privateAPI.post('/chat/getMessageByUserId', {chatReceiverId : username});
+      console.log(`fetching msg - ${JSON.stringify(res.data.data.userChat)}`)
+      setChatMessageStatus(res.data.data.userChat)
     } catch (error) {
       console.error(error)
     }
@@ -149,17 +143,10 @@ const ChatScreen = ({ navigation }) => {
 
             //Save recieved messages
             const res = privateAPI.post('/chat/saveMessage', {
-              message: JSON.stringify(messages[index].body.content),
-              chatCreatedBy: 3,
-              chatCreatedOn: new Date(),
-              userType: "commonUser",
-              timeStamp: new Date(),
-              chatSenderId: username,
-              chatReceiverId: 3,
-              chatIsActive: true,
-
-            });
-            GetAllMessages()
+                          message: JSON.stringify(messages[index].body.content),
+                          chatReceiverId: 3,
+                        });
+                        GetAllMessages()
 
           }
         },
