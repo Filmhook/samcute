@@ -436,7 +436,10 @@ export default function Myactive() {
                 <View style={{}}>
                     <View>
 
+                        
+
                         <View style={{ flexDirection: "row", alignItems: 'center' }}>
+
 
                             {/* <LongTextComponent  text={caption}/> */}
 
@@ -804,6 +807,13 @@ export default function Myactive() {
     //renderitem lists
     return (
         <>
+
+        <Text style={{ fontWeight: 'bold',
+      fontSize: responsiveFontSize(2.2),
+      color: 'black',
+      marginLeft: responsiveWidth(2),
+      fontFamily: 'Cochin',
+      width: responsiveWidth(70), marginTop:responsiveHeight(1), left:responsiveWidth(2), marginBottom:responsiveHeight(2)}}>MY ACTIVITIES</Text>
             <FlatList
                 data={userPost}
                 style={{ padding: 0, margin: 0 }}

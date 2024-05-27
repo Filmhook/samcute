@@ -29,6 +29,23 @@ const TopBar = () => {
     setIsVisible(false);
   };
 
+  const [userType, setuserType] = useState('');
+  useEffect(() => {
+    const getusertype = async () => {
+      try {
+        const value = await AsyncStorage.getItem('usertype')
+        if (value !== null) {
+          const user = value.charAt(0).toUpperCase() + value.slice(1);
+          setuserType(user);
+          console.log("562:usertype:", user)
+        }
+      } catch (error) {
+        console.log(error, "usertype not get from AsyncStorage")
+      }
+    }
+    getusertype();
+  }, [])
+
   const style = StyleSheet.create({
     View: {
       height: 600,
