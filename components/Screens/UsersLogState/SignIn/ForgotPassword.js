@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import PublicAPI from '../../../api/publicAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -52,26 +52,23 @@ export default function Forgetpass() {
         forgotOtp: otp,
       });
       const otpNav = otp;
-      await AsyncStorage.setItem('otp', otpNav);
+      await AsyncStorage.setItem('otp', otpNav?.toString());
 
       console.log('Email verified', response.data);
-      navigation.navigate('ForgotPasswordsecondpage', { otp });
+      navigation.navigate('ForgotPasswordsecondpage', {otp});
     } catch (error) {
       console.error('Error verifying OTP:', error);
     }
   };
 
-  const validateEmail = (text) => {
+  const validateEmail = text => {
     // Basic email validation
     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text);
     setIsEmailValid(isValid);
     setEmail(text);
 
     // Check if the email is not valid, then show an alert
-
   };
-
-
 
   const sendOTP = async () => {
     try {
@@ -109,7 +106,7 @@ export default function Forgetpass() {
               alignItems: 'center',
             }}>
             <Image
-              style={{ height: responsiveHeight(7), width: responsiveWidth(87) }}
+              style={{height: responsiveHeight(7), width: responsiveWidth(87)}}
               source={require('../../../Assets/Login_page/Film_hook.png')}
               resizeMode="stretch"
             />
@@ -131,20 +128,22 @@ export default function Forgetpass() {
           <TouchableOpacity
             style={styles.boxContent1}
             onPress={() => {
-              console.log(isEmailValid)
+              console.log(isEmailValid);
               if (!isEmailValid) {
-                Alert.alert('Invalid Email', 'Please enter a valid email address');
+                Alert.alert(
+                  'Invalid Email',
+                  'Please enter a valid email address',
+                );
               } else {
                 handleSendOTP();
               }
             }}
-          //disabled={!isEmailValid}
+            //disabled={!isEmailValid}
           >
             {/* <ImageBackground style={styles.inputContainer1} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch"> */}
             <Text style={styles.input2}>Send</Text>
             {/* </ImageBackground> */}
           </TouchableOpacity>
-
 
           {isSendClicked && (
             <>

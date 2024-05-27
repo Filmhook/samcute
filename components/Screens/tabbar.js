@@ -1,383 +1,3 @@
-// import React, { useState } from 'react';
-// import { View, Text, StyleSheet, Image, TouchableOpacity, } from 'react-native';
-// import Modal from "react-native-modal"
-
-
-// const TopBar = () => {
-//   const [isVisible, setIsVisible] = useState(false);
-//   const [theme, setTheme] = useState(false);
-
-//   const toggleSwitch = () => {
-//     setTheme(!theme)
-//   }
-
-//   const handleOpenPopup = () => {
-//     setIsVisible(true);
-//   };
-
-//   const handleClosePopup = () => {
-//     setIsVisible(false);
-//   };
-
-//   const style = StyleSheet.create({
-//     View: {
-//       height: 600,
-//       width: 300,
-//       marginTop: -100,
-//       borderRadius: 30,
-//     },
-//     arrowdiv: {
-//       width: 85,
-//       height: 50,
-//       borderRadius: 10,
-//       backgroundColor: "#3B3B3C",
-//       marginLeft: 300,
-//       marginTop: -600
-//       //  borderWidth:1,
-//       //  borderBlockColor:"white"
-//     },
-//     arrowicon: {
-//       width: "60%",
-//       marginLeft: 15,
-//     },
-//     topBar: {
-//       backgroundColor: 'white',
-//       height: responsiveHeight(7.5),
-//     //  borderWidth: 2,
-//       flexDirection: 'row'
-
-//     },
-//     container: {
-//       flex: 1,
-//     },
-//     title: {
-//       fontSize: 20,
-//       fontWeight: 'bold',
-//       marginBottom: 20,
-//     },
-//     button: {
-//       backgroundColor: 'blue',
-//       padding: 10,
-//       borderRadius: 5,
-//       marginBottom: 20,
-//     },
-//     buttonText: {
-//       color: 'white',
-//       fontSize: 16,
-//       fontWeight: 'bold',
-//     },
-//     modalBackground: {
-//       flex: 1,
-//       backgroundColor: 'rgba(0, 0, 0, 0.5)',
-//       justifyContent: 'center',
-//       alignItems: 'center',
-//       borderRadius: 10,
-//     },
-//     popupContainer: {
-//       backgroundColor: 'white',
-//       padding: 20,
-//       borderRadius: 5,
-//       alignItems: 'center',
-//     },
-//     popupTitle: {
-//       fontSize: 20,
-//       fontWeight: 'bold',
-//       marginBottom: 20,
-//     },
-//     closeButton: {
-//       marginTop: 20,
-//       padding: 10,
-//       backgroundColor: 'blue',
-//       borderRadius: 5,
-//     },
-//     closeButtonText: {
-//       color: 'white',
-//       fontSize: 16,
-//       fontWeight: 'bold',
-//     },
-//     container: {
-//       height: 250,
-//       width: 280,
-//       borderRadius: 20,
-//       backgroundColor: "#3B3B3C",
-//       bottom: 250,
-//       left: 30
-//     },
-//     imgdiv: {
-//       height: 200,
-//       width: 190,
-//       borderRadius: 20,
-//       marginLeft: 45,
-//       marginTop: 20,
-//       backgroundColor: "white",
-//     },
-//     containerOne: {
-//       height: 60,
-//       width: 280,
-//       borderRadius: 20,
-//       marginTop: 40,
-//       backgroundColor: "#3B3B3C",
-//     },
-//     containerTwo: {
-//       height: 60,
-//       width: 280,
-//       borderRadius: 20,
-//       marginTop: 10,
-//       backgroundColor: "#3B3B3C",
-//     },
-//     containerThree: {
-//       height: 60,
-//       width: 280,
-//       borderRadius: 20,
-//       marginTop: 10,
-//       backgroundColor: "#3B3B3C",
-//     },
-//     containerFour: {
-//       height: 60,
-//       width: 280,
-//       borderRadius: 20,
-//       marginTop: 10,
-//       backgroundColor: "#3B3B3C",
-//     },
-//     containerFive: {
-//       height: 60,
-//       width: 280,
-//       borderRadius: 20,
-//       marginTop: 10,
-//       backgroundColor: "#3B3B3C",
-//     },
-//     text: {
-//       color: "white",
-//       fontSize: 20,
-//       marginLeft: 20,
-//       marginTop: 20
-//     },
-//     containerSix: {
-//       height: 60,
-//       width: 280,
-//       borderRadius: 20,
-//       marginTop: 10,
-//       backgroundColor: "#3B3B3C",
-//     },
-//     containerSeven: {
-//       height: 60,
-//       width: 280,
-//       borderRadius: 20,
-//       marginTop: 10,
-//       backgroundColor: "#3B3B3C",
-//     },
-//   })
-
-//   return (
-//     //TopBar Style
-//     <View style={style.topBar}>
-
-//       {/* //Film_hook Logo */}
-
-//       <View style={{ width: responsiveWidth(55), height: responsiveHeight(6), left: responsiveWidth(1), }}>
-//         <Image source={require('../Assets/Chats_Icon_And_Fonts/Film_hook.png')} style={{ width: responsiveWidth(52), height: responsiveHeight(4.5), alignSelf: 'center', justifyContent: 'center', top: responsiveHeight(2) }} />
-//       </View>
-
-//       {/* Plus Icon */}
-
-//       <View style={{ width: responsiveWidth(28), height: responsiveHeight(6), alignSelf: 'center',flexDirection:'row' ,columnGap:responsiveWidth(5),alignItems:'center',justifyContent:'center',left:responsiveWidth(15)}}>
-
-
-//         <TouchableOpacity style={{ width: responsiveWidth(10), height: responsiveWidth(10), borderRadius: responsiveWidth(10), elevation: 10, backgroundColor: 'white', alignItems: 'center',  justifyContent: 'center',  }}>
-//           <Image source={require('../Assets/UserProfile_Icons_Fonts/211694_bell_icon.png')} style={{ width: responsiveWidth(8), height: responsiveHeight(4), bottom: 1 }} />
-//         </TouchableOpacity>
-//         <TouchableOpacity onPress={handleOpenPopup} style={{ width: responsiveWidth(10), height: responsiveWidth(10), borderRadius: responsiveWidth(10), elevation: 10, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', }}>
-//           <Image source={require('../Assets/Home_Icon_And_Fonts/plus_icon.png')} style={{ width: responsiveWidth(8), height: responsiveHeight(4), }} />
-//         </TouchableOpacity>
-//         <Modal
-//           visible={isVisible}
-//           transparent={true}
-//           animationType="fade"
-//           onBackdropPress={() => setIsVisible(false)}
-//           backdropTransitionInTiming={500}
-//           backdropTransitionOutTiming={0}
-//           animationIn={"slideInLeft"}
-//           animationOut={"slideOutLeft"}
-//           backdropOpacity={0.70}
-
-//         >
-
-//           <TouchableOpacity style={style.modalBackground} activeOpacity={1} onPress={handleClosePopup}>
-//             <View style={style.container}>
-//               <ProfileModalRoot />
-//             </View>
-//           </TouchableOpacity>
-
-//         </Modal>
-
-
-
-//       </View>
-//     </View>
-//   );
-// };
-
-// // bottom bar =======
-
-
-// import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
-// import { NavigationContainer } from '@react-navigation/native';
-// import ChatRoot from './ChatScreen/ChatRoot/ChatRoot';
-// import SearchRoot from './AllSearchScreen/SearchRoot';
-// import AuditionRoot from './AuditionScreen/AuditionRoot';
-// import ProfileRoot from './UserProfileScreen/ProfileMain/ProfileRoot';
-// import HomeRoot from './HomeScreen/HomeRoot';
-// import ProfileModalRoot from './NavigationScreen/PlusModel';
-// import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
-
-
-
-
-// // const tabBarIcon = ({source,focused}) =>(
-// //      <View 
-// //      style={{alignItems:'center',justifyContent:'center',padding:5}}
-// //      >
-// //         <Image style={{width:focused ? 35 : 30 , height:focused? 35 : 30 , borderRadius:focused ? 50 : 0 ,}} source={source} />
-// //      </View>
-// // )
-
-
-// const Tab = createMaterialBottomTabNavigator();
-
-// function BottomBar() {
-//   return (
-
-//     <Tab.Navigator initialRouteName='Home'
-//       activeColor='blue'
-//       inactiveColor='black'
-//       barStyle={{ backgroundColor: 'white', height: responsiveHeight(8) }}
-//       backBehavior='order '
-//       style={{}}
-//       tabBarOptions={{ showlabel: false }}
-//     >
-//       <Tab.Screen
-//         name="Home"
-//         component={HomeRoot}
-
-//         options={{
-//           tabBarLabel: false,
-//           tabBarIcon: ({ focused }) => {
-//             return (
-//               <Image
-//                 style={{ width: responsiveWidth(6), height: responsiveHeight(4), bottom: 1, alignSelf: 'center', }}
-//                 source={
-//                   require('../Assets/Home_Icon_And_Fonts/Home.png')
-//                 }
-//                 focused={focused}
-//               />
-//             );
-//           },
-
-//         }}
-//       />
-//       <Tab.Screen
-//         name="Chat"
-//         component={ChatRoot}
-//         options={{
-//           tabBarLabel: false,
-//           tabBarIcon: ({ focused: boolean, color: string }) => {
-//             return (
-//               <Image
-//                 style={{ width: responsiveWidth(7), height: responsiveHeight(4), bottom: 1, alignSelf: 'center', }}
-//                 source={
-//                   require('../Assets/Chats_Icon_And_Fonts/Filmhook_chat.png')
-//                 }
-//               />
-//             );
-//           },
-//         }}
-//       />
-//       <Tab.Screen
-//         name="Search"
-//         component={SearchRoot}
-//         options={{
-//           tabBarLabel: false,
-//           tabBarIcon: ({ focused: boolean, color: string }) => {
-//             return (
-//               <Image
-//                 style={{ width: responsiveWidth(7), height: responsiveHeight(4), bottom: 1, alignSelf: 'center', }}
-//                 source={
-//                   require('../Assets/app_logo/all_search.png')
-//                 }
-//               />
-//             );
-//           },
-//         }}
-//       />
-//       <Tab.Screen
-//         name="Audition"
-//         component={AuditionRoot}
-//         options={{
-//           tabBarLabel: false,
-//           tabBarIcon: ({ focused: boolean, color: string }) => {
-//             return (
-//               <Image
-//                 style={{ width: responsiveWidth(7), height: responsiveHeight(4), bottom: 1, alignSelf: 'center', }}
-//                 source={
-//                   require('../Assets/Audition_Icons_Fonts/Filmhook_Audition.png')
-//                 }
-//               />
-//             );
-//           },
-//         }}
-//       />
-
-//       <Tab.Screen
-//         name="User Profile"
-//         component={ProfileRoot}
-//         options={{
-//           tabBarLabel: false,
-//           tabBarIcon: ({ focused: boolean, color: string }) => {
-//             return (
-//               <Image
-//                 style={{ width: 30, height: 30, bottom: 4, top: 0, alignSelf: 'center', padding: 5 }}
-//                 source={
-//                   require('../Assets/UserProfile_Icons_Fonts/Filmhook_UserProfile.png')
-//                 }
-//               />
-//             );
-//           },
-//         }}
-//       />
-//     </Tab.Navigator>
-
-//   )
-// }
-
-
-// // import {  Text , StyleSheet} from 'react-native'
-// // import React from 'react'
-
-// export default function Tabbar() {
-
-//   const style = StyleSheet.create({
-//     container: {
-//       flex: 1,
-//       backgroundColor: '#fff'
-//     },
-//     content: {
-//       flex: 1
-//     }
-//   })
-
-//   return (
-//     <>
-//       {/* <View style={style.container}> */}
-//       <TopBar />
-//       <View></View>
-//       <BottomBar />
-//       {/* </View> */}
-//     </>
-//   )
-// }
-
-
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Alert, BackHandler } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
@@ -386,11 +6,16 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import notifee, { AndroidCategory, AndroidImportance, AndroidLaunchActivityFlag, AndroidVisibility, EventType, TimeUnit } from '@notifee/react-native';
 
 const TopBar = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [theme, setTheme] = useState(false);
   const navigation = useNavigation();
+
+
+
+
 
   const toggleSwitch = () => {
     setTheme(!theme)
@@ -609,7 +234,7 @@ const TopBar = () => {
 
   const getFCMToken = async () => {
     const token = await messaging().getToken();
-    console.log("Tabar FCM token", token);
+    console.log("Logined use rFCM ", token)
   }
 
   const [loginedUserId, setLoginedUserId] = useState(false);
@@ -641,21 +266,97 @@ const TopBar = () => {
     GETAsuncStorage()
   }, [])
 
+
+
   useEffect(() => {
+
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      let payload = JSON.parse(JSON.stringify(remoteMessage)).data
-      console.log('payload',payload);
-      setIncomingCallData(JSON.parse(JSON.stringify(remoteMessage)).data)
-      setVisibleCallIncoming(true)
+      if (remoteMessage.data.channelNameFromNotify === 'acceptType') {
+        setIncomingCallData(JSON.parse(JSON.stringify(remoteMessage)).data)
+        setVisibleCallIncoming(true)
+      } else {
+        alert("Caller Left the calling...")
+        navigation.goBack()
+      }
     });
 
-    return unsubscribe;
+
+
+
+    const unsubscribe2 = messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+      notifee.cancelTriggerNotifications()
+
+      if (remoteMessage.data.channelNameFromNotify === 'acceptType') {
+        handleincomingvideoCall(remoteMessage)
+      } else {
+        navigation.goBack()
+      }
+    });
+
+
+
+    notifee.onBackgroundEvent(async ({ type, detail }) => {
+      switch (type) {
+        case EventType.ACTION_PRESS:
+
+          if (detail.pressAction.id === 'answer') {
+            var incomingCallData = detail.notification.data;
+
+            if (incomingCallData.callType === 'video') {
+              navigation.navigate('Chat', {
+                screen: "VideoCallingScreen", params: {
+                  remoteUserId: parseInt(incomingCallData.userId),
+                  userName: incomingCallData.fromUser,
+                  loggedUserId: loginedUserId,
+                  channelToken: incomingCallData.channelToken,
+                  channelNameFromNotify: incomingCallData.channelNameFromNotify
+                }
+              })
+            } else {
+              navigation.navigate('Chat', {
+                screen: "VoiceCalling", params: {
+                  remoteUserId: parseInt(incomingCallData.userId),
+                  userName: incomingCallData.fromUser,
+                  loggedUserId: loginedUserId,
+                  channelToken: incomingCallData.channelToken,
+                  channelNameFromNotify: incomingCallData.channelNameFromNotify
+
+                }
+              })
+            }
+            NotifeecancelAllNotification()
+          } else if (detail.pressAction.id === 'reject') {
+            var incomingCallData = detail.notification.data;
+
+            try {
+              const res = await privateAPI.post('/chat/send-fcm-message', {
+                token: incomingCallData.channelToken,
+                userName: "",
+                callType: incomingCallData.callType,
+                userId: "",
+                channelName: 'rejectType',
+                channelToken: ""
+              });
+              console.log('calling reject status!', res.data);
+            } catch (error) {
+              console.error('FCM Sedn Error', error);
+            }
+          } else if (detail.pressAction.id == "waiting") {
+
+          }
+
+          break;
+      }
+    });
+
+
+    return (unsubscribe2, unsubscribe);
   }, []);
 
   const AttendCall = () => {
     setVisibleCallIncoming(false)
-    console.log('incomingCallData' , incomingCallData)
     if (incomingCallData.callType === 'video') {
+
       navigation.navigate('Chat', {
         screen: "VideoCallingScreen", params: {
           remoteUserId: parseInt(incomingCallData.userId),
@@ -666,6 +367,7 @@ const TopBar = () => {
         }
       })
     } else {
+
       navigation.navigate('Chat', {
         screen: "VoiceCalling", params: {
           remoteUserId: parseInt(incomingCallData.userId),
@@ -679,26 +381,22 @@ const TopBar = () => {
     }
 
   }
-  const CancelCall = () => {
+  const CancelCall = async () => {
     setVisibleCallIncoming(false)
-  }
-
-  const [userType, setuserType] = useState('');
-  useEffect(() => {
-    const getusertype = async () => {
-      try {
-        const value = await AsyncStorage.getItem('usertype')
-        if (value !== null) {
-          const user = value.charAt(0).toUpperCase() + value.slice(1);
-          setuserType(user);
-         
-        }
-      } catch (error) {
-        console.log(error, "usertype not get from AsyncStorage")
-      }
+    try {
+      const res = await privateAPI.post('/chat/send-fcm-message', {
+        token: incomingCallData.channelToken,
+        userName: "",
+        callType: incomingCallData.callType,
+        userId: "",
+        channelName: 'rejectType',
+        channelToken: ""
+      });
+      console.log('calling reject status!', res.data);
+    } catch (error) {
+      console.error('FCM Sedn Error', error);
     }
-    getusertype();
-  }, [])
+  }
 
 
   return (
@@ -825,140 +523,119 @@ import ProfileRoot from './UserProfileScreen/ProfileMain/ProfileRoot';
 import HomeRoot from './HomeScreen/HomeRoot';
 import ProfileModalRoot from './NavigationScreen/PlusModel';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
-
-
-
+import { getToken } from 'firebase/installations';
+import handleincomingvideoCall, { NotifeecancelAllNotification } from '../../notification';
+import privateAPI from '../api/privateAPI';
 
 
 const Tab = createMaterialBottomTabNavigator();
 
 function BottomBar() {
-  
   return (
-    <Tab.Navigator
-    initialRouteName='Home'
-    activeColor='blue'
-    inactiveColor='black'
-    barStyle={{ backgroundColor: 'white', height: responsiveHeight(8) }}
-    backBehavior='order'
-    style={{height:5}}
-    tabBarOptions={{ showLabel: false }}
-  >
-    <Tab.Screen
-      name="Home"
-      component={HomeRoot}
-      options={{
-        tabBarLabel: false,
-        tabBarIcon: ({ focused }) => (
-          <View style={styles.tabIconContainer}>
-            <Image
-              style={styles.tabIcon}
-              source={require('../Assets/Home_Icon_And_Fonts/Home.png')}
-              resizeMode='stretch'
-            />
-            {focused && <View style={styles.underline} />}
-          </View>
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="Chat"
-      component={ChatRoot}
-      options={{
-        tabBarLabel: false,
-        tabBarIcon: ({ focused }) => (
-          <View style={styles.tabIconContainer}>
-            <Image
-              style={styles.tabIcon}
-              source={require('../Assets/Chats_Icon_And_Fonts/Filmhook_chat.png')}
-              resizeMode='stretch'
-            />
-            {focused && <View style={styles.underline} />}
-          </View>
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="Search"
-      component={SearchRoot}
-      options={{
-        tabBarLabel: false,
-        tabBarIcon: ({ focused }) => (
-          <View style={styles.tabIconContainer}>
-            <Image
-              style={styles.tabIcon}
-              source={require('../Assets/app_logo/all_search.png')}
-              resizeMode='stretch'
-            />
-            {focused && <View style={styles.underline} />}
-          </View>
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="Audition"
-      component={AuditionRoot}
-      options={{
-        tabBarLabel: false,
-        tabBarIcon: ({ focused }) => (
-          <View style={styles.tabIconContainer}>
-            <Image
-              style={styles.tabIcon}
-              source={require('../Assets/Audition_Icons_Fonts/Filmhook_Audition.png')}
-              resizeMode='stretch'
-            />
-            {focused && <View style={styles.underline} />}
-          </View>
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="User Profile"
-      component={ProfileRoot}
-      options={{
-        tabBarLabel: false,
-        tabBarIcon: ({ focused }) => (
-          <View style={styles.tabIconContainer}>
-            <Image
-              style={[styles.tabIcon, { bottom: 4, top: 0, padding: 5 }]}
-              source={require('../Assets/UserProfile_Icons_Fonts/Filmhook_UserProfile.png')}
-              resizeMode='stretch'
-            />
-            {focused && <View style={styles.underline} />}
-          </View>
-        ),
-      }}
-    />
-  </Tab.Navigator>
-);
 
+    <Tab.Navigator initialRouteName='Home'
+      activeColor='blue'
+      inactiveColor='black'
+      barStyle={{ backgroundColor: 'white', height: responsiveHeight(8) }}
+      backBehavior='order '
+      style={{}}
+      tabBarOptions={{ showlabel: false }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeRoot}
 
-  
-  
+        options={{
+          tabBarLabel: false,
+          tabBarIcon: ({ focused }) => {
+            return (
+              <Image
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
+                source={
+                  require('../Assets/Home_Icon_And_Fonts/Home.png')
+                }
+                focused={focused}
+              />
+            );
+          },
+
+        }}
+      />
+      <Tab.Screen
+        name="Chat"
+        component={ChatRoot}
+        options={{
+          tabBarLabel: false,
+          tabBarIcon: ({ focused: boolean, color: string }) => {
+            return (
+              <Image
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
+                source={
+                  require('../Assets/Chats_Icon_And_Fonts/Filmhook_chat.png')
+                }
+              />
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Search"
+        component={SearchRoot}
+        options={{
+          tabBarLabel: false,
+          tabBarIcon: ({ focused: boolean, color: string }) => {
+            return (
+              <Image
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
+                source={
+                  require('../Assets/app_logo/all_search.png')
+                }
+              />
+            );
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Audition"
+        component={AuditionRoot}
+        options={{
+          tabBarLabel: false,
+          tabBarIcon: ({ focused: boolean, color: string }) => {
+            return (
+              <Image
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
+                source={
+                  require('../Assets/Audition_Icons_Fonts/Filmhook_Audition.png')
+                }
+              />
+            );
+          },
+        }}
+      />
+
+      <Tab.Screen
+        name="User Profile"
+        component={ProfileRoot}
+        options={{
+          tabBarLabel: false,
+          tabBarIcon: ({ focused: boolean, color: string }) => {
+            return (
+              <Image
+                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 4, top: 0, alignSelf: 'center', padding: 5 }}
+                source={
+                  require('../Assets/UserProfile_Icons_Fonts/Filmhook_UserProfile.png')
+                }
+              />
+            );
+          },
+        }}
+      />
+    </Tab.Navigator>
+
+  )
 }
-const styles = StyleSheet.create({
-  tabIconContainer: {
-    width: responsiveWidth(9),
-    height: responsiveHeight(5),
-    alignItems: 'center',
-  },
-  tabIcon: {
-    width: responsiveWidth(9),
-    height: responsiveHeight(5),
-    bottom: 1,
-  },
-  underline: {
-    width: responsiveWidth(9),
-    height: 2, // Adjust the height of the underline
-    backgroundColor: 'blue', // Adjust the color of the underline
-    position: 'absolute',
-    bottom: 0,
-  },
-});
 
 
-// import {  Text , StyleSheet} from 'react-native'
-// import React from 'react'
 
 export default function Tabbar() {
   // useFocusEffect(

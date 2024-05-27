@@ -35,7 +35,7 @@ import Tabbar from './tabbar';
 import Logout from './NavigationScreen/Logout';
 import SignUpRoot from './UsersLogState/SignUp/signUpRoot';
 import PinnedProfile from './NavigationScreen/PinnedProfile';
-
+import BlockedProfiles from './NavigationScreen/BlockProfile';
 import Neartome from './NavigationScreen/NearToMe';
 import HelpAndSupport from './NavigationScreen/Help_Support';
 import Settings from './NavigationScreen/Settings';
@@ -46,14 +46,8 @@ import PersonalRoot from '../PersonalRoot';
 import Profilepic_edit_page from './UserProfileScreen/ProfileEdit/ProfilePic';
 import BiographyEdit from './UserProfileScreen/ProfileMain/BiographyEdit';
 import ChangePasswordScreen from './NavigationScreen/ChangePasswordScreen';
-import Biography from './UserProfileScreen/ProfileMain/BioGraphy';
-import fetchDataAndDisplayImage from './UsersLogState/test1';
-import FetchAndDisplayImage from './UsersLogState/test1';
-import BlockedProfiles from './BlockedProfiles';
-import GetBookingList from './GetBookingList';
 
-
-
+import { navigate, navigationRef } from '../NavigationService';
 
 
 
@@ -61,15 +55,14 @@ const Stack = createNativeStackNavigator();
 
 export default function Appnavigator() {
   return (
-    <>
-      <NavigationContainer>
-
+    
+      <NavigationContainer ref={navigationRef}>
         <Stack.Navigator >
           <Stack.Screen component={SignUpRoot} name='SearchRoot' options={{ headerShown: false }} />
           <Stack.Screen component={Tabbar} name='Tabbar' options={{ headerShown: false }} />
           <Stack.Screen component={Logout} name='Logout' options={{ headerShown: false }} />
           <Stack.Screen component={PinnedProfile} name='PinnedProfile' options={{ headerShown: false }} />
-          {/* <Stack.Screen component={BlockedProfiles} name='BlockedProfiles' options={{ headerShown: false }} /> */}
+          <Stack.Screen component={BlockedProfiles} name='BlockedProfiles' options={{ headerShown: false }} />
           <Stack.Screen component={Neartome} name='Neartome' options={{ headerShown: false }} />
           <Stack.Screen component={HelpAndSupport} name='HelpAndSupport' options={{ headerShown: false }} />
           <Stack.Screen component={Settings} name='Settings'
@@ -84,20 +77,9 @@ export default function Appnavigator() {
 
           <Stack.Screen component={ChangePasswordScreen} name='ChangePasswordScreen' options={{ headerShown: false }} />
 
-          <Stack.Screen component={Biography} name='Biography' options={{ headerShown: false }} />
-          <Stack.Screen component={BlockedProfiles} name='BlockedProfiles' options={{ headerShown: false }} />
-
-
-          <Stack.Screen component={GetBookingList} name='GetBookingList' options={{ headerShown: false }} />
-
-
-
-
 
         </Stack.Navigator>
       </NavigationContainer>
-
-
-    </>
+  
   )
 }
