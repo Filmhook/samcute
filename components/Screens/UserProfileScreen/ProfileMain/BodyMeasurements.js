@@ -89,7 +89,6 @@ const BodyMeasurement = () => {
     const userId = await AsyncStorage.getItem('userId');
     const jwt = await AsyncStorage.getItem('jwt');
 
-    const url = 'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/updateBiologicalDetails';
     const requestBody = {
       userId: userId,
       height: height,
@@ -119,23 +118,17 @@ const BodyMeasurement = () => {
   return (
     <>
       <View style={styles.container}>
-        <View style={styles.bio_title}>
-          <TouchableOpacity style={styles.bio_title} onPress={toggleExpanded}>
-            <Text style={styles.bio_title_text}>BODY MEASUREMENT</Text>
-            <View
-              style={{
-                width: responsiveWidth(6),
-                height: responsiveHeight(4),
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Image
-                source={require('../../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
-                style={styles.downArrow}
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.bio_title}>
+        <TouchableOpacity style={styles.bio_title_touchable} onPress={toggleExpanded}>
+          <Text style={styles.bio_title_text}>BODY MEASUREMENT</Text>
+          <View style={styles.downArrowContainer}>
+            <Image
+              source={require('../../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
+              style={styles.downArrow}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
         {expanded && (
           <View style={styles.bio_content}>
             {isEditing ? null : (
@@ -156,7 +149,7 @@ const BodyMeasurement = () => {
                 resizeMode="stretch">
                 <View
                   style={{
-                    marginLeft: responsiveWidth(0.2),
+                    marginLeft: responsiveWidth(2),
                     marginTop: responsiveHeight(0.5),
                     width: responsiveWidth(7.2),
                     height: responsiveHeight(4),
@@ -205,7 +198,7 @@ const BodyMeasurement = () => {
                 resizeMode="stretch">
                 <View
                   style={{
-                    marginLeft: responsiveWidth(0.2),
+                    marginLeft: responsiveWidth(2),
                     marginTop: responsiveHeight(0.5),
                     width: responsiveWidth(7.2),
                     height: responsiveHeight(4),
@@ -253,13 +246,13 @@ const BodyMeasurement = () => {
                 resizeMode="stretch">
                 <View
                   style={{
-                    marginLeft: responsiveWidth(0.2),
+                    marginLeft: responsiveWidth(2),
                     marginTop: responsiveHeight(0.5),
                     width: responsiveWidth(7.2),
                     height: responsiveHeight(4),
                   }}>
                   <Image
-                    source={require('../../../../components/Assets/Userprofile_And_Fonts/update/Weight_icon.png')}
+                    source={require('../../../../components/Assets/Userprofile_And_Fonts/update/skin_tone_icon.png')}
                     style={{ width: '100%', height: '100%' }}
                   />
                 </View>
@@ -295,7 +288,7 @@ const BodyMeasurement = () => {
               </ImageBackground>
             </View>
 
-            <View style={{ flexDirection: 'column', flex: 1 }}>
+            <View style={{ flexDirection: 'column', flex: 1 ,left:responsiveWidth(43)}}>
               <View
                 style={{
                   width: responsiveWidth(19),
@@ -471,9 +464,8 @@ const BodyMeasurement = () => {
 const getStyles = theme => {
   return StyleSheet.create({
     container: {
-      flexDirection: 'row',
-      marginTop: responsiveHeight(0.2),
       flex: 1,
+     // padding: responsiveWidth(4),
 
     },
     bio_title: {
@@ -498,7 +490,7 @@ const getStyles = theme => {
     },
     bio_content: {
       flex: 1,
-      marginTop: responsiveHeight(6),
+      marginTop: responsiveHeight(1),
     },
     editButton: {
       fontSize: 18,
@@ -516,6 +508,7 @@ const getStyles = theme => {
       borderColor: 'black',
       borderRadius: responsiveWidth(2),
       marginBottom: responsiveHeight(1.5),
+      left:responsiveWidth(43)
     },
     inputContainer: {
       flex: 1,
@@ -531,6 +524,37 @@ const getStyles = theme => {
     },
     hr_tag: {
       borderBottomWidth: 1,
+    },
+    bio_title: {
+      width: '100%',
+      flexDirection: 'row',
+      backgroundColor: '#d3d3d3', // Light gray background color
+      padding: responsiveWidth(4),
+      borderRadius: 8,
+      marginTop: responsiveHeight(1),
+    },
+    bio_title_touchable: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width: '100%',
+    },
+    bio_title_text: {
+      fontWeight: 'bold',
+      fontSize: responsiveFontSize(2.2),
+      color: 'black',
+      fontFamily: 'Cochin',
+      width: responsiveWidth(70),
+    },
+    downArrowContainer: {
+      width: responsiveWidth(6),
+      height: responsiveHeight(4),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    downArrow: {
+      width: 20,
+      height: 20,
     },
   });
 };

@@ -836,7 +836,7 @@ const myHeaders = new Headers();
 console.log(`Posted Data - ${JSON.stringify(formData)}`)
 console.log(`Posted Data - ${JSON.stringify(formData)}`)
       // Make a POST request using fetch
-      fetch("https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/industryUser/saveIndustryUserFiles", requestOptions)
+      fetch("https://filmhook.annularprojects.com/filmhook-0.1/industryUser/saveIndustryUserFiles", requestOptions)
         .then((response) => response.json()) // Parse response JSON
         .then((data) => {
           console.log("Response data:", data);

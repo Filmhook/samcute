@@ -436,7 +436,7 @@ const ProfilePic = ({ userId }) => {
             try {
                 const jwt = await AsyncStorage.getItem('jwt');
                 const response = await privateAPI.post(
-                    'http://3.27.207.83:8080/filmhook-0.0.1-SNAPSHOT/user/getCoverPic',
+                    'user/getCoverPic',
                     { userId },
 
                 );
@@ -462,7 +462,7 @@ const ProfilePic = ({ userId }) => {
             try {
                 const jwt = await AsyncStorage.getItem('jwt');
                 const response = await privateAPI.post(
-                    'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getProfilePic',
+                    'user/getProfilePic',
                     { userId },
 
                 );
@@ -574,7 +574,7 @@ const ProfilePic = ({ userId }) => {
     return (
         <View style={styleProfileCover.container}>
 
-            <View style={{ height: responsiveHeight(27),borderWidth:1 }}>
+            <View style={{ height: responsiveHeight(27), borderWidth: 1 }}>
                 {filePaths.length > 0 ? (
                     <>
                         <FlatList
@@ -621,21 +621,21 @@ const ProfilePic = ({ userId }) => {
                     <Image source={require('../Assets/Userprofile_And_Fonts/star.png')} style={styleProfileCover.review_img} />
                 </View>
             </View>
-            <View style={{ flexDirection: 'row', position: 'absolute', top: '110%', left: '43%' ,columnGap:responsiveWidth(2)}}>
-            <TouchableOpacity style={styleProfileCover.followers} onPress={handleFollow}>
+            <View style={{ flexDirection: 'row', position: 'absolute', top: '110%', left: '43%', columnGap: responsiveWidth(2) }}>
+                <TouchableOpacity style={styleProfileCover.followers} onPress={handleFollow}>
 
-                <Text style={styleProfileCover.followers_text}>Follow</Text>
+                    <Text style={styleProfileCover.followers_text}>Follow</Text>
 
-            </TouchableOpacity>
+                </TouchableOpacity>
 
-            <TouchableOpacity style={styleProfileCover.followers} onPress={handleUnFollow}>
+                <TouchableOpacity style={styleProfileCover.followers} onPress={handleUnFollow}>
 
-                <Text style={styleProfileCover.followers_text}>UnFollow</Text>
+                    <Text style={styleProfileCover.followers_text}>UnFollow</Text>
 
-            </TouchableOpacity>
+                </TouchableOpacity>
             </View>
 
-           
+
         </View>
     );
 };
@@ -643,7 +643,7 @@ const ProfilePic = ({ userId }) => {
 const styleProfileCover = StyleSheet.create({
     container: {
         flex: 1,
-        marginBottom: responsiveHeight(10)
+        // marginBottom: responsiveHeight(10)
         //  height:'20%', 
         //  borderWidth:1
     },
@@ -716,14 +716,16 @@ const styleProfileCover = StyleSheet.create({
         height: responsiveHeight(22),
         width: responsiveWidth(38),
         marginLeft: responsiveWidth(1),
-        borderRadius: responsiveWidth(6),
+
         top: responsiveHeight(15),
-        borderWidth: 1
+        borderWidth: 1,
+        borderRadius: responsiveWidth(6),
     },
     imagePic: {
         width: '100%',
         height: '100%',
-        resizeMode: 'stretch'
+        resizeMode: 'stretch',
+        borderRadius: responsiveWidth(6)
     },
     image: {
         width: Dimensions.get('window').width,
@@ -805,7 +807,7 @@ const Biography = ({ userId }) => {
                 });
 
                 const user = response.data.data;
-                setDob(user.dob ? moment(user.dob).toDate() : new Date());
+                setDob(user.dob || '');
                 setGender(user.gender || '');
                 setCountry(user.country || '');
                 setState(user.state || '');
@@ -867,7 +869,7 @@ const Biography = ({ userId }) => {
                                     fontWeight: '500',
                                     fontFamily: 'Times New Roman',
                                     bottom: responsiveHeight(3)
-                                }}>{moment(dob).format('YYYY-MM-DD')}</Text>
+                                }}>{dob}</Text>
                             </View>
                         </ImageBackground>
                     </View>
@@ -1062,7 +1064,7 @@ const Biography = ({ userId }) => {
 
 const style = StyleSheet.create({
     container: {
-        flexDirection: 'row',
+
         marginTop: responsiveHeight(12),
         // height: responsiveHeight(55)
     },
@@ -1089,8 +1091,12 @@ const style = StyleSheet.create({
         height: '100%',
     },
     bio_title: {
-        flex: responsiveWidth(0.2),
-        // borderWidth: 1
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: '#d3d3d3', // Light gray background color
+        padding: responsiveWidth(4),
+        borderRadius: 8,
+        marginTop: responsiveHeight(1),
     },
     editButton: {
         fontSize: 18,
@@ -1104,14 +1110,15 @@ const style = StyleSheet.create({
     },
     bio_title_text: {
         fontWeight: 'bold',
-        fontSize: responsiveFontSize(3),
-        color: '#323232',
-        marginLeft: responsiveWidth(2),
-        fontFamily: 'Times New Roman',
-        textDecorationLine: 'underline',
+        fontSize: responsiveFontSize(2.2),
+        color: 'black',
+        fontFamily: 'Cochin',
+        width: responsiveWidth(70),
     },
     bio_content: {
         flex: 1,
+        left: '43%',
+        marginTop: '4%'
         //  borderWidth:1
     },
     bio_content_section: {
@@ -1122,26 +1129,42 @@ const style = StyleSheet.create({
         borderRadius: responsiveWidth(2),
         marginBottom: responsiveHeight(1.5),
     },
-    // text:{
-    //     fontSize:18,
-    //     color:'#323232',
-    //     fontWeight:'bold',
-    //     marginLeft:20,
-    //     marginTop:6,
-    //     fontFamily:"Times New Roman",
-    // },
-    // hr_tag: {
-    //     borderBottomWidth: responsiveWidth(1.5),
-    //     borderBottomColor: '#D7D7D7',
-    //     marginVertical: responsiveHeight(0.5),
-    // },
-    bioTextContainer: {
-        // borderWidth: 1,
 
-        // left:responsiveWidth(4),
-        //  left: '22%',
+    bioTextContainer: {
+
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    bio_title: {
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: '#d3d3d3', // Light gray background color
+        padding: responsiveWidth(4),
+        borderRadius: 8,
+        marginTop: responsiveHeight(1),
+    },
+    bio_title_touchable: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    bio_title_text: {
+        fontWeight: 'bold',
+        fontSize: responsiveFontSize(2.2),
+        color: 'black',
+        fontFamily: 'Cochin',
+        width: responsiveWidth(70),
+    },
+    downArrowContainer: {
+        width: responsiveWidth(6),
+        height: responsiveHeight(4),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    downArrow: {
+        width: 20,
+        height: 20,
     },
 });
 
@@ -1214,15 +1237,9 @@ const BodyMeasurement = ({ userId }) => {
         <>
             <View style={styles.container}>
                 <View style={styles.bio_title}>
-                    <TouchableOpacity style={styles.bio_title} onPress={toggleExpanded}>
+                    <TouchableOpacity style={styles.bio_title_touchable} onPress={toggleExpanded}>
                         <Text style={styles.bio_title_text}>BODY MEASUREMENT</Text>
-                        <View
-                            style={{
-                                width: responsiveWidth(6),
-                                height: responsiveHeight(4),
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}>
+                        <View style={styles.downArrowContainer}>
                             <Image
                                 source={require('../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
                                 style={styles.downArrow}
@@ -1239,7 +1256,7 @@ const BodyMeasurement = ({ userId }) => {
                                 resizeMode="stretch">
                                 <View
                                     style={{
-                                        marginLeft: responsiveWidth(0.2),
+                                        marginLeft: responsiveWidth(2),
                                         marginTop: responsiveHeight(0.5),
                                         width: responsiveWidth(7.2),
                                         height: responsiveHeight(4),
@@ -1272,7 +1289,7 @@ const BodyMeasurement = ({ userId }) => {
                                 resizeMode="stretch">
                                 <View
                                     style={{
-                                        marginLeft: responsiveWidth(0.2),
+                                        marginLeft: responsiveWidth(2),
                                         marginTop: responsiveHeight(0.5),
                                         width: responsiveWidth(7.2),
                                         height: responsiveHeight(4),
@@ -1304,13 +1321,13 @@ const BodyMeasurement = ({ userId }) => {
                                 resizeMode="stretch">
                                 <View
                                     style={{
-                                        marginLeft: responsiveWidth(0.2),
+                                        marginLeft: responsiveWidth(2),
                                         marginTop: responsiveHeight(0.5),
                                         width: responsiveWidth(7.2),
                                         height: responsiveHeight(4),
                                     }}>
                                     <Image
-                                        source={require('../../components/Assets/Userprofile_And_Fonts/update/Weight_icon.png')}
+                                        source={require('../../components/Assets/Userprofile_And_Fonts/update/skin_tone_icon.png')}
                                         style={{ width: '100%', height: '100%' }}
                                     />
                                 </View>
@@ -1439,34 +1456,15 @@ const BodyMeasurement = ({ userId }) => {
 const getStyles = theme => {
     return StyleSheet.create({
         container: {
-            flexDirection: 'row',
+
             marginTop: responsiveHeight(0.2),
 
+        },
 
-        },
-        bio_title: {
-            flex: responsiveWidth(0.2),
-            width: '100%',
-            flexDirection: 'row',
-            columnGap: responsiveWidth(20),
-            marginTop: responsiveHeight(1),
-        },
-        downArrow: {
-            width: 20,
-            height: 20,
-            marginRight: responsiveWidth(2),
-        },
-        bio_title_text: {
-            fontWeight: 'bold',
-            fontSize: responsiveFontSize(2.2),
-            color: 'black',
-            marginLeft: responsiveWidth(2),
-            fontFamily: 'Cochin',
-            width: responsiveWidth(70),
-        },
         bio_content: {
             flex: 1,
-            marginTop: responsiveHeight(6),
+            marginTop: responsiveHeight(1),
+            left: '43%'
         },
         bio_content_section: {
             flexDirection: 'row',
@@ -1490,6 +1488,37 @@ const getStyles = theme => {
         },
         hr_tag: {
             borderBottomWidth: 1,
+        },
+        bio_title: {
+            width: '100%',
+            flexDirection: 'row',
+            backgroundColor: '#d3d3d3', // Light gray background color
+            padding: responsiveWidth(4),
+            borderRadius: 8,
+            marginTop: responsiveHeight(1),
+        },
+        bio_title_touchable: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
+        },
+        bio_title_text: {
+            fontWeight: 'bold',
+            fontSize: responsiveFontSize(2.2),
+            color: 'black',
+            fontFamily: 'Cochin',
+            width: responsiveWidth(70),
+        },
+        downArrowContainer: {
+            width: responsiveWidth(6),
+            height: responsiveHeight(4),
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        downArrow: {
+            width: 20,
+            height: 20,
         },
     });
 };
@@ -1557,20 +1586,13 @@ const Professionalinfo = ({ userId }) => {
     return (
         <>
             <View style={stylePi.container}>
-                <View style={stylePi.bio_title}>
-                    <TouchableOpacity style={stylePi.bio_title} onPress={toggleExpanded}>
-                        <Text style={stylePi.bio_title_text}>PERSONAL INFORMATION</Text>
-
-                        <View
-                            style={{
-                                width: responsiveWidth(5),
-                                height: responsiveHeight(4),
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}>
+                <View style={style.bio_title}>
+                    <TouchableOpacity style={style.bio_title_touchable} onPress={toggleExpanded}>
+                        <Text style={style.bio_title_text}>PERSONAL INFORMATION</Text>
+                        <View style={style.downArrowContainer}>
                             <Image
                                 source={require('../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
-                                style={stylePi.downArrow}
+                                style={style.downArrow}
                             />
                         </View>
                     </TouchableOpacity>
@@ -2024,6 +2046,37 @@ const stylePi = StyleSheet.create({
         width: 200,
         textAlign: 'center'
     },
+    bio_title: {
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: '#d3d3d3', // Light gray background color
+        padding: responsiveWidth(4),
+        borderRadius: 8,
+        marginTop: responsiveHeight(1),
+    },
+    bio_title_touchable: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    bio_title_text: {
+        fontWeight: 'bold',
+        fontSize: responsiveFontSize(2.2),
+        color: 'black',
+        fontFamily: 'Cochin',
+        width: responsiveWidth(70),
+    },
+    downArrowContainer: {
+        width: responsiveWidth(6),
+        height: responsiveHeight(4),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    downArrow: {
+        width: 20,
+        height: 20,
+    },
 });
 
 //Education
@@ -2119,16 +2172,13 @@ const Education = ({ userId }) => {
         <>
             <View style={styleEducation.container}>
 
-                <View style={styleEducation.bio_title}>
-                    <TouchableOpacity style={styleEducation.bio_title} onPress={toggleExpanded}>
-                        <Text style={styleEducation.bio_title_text}>
-                            EDUCATION
-                        </Text>
-
-                        <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
+                <View style={style.bio_title}>
+                    <TouchableOpacity style={style.bio_title_touchable} onPress={toggleExpanded}>
+                        <Text style={style.bio_title_text}>EDUCATION</Text>
+                        <View style={style.downArrowContainer}>
                             <Image
-                                source={require("../Assets/Userprofile_And_Fonts/update/down-arrow.png")}
-                                style={styleEducation.downArrow}
+                                source={require('../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
+                                style={style.downArrow}
                             />
                         </View>
                     </TouchableOpacity>
@@ -2311,6 +2361,37 @@ const styleEducation = StyleSheet.create({
         alignSelf: 'flex-end',
         paddingRight: responsiveWidth(3),
     },
+    bio_title: {
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: '#d3d3d3', // Light gray background color
+        padding: responsiveWidth(4),
+        borderRadius: 8,
+        marginTop: responsiveHeight(1),
+    },
+    bio_title_touchable: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    bio_title_text: {
+        fontWeight: 'bold',
+        fontSize: responsiveFontSize(2.2),
+        color: 'black',
+        fontFamily: 'Cochin',
+        width: responsiveWidth(70),
+    },
+    downArrowContainer: {
+        width: responsiveWidth(6),
+        height: responsiveHeight(4),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    downArrow: {
+        width: 20,
+        height: 20,
+    },
 })
 
 // profession
@@ -2468,7 +2549,7 @@ const Profession = ({ userId }) => {
             type: `image/${fileType}`,
         });
 
-        const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/IndustryUser/project/saveProjectFiles', {
+        const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.1/IndustryUser/project/saveProjectFiles', {
             method: 'POST',
             body: formData,
             headers: myHeaders
@@ -2494,12 +2575,17 @@ const Profession = ({ userId }) => {
     // Render JSX based on fetched data
     return (
         <View style={styleProfession.containers}>
-            <TouchableOpacity style={styleProfession.bio_title} onPress={toggleExpanded}>
-                <Text style={styleProfession.bio_title_text}>PROFESSION</Text>
-                <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
-                    <Image source={require("../Assets/Userprofile_And_Fonts/update/down-arrow.png")} style={styleProfession.downArrow} />
-                </View>
-            </TouchableOpacity>
+            <View style={styleProfession.bio_title}>
+                <TouchableOpacity style={styleProfession.bio_title_touchable} onPress={toggleExpanded}>
+                    <Text style={styleProfession.bio_title_text}>PROFESSION</Text>
+                    <View style={styleProfession.downArrowContainer}>
+                        <Image
+                            source={require('../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
+                            style={styleProfession.downArrow}
+                        />
+                    </View>
+                </TouchableOpacity>
+            </View>
 
             {expanded && (
 
@@ -2693,19 +2779,39 @@ const styleProfession = StyleSheet.create({
         textAlign: 'center'
         // marginLeft: 10,
     },
-    // border: {
+    bio_title: {
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: '#d3d3d3', // Light gray background color
+        padding: responsiveWidth(4),
+        borderRadius: 8,
+        marginTop: responsiveHeight(1),
+    },
+    bio_title_touchable: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    bio_title_text: {
+        fontWeight: 'bold',
+        fontSize: responsiveFontSize(2.2),
+        color: 'black',
+        fontFamily: 'Cochin',
+        width: responsiveWidth(70),
+    },
+    downArrowContainer: {
+        width: responsiveWidth(6),
+        height: responsiveHeight(4),
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    downArrow: {
+        width: 20,
+        height: 20,
+    },
 
-    //   borderColor: 'black',
-
-    // },
 });
-
-// PROFILEpIC
-
-
-
-
-
 
 
 
@@ -2946,7 +3052,7 @@ export default function UserProfile({ route }) {
                 onPress={handleFloatingButtonClick}>
                 {/* Replace with your floating button icon */}
                 <Image
-                    source={require('../Assets/Audition_Icons_Fonts/write_icon_148501-removebg.png')}
+                    source={require('../Assets/Userprofile_And_Fonts/nine-Icons/Chats-Menu.png')}
                     style={styles.floatingButtonImage}
                 />
             </TouchableOpacity>
@@ -2963,7 +3069,7 @@ const styles = StyleSheet.create({
 
         height: 60,
         borderRadius: 30,
-        backgroundColor: '#007bff',
+        // backgroundColor: '#007bff',
         alignItems: 'center',
         justifyContent: 'center',
         elevation: 8, // Shadow for Android
@@ -3012,8 +3118,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
     },
     floatingButtonImage: {
-        width: 30,
-        height: 30,
+        width: '50%',
+        height: '50%',
     },
     iconGrid: {
         position: 'absolute',
@@ -3023,6 +3129,7 @@ const styles = StyleSheet.create({
         left: responsiveWidth(10),
         flexDirection: 'row',
         flexWrap: 'wrap',
+        // backgroundColor:'gray',
     },
     iconContainer: {
         width: responsiveWidth(10),
@@ -3031,7 +3138,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 10,
         marginRight: 10,
-        backgroundColor: 'rgba(0, 123, 255, 0.8)',
+        // backgroundColor: 'rgba(0, 123, 255, 0.8)',
         borderRadius: 10,
     },
     iconImage: {

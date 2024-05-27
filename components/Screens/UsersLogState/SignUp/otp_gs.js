@@ -102,7 +102,7 @@ export default function Otp_GS() {
             />
           </View>
           <View style={styles.text}>
-              <Text style={{fontSize:responsiveFontSize(2.2), fontWeight:'bold', color:'black'}}>OTP sent to {mail}</Text>
+              <Text style={{fontSize:responsiveFontSize(2.2), fontWeight:'bold', color:'black'}}>OTP sent to your Registered mail Id</Text>
             </View>
           <View>
 

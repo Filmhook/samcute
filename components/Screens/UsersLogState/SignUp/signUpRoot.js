@@ -1,4 +1,5 @@
-import React from 'react'
+
+import React, { useEffect, useState } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Text } from 'react-native';
 import { Header } from 'react-native/Libraries/NewAppScreen';
@@ -28,17 +29,50 @@ import Otp_GS from './otp_gs';
 import ForgotPasswordsecondpage from '../SignIn/ForgotPasswordsecondpage';
 import SignUpDob from './G_S_Dob';
 import SignUpCountry from './G_S_Country';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingScreen from './LoadinScreen';
+import Tabbar from '../../tabbar';
 import IndustryUpdateOne from './IndustryUpdateOne';
 import IndustryUpdateTwo from './IndustryUpdateTwo';
 
 const Stack = createNativeStackNavigator();
 
 export default function SignUpRoot() {
+
+    const [initialRoute, setInitialRoute] = useState(null);
+
+    useEffect(() => {
+        const checkToken = async () => {
+            try {
+                const token = await AsyncStorage.getItem('token');
+                console.log("token", token)
+                if (token) {
+                    setInitialRoute('Tabbar'); // Set to your desired home page
+                } else {
+                    setInitialRoute('Login');
+                }
+            } catch (error) {
+                console.error('Error checking token:', error);
+                setInitialRoute('Login');
+            }
+        };
+
+        checkToken();
+    }, []);
+
+    if (!initialRoute) {
+        return <LoadingScreen />;
+    }
     return (
 
 
 
-        <Stack.Navigator initialRouteName='Login'>
+        <Stack.Navigator initialRouteName={initialRoute}>
+            <Stack.Screen name='Login' component={Login}
+                options={{ headerShown: false }} />
+            <Stack.Screen component={Tabbar} name='Tabbar' options={{ headerShown: false }} />
+
+
             <Stack.Screen component={SignUpOne} name="SignUpOne" options={{ headerShown: false }} />
             <Stack.Screen component={SignUpTwo} name="SignUpTwo" options={{ headerShown: false }} />
             <Stack.Screen component={SignUpThree} name="SignUpThree" options={{ headerShown: false }} />
@@ -52,8 +86,6 @@ export default function SignUpRoot() {
             <Stack.Screen component={Subscription} name="Subscription" options={{ headerShown: false }} />
             <Stack.Screen component={Terms_Conditions} name="Terms&Conditions" options={{ headerShown: false }} />
             <Stack.Screen component={ProfileRoot} name="ProfileRoot" options={{ headerShown: false }} />
-            <Stack.Screen name='Login' component={Login}
-                options={{ headerShown: false }} />
             <Stack.Screen name='SignUpLogin' component={SignUp_Login}
                 options={{ headerShown: false }} />
             <Stack.Screen name='SignOutLogin' component={SignOut_Login}
@@ -80,12 +112,12 @@ export default function SignUpRoot() {
             <Stack.Screen name='SignUpDob' component={SignUpDob}
                 options={{ headerShown: false }} />
 
-<Stack.Screen name='SignUpCountry' component={SignUpCountry}
+            <Stack.Screen name='SignUpCountry' component={SignUpCountry}
                 options={{ headerShown: false }} />
-                
-<Stack.Screen name='IndustryUpdateOne' component={IndustryUpdateOne}
+ <Stack.Screen name='IndustryUpdateOne' component={IndustryUpdateOne}
                 options={{ headerShown: false }} />
-                <Stack.Screen name='IndustryUpdateTwo' component={IndustryUpdateTwo}
+
+<Stack.Screen name='IndustryUpdateTwo' component={IndustryUpdateTwo}
                 options={{ headerShown: false }} />
 
 

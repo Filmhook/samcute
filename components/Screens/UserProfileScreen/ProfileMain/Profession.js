@@ -30,10 +30,8 @@ const [currentTitle, setCurrentTitle] = useState('');
 const [isEditing, setIsEditing] = useState(false);
 
   const [editingPlatformId, setEditingPlatformId] = useState(null); 
-
-
-
-
+  const [startYears, setStartYears] = useState({});
+  const [endYears, setEndYears] = useState({});
 
 
   const toggleEditMode = (platformId) => {
@@ -113,11 +111,11 @@ const fetchData = async () => {
       platformName: item.platformName,
       industries: item.industries.map(industry => ({
         industryName: industry.industryName,
-        imageURL: `data:image/jpeg;base64,${industry.image}`, // Decode base64 to image URL
+        imageURL: `data:image/jpeg;base64,${industry.industryimage}`, // Decode base64 to image URL
       })),
       professions: item.professions.map(profession => ({
         professionName: profession.professionName,
-        subProfessions: profession.subProfessionNames || [],
+        subProfessions: profession.subProfessionName || [],
         imageURL: `data:image/jpeg;base64,${profession.image}`, // Decode base64 to image URL
       })),
       filmCount: item.filmCount,
@@ -159,76 +157,7 @@ const project = (platformId) => {
   }
 };
 
-// const openImagePicker = (platformId) => {
-//   setOpeningImagePicker(true);
-//   const options = {
-//     mediaType: 'photo',
-//     includeBase64: false,
-//     maxHeight: 300,
-//     maxWidth: 300,
-//   };
 
-//   launchImageLibrary(options, async (response) => {
-//     setOpeningImagePicker(false);
-//     if (response.didCancel) {
-//       console.log('User cancelled image picker');
-//     } else if (response.error) {
-//       console.log('Image picker error: ', response.error);
-//     } else {
-//       const selectedImage = response.assets[0];
-//       setSelectedImage(selectedImage);
-//       try {
-//         await addImageWithTitle(platformId);
-//       } catch (error) {
-//         console.error('Failed to upload image:', error);
-//       }
-//     }
-//   });
-// };
-
-
-
-// const addImageWithTitle = async (platformId) => {
-//   if (!selectedImage) {
-//     throw new Error('No image selected.');
-//   }
-//   const userId = await AsyncStorage.getItem('userId');
-//   const jwt = await AsyncStorage.getItem('jwt');
-
-//   console.log('usedidddd ',userId )
-//   const myHeaders = new Headers();
-//   myHeaders.append('Authorization', 'Bearer ' + jwt);
-
-//   const formData = new FormData();
- 
-//   formData.append('userId', userId);
-//   formData.append('platformPermanentId', platformId);
-
-//   const imageUriParts = selectedImage.uri.split('.');
-//   const fileType = imageUriParts[imageUriParts.length - 1];
-//   formData.append(`fileInputWebModel.files[0]`, {
-//     uri: selectedImage.uri,
-//     name: `image.${fileType}`,
-//     type: `image/${fileType}`,
-//   });
-
-//   const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/IndustryUser/project/saveProjectFiles', {
-//     method: 'POST',
-//     body: formData,
-//     headers: myHeaders
-//   });
-
-//   if (!response.ok) {
-//     throw new Error('Failed to upload image. HTTP Error: ' + response.status);
-//   }
-
-//   const data = await response.json();
-//   if (data.status !== 1) {
-//     throw new Error('Failed to upload image. Server returned status: ' + data.status);
-//   }
-
-//   Alert.alert('Posted');
-// };
 
 const toggleExpanded = () => {
   setExpanded(!expanded);
@@ -277,7 +206,7 @@ const uploadImage = async () => {
 
     const formData = new FormData();
     formData.append('userId', userId);
-    formData.append('platformPermanentId', '2'); // Replace with actual platform ID
+    formData.append('platformPermanentId', platformId); // Replace with actual platform ID
     formData.append('fileInputWebModel.description', description);
 
     const imageUriParts = selectedImage.uri.split('.');
@@ -288,12 +217,12 @@ const uploadImage = async () => {
       type: `image/${fileType}`,
     });
 
-    const response = await axios.post(
-      'http://3.27.207.83:8080/filmhook-0.0.1-SNAPSHOT/IndustryUser/project/saveProjectFiles',
+    const response = await privateAPI.post(
+      'IndustryUser/project/saveProjectFiles',
       formData,
       {
         headers: {
-          'Authorization': `Bearer ${jwt}`,
+         
           'Content-Type': 'multipart/form-data',
         },
       }
@@ -319,25 +248,31 @@ const uploadImage = async () => {
   // Render JSX based on fetched data
   return (
     <View style={styles.containers}>
-      <TouchableOpacity style={styles.bio_title} onPress={toggleExpanded}>
-        <Text style={styles.bio_title_text}>PROFESSION</Text>
-        <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
-          <Image source={require("../../../Assets/Userprofile_And_Fonts/update/down-arrow.png")} style={styles.downArrow} />
-        </View>
-      </TouchableOpacity>
+     
+        <View style={styles.bio_title}>
+        <TouchableOpacity style={styles.bio_title_touchable} onPress={toggleExpanded}>
+          <Text style={styles.bio_title_text}>PROFESSION</Text>
+          <View style={styles.downArrowContainer}>
+            <Image
+              source={require('../../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
+              style={styles.downArrow}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
 
       {expanded &&(
 
 
       <ScrollView style={{ width: responsiveWidth(100), }}>
       {isEditing && (
-              <TouchableOpacity onPress={()=>navigation.navigate('IndustryUpdateOne')} style={{
+              <TouchableOpacity onPress={()=>navigation.navigate('IndustryOne')} style={{
                 height: responsiveHeight(5.5),
                 width: responsiveWidth(45.5),
                  borderWidth: responsiveWidth(0.3),
                 borderColor: 'black',
                 borderRadius: responsiveWidth(2),
-               left:responsiveWidth(54),
+               left:responsiveWidth(51),
                 justifyContent: 'center',
                 alignItems: 'center',
                 backgroundColor:'blue'
@@ -651,11 +586,38 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-  // border: {
-
-  //   borderColor: 'black',
-   
-  // },
+  bio_title: {
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: '#d3d3d3', // Light gray background color
+    padding: responsiveWidth(4),
+    borderRadius: 8,
+    marginTop: responsiveHeight(1),
+  },
+  bio_title_touchable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  bio_title_text: {
+    fontWeight: 'bold',
+    fontSize: responsiveFontSize(2.2),
+    color: 'black',
+    fontFamily: 'Cochin',
+    width: responsiveWidth(70),
+  },
+  downArrowContainer: {
+    width: responsiveWidth(6),
+    height: responsiveHeight(4),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  downArrow: {
+    width: 20,
+    height: 20,
+  },
+ 
 });
 
 

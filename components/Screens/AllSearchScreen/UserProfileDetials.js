@@ -11,11 +11,11 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import privateAPI from '../../api/privateAPI';
 
 
-const ProfilePic = (userId) => {
+const ProfilePic = (userId, userName) => {
   const [filePaths, setFilePaths] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [filePath, setFilePath] = useState('');
-  const [userName, setUserName] = useState('');
+
   const [noCoverPic, setNoCoverPic] = useState(false);
   const [noProfilePic, setNoProfilePic] = useState(false);
 
@@ -24,7 +24,7 @@ const ProfilePic = (userId) => {
       try {
         const jwt = await AsyncStorage.getItem('jwt');
         const response = await privateAPI.post(
-          'http://3.27.207.83:8080/filmhook-0.0.1-SNAPSHOT/user/getCoverPic',
+          'user/getCoverPic',
           { userId },
 
         );
@@ -50,7 +50,7 @@ const ProfilePic = (userId) => {
       try {
         const jwt = await AsyncStorage.getItem('jwt');
         const response = await privateAPI.post(
-          'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getProfilePic',
+          'user/getProfilePic',
           { userId },
 
         );
@@ -70,13 +70,13 @@ const ProfilePic = (userId) => {
     fetchProfilePic();
   }, [userId]);
 
-  useEffect(() => {
-    const fetchUserName = async () => {
-      const username = await AsyncStorage.getItem('username');
-      setUserName(username);
-    };
-    fetchUserName();
-  }, [userName]);
+  // useEffect(() => {
+  //   const fetchUserName = async () => {
+  //     const username = await AsyncStorage.getItem('username');
+  //     setUserName(username);
+  //   };
+  //   fetchUserName();
+  // }, [userName]);
 
   const renderItem = ({ item }) => (
     <Image source={{ uri: item }} style={styleProfileCover.image} />
@@ -91,7 +91,7 @@ const ProfilePic = (userId) => {
   };
   const [followingCount, setFollowingCount] = useState(0);
   const [followerCount, setFollowerCount] = useState(0);
-  useEffect(()=>{
+  useEffect(() => {
     const followingCount = async () => {
       try {
         const response = await privateAPI.get(`friendRequest/getFriendRequest?userId=${userId}`);
@@ -103,8 +103,8 @@ const ProfilePic = (userId) => {
         console.error("Error fetching data:", error);
       }
     };
-  },[followingCount])
- 
+  }, [followingCount])
+
   useEffect(() => {
     const followerCount = async () => {
       try {
@@ -121,57 +121,59 @@ const ProfilePic = (userId) => {
     followerCount()
   }, [followerCount])
 
+  const navigation=useNavigation();
+
 
   return (
     <View style={styleProfileCover.container}>
 
-<View style={{ height: responsiveHeight(27),borderWidth:1 }}>
-                {filePaths.length > 0 ? (
-                    <>
-                        <FlatList
-                            data={filePaths}
-                            renderItem={renderItem}
-                            horizontal
-                            pagingEnabled
-                            showsHorizontalScrollIndicator={false}
-                            keyExtractor={(item, index) => index.toString()}
-                            onMomentumScrollEnd={(event) => {
-                                const width = Dimensions.get('window').width;
-                                const newIndex = Math.floor(event.nativeEvent.contentOffset.x / width);
-                                setCurrentIndex(newIndex);
-                            }}
-                        />
-                    </>
-                ) : noCoverPic ? (
-                    <Text style={styleProfileCover.noCoverText}>No cover picture available</Text>
-                ) : null}
+      <View style={{ height: responsiveHeight(27), borderWidth: 1 }}>
+        {filePaths.length > 0 ? (
+          <>
+            <FlatList
+              data={filePaths}
+              renderItem={renderItem}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(item, index) => index.toString()}
+              onMomentumScrollEnd={(event) => {
+                const width = Dimensions.get('window').width;
+                const newIndex = Math.floor(event.nativeEvent.contentOffset.x / width);
+                setCurrentIndex(newIndex);
+              }}
+            />
+          </>
+        ) : noCoverPic ? (
+          <Text style={styleProfileCover.noCoverText}>No cover picture available</Text>
+        ) : null}
 
-            </View>
-            <View style={styleProfileCover.profilePic}>
-                {filePath ? (
-                    <Image source={{ uri: filePath }} style={styleProfileCover.imagePic} />
-                ) : noProfilePic ? (
-                    <Text style={styleProfileCover.noProfileText}>No profile pic</Text>
-                ) : null}
-            </View>
-            <View>
-                <Text style={styleProfileCover.userName}>{userName}</Text>
-            </View>
-            <View style={{ flexDirection: 'row', position: 'absolute', top: '92%', left: '43%' }}>
-                <TouchableOpacity style={styleProfileCover.followers} onPress={() => navigation.navigate('FollowersList', { userId })}>
-                    <Text style={styleProfileCover.followers_text}>{followerCount} Followers</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styleProfileCover.followings} onPress={() => navigation.navigate('FollowingList', { userId })}>
-                    <Text style={styleProfileCover.followings_text}>{followingCount} Followings</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={{ flexDirection: 'row', position: 'absolute', top: '105%', left: '5%' }}>
-                <Text style={styleProfileCover.review}>Reviews</Text>
-                <View style={styleProfileCover.review_box}>
-                    <Text style={styleProfileCover.review_num}>9.9</Text>
-                    <Image source={require('../../Assets/Userprofile_And_Fonts/star.png')} style={styleProfileCover.review_img} />
-                </View>
-            </View>
+      </View>
+      <View style={styleProfileCover.profilePic}>
+        {filePath ? (
+          <Image source={{ uri: filePath }} style={styleProfileCover.imagePic} />
+        ) : noProfilePic ? (
+          <Text style={styleProfileCover.noProfileText}>No profile pic</Text>
+        ) : null}
+      </View>
+      <View>
+        <Text style={styleProfileCover.userName}>{userName}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', position: 'absolute', top: '92%', left: '43%' }}>
+        <TouchableOpacity style={styleProfileCover.followers} onPress={() => navigation.navigate('FollowersList', { userId })}>
+          <Text style={styleProfileCover.followers_text}>{followerCount} Followers</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styleProfileCover.followings} onPress={() => navigation.navigate('FollowingList', { userId })}>
+          <Text style={styleProfileCover.followings_text}>{followingCount} Followings</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{ flexDirection: 'row', position: 'absolute', top: '105%', left: '5%' }}>
+        <Text style={styleProfileCover.review}>Reviews</Text>
+        <View style={styleProfileCover.review_box}>
+          <Text style={styleProfileCover.review_num}>9.9</Text>
+          <Image source={require('../../Assets/Userprofile_And_Fonts/star.png')} style={styleProfileCover.review_img} />
+        </View>
+      </View>
     </View>
   );
 };
@@ -335,7 +337,7 @@ const Biography = (userId) => {
         });
 
         const user = response.data.data;
-        setDob(user.dob ? moment(user.dob).toDate() : new Date());
+        setDob(user.dob );
         setGender(user.gender || '');
         setCountry(user.country || '');
         setState(user.state || '');
@@ -397,7 +399,7 @@ const Biography = (userId) => {
                   fontWeight: '500',
                   fontFamily: 'Times New Roman',
                   bottom: responsiveHeight(3)
-                }}>{moment(dob).format('YYYY-MM-DD')}</Text>
+                }}>{dob}</Text>
               </View>
             </ImageBackground>
           </View>
@@ -592,7 +594,7 @@ const Biography = (userId) => {
 
 const style = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+   
     marginTop: responsiveHeight(12),
     // height: responsiveHeight(55)
   },
@@ -604,16 +606,7 @@ const style = StyleSheet.create({
     borderRadius: 5,
   },
   inputContainer: {
-    //     flexDirection: 'row',
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
-    //     height: responsiveHeight(8.4),
-    //     width: responsiveWidth(88),
-    //  //   bottom:responsiveHeight(1),
-    //     margin:responsiveHeight(1),
-    //  //   margin: responsiveWidth(1),
-    //     color: 'black',
-    //     resizeMode: 'cover',
+   
     flex: 1,
     width: '101%',
     height: '100%',
@@ -642,6 +635,8 @@ const style = StyleSheet.create({
   },
   bio_content: {
     flex: 1,
+    left: '43%',
+    marginTop:responsiveHeight(1)
     //  borderWidth:1
   },
   bio_content_section: {
@@ -673,6 +668,37 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  bio_title: {
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: '#d3d3d3', // Light gray background color
+    padding: responsiveWidth(4),
+    borderRadius: 8,
+    marginTop: responsiveHeight(1),
+},
+bio_title_touchable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+},
+bio_title_text: {
+    fontWeight: 'bold',
+    fontSize: responsiveFontSize(2.2),
+    color: 'black',
+    fontFamily: 'Cochin',
+    width: responsiveWidth(70),
+},
+downArrowContainer: {
+    width: responsiveWidth(6),
+    height: responsiveHeight(4),
+    alignItems: 'center',
+    justifyContent: 'center',
+},
+downArrow: {
+    width: 20,
+    height: 20,
+},
 });
 
 // BodyMeasurment
@@ -709,13 +735,9 @@ const BodyMeasurement = (userId) => {
 
         const jwt = await AsyncStorage.getItem('jwt');
 
-        const response = await PublicAPI.get(
+        const response = await privateAPI.get(
           `user/getUserByUserId?userId=${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwt}`,
-            },
-          }
+
         );
 
         setHeight(response.data.data.height);
@@ -742,23 +764,17 @@ const BodyMeasurement = (userId) => {
   return (
     <>
       <View style={styles.container}>
-        <View style={styles.bio_title}>
-          <TouchableOpacity style={styles.bio_title} onPress={toggleExpanded}>
-            <Text style={styles.bio_title_text}>BODY MEASUREMENT</Text>
-            <View
-              style={{
-                width: responsiveWidth(6),
-                height: responsiveHeight(4),
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Image
-                source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
-                style={styles.downArrow}
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.bio_title}>
+                    <TouchableOpacity style={styles.bio_title_touchable} onPress={toggleExpanded}>
+                        <Text style={styles.bio_title_text}>BODY MEASUREMENT</Text>
+                        <View style={styles.downArrowContainer}>
+                            <Image
+                                source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
+                                style={styles.downArrow}
+                            />
+                        </View>
+                    </TouchableOpacity>
+                </View>
         {expanded && (
           <View style={styles.bio_content}>
             <View style={styles.bio_content_section}>
@@ -768,7 +784,7 @@ const BodyMeasurement = (userId) => {
                 resizeMode="stretch">
                 <View
                   style={{
-                    marginLeft: responsiveWidth(0.2),
+                    marginLeft: responsiveWidth(2),
                     marginTop: responsiveHeight(0.5),
                     width: responsiveWidth(7.2),
                     height: responsiveHeight(4),
@@ -801,7 +817,7 @@ const BodyMeasurement = (userId) => {
                 resizeMode="stretch">
                 <View
                   style={{
-                    marginLeft: responsiveWidth(0.2),
+                    marginLeft: responsiveWidth(2),
                     marginTop: responsiveHeight(0.5),
                     width: responsiveWidth(7.2),
                     height: responsiveHeight(4),
@@ -833,13 +849,13 @@ const BodyMeasurement = (userId) => {
                 resizeMode="stretch">
                 <View
                   style={{
-                    marginLeft: responsiveWidth(0.2),
+                    marginLeft: responsiveWidth(2),
                     marginTop: responsiveHeight(0.5),
                     width: responsiveWidth(7.2),
                     height: responsiveHeight(4),
                   }}>
                   <Image
-                    source={require('../../../components/Assets/Userprofile_And_Fonts/update/Weight_icon.png')}
+                    source={require('../../../components/Assets/Userprofile_And_Fonts/update/skin_tone_icon.png')}
                     style={{ width: '100%', height: '100%' }}
                   />
                 </View>
@@ -968,7 +984,7 @@ const BodyMeasurement = (userId) => {
 const getStyles = theme => {
   return StyleSheet.create({
     container: {
-      flexDirection: 'row',
+     
       marginTop: responsiveHeight(0.2),
 
 
@@ -995,7 +1011,8 @@ const getStyles = theme => {
     },
     bio_content: {
       flex: 1,
-      marginTop: responsiveHeight(6),
+      marginTop: responsiveHeight(1),
+      left:'43%'
     },
     bio_content_section: {
       flexDirection: 'row',
@@ -1020,6 +1037,37 @@ const getStyles = theme => {
     hr_tag: {
       borderBottomWidth: 1,
     },
+    bio_title: {
+      width: '100%',
+      flexDirection: 'row',
+      backgroundColor: '#d3d3d3', // Light gray background color
+      padding: responsiveWidth(4),
+      borderRadius: 8,
+      marginTop: responsiveHeight(1),
+  },
+  bio_title_touchable: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width: '100%',
+  },
+  bio_title_text: {
+      fontWeight: 'bold',
+      fontSize: responsiveFontSize(2.2),
+      color: 'black',
+      fontFamily: 'Cochin',
+      width: responsiveWidth(70),
+  },
+  downArrowContainer: {
+      width: responsiveWidth(6),
+      height: responsiveHeight(4),
+      alignItems: 'center',
+      justifyContent: 'center',
+  },
+  downArrow: {
+      width: 20,
+      height: 20,
+  },
   });
 };
 
@@ -1085,24 +1133,17 @@ const Professionalinfo = (userId) => {
   return (
     <>
       <View style={stylePi.container}>
-        <View style={stylePi.bio_title}>
-          <TouchableOpacity style={stylePi.bio_title} onPress={toggleExpanded}>
-            <Text style={stylePi.bio_title_text}>PERSONAL INFORMATION</Text>
-
-            <View
-              style={{
-                width: responsiveWidth(5),
-                height: responsiveHeight(4),
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Image
-                source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
-                style={stylePi.downArrow}
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
+      <View style={style.bio_title}>
+                    <TouchableOpacity style={style.bio_title_touchable} onPress={toggleExpanded}>
+                        <Text style={style.bio_title_text}>PERSONAL INFORMATION</Text>
+                        <View style={style.downArrowContainer}>
+                            <Image
+                                source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
+                                style={style.downArrow}
+                            />
+                        </View>
+                    </TouchableOpacity>
+                </View>
 
 
         {expanded && (
@@ -1552,6 +1593,37 @@ const stylePi = StyleSheet.create({
     width: 200,
     textAlign: 'center'
   },
+  bio_title: {
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: '#d3d3d3', // Light gray background color
+    padding: responsiveWidth(4),
+    borderRadius: 8,
+    marginTop: responsiveHeight(1),
+},
+bio_title_touchable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+},
+bio_title_text: {
+    fontWeight: 'bold',
+    fontSize: responsiveFontSize(2.2),
+    color: 'black',
+    fontFamily: 'Cochin',
+    width: responsiveWidth(70),
+},
+downArrowContainer: {
+    width: responsiveWidth(6),
+    height: responsiveHeight(4),
+    alignItems: 'center',
+    justifyContent: 'center',
+},
+downArrow: {
+    width: 20,
+    height: 20,
+},
 });
 
 //Education
@@ -1616,21 +1688,17 @@ const Education = (userid) => {
     <>
       <View style={styleEducation.container}>
 
-        <View style={styleEducation.bio_title}>
-          <TouchableOpacity style={styleEducation.bio_title} onPress={toggleExpanded}>
-            <Text style={styleEducation.bio_title_text}>
-              EDUCATION
-            </Text>
-
-            <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
-              <Image
-                source={require("../../Assets/Userprofile_And_Fonts/update/down-arrow.png")}
-                style={styleEducation.downArrow}
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
-
+      <View style={style.bio_title}>
+                    <TouchableOpacity style={style.bio_title_touchable} onPress={toggleExpanded}>
+                        <Text style={style.bio_title_text}>EDUCATION</Text>
+                        <View style={style.downArrowContainer}>
+                            <Image
+                                source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
+                                style={style.downArrow}
+                            />
+                        </View>
+                    </TouchableOpacity>
+                </View>
 
 
         {expanded && (
@@ -1808,6 +1876,37 @@ const styleEducation = StyleSheet.create({
     alignSelf: 'flex-end',
     paddingRight: responsiveWidth(3),
   },
+  bio_title: {
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: '#d3d3d3', // Light gray background color
+    padding: responsiveWidth(4),
+    borderRadius: 8,
+    marginTop: responsiveHeight(1),
+},
+bio_title_touchable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+},
+bio_title_text: {
+    fontWeight: 'bold',
+    fontSize: responsiveFontSize(2.2),
+    color: 'black',
+    fontFamily: 'Cochin',
+    width: responsiveWidth(70),
+},
+downArrowContainer: {
+    width: responsiveWidth(6),
+    height: responsiveHeight(4),
+    alignItems: 'center',
+    justifyContent: 'center',
+},
+downArrow: {
+    width: 20,
+    height: 20,
+},
 })
 
 // profession
@@ -1965,7 +2064,7 @@ const Profession = (userId) => {
       type: `image/${fileType}`,
     });
 
-    const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/IndustryUser/project/saveProjectFiles', {
+    const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.1/IndustryUser/project/saveProjectFiles', {
       method: 'POST',
       body: formData,
       headers: myHeaders
@@ -1991,12 +2090,17 @@ const Profession = (userId) => {
   // Render JSX based on fetched data
   return (
     <View style={styleProfession.containers}>
-      <TouchableOpacity style={styleProfession.bio_title} onPress={toggleExpanded}>
-        <Text style={styleProfession.bio_title_text}>PROFESSION</Text>
-        <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
-          <Image source={require("../../Assets/Userprofile_And_Fonts/update/down-arrow.png")} style={styleProfession.downArrow} />
-        </View>
-      </TouchableOpacity>
+     <View style={styleProfession.bio_title}>
+                <TouchableOpacity style={styleProfession.bio_title_touchable} onPress={toggleExpanded}>
+                    <Text style={styleProfession.bio_title_text}>PROFESSION</Text>
+                    <View style={styleProfession.downArrowContainer}>
+                        <Image
+                            source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
+                            style={styleProfession.downArrow}
+                        />
+                    </View>
+                </TouchableOpacity>
+            </View>
 
       {expanded && (
 
@@ -2190,6 +2294,37 @@ const styleProfession = StyleSheet.create({
     textAlign: 'center'
     // marginLeft: 10,
   },
+  bio_title: {
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: '#d3d3d3', // Light gray background color
+    padding: responsiveWidth(4),
+    borderRadius: 8,
+    marginTop: responsiveHeight(1),
+},
+bio_title_touchable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+},
+bio_title_text: {
+    fontWeight: 'bold',
+    fontSize: responsiveFontSize(2.2),
+    color: 'black',
+    fontFamily: 'Cochin',
+    width: responsiveWidth(70),
+},
+downArrowContainer: {
+    width: responsiveWidth(6),
+    height: responsiveHeight(4),
+    alignItems: 'center',
+    justifyContent: 'center',
+},
+downArrow: {
+    width: 20,
+    height: 20,
+},
   // border: {
 
   //   borderColor: 'black',
@@ -2246,7 +2381,7 @@ export default function UserProfileDetials({ route }) {
   const handlePressBlock = (userId) => {
 
 
-    const apiUrl = 'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/block/addBlock';
+    const apiUrl = 'https://filmhook.annularprojects.com/filmhook-0.1/block/addBlock';
 
 
     // const payload = {
@@ -2441,7 +2576,7 @@ export default function UserProfileDetials({ route }) {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView>
-        {ProfilePic(userId)}
+        {ProfilePic(userId, userName)}
 
         {Biography(userId)}
 
@@ -2576,7 +2711,7 @@ export default function UserProfileDetials({ route }) {
         onPress={handleFloatingButtonClick}>
         {/* Replace with your floating button icon */}
         <Image
-          source={require('../../Assets/Audition_Icons_Fonts/write_icon_148501-removebg.png')}
+          source={require('../../Assets/Userprofile_And_Fonts/nine-Icons/Chats-Menu.png')}
           style={styles.floatingButtonImage}
         />
       </TouchableOpacity>
@@ -2593,10 +2728,10 @@ const styles = StyleSheet.create({
 
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#007bff',
+  //  backgroundColor: '#007bff',
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 8, // Shadow for Android
+    elevation: 1, // Shadow for Android
   },
   modalContainer: {
     flex: 1,
@@ -2642,8 +2777,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   floatingButtonImage: {
-    width: 30,
-    height: 30,
+    width: '50%',
+    height: '50%',
   },
   iconGrid: {
     position: 'absolute',
@@ -2653,6 +2788,9 @@ const styles = StyleSheet.create({
     left: responsiveWidth(10),
     flexDirection: 'row',
     flexWrap: 'wrap',
+   // borderWidth:1,
+    justifyContent:'center',
+    alignItems:'center'
   },
   iconContainer: {
     width: responsiveWidth(10),
@@ -2661,7 +2799,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 10,
     marginRight: 10,
-    backgroundColor: 'rgba(0, 123, 255, 0.8)',
+    backgroundColor: 'rgba(245, 40, 145, 0.05)',
     borderRadius: 10,
   },
   iconImage: {

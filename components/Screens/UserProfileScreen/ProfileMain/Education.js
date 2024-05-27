@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,7 +27,7 @@ export default function Education() {
                 console.log('idddd', userIdString)
 
                 const response = await privateAPI.get(`user/getUserByUserId?userId=${userIdString}`, {
-                  
+
                 });
 
                 // Handle response data as needed
@@ -77,6 +77,7 @@ export default function Education() {
                 },
             );
             console.log('data saved successfully', response.data);
+            Alert.alert('Success', 'Update Successfully')
 
 
 
@@ -91,7 +92,7 @@ export default function Education() {
         <>
             <View style={style.container}>
 
-                <View style={style.bio_title}>
+                {/* <View style={style.bio_title}>
                     <TouchableOpacity style={style.bio_title} onPress={toggleExpanded}>
                         <Text style={style.bio_title_text}>
                                 EDUCATION
@@ -100,6 +101,17 @@ export default function Education() {
                         <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
                             <Image
                                 source={require("../../../Assets/Userprofile_And_Fonts/update/down-arrow.png")}
+                                style={style.downArrow}
+                            />
+                        </View>
+                    </TouchableOpacity>
+                </View> */}
+                <View style={style.bio_title}>
+                    <TouchableOpacity style={style.bio_title_touchable} onPress={toggleExpanded}>
+                        <Text style={style.bio_title_text}>EDUCATION</Text>
+                        <View style={style.downArrowContainer}>
+                            <Image
+                                source={require('../../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
                                 style={style.downArrow}
                             />
                         </View>
@@ -244,10 +256,9 @@ export default function Education() {
 
 const style = StyleSheet.create({
     container: {
-        //  borderWidth:2,
-        //  height: responsiveHeight(28),
+      
         flex: 1,
-        marginBottom:responsiveHeight(1)
+      
 
     },
     headder_text: {
@@ -328,11 +339,42 @@ const style = StyleSheet.create({
     },
     editButton: {
         fontSize: 18,
-        color:'block',
+        color: 'black',
         fontWeight: 'bold',
         marginBottom: 10,
         textDecorationLine: 'underline',
         alignSelf: 'flex-end',
         paddingRight: responsiveWidth(3),
     },
+    bio_title: {
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: '#d3d3d3', // Light gray background color
+        padding: responsiveWidth(4),
+        borderRadius: 8,
+        marginTop: responsiveHeight(1),
+      },
+      bio_title_touchable: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+      },
+      bio_title_text: {
+        fontWeight: 'bold',
+        fontSize: responsiveFontSize(2.2),
+        color: 'black',
+        fontFamily: 'Cochin',
+        width: responsiveWidth(70),
+      },
+      downArrowContainer: {
+        width: responsiveWidth(6),
+        height: responsiveHeight(4),
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      downArrow: {
+        width: 20,
+        height: 20,
+      },
 })

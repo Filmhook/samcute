@@ -14,38 +14,37 @@ export default function StoryContainer() {
   const [stories, setStories] = useState([]);
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
   const [imageURL, setImageURL] = useState(null);
-  const [profileImage, setProfileImage] = useState(null)
-
+  const [profileImage, setProfileImage] = useState(null);
 
   const handleStoryPost = () => {
     setImagePickerModalVisible(true);
   };
 
-const handleImageOption = async (option) => {
-  try {
-    let image = null;
-    if (option === 'camera') {
-      image = await ImagePicker.openCamera({ cropping: true });
-    } else if (option === 'gallery') {
-      image = await ImagePicker.openPicker({ cropping: true, multiple: true});
+  const handleImageOption = async (option) => {
+    try {
+      let image = null;
+      if (option === 'camera') {
+        image = await ImagePicker.openCamera({ cropping: true });
+      } else if (option === 'gallery') {
+        image = await ImagePicker.openPicker({ cropping: true, multiple: true });
+      }
+
+      const formatedImg = image?.map(im => {
+        return { uri: im.path, type: im.mime, name: im.path.split('/').pop() }
+      });
+      console.log(`Select Story Images: ${JSON.stringify(formatedImg)}`);
+
+      // Move the uploadStory function call here
+      uploadStory(formatedImg);
+    } catch (error) {
+      console.log('Image picker operation canceled or failed:', error);
+    } finally {
+      setImagePickerModalVisible(false);
     }
-
-    const formatedImg = image?.map(im => {
-    return { uri: im.path, type: im.mime, name: im.path.split('/').pop() }
-    })
-    console.log(`Select Story Images: ${JSON.stringify(formatedImg)}`)
-
-    // Move the uploadStory function call here
-    uploadStory(formatedImg);
-  } catch (error) {
-    console.log('Image picker operation canceled or failed:', error);
-  } finally {
-    setImagePickerModalVisible(false);
-  }
-};
+  };
 
   const uploadStory = async (formatedMedia) => {
-    console.log(`Upload Story Media - ${JSON.stringify(formatedMedia)}`)
+    console.log(`Upload Story Media - ${JSON.stringify(formatedMedia)}`);
     try {
       if (formatedMedia?.length === 0) {
         Alert.alert('Please select an image to upload.');
@@ -61,13 +60,13 @@ const handleImageOption = async (option) => {
       formData.append('userId', id);
       formData.append('type', 'IMG');
       formData.append('description', 'Welcome to my world');
-      formatedMedia?.forEach((si , ind) => {
-            formData.append(`fileInputWebModel.files[${ind}]`, si);
-      })
+      formatedMedia?.forEach((si, ind) => {
+        formData.append(`fileInputWebModel.files[${ind}]`, si);
+      });
 
-    console.log(`Data posted` , formData)
+      console.log(`Data posted`, formData);
 
-      const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/stories/uploadStory', {
+      const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.1/user/stories/uploadStory', {
         method: 'POST',
         body: formData,
         headers: myHeaders
@@ -78,12 +77,12 @@ const handleImageOption = async (option) => {
         if (data.status === 1) {
           Alert.alert('Posted');
         } else {
-        console.log(`STORY FAILED 111 - ${data}`)
+          console.log(`STORY FAILED 111 - ${data}`);
           // Handle unsuccessful response
         }
       } else {
         // Handle HTTP error
-        console.log(`STORY FAILED - ${JSON.stringify(response)}`)
+        console.log(`STORY FAILED - ${JSON.stringify(response)}`);
         Alert.alert('Posted Error', 'Failed to post media.');
       }
     } catch (error) {
@@ -91,7 +90,6 @@ const handleImageOption = async (option) => {
       Alert.alert('Upload failed. Please try again.');
     }
   };
-
 
   useEffect(() => {
     const fetchProfilePicture = async () => {
@@ -126,55 +124,63 @@ const handleImageOption = async (option) => {
 
     fetchProfilePicture();
   }, []);
+
   return (
     <>
-      <View style={{ padding: responsiveWidth(1.5), flexDirection: 'row', height: responsiveHeight(19) }}>
-        <View style={{ borderRightWidth: responsiveWidth(1), borderRightColor: '#D7D7D7', }}>
+      <View style={{ padding: responsiveWidth(1.5), flexDirection: 'row', height: responsiveHeight(15) }}>
+        <View >
+        {/* style={{ borderRightWidth: responsiveWidth(1), borderRightColor: '#D7D7D7' }} */}
           <TouchableOpacity
-          onPress={() =>
-                  navigation.navigate('Status')
-                  }
+            // onPress={() => navigation.navigate('Status')}
             style={{
               marginLeft: responsiveWidth(2),
-              width: responsiveWidth(23),
-              height: responsiveHeight(18),
-              borderRadius: responsiveWidth(2),
+              width: responsiveWidth(13),
+              height: responsiveHeight(7),
+              borderRadius: responsiveWidth(5),
               overflow: 'hidden',
               position: 'relative',
-            }}>
-         {profileImage ? (
+              right: responsiveWidth(3),
+              top: responsiveHeight(5)
+            }}
+          >
+            {profileImage ? (
               <Image
-                source={{uri: imageURL}}
+                source={{ uri: imageURL }}
                 style={{ width: '100%', height: '100%' }}
                 resizeMode='stretch'
               />
             ) : (
               <Image
-                source={{uri:imageURL}}
+                source={{ uri: imageURL }}
                 style={{ width: '100%', height: '100%' }}
                 resizeMode='stretch'
               />
             )}
-            <TouchableOpacity
+           
+          </TouchableOpacity>
+          
+          <View>
+          <TouchableOpacity
               onPress={handleStoryPost}
               style={{
-                width: responsiveWidth(5),
-                height: responsiveWidth(5),
-                borderRadius: responsiveWidth(5),
-                left: responsiveWidth(18),
-                top: responsiveHeight(16),
+                width: responsiveWidth(6),
+                height: responsiveWidth(6),
+                borderRadius: responsiveWidth(2.5),
                 backgroundColor: 'white',
                 position: 'absolute',
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}>
+                top:responsiveHeight(3)
+              }}  
+            >
               <Image
                 source={require('../../Assets/Home_Icon_And_Fonts/plus_icon.png')}
                 style={{ width: '100%', height: '100%' }}
                 resizeMode='stretch'
               />
             </TouchableOpacity>
-          </TouchableOpacity>
+          </View>
+        
         </View>
         <TouchableOpacity>
           <Image

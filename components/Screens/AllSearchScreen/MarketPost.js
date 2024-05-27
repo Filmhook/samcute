@@ -8,9 +8,11 @@ import privateApi from "../../api/privateAPI"
 import privateAPI from '../../api/privateAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Checkbox from '@react-native-community/checkbox';
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function MarketPost() {
+    const navigation = useNavigation();
 
     const [CompanyName, setCompanyName] = useState('');
     const [ProductName, setProductName] = useState('');
@@ -24,6 +26,8 @@ export default function MarketPost() {
     const [inputText, setInputText] = useState('');
     const [profilepics, setProfilePics] = useState([]);
     const [selectedCheckboxIndex, setSelectedCheckboxIndex] = useState(-1);
+    const [postModalVisible, setPostModalVisible] = useState(false);
+
 
     const handleCheckboxChange = (index) => {
         setSelectedCheckboxIndex(index);
@@ -84,10 +88,11 @@ export default function MarketPost() {
             formData.append("productDescription", productDescription);
             formData.append("count", "2");
             formData.append("cost", priceValue);
-            formData.append("newProduct", productType);
-            formData.append("rentalOrsale", selectedItem);
+            formData.append("newProduct", true);
+            formData.append("rentalOrsale", selectedCheckboxIndex);
             formData.append("createdBy", id);
             formData.append("userId", id);
+            formData.append("marketPlaceIsactive", 1);
 
             // Define requestOptions with method, headers, body, and redirect options
             const requestOptions = {
@@ -96,26 +101,62 @@ export default function MarketPost() {
                 body: formData,
                 redirect: "follow"
             };
-            console.log(`FormData : ${JSON.stringify(formData)}`)
+
+            console.log(`FormData: ${JSON.stringify(formData)}`);
+
             // Make a POST request using fetch
-            const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/marketPlace/marketPlace`, requestOptions);
+            const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.1/marketPlace/marketPlace`, requestOptions);
             const data = await response.json(); // Parse response JSON
 
             // Log the response data
             console.log("Response data:", data);
 
-            if (data.status === 1) {
-                Alert.alert("Posted");
+            if (response.ok && data.status === 1) {
+                Alert.alert("Posted", "Market details saved successfully");
                 setPostModalVisible(false);
+                navigation.navigate('MarketPlace');
+                makePayment();
             } else {
-                // Handle unsuccessful response
-                // ...
+                console.log("Response message:", data.message);
+                Alert.alert("Error", data.message || "An error occurred");
             }
         } catch (error) {
             console.error('Error posting:', error);
             Alert.alert('Error', error.message);
         }
     };
+
+    const makePayment = () => {
+        var options = {
+            description: 'Credits towards consultation',
+            image: 'https://i.imgur.com/3g7nmJC.jpg',
+            currency: 'INR',
+            key: 'rzp_test_DN4L6WbNtUJb5f',
+            amount: '100',
+            method: {
+                netbanking: true,
+                card: true,
+                upi: true
+            },
+            name: 'Filmhookapps',
+            // order_id: 'order_DslnoIgkIDL8Zt',//Replace this with an order_id created using Orders API.
+            prefill: {
+                email: '',
+                contact: '',
+                name: ''
+            },
+            theme: { color: 'blue' }
+        }
+        RazorpayCheckout.open(options).then((data) => {
+            // handle success
+            alert(`Success: ${data.razorpay_payment_id}`);
+        }).catch((error) => {
+            // handle failure
+            console.log(error)
+            alert(`Error: ${error.code} | ${error.description}`);
+        });
+    }
+
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -213,7 +254,7 @@ export default function MarketPost() {
                         <TextInput
                             placeholder='Used Product or New Product'
                             multiline
-                            placeholderTextColor='black'                            value={productType}
+                            placeholderTextColor='black' value={productType}
                             onChangeText={setProductType}
                             style={{
                                 paddingHorizontal: responsiveWidth(5),
@@ -387,7 +428,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         color: 'black',
-        borderColor:'black'
+        borderColor: 'black'
         // right: responsiveWidth(23)
     },
     checkboxContainer2: {

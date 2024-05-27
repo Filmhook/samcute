@@ -5,7 +5,6 @@ import { View, TouchableOpacity, Text, ScrollView, Image } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { Checkbox } from 'react-native-paper'; import AsyncStorage from '@react-native-async-storage/async-storage';
 import PublicAPI from '../../../api/publicAPI';
-import { Alert } from 'react-native';
 
 const IndustryUpdateTwo = () => {
     const navigation = useNavigation();
@@ -109,44 +108,30 @@ const IndustryUpdateTwo = () => {
     console.log(`Organisations is : ${JSON.stringify(makeData)}`);
     console.log(toggleCheckBox)
 
-   
-
     const handleSave = async () => {
+
         try {
-            const jwt = await AsyncStorage.getItem('jwt');
+
             const id = await AsyncStorage.getItem('userId');
             console.log(`User Id from IS Confirm ${id}`)
-    
-            const headers = {
-                Authorization: `Bearer ${jwt}`,
-                'Content-Type': 'application/json'
-            };
-    
+
+
             const response = await PublicAPI.post(
-                `/industryUser/updatePermanentDetails?userId=${id}`,
-                makeData,
-                { headers }
+                `/industryUser/addIndustryUserPermanentDetails?userId=${id}`,
+
+                makeData
+                ,
             );
-    
+
             console.log('Registration successful:', response.data);
-    
-            // Show alert if response is okay
-            if (response.status === 200) {
-                Alert.alert(
-                    'Success',
-                    'Successfully updated',
-                    [
-                        { text: 'OK', onPress: () => console.log('OK Pressed') }
-                    ],
-                    { cancelable: false }
-                );
-            }
+            navigation.navigate('IndustryTwo');
         } catch (error) {
-            console.error('Registration failed:',  error.response.data);
+            console.error('Registration failed:', error);
         }
+
+
     }
 
-    
     return (
         <ScrollView>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: responsiveHeight(6) }}>
@@ -310,19 +295,10 @@ const IndustryUpdateTwo = () => {
                                                 </View>
                                             ))}
 
-
                                         </>
                                     ))}
-
-
-
-
-
                                 </>
                             ))}
-
-
-
 
                         </>
                     ))
@@ -337,7 +313,7 @@ const IndustryUpdateTwo = () => {
                         padding: responsiveWidth(4),
                     }}>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('IndustryUpdateOne')}
+                        onPress={() => navigation.goBack()}
                         style={styles.backButton}>
                         <Text
                             style={{

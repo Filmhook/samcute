@@ -12,6 +12,7 @@ import privateAPI from '../../api/privateAPI';
 
 
 
+
 export default function StatusPost() {
   const navigation = useNavigation();
   const [imagePickerModalVisible, setImagePickerModalVisible] = useState(false);
@@ -173,6 +174,7 @@ export default function StatusPost() {
 
           {/* for image post component */}
           <Handle_img_picker />
+        
           {/* for image post component */}
         </View>
         {/* this modal for type post and post cancel icon */}
@@ -237,7 +239,7 @@ export default function StatusPost() {
             width: responsiveWidth(12), height: responsiveWidth(12), borderRadius: responsiveWidth(12), backgroundColor: "#D9D9D9",
           }}>
             <Image source={require('../../Assets/Home_Icon_And_Fonts/promote_icon.png')} style={{ width: "85%", height: "100%", marginLeft: 5 }} resizeMode='stretch' />
-            <View style={{ width: responsiveWidth(20) }}>
+            <View style={{ width: responsiveWidth(20),}}>
               <Text style={{ width: responsiveWidth(14), textAlign: "center", fontSize: responsiveFontSize(1.6), letterSpacing: 0.3, color: "#000000", fontWeight: 500 }}>Promote</Text>
             </View>
           </TouchableOpacity>

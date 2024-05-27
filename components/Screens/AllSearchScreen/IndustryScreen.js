@@ -38,13 +38,18 @@ const IndustryScreen = ({route}) => {
         try {
             const jwt = await AsyncStorage.getItem('jwt');
             const response = await privateAPI.get('masterData/getAllPlatform');
-            const extractedData = response.data.data.map(item => ({
-                id: item.id,
-                name: item.platformName,
-
-                imagePath: item.iconFilePath
+            const extractedData = response.data.data
+            .filter(item => item.status) // Filter items with status true
+            .map(item => ({
+              id: item.id,
+              name: item.platformName,
+              imagePath: item.iconFilePath,
             }));
-            setPlatforms(extractedData);
+           
+                setPlatforms(extractedData);
+
+          
+           
         } catch (error) {
             console.error('Error fetching data:', error);
         }

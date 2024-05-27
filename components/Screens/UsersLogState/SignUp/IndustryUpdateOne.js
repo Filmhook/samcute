@@ -51,7 +51,7 @@ export default function IndustryUpdateOne() {
   const [subProfessionData, setSubProfessionData] = useState([]);
   const [selected, setSelected] = useState(null);
   const [industrySelected, setindustrySelected] = useState(null);
-
+  const route = useRoute();
 
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedState, setSelectedState] = useState(null);
@@ -62,7 +62,11 @@ export default function IndustryUpdateOne() {
   const [professionSub, setProfessionSub] = useState(null);
   const [selectedProfessionId, setSelectedProfessionId] = useState(null);
 
- 
+  const handleCountryChange = countryId => {
+    setPlatform(countryId);
+    setProfession(null); // Reset state when country changes
+    setSubProfession(null); // Reset district when country changes
+  };
   const industryOpen = async () => {
     try {
       const response = await PublicAPI.post('/industryUser/getDetails', {
@@ -121,32 +125,27 @@ export default function IndustryUpdateOne() {
   };
   const SubProfessionOpen = async () => {
     try {
-      const requests = selectedProfessionId.map(async id => {
-        const response = await PublicAPI.post('/Film/getProfessionList', {
-          filmProfesssionId: id,
-        });
-        return response.data;
-      });
-      const responses = await Promise.all(requests);
-      const newSubProfessions = responses.reduce((acc, curr) => {
-        if (curr.status) {
-          const subProfessionsForId = curr.subProfessionName.map(
-            subProfession => ({
-              label: subProfession,
-              value: subProfession,
-            }),
-          );
-          acc = [...acc, ...subProfessionsForId];
-        } else {
-          console.error('Error fetching data');
-        }
-        return acc;
-      }, []);
-      setSubProfessionData(newSubProfessions);
+      let allSubProfessions = [];
+      for (let id of selectedProfessionId) {
+        const response = await PublicAPI.post(
+          'https://filmhook.annularprojects.com/filmhook-0.1/Film/getProfessionList',
+          { filmProfesssionId: id },
+         
+        );
+        const data = response.data;
+        allSubProfessions = [...allSubProfessions, ...data.subProfessionName];
+      }
+      const uniqueSubProfessions = [...new Set(allSubProfessions)].map((name, index) => ({
+        label: name,
+        value: name,
+      }));
+     // setItems(uniqueSubProfessions);
+      setSubProfessionData(uniqueSubProfessions);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
+
   // empty dependency array to ensure useEffect runs only once
 
   const handleProfessionChange = selectedProfessionId => {
@@ -185,7 +184,7 @@ export default function IndustryUpdateOne() {
 
       console.log('Registration successful:', response.data);
       console.log(selected, industrySelected, profession, professionSub);
-      navigation.navigate('IndustryUpdateTwo');
+      navigation.navigate('Industry_S_Confirm');
     } catch (error) {
       console.error('Registration failed:', error);
     }
@@ -426,7 +425,7 @@ export default function IndustryUpdateOne() {
 
           <View style={{flexDirection: 'row', columnGap: responsiveWidth(18)}}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('Tabbar')}
+              onPress={() => navigation.goBack()}
               style={styles.backButton}>
               <Text
                 style={{

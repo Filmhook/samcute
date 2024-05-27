@@ -17,7 +17,7 @@ import { Picker } from '@react-native-picker/picker';
 
 export default function SignUpDob() {
 
-    const [dob, setDob] = useState(new Date());
+   
 
     const navigation = useNavigation();
 
@@ -27,13 +27,13 @@ export default function SignUpDob() {
     const [dobError, setDobError] = useState('');
     const [genderError, setGenderError] = useState('');
 
-    const route = useRoute();
-    const {
-        name,
-        middleName,
-        lastName,
+    // const route = useRoute();
+    // const {
+    //     name,
+    //     middleName,
+    //     lastName,
 
-    } = route.params;
+    // } = route.params;
 
 
 
@@ -63,6 +63,7 @@ export default function SignUpDob() {
 
         // Navigate to next screen if there are no errors
         if (!isError) {
+
             navigation.navigate('SignUpCountry', {
                 name,
                 selectedDate,
@@ -79,8 +80,8 @@ export default function SignUpDob() {
     const [selectedDate, setSelectedDate] = useState(null);
     const [editedDate, setEditedDate] = useState('');
 
-console.log('dddd', selectedDate)
 
+    console.log('dddd', selectedDate)
 
 
 
@@ -98,13 +99,15 @@ console.log('dddd', selectedDate)
     };
 
     const handleConfirm = (date) => {
-        const formattedDate = date.toISOString().split('T')[0];
+        const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         setSelectedDate(formattedDate);
         hideDatePicker();
+      
     };
-
-    const maximumDate = new Date(); // Today's date
-    const minimumDate = new Date('1900-01-01'); // Min
+   
+    const today = new Date();
+    const minimumDate = new Date(1900, 0, 1); // January 1, 1900
+ 
 
     return (
         <View style={styles.container}>
@@ -144,10 +147,12 @@ console.log('dddd', selectedDate)
                         <DateTimePickerModal
                             isVisible={isDatePickerVisible}
                             mode="date"
-                            maximumDate={maximumDate}
+                            maximumDate={today}
                             minimumDate={minimumDate}
                             onConfirm={handleConfirm}
                             onCancel={hideDatePicker}
+                           
+
                         />
 
                         {dobError? <Text style={styles.errorMessage}>{dobError}</Text> : null }

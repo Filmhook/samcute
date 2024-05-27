@@ -1,187 +1,140 @@
-import React, { useState } from 'react';
-import { View, Button, Image, Alert, TextInput, StyleSheet, TouchableOpacity, Modal, Text } from 'react-native';
-import { launchImageLibrary } from 'react-native-image-picker';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-const MyComponent = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [description, setDescription] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
-  const [platformId, setPlatformId] = useState(null);
+const AppC = () => {
+  const [platformData, setPlatformData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const openImagePicker = (id) => {
-    setPlatformId(id); // Set platform ID state
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: 300,
-      maxWidth: 300,
-    };
-
-    launchImageLibrary(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.errorCode) {
-        console.log('Image picker error: ', response.errorMessage);
-      } else {
-        const selectedImage = response.assets[0];
-        setSelectedImage(selectedImage);
-        setModalVisible(true);  // Show the modal to enter description
-      }
-    });
-  };
-
-  const uploadImage = async () => {
-    if (!selectedImage) {
-      Alert.alert('No image selected', 'Please select an image first.');
-      return;
-    }
-    if (!description.trim()) {
-      Alert.alert('No description', 'Please enter a description.');
-      return;
-    }
-    if (!platformId) {
-      Alert.alert('No platform ID', 'Platform ID is missing.');
-      return;
-    }
-
+  const fetchData = async () => {
     try {
-      const userId = 3
-      const jwt = await AsyncStorage.getItem('jwt');
-
-      const formData = new FormData();
-      formData.append('userId', userId);
-      formData.append('platformPermanentId', platformId); // Use platform ID state
-      formData.append('fileInputWebModel.description', description);
-
-      const imageUriParts = selectedImage.uri.split('.');
-      const fileType = imageUriParts[imageUriParts.length - 1];
-      formData.append('fileInputWebModel.files[0]', {
-        uri: selectedImage.uri,
-        name: `image.${fileType}`,
-        type: `image/${fileType}`,
-      });
-
-      const response = await axios.post(
-        'http://3.27.207.83:8080/filmhook-0.0.1-SNAPSHOT/IndustryUser/project/saveProjectFiles',
-        formData,
-        {
-          headers: {
-            'Authorization': `Bearer ${'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyTmFtZSI6Im1kZGluZXNoMTA4QGdtYWlsLmNvbSIsInVzZXJUeXBlIjoiSW5kdXN0cnlVc2VyIiwiaWF0IjoxNzE2MjkzMTIyLCJleHAiOjE3MTYyOTQzMjJ9.9Z5HwP50bko-lZLFTMicduUVZibbFWIDu6bxAzhfw1UMroiaThkGq1PxxnOukRgxai4O4_3jwxP0XEXB1MtrMA'}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-
-      if (response.data.status === 1) {
-        Alert.alert('Success', 'Image uploaded successfully.');
-      } else {
-        Alert.alert('Upload failed', `Server returned status: ${response.data.status}`);
+      const userId = await AsyncStorage.getItem('userId');
+      console.log('check userid', userId);
+      const resp = await axios.get(`https://yourapi.com/industryUser/getIndustryUserPermanentDetails?userId=3`);
+      const response = resp.data;
+  
+      if (!Array.isArray(response)) {
+        throw new Error("Response is not an array.");
       }
+  
+      const modifiedData = response.map(item => ({
+        platformName: item.platformName,
+        industries: item.industries.map(industry => ({
+          industryName: industry.industryName,
+          imageURL: `data:image/jpeg;base64,${industry.industryimage}`, // Decode base64 to image URL
+        })),
+        professions: item.professions.map(profession => ({
+          professionName: profession.professionName,
+          subProfessions: profession.subProfessions.map(subProfession => ({
+            subProfessionName: subProfession.subProfessionName,
+            startingYear: subProfession.startingYear,
+            endingYear: subProfession.endingYear,
+          })) || [],
+          imageURL: `data:image/jpeg;base64,${profession.image}`, // Decode base64 to image URL
+        })),
+        filmCount: item.filmCount,
+        netWorth: item.netWorth,
+        dailySalary: item.dailySalary,
+        platformPermanentId: item.platformPermanentId,
+        platformImageURL: `data:image/jpeg;base64,${item.platformImage}`, // Decode base64 to image URL
+        filePaths: item.outputWebModelList.map(file => ({
+          filePath: file.filePath,
+          description: file.description,
+        })),
+      }));
+  
+      setPlatformData(modifiedData);
+      setLoading(false);
     } catch (error) {
-      console.error('Failed to upload image:', error);
-      Alert.alert('Error', 'Failed to upload image. Please try again.');
+      console.log("Error fetching data:", error);
+      setLoading(false);
     }
+  };
+  
 
-    // Reset state
-    setSelectedImage(null);
-    setDescription('');
-    setModalVisible(false);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const renderPlatformData = (data) => {
+    return data.map((item, index) => (
+      <View key={index} style={styles.container}>
+        <Text style={styles.title}>{item.platformName}</Text>
+        {item.platformImageURL && <Image source={{ uri: item.platformImageURL }} style={styles.image} />}
+        <Text>Film Count: {item.filmCount}</Text>
+        <Text>Net Worth: {item.netWorth}</Text>
+        <Text>Daily Salary: {item.dailySalary}</Text>
+
+        <Text style={styles.subtitle}>Industries</Text>
+        {item.industries.map((industry, indIndex) => (
+          <View key={indIndex} style={styles.section}>
+            <Text>{industry.industryName}</Text>
+            {industry.imageURL && <Image source={{ uri: industry.imageURL }} style={styles.image} />}
+          </View>
+        ))}
+
+        <Text style={styles.subtitle}>Professions</Text>
+        {item.professions.map((profession, profIndex) => (
+          <View key={profIndex} style={styles.section}>
+            <Text>{profession.professionName}</Text>
+            {profession.imageURL && <Image source={{ uri: profession.imageURL }} style={styles.image} />}
+            {profession.subProfessions.map((subProfession, subIndex) => (
+              <View key={subIndex} style={styles.subSection}>
+                <Text>Sub-Profession: {subProfession.subProfessionName}</Text>
+                <Text>Starting Year: {subProfession.startingYear}</Text>
+                <Text>Ending Year: {subProfession.endingYear}</Text>
+              </View>
+            ))}
+          </View>
+        ))}
+
+        <Text style={styles.subtitle}>Files</Text>
+        {item.filePaths.map((file, fileIndex) => (
+          <View key={fileIndex} style={styles.section}>
+            <Text>Description: {file.description}</Text>
+            <Text>File Path: {file.filePath}</Text>
+          </View>
+        ))}
+      </View>
+    ));
   };
 
   return (
-    <View style={styles.container}>
-      {/* Pass the platform ID when opening the image picker */}
-      <Button title="Open Gallery" onPress={() => openImagePicker('1')} /> 
-      {selectedImage && (
-        <Image source={{ uri: selectedImage.uri }} style={styles.image} />
-      )}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.modalView}>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Enter description"
-            value={description}
-            onChangeText={setDescription}
-          />
-          <TouchableOpacity
-            style={styles.uploadButton}
-            onPress={uploadImage}
-          >
-            <Text style={styles.textStyle}>Upload Image</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.cancelButton}
-            onPress={() => setModalVisible(!modalVisible)}
-          >
-            <Text style={styles.textStyle}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    </View>
+    <ScrollView>
+      {loading ? <ActivityIndicator size="large" color="#0000ff" /> : renderPlatformData(platformData)}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-  },
-  image: {
-    width: 300,
-    height: 300,
-    marginVertical: 16,
-  },
-  textInput: {
-    width: '100%',
-    padding: 8,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginVertical: 8,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  uploadButton: {
-    backgroundColor: '#2196F3',
-    borderRadius: 20,
     padding: 10,
-    elevation: 2,
+    marginBottom: 10,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 5,
   },
-  cancelButton: {
-    backgroundColor: '#f44336',
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
     marginTop: 10,
   },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+  section: {
+    marginTop: 5,
+  },
+  subSection: {
+    paddingLeft: 10,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    resizeMode: 'cover',
+    marginTop: 5,
   },
 });
 
-export default MyComponent;
+export default AppC;

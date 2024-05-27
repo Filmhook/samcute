@@ -16,7 +16,7 @@ const BlockedProfiles = () => {
     const userId=await AsyncStorage.getItem('id')
     const jwt =await AsyncStorage.getItem('jwt')
     console.log('idblack',userId )
-    const url = 'http://3.27.207.83:8080/filmhook-0.0.1-SNAPSHOT/block/getAllBlock';
+    const url = 'http://3.27.207.83:8080/filmhook-0.1/block/getAllBlock';
     const token = 'your_token_here';
     const requestData = {
       blockedBy: userId
@@ -32,7 +32,7 @@ const BlockedProfiles = () => {
   };
 
   const handleUnblock = async (blockedUser, blockedby) => {
-    const url = 'http://3.27.207.83:8080/filmhook-0.0.1-SNAPSHOT/block/unBlock';
+    const url = 'http://3.27.207.83:8080/filmhook-0.1/block/unBlock';
     const token = 'your_token_here';
     const jwt =await AsyncStorage.getItem('jwt')
     try {

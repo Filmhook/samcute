@@ -23,6 +23,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import privateAPI from '../../../api/privateAPI';
 import moment from 'moment';
 import PublicAPI from '../../../api/publicAPI';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 export default function Biography() {
   const navigation = useNavigation();
@@ -32,58 +33,259 @@ export default function Biography() {
   const [country, setCountry] = useState();
   const [state, setState] = useState();
   const [district, setDistrict] = useState();
-  const [workExperience, setworkExperience] = useState('');
-  const [workSchedule, setWorkSchedule] = useState('');
-  const [dob, setDob] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [workExperience, setworkExperience] = useState('N/A');
+  const [workSchedule, setWorkSchedule] = useState('N/A');
+  const [dob, setDob] = useState('');
 
-  const handleSave = () => {
 
-    console.log('hiioiiiii')
-    // Save the edited profile details
-    setIsEditing(false);
-    // You can send the updated profile details to your backend or update the state accordingly
-  };
 
-const bio=()=>{
-    if(userType === "IndustryUser"){
-      return(
+  // const bio = () => {
+  //   if (userType === "IndustryUser") {
+  //     return (
+  //       <View>
+  //         <View style={style.bio_content_section}>
+  //           <ImageBackground
+  //             style={style.inputContainer}
+  //             source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+  //             resizeMode="stretch">
+  //             <View
+  //               style={{
+  //                 width: responsiveWidth(7.2),
+  //                 height: responsiveHeight(4),
+  //                 marginLeft: responsiveWidth(1),
+  //                 marginTop: responsiveHeight(0.5),
+  //               }}>
+  //               <Image
+  //                 source={require('../../../Assets/Userprofile_And_Fonts/update/Work_Exp.png')}
+  //                 style={{ width: '100%', height: '100%' }}
+  //               />
+  //             </View>
+  //             <View style={style.bioTextContainer}>
+  //               {isEditing ? (
+  //                 <TextInput
+  //                   style={{
+  //                     fontSize: responsiveFontSize(2),
+  //                     color: '#000000',
+  //                     fontWeight: '500',
+
+  //                     fontFamily: 'Times New Roman',
+  //                     top: responsiveHeight(-4.5),
+  //                     textAlign: 'center',
+  //                     left: responsiveWidth(3)
+  //                   }}
+  //                   value={workExperience}
+  //                   onChangeText={setworkExperience}
+  //                   placeholder="Enter your Experience"
+  //                 />
+  //               ) : (
+  //                 <Text
+  //                   style={{
+  //                     fontSize: responsiveFontSize(2),
+  //                     color: '#000000',
+  //                     fontWeight: '500',
+  //                     fontFamily: 'Times New Roman',
+  //                     top: responsiveHeight(-3.5),
+  //                   }}>
+  //                   {workExperience}
+  //                 </Text>
+  //               )}
+  //             </View>
+  //           </ImageBackground>
+  //         </View>
+
+  //         <View style={style.bio_content_section}>
+  //           <ImageBackground
+  //             style={style.inputContainer}
+  //             source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+  //             resizeMode="stretch">
+  //             <View
+  //               style={{
+  //                 width: responsiveWidth(7.2),
+  //                 height: responsiveHeight(4),
+  //                 marginLeft: responsiveWidth(1),
+  //                 marginTop: responsiveHeight(0.5),
+  //               }}>
+  //               <Image
+  //                 source={require('../../../Assets/Userprofile_And_Fonts/update/Booking.png')}
+  //                 style={{ width: '100%', height: '100%' }}
+  //               />
+  //             </View>
+  //             <View style={style.bioTextContainer}>
+  //               {isEditing ? (
+  //                 <TextInput
+  //                   style={{
+  //                     fontSize: responsiveFontSize(2),
+  //                     color: '#000000',
+  //                     fontWeight: '500',
+  //                     fontFamily: 'Times New Roman',
+  //                     top: responsiveHeight(-4.5),
+  //                     textAlign: 'center',
+  //                     left: responsiveWidth(3)
+  //                   }}
+  //                   value={workSchedule}
+  //                   onChangeText={setWorkSchedule}
+  //                   placeholder="Enter your Schedule"
+  //                 />
+  //               ) : (
+  //                 <Text
+  //                   style={{
+  //                     fontSize: responsiveFontSize(2),
+  //                     color: '#000000',
+  //                     fontWeight: '500',
+  //                     fontFamily: 'Times New Roman',
+  //                     top: responsiveHeight(-3.5),
+  //                   }}>
+  //                   {workSchedule}
+  //                 </Text>
+  //               )}
+  //             </View>
+  //           </ImageBackground>
+  //         </View>
+  //       </View>
+  //     )
+  //   }
+  //   return null;
+  // }
+  const bio = () => {
+    const handleVerificationAlert = () => {
+      Alert.alert(
+        'Get Verified',
+        'Please complete your verification process for Industry user.',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('IndustryOne'), // Replace 'VerificationScreen' with your target screen name
+          },
+        ],
+        { cancelable: false }
+      );
+    };
+    if (userType === "IndustryUser") {
+      return (
         <View>
-        <View style={style.bio_content_section}>
-        <ImageBackground
-          style={style.inputContainer}
-          source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-          resizeMode="stretch">
-          <View
-            style={{
-              width: responsiveWidth(7.2),
-              height: responsiveHeight(4),
-              marginLeft: responsiveWidth(1),
-              marginTop: responsiveHeight(0.5),
-            }}>
-            <Image
-              source={require('../../../Assets/Userprofile_And_Fonts/update/Work_Exp.png')}
-              style={{ width: '100%', height: '100%' }}
-            />
-          </View>
-          <View style={style.bioTextContainer}>
-            {isEditing ? (
-              <TextInput
+          <View style={style.bio_content_section}>
+            <ImageBackground
+              style={style.inputContainer}
+              source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+              resizeMode="stretch">
+              <View
                 style={{
-                  fontSize: responsiveFontSize(2),
-                  color: '#000000',
-                  fontWeight: '500',
-                  
-                  fontFamily: 'Times New Roman',
-                  top: responsiveHeight(-4.5),
-                  textAlign:'center',
-                  left:responsiveWidth(3)
-                }}
-                value={workExperience}
-                onChangeText={setworkExperience}
-                placeholder="Enter your Experience"
+                  width: responsiveWidth(7.2),
+                  height: responsiveHeight(4),
+                  marginLeft: responsiveWidth(1),
+                  marginTop: responsiveHeight(0.5),
+                }}>
+                <Image
+                  source={require('../../../Assets/Userprofile_And_Fonts/update/Work_Exp.png')}
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </View>
+              <View style={style.bioTextContainer}>
+                {isEditing ? (
+                  <TextInput
+                    style={{
+                      fontSize: responsiveFontSize(2),
+                      color: '#000000',
+                      fontWeight: '500',
+                      fontFamily: 'Times New Roman',
+                      top: responsiveHeight(-4.5),
+                      textAlign: 'center',
+                      left: responsiveWidth(3)
+                    }}
+                    value={workExperience}
+                    onChangeText={setworkExperience}
+                    placeholder="Enter your Experience"
+                  />
+                ) : (
+                  <Text
+                    style={{
+                      fontSize: responsiveFontSize(2),
+                      color: '#000000',
+                      fontWeight: '500',
+                      fontFamily: 'Times New Roman',
+                      top: responsiveHeight(-3.5),
+                    }}>
+                    {workExperience}
+                  </Text>
+                )}
+              </View>
+            </ImageBackground>
+          </View>
+  
+          <View style={style.bio_content_section}>
+            <ImageBackground
+              style={style.inputContainer}
+              source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+              resizeMode="stretch">
+              <View
+                style={{
+                  width: responsiveWidth(7.2),
+                  height: responsiveHeight(4),
+                  marginLeft: responsiveWidth(1),
+                  marginTop: responsiveHeight(0.5),
+                }}>
+                <Image
+                  source={require('../../../Assets/Userprofile_And_Fonts/update/Booking.png')}
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </View>
+              <View style={style.bioTextContainer}>
+                {isEditing ? (
+                  <TextInput
+                    style={{
+                      fontSize: responsiveFontSize(2),
+                      color: '#000000',
+                      fontWeight: '500',
+                      fontFamily: 'Times New Roman',
+                      top: responsiveHeight(-4.5),
+                      textAlign: 'center',
+                      left: responsiveWidth(3)
+                    }}
+                    value={workSchedule}
+                    onChangeText={setWorkSchedule}
+                    placeholder="Enter your Schedule"
+                  />
+                ) : (
+                  <Text
+                    style={{
+                      fontSize: responsiveFontSize(2),
+                      color: '#000000',
+                      fontWeight: '500',
+                      fontFamily: 'Times New Roman',
+                      top: responsiveHeight(-3.5),
+                    }}>
+                    {workSchedule}
+                  </Text>
+                )}
+              </View>
+            </ImageBackground>
+          </View>
+        </View>
+      );
+    } else if (userType === "commonUser") {
+      return (
+        <TouchableOpacity style={style.bio_content_section} onPress={handleVerificationAlert}>
+          <ImageBackground
+            style={style.inputContainer}
+            source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
+            resizeMode="stretch">
+            <View
+              style={{
+                width: responsiveWidth(7.2),
+                height: responsiveHeight(4),
+                marginLeft: responsiveWidth(1),
+                marginTop: responsiveHeight(0.5),
+              }}>
+              <Image
+                source={require('../../../Assets/Userprofile_And_Fonts/update/Booking.png')}
+                style={{ width: '100%', height: '100%' }}
               />
-            ) : (
+            </View>
+            <View style={style.bioTextContainer}>
               <Text
                 style={{
                   fontSize: responsiveFontSize(2),
@@ -92,87 +294,36 @@ const bio=()=>{
                   fontFamily: 'Times New Roman',
                   top: responsiveHeight(-3.5),
                 }}>
-                {workExperience}
+                Get Verified
               </Text>
-            )}
-          </View>
-        </ImageBackground>
-      </View>
-   
-      <View style={style.bio_content_section}>
-        <ImageBackground
-          style={style.inputContainer}
-          source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-          resizeMode="stretch">
-          <View
-            style={{
-              width: responsiveWidth(7.2),
-              height: responsiveHeight(4),
-              marginLeft: responsiveWidth(1),
-              marginTop: responsiveHeight(0.5),
-            }}>
-            <Image
-              source={require('../../../Assets/Userprofile_And_Fonts/update/Booking.png')}
-              style={{ width: '100%', height: '100%' }}
-            />
-          </View>
-          <View style={style.bioTextContainer}>
-            {isEditing ? (
-              <TextInput
-                style={{
-                  fontSize: responsiveFontSize(2),
-                  color: '#000000',
-                  fontWeight: '500',
-                  fontFamily: 'Times New Roman',
-                  top: responsiveHeight(-4.5),
-                  textAlign:'center',
-                  left:responsiveWidth(3)
-                }}
-                value={workSchedule}
-                onChangeText={setWorkSchedule}
-                placeholder="Enter your Schedule"
-              />
-            ) : (
-              <Text
-                style={{
-                  fontSize: responsiveFontSize(2),
-                  color: '#000000',
-                  fontWeight: '500',
-                  fontFamily: 'Times New Roman',
-                  top: responsiveHeight(-3.5),
-                }}>
-                {workSchedule}
-              </Text>
-            )}
-          </View>
-        </ImageBackground>
-      </View>
-      </View>
-      )
+            </View>
+          </ImageBackground>
+        </TouchableOpacity>
+      );
     }
     return null;
   }
+  
 
-const [userType,setuserType]=useState('');
+  const [userType, setuserType] = useState('');
   useEffect(() => {
     const fetchData = async () => {
       try {
         const userId = await AsyncStorage.getItem('userId');
         const jwt = await AsyncStorage.getItem('jwt');
-        const value=await AsyncStorage.getItem('usertype')
-        if(value !== null){
-         setuserType(value)
+        const value = await AsyncStorage.getItem('usertype')
+        if (value !== null) {
+          setuserType(value)
         }
-        console.log('usertype:',value)
+        console.log('usertype:', value)
 
-        const response = await PublicAPI.get(`user/getUserByUserId?userId=${userId}`, {
-          headers: {
-            'Authorization': `Bearer ${jwt}`
-          }
+        const response = await privateAPI.get(`user/getUserByUserId?userId=${userId}`, {
+         
         });
 
         const user = response.data.data;
-        setDob(user.dob ? moment(user.dob).toDate() : new Date());
+        console.log('dataaaaaa', (user.dob))
+        setSelectedDate(user.dob || '');
         setGender(user.gender || '');
         setCountry(user.country || '');
         setState(user.state || '');
@@ -184,7 +335,7 @@ const [userType,setuserType]=useState('');
         if (error.response) {
           console.error('Response status:', error.response.status);
           console.error('Response data:', error.response.data);
-        
+
         }
         throw customError;
       }
@@ -203,10 +354,10 @@ const [userType,setuserType]=useState('');
 
     console.log('edit iiiiiii', userIdString)
 
-    const url = 'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/updateBiographyDetails';
+    const url = 'https://filmhook.annularprojects.com/filmhook-0.1/user/updateBiographyDetails';
     const requestBody = {
       userId: userId,
-      dob: moment(dob).format('YYYY-MM-DD'), // Format dob as 'yyyy-mm-dd'
+      dob: selectedDate, // Format dob as 'yyyy-mm-dd'
       gender: gender,
       country: country,
       state: state,
@@ -243,16 +394,6 @@ const [userType,setuserType]=useState('');
     }
   };
 
-  const formatDate = (date) => {
-    const formattedDate = new Date(date);
-    const year = formattedDate.getFullYear();
-    const month = (formattedDate.getMonth() + 1).toString().padStart(2, '0'); // Add leading zero if needed
-    const day = formattedDate.getDate().toString().padStart(2, '0'); // Add leading zero if needed
-    return `${year}-${month}-${day}`;
-  };
-
-
-
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || dob;
@@ -264,17 +405,24 @@ const [userType,setuserType]=useState('');
     setShowDatePicker(true);
   };
 
-  // const formatDate = dateStr => {
-  //   let date= new Date(dateStr)
-  //   const year = date.getFullYear();
-  //   let month = date.getMonth() + 1;
-  //   let day = date.getDate();
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const showDatePicker = () => {
+      setDatePickerVisibility(true);
+  };
+  const hideDatePicker = () => {
+      setDatePickerVisibility(false);
+  };
 
-  //   month = month < 10 ? '0' + month : month;
-  //   day = day < 10 ? '0' + day : day;
-
-  //   return `${year}-${month}-${day}`;
-  // };
+  const handleConfirm = (date) => {
+      const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      setSelectedDate(formattedDate);
+      hideDatePicker();
+    
+  };
+  console.log('dddd', selectedDate)
+  const today = new Date();
+  const minimumDate = new Date(1900, 0, 1); 
 
   return (
     <>
@@ -286,7 +434,7 @@ const [userType,setuserType]=useState('');
 
         {/* ///////////////////////////////////////////////*/}
         <View style={style.bio_content}>
-          <View>
+          <View style={{right:responsiveWidth(42)}}>
             {isEditing ? null : (
               <TouchableOpacity onPress={() => setIsEditing(true)} style={{ color: 'black' }}>
                 <Text style={style.editButton}>Edit</Text>
@@ -320,70 +468,34 @@ const [userType,setuserType]=useState('');
               </View>
 
               <View style={style.bioTextContainer}>
-                {/* {isEditing ? (
-                  <TouchableOpacity onPress={openDatePicker}>
-                    <TextInput
-                      style={{
-                        fontSize: 16,
-                        color: '#000000',
-                        fontWeight: '500',
-                        fontFamily: 'Times New Roman',
-                      }}
-                      value={dob} // Format the date string
-                      editable={false}
-                    />
-                  </TouchableOpacity>
-                ) : (
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: '#000000',
-                      fontWeight: '500',
-                      fontFamily: 'Times New Roman',
-                    }}>
-                    {dob}
-                  </Text>
-                )}
 
-                {showDatePicker && (
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={dob}
-                    mode="date"
-                    is24Hour={true}
-                    display="default"
-                    onChange={handleDateChange}
-                    maximumDate={new Date()}
-                  />
-                )} */}
                 {isEditing ? (
-                  <TouchableOpacity onPress={openDatePicker} style={{bottom:responsiveHeight(5),width:responsiveWidth(40)}}>
+                  <TouchableOpacity onPress={showDatePicker} style={{ bottom: responsiveHeight(5), width: responsiveWidth(40) }}>
                     <TextInput
-                      style={{ paddingHorizontal:responsiveWidth(8),fontSize: responsiveFontSize(2), color: '#000000', fontWeight: '500', fontFamily: 'Times New Roman' }}
-                      value={moment(dob).format('YYYY-MM-DD')}
+                      style={{ paddingHorizontal: responsiveWidth(8), fontSize: responsiveFontSize(2), color: '#000000', fontWeight: '500', fontFamily: 'Times New Roman' }}
+                      value={selectedDate}
                       editable={false}
                     />
                   </TouchableOpacity>
                 ) : (
-                  <Text  style={{
+                  <Text style={{
                     fontSize: responsiveFontSize(2),
                     color: '#000000',
                     fontWeight: '500',
                     fontFamily: 'Times New Roman',
-                    bottom:responsiveHeight(3)
-                  }} >{moment(dob).format('YYYY-MM-DD')}</Text>
+                    bottom: responsiveHeight(3)
+                  }} >{selectedDate}</Text>
                 )}
-                {showDatePicker && (
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={dob}
-                    mode="date"
-                    is24Hour={true}
-                    display="default"
-                    onChange={handleDateChange}
-                    maximumDate={new Date()}
-                  />
-                )}
+                <DateTimePickerModal
+                            isVisible={isDatePickerVisible}
+                            
+                            mode="date"
+                            maximumDate={today}
+                            minimumDate={minimumDate}
+                            onConfirm={handleConfirm}
+                            onCancel={hideDatePicker}
+                           
+                        />
 
               </View>
             </ImageBackground>
@@ -411,11 +523,11 @@ const [userType,setuserType]=useState('');
                   bottom: responsiveHeight(4),
                   left: responsiveWidth(9),
                   width: responsiveWidth(37),
-                  height:responsiveHeight(4),
-                 // borderWidth:1,
-                  justifyContent:'center',
-                  alignSelf:'center'
-                 // alignItems:'center'
+                  height: responsiveHeight(4),
+                  // borderWidth:1,
+                  justifyContent: 'center',
+                  alignSelf: 'center'
+                  // alignItems:'center'
 
                 }}>
                 {isEditing ? (
@@ -426,8 +538,8 @@ const [userType,setuserType]=useState('');
 
 
                     }
-                    //style={{width:100,borderWidth:1,height:responsiveHeight(6)}}
-                    >
+                  //style={{width:100,borderWidth:1,height:responsiveHeight(6)}}
+                  >
                     <Picker.Item label="Male" value="Male" />
                     <Picker.Item label="Female" value="Female" />
                     <Picker.Item label="Others" value="Others" />
@@ -475,7 +587,7 @@ const [userType,setuserType]=useState('');
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
                       top: responsiveHeight(-4.5),
-                      textAlign:'center'
+                      textAlign: 'center'
                     }}
                     value={country}
                     onChangeText={setCountry}
@@ -523,10 +635,10 @@ const [userType,setuserType]=useState('');
                       fontSize: responsiveFontSize(2),
                       color: '#000000',
                       fontWeight: '500',
-                      alignSelf:'center',
+                      alignSelf: 'center',
                       fontFamily: 'Times New Roman',
                       top: responsiveHeight(-4.5),
-                      textAlign:'center'
+                      textAlign: 'center'
 
                     }}
                     value={state}
@@ -575,7 +687,7 @@ const [userType,setuserType]=useState('');
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
                       top: responsiveHeight(-4.5),
-                      textAlign:'center'
+                      textAlign: 'center'
                     }}
                     value={district}
                     onChangeText={setDistrict}
@@ -597,10 +709,10 @@ const [userType,setuserType]=useState('');
             </ImageBackground>
           </View>
           <View>
-          {bio()}
+            {bio()}
           </View>
           {/* ///////////////////////////////////////////////*/}
-          
+
           {/* ///////////////////////////////////////////////*/}
         </View>
       </View>
@@ -611,7 +723,7 @@ const [userType,setuserType]=useState('');
 
 const style = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+  //  flexDirection: 'row',
     marginTop: responsiveHeight(5),
     // height: responsiveHeight(55)
   },
@@ -638,8 +750,12 @@ const style = StyleSheet.create({
     height: '100%',
   },
   bio_title: {
-    flex: responsiveWidth(0.2),
-    // borderWidth: 1
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: '#d3d3d3', // Light gray background color
+    padding: responsiveWidth(4),
+    borderRadius: 8,
+    marginTop: responsiveHeight(1),
   },
   editButton: {
     fontSize: 18,
@@ -649,18 +765,18 @@ const style = StyleSheet.create({
     alignSelf: 'flex-end',
     paddingRight: responsiveWidth(3),
     top: responsiveHeight(0.5),
-    color:'black'
+    color: 'black'
   },
   bio_title_text: {
     fontWeight: 'bold',
-    fontSize: responsiveFontSize(3),
-    color: '#323232',
-    marginLeft: responsiveWidth(2),
-    fontFamily: 'Times New Roman',
-    textDecorationLine: 'underline',
+      fontSize: responsiveFontSize(2.2),
+      color: 'black',
+      fontFamily: 'Cochin',
+      width: responsiveWidth(70),
   },
   bio_content: {
     flex: 1,
+    left:responsiveWidth(43)
     //  borderWidth:1
   },
   bio_content_section: {
@@ -688,8 +804,8 @@ const style = StyleSheet.create({
     // borderWidth: 1,
 
     // left:responsiveWidth(4),
-  //  left: '22%',
-    justifyContent:'center',
-    alignItems:'center'
+    //  left: '22%',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 });

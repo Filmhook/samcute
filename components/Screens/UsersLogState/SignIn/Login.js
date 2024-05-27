@@ -68,31 +68,33 @@ export default function Login() {
         password: password,
         firebaseDeviceToken: token
       });
+  
       const jwt = response.data.jwt;
       const emailId = response.data.email;
+      const refreshToken = response.data.token;
+      await AsyncStorage.setItem('token', refreshToken);
       await AsyncStorage.setItem('jwt', jwt);
       await AsyncStorage.setItem('mail', emailId);
       await AsyncStorage.setItem('id', response.data.id.toString());
       await AsyncStorage.setItem('userId', response.data.id.toString());
       await AsyncStorage.setItem('fcmToken', token);
       await AsyncStorage.setItem('username', response.data.username);
-
-      console.log("Yaswanth id:", response.data.id.toString(), response.data.username)
-
-
-      //   161 basein, Benisha Bm
-      //  3   yaswin, Wdwdwd
-
+      const userType = response.data.userType;
+      await AsyncStorage.setItem('usertype', userType);
+    
+  
       const storedMail = await AsyncStorage.getItem('mail');
-      //
+      
       Alert.alert('Success', 'Login Successful');
       navigation.navigate('Tabbar');
-
-      // Handle response as needed
+  
     } catch (error) {
-      Alert.alert('Error', "Invalid User Info");
+      if (error.response && error.response.status === 404) {
+        Alert.alert('Error', 'Server is working in the background');
+      } else {
+        Alert.alert('Error', "Invalid User Info");
+      }
       console.error('Login failed:', error);
-      // Handle error as needed
     }
   };
 

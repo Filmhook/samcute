@@ -1,4 +1,3 @@
-import Slider from '@react-native-community/slider';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 
@@ -12,7 +11,8 @@ import privateAPI from '../../../api/privateAPI';
 
 import RazorpayCheckout from 'react-native-razorpay';
 import Video from 'react-native-video';
-
+import Swiper from 'react-native-swiper';
+import Slider from '@react-native-community/slider';
 
 export default function PromoteEdit() {
 
@@ -35,11 +35,12 @@ export default function PromoteEdit() {
   const {
     imageNav,
     id,
-    imageUrl
+    imageUrls
 
   } = route.params;
 
-
+  console.log("Received image URLs", imageUrls);
+  console.log("Received post ID", id);
 
 
 
@@ -5405,32 +5406,6 @@ export default function PromoteEdit() {
     // Update selected days based on the slider's value (from 1 to 30)
     setSelectedDays(Math.round(value)); // Rounds to the nearest integer
   };
-  useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        // Fetch images from the API
-        const response = await privateAPI.get('user/gallery/getGalleryFilesByAllUser');
-        // Check if the response is successful and contains image data
-        if (response.data && Array.isArray(response.data.data)) {
-          // Extract image URLs from the response data
-          const fetchedImages = response.data.data.map(item => item.filePath);
-
-          // Set the fetched images to state
-          setImages(fetchedImages);
-        } else {
-          console.error('Invalid response format:', response);
-        }
-      } catch (error) {
-        console.error('Error fetching images:', error);
-      }
-    };
-
-    // Call the fetchImages function when the component mounts
-    fetchImages();
-  }, []);
-  // const [currentIndex, setCurrentIndex] = useState(0);
-  // const previousIndex = (currentIndex === 0 ? images.length - 1 : (currentIndex - 1));
-  // const nextIndex = (currentIndex === images.length - 1 ? 0 : (currentIndex + 1));
   const handlePromote = async () => {
     try {
       // const id = await AsyncStorage.getItem('id');
@@ -5451,7 +5426,7 @@ export default function PromoteEdit() {
       console.log("id from route", id)
       console.log("posted", response.data);
       Alert.alert("Promoted");
-      // navigation.navigate("Tabbar");
+      navigation.navigate("Tabbar");
       makePayment();
     } catch (error) {
       console.error('Error response:', error.response); // Log the error response
@@ -5503,27 +5478,49 @@ export default function PromoteEdit() {
     });
   }
 
+  const [paused, setPaused] = useState(true);
+  const [currentTime, setCurrentTime] = useState(0);
+
+  // Helper function to determine if a URL is a video
+  const isVideo = (url) => {
+    return url.endsWith('.mp4') || url.endsWith('.mov');
+  };
+
   return (
     <ScrollView style={{ flex: 1, height: responsiveHeight(100) }}>
       <View style={{ flex: 1 }}>
         <Text style={{ color: 'black', fontSize: responsiveFontSize(3), fontWeight: '600' }}>Promote:</Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginHorizontal: 100, marginTop: 20 }}>
-          <View style={{ width: responsiveWidth(45), height: responsiveHeight(33), alignSelf: 'center', zIndex: 2 }}>
-            <Image
-              source={imageNav !== undefined ? { uri: imageNav } : { uri: imageUrl }}
-              style={{ width: '100%', height: '100%' }}
-              resizeMethod='resize'
-            />
-            <Video
-              source={imageNav !== undefined ? { uri: imageNav } : { uri: imageUrl }}
-              style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0 }}
-              resizeMode='cover'
-              shouldPlay
-              isLooping
-              useNativeControls
-            />
-          </View>
-
+        <View style={{ borderColor: "grey", width: responsiveWidth(100), height: responsiveHeight(50), paddingLeft: responsiveWidth(3), paddingRight: responsiveWidth(3) }}>
+          <Swiper style={style.wrapper} showsButtons loop>
+            {imageUrls.map((file, index) => (
+              <View style={style.slide} key={index}>
+                {isVideo(file) ? (
+                  <View style={{ position: 'relative', width: '100%', height: '100%' }}>
+                    <Video
+                      source={{ uri: file }}
+                      style={{ width: "100%", height: '100%' }}
+                      paused={paused}
+                      resizeMode="contain"
+                      onLoad={() => setCurrentTime(0)} // Set the current time to the beginning when video loads
+                      onProgress={({ currentTime }) => setCurrentTime(currentTime)} // Update current time as video progresses
+                      seek={currentTime} // Seek to the current time
+                    />
+                    {paused && ( // Display play button only if video is paused
+                      <Image
+                        source={require('../../../../components/Assets/video/play_button.png')}
+                        style={style.playButton}
+                      />
+                    )}
+                  </View>
+                ) : (
+                  <Image
+                    source={{ uri: file }}
+                    style={{ height: '100%', width: '100%' }}
+                  />
+                )}
+              </View>
+            ))}
+          </Swiper>
         </View>
 
 
@@ -5710,36 +5707,6 @@ export default function PromoteEdit() {
             customChipsRenderer={CustomChipsRenderer}
 
           />
-
-
-
-
-          {/* {selectedCountries.map((prof) => (
-                                <View key={prof} >
-                                    <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: '800', color: 'green' }}>{prof}</Text>
-
-                                </View>
-                            ))} */}
-
-          {/* ============================================ */}
-          {/* <View style={{ justifyContent: 'center', alignItems: 'center', bottom: responsiveHeight(2), top: responsiveHeight(3) }}>
-            <View style={{ borderWidth: 1, justifyContent: 'center', alignItems: 'center', flex: 1, width: responsiveWidth(80), height: responsiveHeight(20), }}>
-
-
-
- <Text>Number of Days : {selectedDays}</Text>
-
-              <Text>Total Cost : {inventoryCount * selectedDays}</Text>
-              <Text>Tax fee : 18%</Text>
-              <Text>CGST : {gstcalculation}</Text>
-              <Text>SGST : {gstcalculation}</Text>
-              <Text>Total Price : {totalCost}</Text>
-             
-              <Text> </Text>
-
-
-            </View>
-          </View> */}
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             <View style={{ flexDirection: 'row', padding: responsiveWidth(2), width: responsiveWidth(60), flexWrap: 'wrap', backgroundColor: '#d8d9db', marginTop: responsiveHeight(3), elevation: responsiveWidth(2) }}>
               <View style={{ flexDirection: 'column', alignItems: 'flex-start', columnGap: responsiveHeight(6) }}>

@@ -128,7 +128,7 @@ export default function Industry_S_One() {
       let allSubProfessions = [];
       for (let id of selectedProfessionId) {
         const response = await PublicAPI.post(
-          'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/Film/getProfessionList',
+          'https://filmhook.annularprojects.com/filmhook-0.1/Film/getProfessionList',
           { filmProfesssionId: id },
          
         );
@@ -425,7 +425,7 @@ export default function Industry_S_One() {
 
           <View style={{flexDirection: 'row', columnGap: responsiveWidth(18)}}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('Login')}
+              onPress={() => navigation.goBack()}
               style={styles.backButton}>
               <Text
                 style={{

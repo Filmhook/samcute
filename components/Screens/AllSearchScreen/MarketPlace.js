@@ -41,12 +41,12 @@ const MarketPlace = () => {
       try {
         let url = '';
         if (showBuyProducts) {
-          url = 'marketPlace/getMarketPlaceByRentalOrSale?RentalOrSale=true';
+          url = 'marketPlace/getMarketPlaceByRentalOrSale?RentalOrSale=false';
           const response = await privateApi.get(url);
           console.log('Fetched buy data:', response.data.body.data);
           setBuyData(response.data.body.data);
         } else {
-          url = 'marketPlace/getMarketPlaceByRentalOrSale?RentalOrSale=false';
+          url = 'marketPlace/getMarketPlaceByRentalOrSale?RentalOrSale=true';
           const response = await privateApi.get(url);
           console.log('Fetched rental data:', response.data.body.data);
           setResponseData(response.data.body.data);

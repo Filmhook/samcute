@@ -15,7 +15,7 @@ export default function Logout() {
         try{
             await signOut(authInstance);
           navigation.navigate("SignOutLogin")
-            console.log("logout succes");
+            console.log("logout SignOutLogin  succes");
         }
        catch(err){
         console.log(err);

@@ -215,6 +215,7 @@ const ProfileModalRoot = ({ setIsVisible, IsVisible }) => {
   return (
     <>
       <View style={{ width: responsiveWidth(70), height: responsiveHeight(88) }}>
+      <Image source={require('../../Assets/Chats_Icon_And_Fonts/next.png')} style={{ width: '18%', height: '6%',position:'absolute', right:'105%' ,backgroundColor:'gray', top:'2%'}}></Image>
         <Profilephoto
           setIsVisible={setIsVisible}
           IsVisible={IsVisible}

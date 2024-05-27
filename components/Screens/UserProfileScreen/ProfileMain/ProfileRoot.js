@@ -144,7 +144,7 @@ export default function ProfileRoot() {
       };
 
       const response = await fetch(
-        'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/saveProfilePhoto',
+        'https://filmhook.annularprojects.com/filmhook-0.1/user/saveProfilePhoto',
         requestOptions
       );
       const data = await response.json();
@@ -177,7 +177,7 @@ export default function ProfileRoot() {
         };
 
         const response = await axios.post(
-          'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/getProfilePic',
+          'https://filmhook.annularprojects.com/filmhook-0.1/user/getProfilePic',
           requestData,
           { headers: myHeaders }
         );
@@ -280,7 +280,7 @@ export default function ProfileRoot() {
       };
 
       const response = await fetch(
-        'https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/saveCoverPhoto',
+        'https://filmhook.annularprojects.com/filmhook-0.1/user/saveCoverPhoto',
         requestOptions
       );
       const data = await response.json();

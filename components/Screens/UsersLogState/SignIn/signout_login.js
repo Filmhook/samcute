@@ -112,6 +112,7 @@ export default function SignOut_Login() {
       // Store JWT token and ID in AsyncStorage
       await AsyncStorage.setItem('jwt', jwt);
       await AsyncStorage.setItem('id', id.toString());
+      
 
       // Log stored values for verification
       const storedJwt = await AsyncStorage.getItem('jwt');
