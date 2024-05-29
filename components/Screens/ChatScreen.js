@@ -28,17 +28,7 @@ import { useRoute } from '@react-navigation/native'; // Import useRoute hook
 import privateAPI from '../api/privateAPI';
 import EmojiPicker from 'rn-emoji-keyboard'
 
-
-const loginedUserToken = '007eJxTYNgVsbfgs0/41lNCm7Qys3Mb/jYanPrHsO7m+pTKZVkxxdsVGCwSU81NTc2AhJGFSUpysoWBoYlFokmqmaGZiZmJuWn7XKW0hkBGhuz4b8yMDKwMjEAI4qswpKYYppoaJRvopqWaJeoaGqam6lqamSbrmpuaJBsZJptaGicaAgD4UihU';
-// const Ruby = '007eJxTYHjW6TRh1r5tN37v2XDj8P9vjc/2BxZ45x3Qf5695vGuyHOHFBgsElPNTU3NgISRhUlKcrKFgaGJRaJJqpmhmYmZibnp/p+KaQ2BjAxV/DVMjAysDIxACOKrMBgZGKSYpqQZ6KYlpxjrGhqmpuomWqak6CaZGpiZpyUlJwNlAca+LSI=';
-
-// npm install --save react-native-emoji-selector
-// import EmojiSelector from 'react-native-emoji-selector'
-
 const ChatScreen = ({ navigation }) => {
-
-
-
   const route = useRoute();
   const { data } = route.params;
   // Defines the variable.
@@ -48,7 +38,7 @@ const ChatScreen = ({ navigation }) => {
   // Replaces <your userId> with your user ID.
   const username = data.userId// userid
   // Replaces <your agoraToken> with your Agora token.
-  const [chatToken, setChatToken] = React.useState(loginedUserToken);
+  const [chatToken, setChatToken] = React.useState(null);
   const [targetId, setTargetId] = React.useState(3);
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
@@ -73,6 +63,19 @@ const ChatScreen = ({ navigation }) => {
 
 
   const [uid, setUid] = useState(null);
+
+  const getAgoraChatToken = async() => {
+   const data = await privateAPI.post('/agora/getChatToken' , {
+   userId : username,
+   expirationTimeInSeconds : 36000
+   })
+   console.log(`Get Chat Token - ${JSON.stringify(data.data)} `)
+   setChatToken(data.data)
+  }
+
+    useEffect(() => {
+    getAgoraChatToken()
+    }, [])
 
   const GETAsuncStorage = async () => {
     const UID = await AsyncStorage.getItem('id');
@@ -116,13 +119,11 @@ const ChatScreen = ({ navigation }) => {
     } catch (error) {
       console.error(error)
     }
-
-
   }
   const GetAllMessages = async () => {
     try {
       const res = await privateAPI.post('/chat/getMessageByUserId', {chatReceiverId : username});
-      console.log(`fetching msg - ${JSON.stringify(res.data.data.userChat)}`)
+//      console.log(`fetching msg - ${JSON.stringify(res.data.data.userChat)}`)
       setChatMessageStatus(res.data.data.userChat)
     } catch (error) {
       console.error(error)
@@ -150,8 +151,12 @@ const ChatScreen = ({ navigation }) => {
 
           }
         },
-        onCmdMessagesReceived: messages => { },
-        onMessagesRead: messages => { },
+        onCmdMessagesReceived: messages => {
+         console.log(` onCmdMessagesReceived - ${JSON.stringify(message)}`)
+         },
+        onMessagesRead: messages => {
+        console.log(` onMessagesRead - ${JSON.stringify(message)}`)
+        },
         onGroupMessageRead: groupMessageAcks => { },
         onMessagesDelivered: messages => { },
         onMessagesRecalled: messages => { },
@@ -208,6 +213,7 @@ const ChatScreen = ({ navigation }) => {
       return;
     }
     rollLog('start login ...');
+    console.log("AGORA LOGIN CHAT - " , username , chatToken)
     chatClient
       .loginWithAgoraToken(username, chatToken
       )
