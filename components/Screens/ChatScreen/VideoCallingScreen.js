@@ -89,6 +89,7 @@ export default function VideoCallingScreen({navigation}) {
       console.error('FCM Sedn Error', error);
     }
   };
+  console.log(ONE_ON_ONE_VIDEO_CALL_CONFIG)
 
   if (remoteUserId) {
     return (
@@ -111,6 +112,14 @@ export default function VideoCallingScreen({navigation}) {
           config={{
             // You can also use ONE_ON_ONE_VOICE_CALL_CONFIG/GROUP_VIDEO_CALL_CONFIG/GROUP_VOICE_CALL_CONFIG to make more types of calls.
             ...ONE_ON_ONE_VIDEO_CALL_CONFIG ,
+            durationConfig: {
+                                    isVisible: false,
+//                                    onDurationUpdate: (duration) => {
+//                                        if (duration === 5 * 60) {
+//                                            prebuiltRef.current.hangUp();
+//                                        }
+//                                    }
+                                },
             onOnlySelfInRoom: () => {
               navigation.goBack();
             },
