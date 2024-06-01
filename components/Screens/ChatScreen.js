@@ -1,5 +1,5 @@
 // Imports dependencies.
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   SafeAreaView,
   FlatList,
@@ -28,16 +28,8 @@ import { useRoute } from '@react-navigation/native'; // Import useRoute hook
 import privateAPI from '../api/privateAPI';
 import EmojiPicker from 'rn-emoji-keyboard'
 
-
-const loginedUserToken = '007eJxTYNgVsbfgs0/41lNCm7Qys3Mb/jYanPrHsO7m+pTKZVkxxdsVGCwSU81NTc2AhJGFSUpysoWBoYlFokmqmaGZiZmJuWn7XKW0hkBGhuz4b8yMDKwMjEAI4qswpKYYppoaJRvopqWaJeoaGqam6lqamSbrmpuaJBsZJptaGicaAgD4UihU';
-// const Ruby = '007eJxTYHjW6TRh1r5tN37v2XDj8P9vjc/2BxZ45x3Qf5695vGuyHOHFBgsElPNTU3NgISRhUlKcrKFgaGJRaJJqpmhmYmZibnp/p+KaQ2BjAxV/DVMjAysDIxACOKrMBgZGKSYpqQZ6KYlpxjrGhqmpuomWqak6CaZGpiZpyUlJwNlAca+LSI=';
-
-// npm install --save react-native-emoji-selector
-// import EmojiSelector from 'react-native-emoji-selector'
-
 const ChatScreen = ({ navigation }) => {
-
-
+const scrollViewRef = useRef(null);
 
   const route = useRoute();
   const { data } = route.params;
@@ -48,7 +40,8 @@ const ChatScreen = ({ navigation }) => {
   // Replaces <your userId> with your user ID.
   const username = data.userId// userid
   // Replaces <your agoraToken> with your Agora token.
-  const [chatToken, setChatToken] = React.useState(loginedUserToken);
+  const [chatToken, setChatToken] = React.useState("007eJxTYHjeIsb78Nblv/+qs19In04+mPf8i5g195Pbs3JNDz1InnFegcHEMtnMItXM2DjVMtkk0dzYwtTYIMkw1djcwtAiydzUcrFWRJoAHwODmk5PHSMDKwMjEIL4TAyGlgCbkx7s");
+
   const [targetId, setTargetId] = React.useState(3);
   const [content, setContent] = React.useState('');
   const [logText, setWarnText] = React.useState('Show log area');
@@ -57,6 +50,19 @@ const ChatScreen = ({ navigation }) => {
   const [chatMessageStatusm, setChatMessageStatus] = React.useState([]);
 
   const [loginedUsername, setLoginedUsername] = useState("")
+
+  useEffect(() => {
+      // Function to scroll to the bottom of the chat ScrollView
+      const scrollToBottom = () => {
+        if (scrollViewRef.current) {
+          scrollViewRef.current.scrollToEnd({ animated: true });
+        }
+      };
+
+      // Scroll to bottom whenever chatMessageStatusm is updated
+      scrollToBottom();
+
+    }, [chatMessageStatusm]);
 
   // Outputs console logs.
   useEffect(() => {
@@ -73,6 +79,15 @@ const ChatScreen = ({ navigation }) => {
 
 
   const [uid, setUid] = useState(null);
+
+//  const getAgoraChatToken = async() => {
+//   const data = await privateAPI.post('/agora/getChatToken' , {
+//   userId : username,
+//   expirationTimeInSeconds : 36000
+//   })
+//   console.log(`Get Chat Token - ${JSON.stringify(data.data.data)} `)
+//   setChatToken(data.data.data)
+//  }
 
   const GETAsuncStorage = async () => {
     const UID = await AsyncStorage.getItem('id');
@@ -105,33 +120,38 @@ const ChatScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
  const SaveMessages = async () => {
-    setContent('')
+
     try {
+    if(content?.length === 0){
+    return
+    }
       const res = await privateAPI.post('/chat/saveMessage', {
         message: content,
         chatReceiverId: username,
       });
-      console.log(res.data)
+      console.log("Sending Msg")
+      setContent('')
       GetAllMessages()
     } catch (error) {
       console.error(error)
     }
-
-
   }
   const GetAllMessages = async () => {
     try {
       const res = await privateAPI.post('/chat/getMessageByUserId', {chatReceiverId : username});
-      console.log(`fetching msg - ${JSON.stringify(res.data.data.userChat)}`)
+//      console.log(`fetching msg - ${JSON.stringify(res.data.data.userChat)}`)
+console.log("Fetched Msg...")
       setChatMessageStatus(res.data.data.userChat)
     } catch (error) {
       console.error(error)
     }
 
   }
+
   useEffect(() => {
     GETAsuncStorage()
     GetAllMessages()
+//    getAgoraChatToken()
     login()
     // Registers listeners for messaging.
     const setMessageListener = () => {
@@ -150,8 +170,12 @@ const ChatScreen = ({ navigation }) => {
 
           }
         },
-        onCmdMessagesReceived: messages => { },
-        onMessagesRead: messages => { },
+        onCmdMessagesReceived: messages => {
+         console.log(` onCmdMessagesReceived - ${JSON.stringify(message)}`)
+         },
+        onMessagesRead: messages => {
+        console.log(` onMessagesRead - ${JSON.stringify(message)}`)
+        },
         onGroupMessageRead: groupMessageAcks => { },
         onMessagesDelivered: messages => { },
         onMessagesRecalled: messages => { },
@@ -201,13 +225,33 @@ const ChatScreen = ({ navigation }) => {
     init();
   }, [chatClient, chatManager, appKey]);
 
+    useEffect(() => {
+      const chatInterval = setInterval(() => {
+      console.log("Refresh Chat...")
+      GetAllMessages()
+      }, 1000);
+      return () => {
+        clearInterval(chatInterval);
+      };
+    }, []);
+
   // Logs in with an account ID and a token.
   const login = () => {
+    console.log("Chat login - " , chatToken)
+  if(!chatToken){
+  console.log("Chat Token NULL !")
+  return
+  }
+
+
+
+
     if (this.isInitialized === false || this.isInitialized === undefined) {
       rollLog('Perform initialization first.');
       return;
     }
     rollLog('start login ...');
+    console.log("AGORA LOGIN CHAT - " , username , chatToken)
     chatClient
       .loginWithAgoraToken(username, chatToken
       )
@@ -281,24 +325,7 @@ const ChatScreen = ({ navigation }) => {
 
 
   const GetchannelToken = async (type) => {
-    // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    // let randomText = '';
-
-    // for (let i = 0; i < 5; i++) {
-    //   const randomIndex = Math.floor(Math.random() * characters.length);
-    //   randomText += characters.charAt(randomIndex);
-    // }
-    // const channelName = uid.toString() + data.userId.toString() + randomText;
-
     try {
-      // const res = await privateAPI.post('/agora/getRTCToken', {
-      //   userId: uid.toString(),
-      //   channelName: channelName,
-      //   role: 2,
-      //   expirationTimeInSeconds: 3600
-      // });
-
-  
       if (type === 'video') {
         navigation.navigate('VideoCallingScreen', {
           loginedUsername,
@@ -321,10 +348,6 @@ const ChatScreen = ({ navigation }) => {
       console.error(error)
     }
   }
-
-
-
-
 
   const [openEmojiKeyboard, setOpenEmojiKeyboard] = useState(false);
 
@@ -350,7 +373,7 @@ const ChatScreen = ({ navigation }) => {
               <AntDesign name="videocamera" size={27} color="blue" onPress={() => GetchannelToken('video')} />
             </View>
           </View>
-          <ScrollView style={styles.ScrollView}>
+          <ScrollView ref={scrollViewRef} style={styles.ScrollView}>
 
             {Object.values(chatMessageStatusm).map((item,) => (
               <View key={item.chatId} style={[styles.MessageTextView, {
