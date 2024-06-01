@@ -157,6 +157,7 @@ export default function Education() {
                                             fontFamily: "Times New Roman",
                                             textAlign: 'center'
                                         }}
+                                        placeholderTextColor={'black'}
                                         value={school}
                                         onChangeText={setSchool}
                                         placeholder="Enter your school"
@@ -195,6 +196,7 @@ export default function Education() {
                                             fontFamily: "Times New Roman",
                                             textAlign: 'center'
                                         }}
+                                        placeholderTextColor={'black'}
                                         value={collage}
                                         onChangeText={setCollege}
                                         placeholder="Enter your college"
@@ -232,6 +234,7 @@ export default function Education() {
                                             fontFamily: "Times New Roman",
                                             textAlign: 'center'
                                         }}
+                                        placeholderTextColor={'black'}
                                         value={qualification}
                                         onChangeText={setQualification}
                                         placeholder="Your qualification"

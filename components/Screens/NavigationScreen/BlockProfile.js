@@ -1,94 +1,95 @@
-import React from 'react';
-import {  SafeAreaView,
-    View,
-    ScrollView,Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState, useEffect } from 'react';
+import { View, FlatList, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import privateAPI from '../../api/privateAPI';
 
-const BlockedProfile = ({  onPress }) => {
+
+const BlockedProfiles = () => {
+  const [blockedList, setBlockedList] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const userId=await AsyncStorage.getItem('id')
+    const jwt =await AsyncStorage.getItem('jwt')
+    console.log('idblack',userId )
+    const url = 'http://3.27.207.83:8080/filmhook-0.1/block/getAllBlock';
+    const token = 'your_token_here';
+    const requestData = {
+      blockedBy: userId
+    };
+
+    try {
+      const response = await privateAPI.post('/block/getAllBlock', requestData, );
+
+      setBlockedList(response.data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleUnblock = async (blockedUser, blockedby) => {
+    const url = 'http://3.27.207.83:8080/filmhook-0.1/block/unBlock';
+    const token = 'your_token_here';
+    const jwt =await AsyncStorage.getItem('jwt')
+    try {
+      const response = await privateAPI.post('/block/unBlock', {
+        blockedBy: blockedby,
+        blockedUser: blockedUser
+      }, );
+
+      console.log(response.data);
+Alert.alert('Success' ,'Unblock successfully')
+      // After unblocking, fetch the updated list
+      fetchData();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+
+  const renderItem = ({ item }) => (
+    <View style={{ flexDirection: 'row', padding: responsiveWidth(3) }}>
+      <Image source={{ uri: item.blockedUserProfilePicUrl }} style={{ width: 50, height: 50, borderRadius: 25, borderColor: 'red', backgroundColor: 'gray' }} />
+      <Text style={{ marginLeft: 10, alignSelf: 'center', color: 'black', fontSize: responsiveFontSize(2), fontWeight: '500' }}>{item.blockedUserName}</Text>
+      <TouchableOpacity onPress={() => handleUnblock(item.blockedUser, item.blockedBy)} style={{ marginLeft: 'auto', alignSelf: 'center', padding: 10, backgroundColor: 'blue', borderRadius: 5 }}>
+        <Text style={{ color: 'white' }}>Unblock</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f6f6f6' }}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>BlockedProfi</Text>
-
-          <Text style={styles.subtitle}>
-            Lorem ipsum dolor sit amet consectetur.
-          </Text>
-        </View>
-        <ScrollView>
-          <View style={styles.profile}>
-    <TouchableOpacity onPress={onPress} style={styles.containernew}>
-       <Image source={require('../../../components/Assets/app_logo/8641606.jpg')}style={styles.profileAvatar} />
-      <Text style={styles.profileName}>Sharukhan</Text>
-    </TouchableOpacity>
-   
-</View>
-         
-        </ScrollView>
+    <View style={{ flex: 1, justifyContent: 'center' }}>
+      <View style={styleBlock.headlineContainer}>
+        <Text style={styleBlock.headline}>Blocked Profile</Text>
       </View>
-    </SafeAreaView>
+      <FlatList
+        data={blockedList}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.blockUserId}
+      />
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-    containernew: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    width:responsiveWidth(100)
-  },
-  profileAvatar: {
-    width: responsiveWidth(15),
-    height: responsiveHeight(7),
-    borderRadius: responsiveHeight(5),
-    marginRight: 10,
-  },
-  profileName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  container: {
-    paddingVertical: 24,
-    paddingHorizontal: 0,
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
-  },
-  header: {
-    paddingLeft: 24,
-    paddingRight: 24,
-    marginBottom: 12,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#1d1d1d',
-    marginBottom: 6,
-  },
-  subtitle: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#929292',
-  },
-  profile: {
-    padding: 16,
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    // borderBottomWidth: 1,
-    borderColor: '#e3e3e3',
-  },
-});
+const styleBlock = StyleSheet.create(
+  {
+    headlineContainer: {
+      margin: responsiveHeight(1),
+      alignItems: 'center',
+      padding: responsiveWidth(2),
 
-export default BlockedProfile;
+    },
+    headline: {
+      fontSize: responsiveFontSize(2.5),
+      color: 'black',
+      fontWeight: '500'
+
+    }
+  }
+)
+
+export default BlockedProfiles;

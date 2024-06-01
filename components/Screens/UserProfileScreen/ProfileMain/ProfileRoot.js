@@ -91,6 +91,8 @@ export default function ProfileRoot() {
   };
   
 
+  
+
   const openGallery = () => {
     ImagePicker.openPicker({
       cropping: true,
@@ -152,7 +154,9 @@ export default function ProfileRoot() {
       console.log('Profile pic upload response:', data); // Log the entire response object
 
       if (data && data.status === 1) {
+       
         console.log('Profile pic uploaded successfully.');
+        fetchProfilePicture()
         Alert.alert('Success', 'Profile picture updated successfully.');
       } 
     } catch (error) {
@@ -161,46 +165,47 @@ export default function ProfileRoot() {
       Alert.alert('Error', 'There was an error uploading the profile picture. Please try again.');
     }
   };
+  
+
   useEffect(() => {
-    const fetchProfilePicture = async () => {
-      try {
-        const jwt = await AsyncStorage.getItem('jwt');
-        const id = await AsyncStorage.getItem('userId');
-
-        const myHeaders = {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${jwt}`
-        };
-
-        const requestData = {
-          userId: id
-        };
-
-        const response = await axios.post(
-          'https://filmhook.annularprojects.com/filmhook-0.1/user/getProfilePic',
-          requestData,
-          { headers: myHeaders }
-        );
-
-        const data = response.data;
-
-        if (data.status === 1) {
-          const profilePicUrl = data.data.filePath;
-          setImageURL(profilePicUrl);
-          console.log('Profile pic found successfully:', profilePicUrl);
-        } else {
-          setImageURL(null);
-          console.log('Profile pic not found:', data.message);
-        }
-      } catch (error) {
-        console.error('Error fetching profile picture:', error);
-      }
-    };
+   
 
     fetchProfilePicture();
   }, []);
+  const fetchProfilePicture = async () => {
+    try {
+      const jwt = await AsyncStorage.getItem('jwt');
+      const id = await AsyncStorage.getItem('userId');
 
+      const myHeaders = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwt}`
+      };
 
+      const requestData = {
+        userId: id
+      };
+
+      const response = await axios.post(
+        'https://filmhook.annularprojects.com/filmhook-0.1/user/getProfilePic',
+        requestData,
+        { headers: myHeaders }
+      );
+
+      const data = response.data;
+
+      if (data.status === 1) {
+        const profilePicUrl = data.data.filePath;
+        setImageURL(profilePicUrl);
+        console.log('Profile pic found successfully:', profilePicUrl);
+      } else {
+        setImageURL(null);
+        console.log('Profile pic not found:', data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching profile picture:', error);
+    }
+  };
 
 
 

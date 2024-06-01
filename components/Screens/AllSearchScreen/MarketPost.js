@@ -40,46 +40,33 @@ export default function MarketPost() {
 
     const edit_profile_pic = async (option) => {
         try {
-            const images = await ImagePicker.openPicker({
-                multiple: false,
+            const image = await ImagePicker.openPicker({
                 cropping: true,
             });
-            if (images) {
-                ImagePicker.openPicker({ cropping: true }).then(images => {
-                    console.log(images)
-                    let generateName = images.path.split("/")[images.path.split("/")?.length - 1]
-
-                    setProfilePics({ uri: images.path, type: images.mime, name: generateName });
-                })
+            if (image) {
+                console.log(image);
+                setProfilePics([{ uri: image.path, type: image.mime, name: image.path.split('/').pop() }]);
             }
         } catch (error) {
             console.log('Image picker operation canceled or failed:', error);
         }
     };
-    const [selectedItem, setSelectedItem] = useState(null);
-
 
     const handlePostButton = async () => {
         try {
-            // Retrieve userId from AsyncStorage
             const id = await AsyncStorage.getItem('userId');
-
-            // Create a new Headers object and append the authorization token
-            const myHeaders = new Headers();
             const jwt = await AsyncStorage.getItem("jwt");
-            myHeaders.append("Authorization", "Bearer " + jwt);
 
-            // Create a FormData object
             const formData = new FormData();
 
-            // Check if profilepics is defined
-            if (profilepics && profilepics.uri) {
-                const imageUriParts = profilepics.uri.split('.');
+            if (profilepics.length > 0) {
+                const profilepic = profilepics[0];
+                const imageUriParts = profilepic.uri.split('.');
                 const fileType = imageUriParts[imageUriParts.length - 1];
                 formData.append("fileInputWebModel.files[0]", {
-                    uri: profilepics.uri,
+                    uri: profilepic.uri,
                     name: `image.${fileType}`,
-                    type: `image/${fileType}`
+                    type: profilepic.type
                 });
             }
 
@@ -94,69 +81,33 @@ export default function MarketPost() {
             formData.append("userId", id);
             formData.append("marketPlaceIsactive", 1);
 
-            // Define requestOptions with method, headers, body, and redirect options
-            const requestOptions = {
-                method: "POST",
-                headers: myHeaders,
-                body: formData,
-                redirect: "follow"
-            };
-
             console.log(`FormData: ${JSON.stringify(formData)}`);
 
-            // Make a POST request using fetch
-            const response = await fetch(`https://filmhook.annularprojects.com/filmhook-0.1/marketPlace/marketPlace`, requestOptions);
-            const data = await response.json(); // Parse response JSON
+            const response = await privateAPI.post(
+                'marketPlace/marketPlace',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${jwt}`,
+                    },
+                }
+            );
 
-            // Log the response data
-            console.log("Response data:", data);
+            console.log("Response data:", response.data);
 
-            if (response.ok && data.status === 1) {
+            if (response.status === 200 && response.data.status === 1) {
                 Alert.alert("Posted", "Market details saved successfully");
-                setPostModalVisible(false);
                 navigation.navigate('MarketPlace');
-                makePayment();
             } else {
-                console.log("Response message:", data.message);
-                Alert.alert("Error", data.message || "An error occurred");
+                console.log("Response message:", response.data.message);
+                Alert.alert("Error", response.data.message || "An error occurred");
             }
         } catch (error) {
             console.error('Error posting:', error);
             Alert.alert('Error', error.message);
         }
     };
-
-    const makePayment = () => {
-        var options = {
-            description: 'Credits towards consultation',
-            image: 'https://i.imgur.com/3g7nmJC.jpg',
-            currency: 'INR',
-            key: 'rzp_test_DN4L6WbNtUJb5f',
-            amount: '100',
-            method: {
-                netbanking: true,
-                card: true,
-                upi: true
-            },
-            name: 'Filmhookapps',
-            // order_id: 'order_DslnoIgkIDL8Zt',//Replace this with an order_id created using Orders API.
-            prefill: {
-                email: '',
-                contact: '',
-                name: ''
-            },
-            theme: { color: 'blue' }
-        }
-        RazorpayCheckout.open(options).then((data) => {
-            // handle success
-            alert(`Success: ${data.razorpay_payment_id}`);
-        }).catch((error) => {
-            // handle failure
-            console.log(error)
-            alert(`Error: ${error.code} | ${error.description}`);
-        });
-    }
-
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -174,7 +125,7 @@ export default function MarketPost() {
                                 {profilepics.map((profilepic, index) => (
                                     <Image
                                         key={index}
-                                        source={{ uri: profilepic }}
+                                        source={{ uri: profilepic.uri }}
                                         style={profilepics.length === 1 ? styles.fullimage : styles.image}
                                         resizeMode='stretch'
                                     />

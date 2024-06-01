@@ -126,6 +126,7 @@ import privateAPI from '../../api/privateAPI';
 export default function Profilephoto() {
 
   const [filePath, setFilePath] = useState('');
+  const [filmCode, setFilmCode] = useState('');
 
 
   const navigation = useNavigation();
@@ -159,6 +160,7 @@ export default function Profilephoto() {
       if (data.status === 1) {
         const profilePicUrl = data.data.filePath; // Extract filePath from response
         setFilePath(profilePicUrl); // Update state with profile picture URL
+        setFilmCode(data.data.filmHookCode)
         console.log('Profile pic found successfully:', data);
       } else {
         throw new Error('Failed to fetch profile picture');
@@ -186,17 +188,12 @@ export default function Profilephoto() {
         <Text style={{ color: 'white', fontWeight: '600', fontSize: responsiveFontSize(2) }}>9.9</Text>
         <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/star_icon.png')} style={{ width: responsiveWidth(4), height: responsiveHeight(3) }}></Image>
       </View>
+      <View style={{bottom:responsiveHeight(1.5)}}>
+
+        <Text style={{ color: 'white', fontWeight:'500' }}> ID : {filmCode}</Text>
+      </View>
 
 
-      {/* <View 
-        style={{width:responsiveWidth(18),height:removeEmitHelper(5),borderRadius:responsiveWidth(3),backgroundColor:'#000000',left:responsiveWidth(25),bottom:responsiveHeight(10),flexDirection:'row',justifyContent:'center',alignItems:'center'}}
-        >
-            <Text 
-            style={{color:'#ffffff',padding:5,fontWeight:'500',fontSize:18}}>9.9</Text>
-            <View style={{width:20,height:20}}>
-            <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/star_icon.png')} style={{width:'100%',height:'100%'}} />
-            </View>
-        </View> */}
     </View>
   );
 }

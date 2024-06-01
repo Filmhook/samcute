@@ -27,13 +27,13 @@ export default function SignUpDob() {
     const [dobError, setDobError] = useState('');
     const [genderError, setGenderError] = useState('');
 
-    // const route = useRoute();
-    // const {
-    //     name,
-    //     middleName,
-    //     lastName,
+    const route = useRoute();
+    const {
+        name,
+        middleName,
+        lastName,
 
-    // } = route.params;
+    } = route.params;
 
 
 
@@ -81,7 +81,6 @@ export default function SignUpDob() {
     const [editedDate, setEditedDate] = useState('');
 
 
-    console.log('dddd', selectedDate)
 
 
 
@@ -190,7 +189,7 @@ export default function SignUpDob() {
 
 
                         <View style={{ flexDirection: 'row', margin: responsiveHeight(4), columnGap: responsiveWidth(23), marginTop: responsiveHeight(3) }}>
-                            <TouchableOpacity onPress={() => navigation.navigate('SignUpOne')} style={styles.backButton}>
+                            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                                 <Text style={{ color: 'white', fontWeight: 'bold', fontSize: responsiveFontSize(2) }}>Back</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={handlePressNav} style={styles.nextButton}>

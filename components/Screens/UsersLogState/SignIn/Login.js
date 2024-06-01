@@ -33,8 +33,8 @@ export default function Login() {
     password: 'Annular@234',
   };
 
-  const [email, setEmail] = useState('tej@gmail.com');
-  const [password, setPassword] = useState('Annular@234');
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
   const [showPassword, setShowPassword] = useState('');
   //yaswanthshankar2705@gmail.com
   //benishabeni21@gmail.com
@@ -85,7 +85,11 @@ export default function Login() {
     } catch (error) {
       if (error.response && error.response.status === 404) {
         Alert.alert('Error', 'Server is working in the background');
-      } else {
+      }
+      else if(error.response && error.response.status === 400){
+        Alert.alert('Error', "Invalid User Info");
+      }
+      else {
         Alert.alert('Error', "Invalid User Info");
       }
       console.error('Login failed:', error);

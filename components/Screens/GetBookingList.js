@@ -3,6 +3,7 @@ import { View, FlatList, Text, Button, Alert, StyleSheet } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
+import privateAPI from '../api/privateAPI';
 
 const GetBookingList = () => {
     const [bookings, setBookings] = useState([]);
@@ -13,13 +14,11 @@ const GetBookingList = () => {
             const userId=await AsyncStorage.getItem('id')
             try {
                 const token = 'your_bearer_token_here'; // Replace 'your_bearer_token_here' with your actual bearer token
-                const response = await axios.get('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/booking/getBookingsByUserId', {
+                const response = await privateAPI.get('user/booking/getBookingsByUserId', {
                     params: {
                         userId: userId
                     },
-                    headers: {
-                        Authorization: `Bearer ${'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyTmFtZSI6Inlhc3dhbnRoc2hhbmthcjI3MDVAZ21haWwuY29tIiwidXNlclR5cGUiOiJJbmR1c3RyeVVzZXIiLCJpYXQiOjE3MTU3NzE4MDEsImV4cCI6MTcxNTc3MzAwMX0.ADeIRQKXSBMMHv8XbjG9Errb_x7ElTLk0hl6qZ5nRLqsFMN0rUhktIelDYfj_0ElnDqLAhUVEKJ_scojz96A0Q'}`
-                    }
+                   
                 });
                 setBookings(response.data.data);
             } catch (error) {
@@ -33,15 +32,11 @@ const GetBookingList = () => {
     const handleConfirmBooking = async (bookingId, bookingUserId) => {
         try {
             const userId=await AsyncStorage.getItem('id')
-            const response = await axios.post('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/booking/updateBookingRequest', {
+            const response = await privateAPI.post('user/booking/updateBookingRequest', {
                 bookingId: bookingId,
                 currentUserId: userId,
                 bookingUserId: bookingUserId,
                 bookingStatus: 'Confirm'
-            }, {
-                headers: {
-                    Authorization: `Bearer ${'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyTmFtZSI6Inlhc3dhbnRoc2hhbmthcjI3MDVAZ21haWwuY29tIiwidXNlclR5cGUiOiJJbmR1c3RyeVVzZXIiLCJpYXQiOjE3MTU3NzE4MDEsImV4cCI6MTcxNTc3MzAwMX0.ADeIRQKXSBMMHv8XbjG9Errb_x7ElTLk0hl6qZ5nRLqsFMN0rUhktIelDYfj_0ElnDqLAhUVEKJ_scojz96A0Q'}`
-                }
             });
             Alert.alert('Confirm', 'Booking Confirmed')
             console.log('Booking confirmed:', response.data);
@@ -55,15 +50,11 @@ const GetBookingList = () => {
     const handleRejectBooking = async (bookingId, bookingUserId) => {
         try {
             const userId=await AsyncStorage.getItem('id')
-            const response = await axios.post('https://filmhook.annularprojects.com/filmhook-0.0.1-SNAPSHOT/user/booking/updateBookingRequest', {
+            const response = await privateAPI.post('user/booking/updateBookingRequest', {
                 bookingId: bookingId,
                 currentUserId: userId,
                 bookingUserId: bookingUserId,
                 bookingStatus: 'Reject'
-            }, {
-                headers: {
-                    Authorization: `Bearer ${'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyTmFtZSI6Inlhc3dhbnRoc2hhbmthcjI3MDVAZ21haWwuY29tIiwidXNlclR5cGUiOiJJbmR1c3RyeVVzZXIiLCJpYXQiOjE3MTU3NzkwNTMsImV4cCI6MTcxNTc4MDI1M30.DsALRFwFwD4v59s03W-2ekKbRLEi_oDZRAkv33osB4ZxXdn88emEzdGHlZGF93XPat0LBn3dzayG6ZT6KLDuGA'}`
-                }
             });
             Alert.alert('Reject', 'Booking Rejected')
             console.log('Booking rejected:', response.data);

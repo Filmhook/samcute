@@ -20,6 +20,7 @@ export default function Logout() {
   const handleConfirmLogout = async () => {
 
     try {
+      setModalVisible(false);
       await AsyncStorage.clear();
 
       navigation.navigate("Login")
@@ -29,7 +30,7 @@ export default function Logout() {
     }
 
     // Close the modal after logging out
-    setModalVisible(true);
+    setModalVisible(false);
   };
 
   const handleCancelLogout = () => {
@@ -91,6 +92,7 @@ const style = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
+    color:'black'
   },
   modalButtonsContainer: {
     flexDirection: 'row',

@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '85%',
     alignItems: 'center',
-    borderWidth:1
+   // borderWidth:1
   },
 
   // box: {

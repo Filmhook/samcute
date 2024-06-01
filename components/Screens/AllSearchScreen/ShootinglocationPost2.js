@@ -1,3 +1,7 @@
+
+
+
+
 import React, { useEffect, useState } from 'react';
 // import { View, TextInput, ImageBackground } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -18,7 +22,7 @@ const ShootinglocationPost2 = () => {
     const [number, setNumber] = useState('');
     const [title, setTitle] = useState('');
     const [productDescription, setProductDescription] = useState('');
-    const [terms, setTerms] = useState();
+    const [shootingTermsAndCondition, setTerms] = useState('');
     const [locationUrl, setLocationUrl] = useState();
 
     const navigation = useNavigation();
@@ -27,22 +31,19 @@ const ShootinglocationPost2 = () => {
 
     const edit_profile_pic = async () => {
         try {
-            const images = await ImagePicker.openPicker({
+            const image = await ImagePicker.openPicker({
                 multiple: false,
                 cropping: true,
             });
-            if (images) {
-                ImagePicker.openPicker({ cropping: true }).then(images => {
-                    console.log(images)
-                    let generateName = images.path.split("/")[images.path.split("/")?.length - 1]
-
-                    setProfilepics({ uri: images.path, type: images.mime, name: generateName });
-                })
+            if (image) {
+                let generateName = image.path.split("/").pop();
+                setProfilepics([{ uri: image.path, type: image.mime, name: generateName }]);
             }
-        } catch (error) {
+        }catch (error){
             console.log('Image picker operation canceled or failed:', error);
         }
     };
+
     const [selectedCheckboxIndex, setSelectedCheckboxIndex] = useState(-1);
 
     const handleCheckboxChange = (index) => {
@@ -68,6 +69,7 @@ const ShootinglocationPost2 = () => {
         setShowTextInput(!showTextInput);
     };
     const handlePostButton = async () => {
+      
         try {
             // Retrieve userId from AsyncStorage
             const id = await AsyncStorage.getItem('userId');
@@ -77,23 +79,23 @@ const ShootinglocationPost2 = () => {
             const jwt = await AsyncStorage.getItem("jwt");
             myHeaders.append("Authorization", "Bearer " + jwt);
 
-            // Create a FormData object
             const formData = new FormData();
 
-            // Check if profilepics is defined
-            if (profilepics && profilepics.uri) {
-                const imageUriParts = profilepics.uri.split('.');
+            if (profilepics.length > 0) {
+                const profilepic = profilepics[0];
+                const imageUriParts = profilepic.uri.split('.');
                 const fileType = imageUriParts[imageUriParts.length - 1];
                 formData.append("fileInputWebModel.files[0]", {
-                    uri: profilepics.uri,
+                    uri: profilepic.uri,
                     name: `image.${fileType}`,
-                    type: `image/${fileType}`
+                    type: profilepic.type
                 });
             }
 
             formData.append("shootingLocationName", title);
             formData.append("shootingLocationDescription", productDescription);
-            formData.append("termsAndCondition", terms);
+            formData.append("shootingTermsAndCondition", shootingTermsAndCondition);
+            // console.log("terms 540",shootingTermsAndCondition)
             formData.append("indoorOrOutdoorLocation", selectedCheckboxIndex);
             formData.append("cost", number);
             formData.append("locationUrl", locationUrl);
@@ -121,7 +123,7 @@ const ShootinglocationPost2 = () => {
                 // setPostModalVisible(false);
                 navigation.navigate('ShootingLocationPage');
             } else {
-               Alert.alert("status code ")
+               Alert.alert("status code")
             }
         } catch (error) {
             console.error('Error posting:', error);
@@ -254,12 +256,18 @@ const ShootinglocationPost2 = () => {
                         />
                     </ImageBackground>
                 </View>
+
+      
                 <View style={styles.boxContentchange2}>
 
                     <ImageBackground style={styles.inputContainerchange1} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                         <TextInput placeholder='Terms&Condition' multiline
-                            value={terms} onChangeText={setTerms}
-                       
+                            value={shootingTermsAndCondition} onChangeText={setTerms}
+                            style={{
+                                overflow: 'scroll',
+                              
+                                width:"96%"
+                              }}
                         />
                     </ImageBackground>
                 </View>
@@ -374,6 +382,7 @@ const styles = {
         borderColor: 'black',
         width: '90%',
         fontSize: responsiveFontSize(1.5),
+        overflow: 'scroll',
        
     },
     inputContainerPhn: {
@@ -451,7 +460,8 @@ const styles = {
         width: responsiveWidth(86),
         justifyContent: 'center',
         alignItems: 'center',
-        bottom: responsiveHeight(5)
+        bottom: responsiveHeight(5),
+        height: responsiveHeight(10),
     },
     inputContainerchange1: {
         width: responsiveWidth(86.7),
@@ -481,9 +491,8 @@ const styles = {
         overflow: 'hidden',
         right: responsiveHeight(8),
         top:responsiveHeight(0.5)
-    }
+    },
+   
 };
 
 export default ShootinglocationPost2;
-
-

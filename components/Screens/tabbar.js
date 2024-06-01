@@ -20,13 +20,8 @@ const TopBar = () => {
   const toggleSwitch = () => {
     setTheme(!theme)
   }
-
-  const handleOpenPopup = () => {
-    setIsVisible(true);
-  };
-
-  const handleClosePopup = () => {
-    setIsVisible(false);
+  const toggleModal = () => {
+    setIsVisible(!isVisible);
   };
 
   const [userType, setuserType] = useState('');
@@ -37,7 +32,7 @@ const TopBar = () => {
         if (value !== null) {
           const user = value.charAt(0).toUpperCase() + value.slice(1);
           setuserType(user);
-          console.log("562:usertype:", user)
+        
         }
       } catch (error) {
         console.log(error, "usertype not get from AsyncStorage")
@@ -95,7 +90,7 @@ const TopBar = () => {
       fontWeight: 'bold',
     },
     modalBackground: {
-      flex: 1,
+     height:responsiveHeight(90),
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
       // justifyContent: 'center',
       alignItems: 'center',
@@ -125,8 +120,8 @@ const TopBar = () => {
       fontWeight: 'bold',
     },
     container: {
-      height: responsiveHeight(90),
-      width: 280,
+      height: responsiveHeight(40),
+      width: responsiveWidth(65),
       borderRadius: 3,
       // borderWidth:1,
       // backgroundColor: "#3B3B3C",
@@ -475,23 +470,18 @@ const TopBar = () => {
           <Image source={require('../Assets/UserProfile_Icons_Fonts/211694_bell_icon.png')} style={{ width: responsiveWidth(8), height: responsiveHeight(4), }} resizeMode='stretch' />
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleOpenPopup} style={{ width: responsiveWidth(9), height: responsiveWidth(9), borderRadius: responsiveWidth(9), elevation: 10, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
+        <TouchableOpacity onPress={toggleModal} style={{ width: responsiveWidth(9), height: responsiveWidth(9), borderRadius: responsiveWidth(9), elevation: 10, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
           <Image source={require('../Assets/Home_Icon_And_Fonts/plus_icon.png')} style={{ width: responsiveWidth(8), height: responsiveHeight(4), }} resizeMode='stretch' />
         </TouchableOpacity>
         <Modal
-          visible={isVisible}
-          transparent={true}
-          animationType="fade"
-          onBackdropPress={() => setIsVisible(false)}
-          backdropTransitionInTiming={500}
-          backdropTransitionOutTiming={0}
-          animationIn={"slideInLeft"}
-          animationOut={"slideOutLeft"}
-          backdropOpacity={0.70}
+           visible={isVisible}
+           transparent={true}
+           animationType="fade"
+           onRequestClose={toggleModal}
 
         >
 
-          <TouchableOpacity style={style.modalBackground} activeOpacity={1} onPress={handleClosePopup}>
+          <TouchableOpacity style={style.modalBackground} activeOpacity={1} onPress={toggleModal}>
             <View style={style.container}>
               <ProfileModalRoot />
             </View>
@@ -550,108 +540,126 @@ const Tab = createMaterialBottomTabNavigator();
 function BottomBar() {
   return (
 
-    <Tab.Navigator initialRouteName='Home'
-      activeColor='blue'
-      inactiveColor='black'
-      barStyle={{ backgroundColor: 'white', height: responsiveHeight(8) }}
-      backBehavior='order '
-      style={{}}
-      tabBarOptions={{ showlabel: false }}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeRoot}
+    <Tab.Navigator
+    initialRouteName='Home'
+    activeColor='blue'
+    inactiveColor='black'
+    barStyle={{ backgroundColor: 'white', height: responsiveHeight(8) }}
+    backBehavior='order'
+    style={{height:5}}
+    tabBarOptions={{ showLabel: false }}
+  >
+    <Tab.Screen
+      name="Home"
+      component={HomeRoot}
+      options={{
+        tabBarLabel: false,
+        tabBarIcon: ({ focused }) => (
+          <View style={styles.tabIconContainer}>
+            <Image
+              style={styles.tabIcon}
+              source={require('../Assets/Home_Icon_And_Fonts/Home.png')}
+              resizeMode='stretch'
+            />
+            {focused && <View style={styles.underline} />}
+          </View>
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Chat"
+      component={ChatRoot}
+      options={{
+        tabBarLabel: false,
+        tabBarIcon: ({ focused }) => (
+          <View style={styles.tabIconContainer}>
+            <Image
+              style={styles.tabIcon}
+              source={require('../Assets/Chats_Icon_And_Fonts/Filmhook_chat.png')}
+              resizeMode='stretch'
+            />
+            {focused && <View style={styles.underline} />}
+          </View>
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Search"
+      component={SearchRoot}
+      options={{
+        tabBarLabel: false,
+        tabBarIcon: ({ focused }) => (
+          <View style={styles.tabIconContainer}>
+            <Image
+              style={styles.tabIcon}
+              source={require('../Assets/app_logo/all_search.png')}
+              resizeMode='stretch'
+            />
+            {focused && <View style={styles.underline} />}
+          </View>
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Audition"
+      component={AuditionRoot}
+      options={{
+        tabBarLabel: false,
+        tabBarIcon: ({ focused }) => (
+          <View style={styles.tabIconContainer}>
+            <Image
+              style={styles.tabIcon}
+              source={require('../Assets/Audition_Icons_Fonts/Filmhook_Audition.png')}
+              resizeMode='stretch'
+            />
+            {focused && <View style={styles.underline} />}
+          </View>
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="User Profile"
+      component={ProfileRoot}
+      options={{
+        tabBarLabel: false,
+        tabBarIcon: ({ focused }) => (
+          <View style={styles.tabIconContainer}>
+            <Image
+              style={[styles.tabIcon, { bottom: 4, top: 0, padding: 5 }]}
+              source={require('../Assets/UserProfile_Icons_Fonts/Filmhook_UserProfile.png')}
+              resizeMode='stretch'
+            />
+            {focused && <View style={styles.underline} />}
+          </View>
+        ),
+      }}
+    />
+  </Tab.Navigator>
+);
 
-        options={{
-          tabBarLabel: false,
-          tabBarIcon: ({ focused }) => {
-            return (
-              <Image
-                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
-                source={
-                  require('../Assets/Home_Icon_And_Fonts/Home.png')
-                }
-                focused={focused}
-              />
-            );
-          },
 
-        }}
-      />
-      <Tab.Screen
-        name="Chat"
-        component={ChatRoot}
-        options={{
-          tabBarLabel: false,
-          tabBarIcon: ({ focused: boolean, color: string }) => {
-            return (
-              <Image
-                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
-                source={
-                  require('../Assets/Chats_Icon_And_Fonts/Filmhook_chat.png')
-                }
-              />
-            );
-          },
-        }}
-      />
-      <Tab.Screen
-        name="Search"
-        component={SearchRoot}
-        options={{
-          tabBarLabel: false,
-          tabBarIcon: ({ focused: boolean, color: string }) => {
-            return (
-              <Image
-                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
-                source={
-                  require('../Assets/app_logo/all_search.png')
-                }
-              />
-            );
-          },
-        }}
-      />
-      <Tab.Screen
-        name="Audition"
-        component={AuditionRoot}
-        options={{
-          tabBarLabel: false,
-          tabBarIcon: ({ focused: boolean, color: string }) => {
-            return (
-              <Image
-                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 1, alignSelf: 'center', }}
-                source={
-                  require('../Assets/Audition_Icons_Fonts/Filmhook_Audition.png')
-                }
-              />
-            );
-          },
-        }}
-      />
-
-      <Tab.Screen
-        name="User Profile"
-        component={ProfileRoot}
-        options={{
-          tabBarLabel: false,
-          tabBarIcon: ({ focused: boolean, color: string }) => {
-            return (
-              <Image
-                style={{ width: responsiveWidth(8), height: responsiveHeight(5), bottom: 4, top: 0, alignSelf: 'center', padding: 5 }}
-                source={
-                  require('../Assets/UserProfile_Icons_Fonts/Filmhook_UserProfile.png')
-                }
-              />
-            );
-          },
-        }}
-      />
-    </Tab.Navigator>
-
-  )
+  
+  
 }
-
+const styles = StyleSheet.create({
+  tabIconContainer: {
+    width: responsiveWidth(9),
+    height: responsiveHeight(5),
+    alignItems: 'center',
+  },
+  tabIcon: {
+    width: responsiveWidth(9),
+    height: responsiveHeight(5),
+    bottom: 1,
+  },
+  underline: {
+    width: responsiveWidth(9),
+    height: 2, // Adjust the height of the underline
+    backgroundColor: 'blue', // Adjust the color of the underline
+    position: 'absolute',
+    bottom: 0,
+  },
+});
 
 
 export default function Tabbar() {

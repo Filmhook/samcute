@@ -48,6 +48,7 @@ import BiographyEdit from './UserProfileScreen/ProfileMain/BiographyEdit';
 import ChangePasswordScreen from './NavigationScreen/ChangePasswordScreen';
 
 import { navigate, navigationRef } from '../NavigationService';
+import GetBookingList from './GetBookingList';
 
 
 
@@ -76,6 +77,7 @@ export default function Appnavigator() {
           <Stack.Screen component={BiographyEdit} name='BiographyEdit' options={{ headerShown: false }} />
 
           <Stack.Screen component={ChangePasswordScreen} name='ChangePasswordScreen' options={{ headerShown: false }} />
+          <Stack.Screen component={GetBookingList} name='GetBookingList' options={{ headerShown: false }} />
 
 
         </Stack.Navigator>

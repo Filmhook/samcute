@@ -34,16 +34,17 @@ import { getFirestore } from 'firebase/firestore';
 import PublicAPI from '../../../api/publicAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from 'react-native';
+import privateAPI from '../../../api/privateAPI';
 
 export default function SignUpTwo() {
   const route = useRoute();
   const {
     name,
+    birthPlace,
+    livingPlace,
     selectedDate,
     selectedGender,
-    selectedCountry,
-    selectedState,
-    selectedDistrict,
+   
     middleName,
     lastName,
   } = route.params;
@@ -192,11 +193,11 @@ export default function SignUpTwo() {
   console.log('names ', name,
     selectedDate,
     selectedGender,
-    selectedCountry,
-    selectedState,
-    selectedDistrict,
     middleName,
-    lastName,)
+    lastName,
+    birthPlace,
+    livingPlace
+  )
 
   const [loading, setLoading] = useState(false);
   const [loadingVerify, setLoadingVerify] = useState(false);
@@ -249,11 +250,11 @@ export default function SignUpTwo() {
         password: Password,
         userType: 'commonUser',
         phoneNumber: phonenumber,
-        district: selectedDistrict,
+        district: '',
         dob: selectedDate,
         gender: selectedGender,
-        country: selectedCountry,
-        state: selectedState,
+        livingPlace: livingPlace,
+        birthPlace: birthPlace,
       });
       const userDetails = response.data.data.userDetails;
       console.log('submit', userDetails)
@@ -322,7 +323,7 @@ export default function SignUpTwo() {
     }
   };
 
-
+``
 
   const verify = async () => {
 
@@ -646,7 +647,7 @@ export default function SignUpTwo() {
                     <TextInput
                       placeholder="Enter OTP"
                       value={otp}
-                      placeholderTextColor={'black'}
+                      placeholderTextColor='black'
                       onChangeText={handleOtpChange}
                       keyboardType={'numeric'}
                       style={{
@@ -767,16 +768,8 @@ export default function SignUpTwo() {
                 marginTop: responsiveHeight(3),
               }}>
               <TouchableOpacity
-                onPress={() => navigation.navigate('SignUpCountry', {
-                  name,
-                  selectedDate,
-                  selectedGender,
-                  selectedCountry,
-                  selectedState,
-                  selectedDistrict,
-                  middleName,
-                  lastName,
-                })}
+                onPress={() => navigation.goBack()
+                }
                 style={{
                   // padding: 15,
                   borderRadius: responsiveWidth(2),

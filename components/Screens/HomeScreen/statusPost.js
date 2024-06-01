@@ -221,7 +221,7 @@ export default function StatusPost() {
         {/* -------- */}
         <View style={{ flexDirection: 'row', padding: responsiveWidth(3), justifyContent: "space-between", height: responsiveHeight(11) }}>
 
-          <TouchableOpacity onPress={handleAddStory} style={{
+          <TouchableOpacity style={{
             width: responsiveWidth(12), height: responsiveWidth(12), borderRadius: responsiveWidth(12), backgroundColor: "#D9D9D9",
           }}>
             <Image source={require('../../Assets/Home_Icon_And_Fonts/add_icon.png')} style={{ width: "97%", height: "100%", marginLeft: responsiveWidth(0.3) }} resizeMode='stretch' />

@@ -329,7 +329,7 @@ const hardcodedLocations = [
   "San Antonio",
   "San Diego",
   "Dallas",
-  "San Jose",'Alandur', 'Ambattur', 'Ambur', 'Ariyalur', 'Avadi', 'Chengalpattu', 'Chennai', 'Coimbatore', 'Cuddalore', 'Dharmapuri', 'Dindigul', 'Erode', 'Hosur', 'Kallakurichi', 'Kanchipuram', 'Kanniyakumari', 'Karaikkudi', 'Karur', 'Krishnagiri', 'Kumbakonam', 'Kurichi', 'Madavaram', 'Madurai', 'Mayiladuthurai', 'Nagapattinam', 'Nagercoil', 'Namakkal', 'Neyveli', 'Nilgiris', 'Pallavaram', 'Perambalur', 'Pudukkottai', 'Rajapalayam', 'Ramanathapuram', 'Ranipet', 'Salem', 'Sivagangai', 'Tambaram', 'Tenkasi', 'Thanjavur', 'Theni', 'Tuticorin', 'Tiruchirappalli', 'Tirunelveli', 'Tirupathur', 'Tiruppur', 'Tiruvallur', 'Tiruvannamalai', 'Tiruvarur', 'Tiruvottiyur', 'Vellore', 'Viluppuram', 'Virudhunagar', 'Pondicherry', 'Karaikal'
+  "San Jose", 'Alandur', 'Ambattur', 'Ambur', 'Ariyalur', 'Avadi', 'Chengalpattu', 'Chennai', 'Coimbatore', 'Cuddalore', 'Dharmapuri', 'Dindigul', 'Erode', 'Hosur', 'Kallakurichi', 'Kanchipuram', 'Kanniyakumari', 'Karaikkudi', 'Karur', 'Krishnagiri', 'Kumbakonam', 'Kurichi', 'Madavaram', 'Madurai', 'Mayiladuthurai', 'Nagapattinam', 'Nagercoil', 'Namakkal', 'Neyveli', 'Nilgiris', 'Pallavaram', 'Perambalur', 'Pudukkottai', 'Rajapalayam', 'Ramanathapuram', 'Ranipet', 'Salem', 'Sivagangai', 'Tambaram', 'Tenkasi', 'Thanjavur', 'Theni', 'Tuticorin', 'Tiruchirappalli', 'Tirunelveli', 'Tirupathur', 'Tiruppur', 'Tiruvallur', 'Tiruvannamalai', 'Tiruvarur', 'Tiruvottiyur', 'Vellore', 'Viluppuram', 'Virudhunagar', 'Pondicherry', 'Karaikal'
   // Add more locations as needed
 ];
 
@@ -339,12 +339,13 @@ const MediaUploadModal = ({ visible, onClose, selectedMedia }) => {
   const [description, setDescription] = useState('');
   const [filteredLocations, setFilteredLocations] = useState([]);
 
-  
+
 
   const handleLocationChange = (text) => {
     setLocation(text);
     if (text.length > 0) {
-      const filtered = hardcodedLocations.filter(location => 
+      const filtered = 
+      hardcodedLocations.filter(location =>
         location.toLowerCase().includes(text.toLowerCase())
       );
       setFilteredLocations(filtered);
@@ -363,8 +364,8 @@ const MediaUploadModal = ({ visible, onClose, selectedMedia }) => {
       Alert.alert('Error', 'Please select a media file.');
       return;
     }
-const usertId=await AsyncStorage.getItem('userId')
-const jwt =await AsyncStorage.getItem('jwt')
+    const usertId = await AsyncStorage.getItem('userId')
+   
     // Prepare form data
     const formData = new FormData();
     selectedMedia.forEach((media, index) => {
@@ -381,12 +382,12 @@ const jwt =await AsyncStorage.getItem('jwt')
 
     try {
       // Send POST request to the API endpoint
-      const response = await axios.post('https://filmhook.annularprojects.com/filmhook-0.1/user/post/savePost', formData, {
+      const response = await privateAPI.post('user/post/savePost', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${jwt}`,
 
-          
+
+
         }
       });
 
@@ -432,6 +433,7 @@ const jwt =await AsyncStorage.getItem('jwt')
 
           <TextInput
             placeholder="Description"
+            placeholderTextColor={'black'}
             value={description}
             onChangeText={setDescription}
             style={{ marginTop: 20, borderWidth: 1, borderColor: 'gray', padding: 5 }}
@@ -449,6 +451,7 @@ const jwt =await AsyncStorage.getItem('jwt')
 
           <TextInput
             placeholder="Location"
+          placeholderTextColor={'black'}
             value={location}
             onChangeText={handleLocationChange}
             style={{ marginTop: 10, borderWidth: 1, borderColor: 'gray', padding: 5 }}
@@ -461,7 +464,7 @@ const jwt =await AsyncStorage.getItem('jwt')
                 renderItem={({ item }) => (
                   <TouchableWithoutFeedback onPress={() => handleLocationSelect(item)}>
                     <View style={{ padding: 10 }}>
-                      <Text>{item}</Text>
+                      <Text style={{color:'black'}}>{item}</Text>
                     </View>
                   </TouchableWithoutFeedback>
                 )}
@@ -506,7 +509,7 @@ const Handle_img_picker = () => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-       <TouchableOpacity
+      <TouchableOpacity
         onPress={handleOpenModal}
         style={{ marginLeft: responsiveWidth(4), width: responsiveWidth(13), height: responsiveHeight(6), bottom: responsiveHeight(1), }}>
         <Image

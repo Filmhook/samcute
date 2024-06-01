@@ -642,9 +642,9 @@ export default function Myactive() {
                                 <TouchableOpacity
                                     //  {`${formatCmpctNumber(like)} Likes`}
                                     onPress={() => handleLikePress(item.id)} // Call onLikePress with fileId
-                                    style={{ width: responsiveWidth(20), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', }}>
+                                    style={{ width: responsiveWidth(20), height: responsiveHeight(4.5), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', }}>
                                     <View
-                                        style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
+                                        style={{ width: responsiveWidth(6), height: responsiveHeight(3.5), right: responsiveWidth(1) }}>
                                         {likeStatus == true ?
                                             <Image source={require('../../../../components/Assets/Home_Icon_And_Fonts/Like_after_Icon.png')} style={{ width: "100%", height: "100%", }} resizeMode='stretch' />
 
@@ -665,10 +665,10 @@ export default function Myactive() {
                                     style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", left: responsiveWidth(2) }}>{commentCount} Comments</Text>
                                 <TouchableOpacity
                                     onPress={() => onCommentPress(item.id)}
-                                    style={{ width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', left: responsiveWidth(2) }}>
+                                    style={{ width: responsiveWidth(28), height: responsiveHeight(4.5), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', left: responsiveWidth(2) }}>
 
                                     <View
-                                        style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
+                                        style={{ width: responsiveWidth(6), height: responsiveHeight(3.5), right: responsiveWidth(1) }}>
                                         <Image source={require('../../../Assets/Home_Icon_And_Fonts/comment.png')}
                                             style={{ width: "100%", height: "100%" }} resizeMode='stretch'
                                         />
@@ -683,9 +683,9 @@ export default function Myactive() {
                                 <Text style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", left: responsiveWidth(4) }}>{shareCount} Share</Text>
                                 <TouchableOpacity
                                     onPress={() => onSharePress(item.filePath, item.userId)}
-                                    style={{ width: responsiveWidth(20), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', left: responsiveWidth(4) }}>
+                                    style={{ width: responsiveWidth(20), height: responsiveHeight(4.5), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', left: responsiveWidth(4) }}>
                                     <View
-                                        style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
+                                        style={{ width: responsiveWidth(6), height: responsiveHeight(3.5), right: responsiveWidth(1) }}>
                                         <Image source={require('../../../Assets/Home_Icon_And_Fonts/share_icon.png')}
                                             style={{ width: "100%", height: "95%", }} resizeMode='stretch'
                                         />
@@ -699,7 +699,7 @@ export default function Myactive() {
 
                             {/* promate button */}
                             <View style={{ margin: responsiveHeight(2), left: responsiveWidth(3) }}>
-                                <TouchableOpacity onPress={promoteEdit} style={{ width: responsiveWidth(18), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveHeight(1) }}>
+                                <TouchableOpacity onPress={promoteEdit} style={{ width: responsiveWidth(18), height: responsiveHeight(4.5), borderWidth: 1, borderRadius: responsiveHeight(1) }}>
                                     {promoteFlag == true ?
                                         <Text style={{ alignSelf: 'center', top: responsiveHeight(0.5), fontSize: responsiveFontSize(1.9), fontWeight: "500", color: "#000000" }}>Promoted</Text>
                                         : <Text style={{ alignSelf: 'center', top: responsiveHeight(0.5), fontSize: responsiveFontSize(1.9), fontWeight: "500", color: "#000000" }}>Promote</Text>
@@ -892,7 +892,7 @@ const styles = StyleSheet.create({
     },
     commentsSection: {
         width: responsiveWidth(90),
-
+        bottom:responsiveHeight(3),
         // borderWidth:1
     },
     // commentsTitle: {
@@ -913,3 +913,4 @@ const styles = StyleSheet.create({
 
     },
 })
+

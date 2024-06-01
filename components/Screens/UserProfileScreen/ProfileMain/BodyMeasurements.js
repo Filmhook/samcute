@@ -170,6 +170,7 @@ const BodyMeasurement = () => {
                         top: responsiveHeight(-4.5),
                         left: responsiveWidth(15),
                       }}
+                      placeholderTextColor={'black'}
                       value={height}
                       onChangeText={setHeight}
                       placeholder={`Your height (${height} cm)`}
@@ -219,6 +220,7 @@ const BodyMeasurement = () => {
                         top: responsiveHeight(-4.5),
                         left: responsiveWidth(15),
                       }}
+                      placeholderTextColor={'black'}
                       value={weight}
                       onChangeText={setWeight}
                       placeholder="Your weight in kg"
@@ -267,6 +269,7 @@ const BodyMeasurement = () => {
                         top: responsiveHeight(-4.5),
                         left: responsiveWidth(15),
                       }}
+                      placeholderTextColor={'black'}
                       value={skinTone}
                       onChangeText={setSkinTone}
                       placeholder="Enter your skinTone"
@@ -339,6 +342,7 @@ const BodyMeasurement = () => {
                           //  left: responsiveWidth(10)
 
                         }}
+                        placeholderTextColor={'black'}
                         value={chest}
                         onChangeText={setChest}
                         placeholder="Set Chest in In"
@@ -383,6 +387,7 @@ const BodyMeasurement = () => {
                           fontFamily: 'Times New Roman',
                           textAlign: 'center'
                         }}
+                        placeholderTextColor={'black'}
                         value={waist}
                         onChangeText={setWaist}
                         placeholder="Set waist in In"
@@ -427,6 +432,7 @@ const BodyMeasurement = () => {
                           fontFamily: 'Times New Roman',
                           textAlign: 'center'
                         }}
+                        placeholderTextColor={'black'}
                         value={biceps}
                         onChangeText={setBiceps}
                         placeholder="Set biceps in In"

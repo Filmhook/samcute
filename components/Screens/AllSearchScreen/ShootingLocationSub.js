@@ -60,7 +60,7 @@ const DetailsScreen = ({ route }) => {
 
                 </View >
 
-                <View style={{left:responsiveWidth(35),bottom:responsiveHeight(6)}}>
+                <View style={{left:responsiveWidth(35),bottom:responsiveHeight(3)}}>
                 <Text style={{ width: responsiveWidth(20), height: responsiveHeight(3), borderRadius: responsiveWidth(2), backgroundColor: '#616161', textAlign: 'center', textAlignVertical: 'center', color: 'white', fontWeight: '800' }}>₹{rate}{day}</Text>
                 </View>
 

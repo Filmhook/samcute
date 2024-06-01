@@ -124,7 +124,7 @@ const IndustryUpdateTwo = () => {
             );
 
             console.log('Registration successful:', response.data);
-            navigation.navigate('IndustryTwo');
+            navigation.navigate('Tabbar');
         } catch (error) {
             console.error('Registration failed:', error);
         }

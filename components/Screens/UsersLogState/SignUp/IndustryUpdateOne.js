@@ -184,7 +184,7 @@ export default function IndustryUpdateOne() {
 
       console.log('Registration successful:', response.data);
       console.log(selected, industrySelected, profession, professionSub);
-      navigation.navigate('Industry_S_Confirm');
+      navigation.navigate('IndustryUpdateTwo');
     } catch (error) {
       console.error('Registration failed:', error);
     }

@@ -38,6 +38,7 @@ export default function SOne() {
 
   const [auditionDetails, setAuditionDetails] = useState([]);
   const [selectedAuditionTitle, setSelectedAuditionTitle] = useState(null);
+  const [selectedAuditionName, setSelectedAuditionName] = useState('');
   const [selectedExperience, setSelectedExperience] = useState(null);// State variable to hold audition details
 
   useEffect(() => {
@@ -80,16 +81,26 @@ export default function SOne() {
     });
   };
 
-  const [selectedLabel, setSelectedLabel] = useState('Accounts Team');
-  const [address, setAddress] = useState('');
+
+  const [address, setAddress] = useState(null);
   // const [Roles,setRoles]=useState('');
   const [items, setItems] = useState('');
+
+  const handleTextChange = (text) => {
+    // Count the number of letters in the text (excluding spaces and punctuation)
+    const letterCount = text.replace(/[^a-zA-Z]/g, '').length;
+
+    // Update the state only if the letter count is 500 or less
+    if (letterCount <= 500) {
+      setItems(text);
+    }
+  };
+
 
   const [Message, setMessage] = useState(null);
 
 
 
-  console.log(selectedAuditionTitle, selectedExperience, address, items, subProfessionSearchValue, selectedDate)
   const post = async () => {
     try {
       const id = await AsyncStorage.getItem('userId');
@@ -104,9 +115,9 @@ export default function SOne() {
       const formData = new FormData();
       formData.append("auditionCreatedBy", id);
       formData.append("auditionPostedBy", FhCode);
-      formData.append("auditionTitle", selectedAuditionTitle);
+      formData.append("auditionTitle", selectedAuditionName);
       formData.append("auditionExperience", selectedExperience);
-      // formData.append("auditionCategory", selectedGender);
+      formData.append("auditionCategory", selectedAuditionTitle);
       formData.append("auditionExpireOn", selectedDate);
       formData.append("fileInputWebModelcategory", "Audition");
       formData.append("auditionAddress", address);
@@ -214,7 +225,7 @@ export default function SOne() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await privateAPI.post(`audition/getAuditionDetails`, {
+        const response = await privateAPI.post(`audition/getAddressList`, {
 
         }); // Replace with your API endpoint
         setSubProfessionData(response.data);
@@ -234,7 +245,7 @@ export default function SOne() {
 
   const handleSearchText = (text) => {
     const filteredData = subProfessionData.filter((item) =>
-      item.auditionDetailsName && item.auditionDetailsName.toLowerCase().includes(text.toLowerCase())
+      item.address && item.address.toLowerCase().includes(text.toLowerCase())
     );
 
     setShowSearchBox(text !== '');
@@ -244,7 +255,7 @@ export default function SOne() {
 
   const handleSelect = (item) => {
     setSelectedItem(item);
-    setSubProfessionSearchValue(item.auditionDetailsName);
+    setSubProfessionSearchValue(item.address);
     setShowSearchBox(false);
   };
   console.log("selected item", subProfessionSearchValue)
@@ -253,11 +264,17 @@ export default function SOne() {
   const handleRemove = () => {
     setSelectedItem(null);
     setSubProfessionSearchValue('');
+
   };
 
+  const handleValueChange = (itemValue) => {
+    setSelectedAuditionTitle(itemValue);
+    const selectedDetail = auditionDetails.find(detail => detail.auditionDetailsId === itemValue);
+    setSelectedAuditionName(selectedDetail ? selectedDetail.auditionDetailsName : '');
+  };
 
-
-
+  console.log(selectedAuditionTitle, selectedExperience, address, items, subProfessionSearchValue, selectedDate)
+  console.log(selectedAuditionName)
 
   return (
     <PaperProvider theme={theme}>
@@ -279,7 +296,7 @@ export default function SOne() {
             <View style={{ width: responsiveWidth(10), height: responsiveHeight(5), }}>
               <TouchableOpacity onPress={edit_profile_pic} style={{ width: '500%', height: '300%', borderRadius: 5, right: responsiveWidth(20), top: responsiveHeight(-5) }}>
                 {profilepic ? (
-                  <Image source={{ uri: profilepic.uri }} style={{ width: '100%', height: '100%' }} resizeMode='stretch' />
+                  <Image source={{ uri: profilepic.uri }} style={{ width: '100%', height: '100%' }} resizeMode='stretch'/>
                 ) : (
                   <View style={{ alignItems: 'center', top: responsiveHeight(4.5), color: backgroundColor }}>
                     <Image source={require('../../Assets/AllSearch_Icon_And_Fonts/Filmhook-cameraicon.png')} style={{ width: '20%', height: '50%', top: responsiveHeight(5.4), left: responsiveWidth(20), color: backgroundColor, }} resizeMode='stretch' />
@@ -297,7 +314,8 @@ export default function SOne() {
                 <Picker
                   style={styles.picker}
                   selectedValue={selectedAuditionTitle}
-                  onValueChange={(itemValue) => setSelectedAuditionTitle(itemValue)}>
+                  onValueChange={handleValueChange}
+                >
                   <Picker.Item label="Select Audition Title" value={null} />
                   {auditionDetails.map((detail) => (
                     <Picker.Item key={detail.auditionDetailsId} label={detail.auditionDetailsName} value={detail.auditionDetailsId} />
@@ -311,15 +329,17 @@ export default function SOne() {
             <ImageBackground style={styles.inputContainer} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
               <TextInput
 
-                placeholder='Address'
-                placeholderTextColor={textColor}
-                color='black'
+                placeholder='Full Address'
+                // placeholderTextColor={textColor}
+                placeholderTextColor='black'
                 onChangeText={(text) => setAddress(text)}
                 value={address}
                 multiline
+               
                 style={{
                   overflow: 'scroll',
-                  right: responsiveWidth(32)
+                 
+                  width:"96%"
                 }}
               />
             </ImageBackground>
@@ -343,15 +363,17 @@ export default function SOne() {
           <View style={styles.boxContent2}>
             <ImageBackground style={styles.inputContainer} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
               <TextInput
-                placeholder='Roles & responsibilties'
-                placeholderTextColor={textColor}
+                placeholder='Roles & responsibilties/500'
+                // placeholderTextColor={textColor}
                 color='black'
-                onChangeText={(text) => setItems(text)}
+                onChangeText={handleTextChange}
                 value={items}
                 multiline
+                placeholderTextColor='black'
                 style={{
                   overflow: 'scroll',
-                  right: responsiveWidth(22)
+                
+                  width:"96%"
                 }}
               />
             </ImageBackground>
@@ -363,13 +385,15 @@ export default function SOne() {
               source={require('../../Assets/Login_page/Medium_B_User_Profile.png')}
               resizeMode="stretch"
             >
-              <TextInput
-                onChangeText={handleSearchText}
-                value={subProfessionSearchValue}
-                placeholder='Search Your Location'
-                placeholderTextColor='black'
-                style={styles.input22}
-              />
+             <ScrollView horizontal={true} style={styles.scrollContainer}>
+            <TextInput
+              onChangeText={handleSearchText}
+              value={subProfessionSearchValue}
+              placeholder="Search Your Location"
+              placeholderTextColor="black"
+              style={styles.textInput}
+            />
+          </ScrollView>
               {selectedItem && (
                 <TouchableOpacity style={styles.clearButton} onPress={handleRemove}>
                   <Text style={styles.clearButtonText}>X</Text>
@@ -381,22 +405,21 @@ export default function SOne() {
             <View style={styles.dataBox}>
               <FlatList
                 data={filteredSubProfessionData}
-                keyExtractor={(item) => item.auditionDetailsId.toString()}
+                keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                   <TouchableOpacity
                     style={[
                       styles.item,
-                      selectedItem && selectedItem.id === item.auditionDetailsId && styles.selected,
+                      selectedItem && selectedItem.id === item.id && styles.selected,
                     ]}
                     onPress={() => handleSelect(item)}
                   >
-                    <Text>{item.auditionDetailsName}</Text>
+                    <Text style={{ color: 'black' }}>{item.address}</Text>
                   </TouchableOpacity>
                 )}
               />
             </View>
           )}
-
 
 
           <View>
@@ -497,12 +520,13 @@ const styles = StyleSheet.create({
 
   },
 
-  input22: {
-    // borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    right: responsiveWidth(23),
-    color: 'black'
+  scrollContainer: {
+    flex: 1,
+  },
+  textInput: {
+    width: '100%',
+    padding: 8,
+    color: 'black',
   },
 
   dataBox: {
@@ -545,5 +569,3 @@ const styles = StyleSheet.create({
   },
 
 });
-
-// //---------------------------------------------------------------//

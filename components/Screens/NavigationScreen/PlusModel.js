@@ -175,7 +175,7 @@ function Settings() {
   const navigation = useNavigation();
 
   const handle_Settings = () => {
-    navigation.navigate('Settings')
+    // navigation.navigate('Settings')
     console.log('Settings');
   }
 

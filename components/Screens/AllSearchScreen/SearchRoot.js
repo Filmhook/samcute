@@ -91,6 +91,8 @@ import UserData from './UserData';
 import UserProfileDetials from './UserProfileDetials';
 import BuyRental from './BuyRental';
 import ChatScreen from '../ChatScreen';
+import ProjectByuser from './ProjectByUser';
+import BlockedProfiles from '../BlockedProfiles';
 // import ShootinglocationPost from './ShootinglocationPost';
 
 
@@ -195,8 +197,8 @@ export default function SearchRoot() {
           <Stack.Screen name='UserProfileDetials' component={UserProfileDetials} options={{headerShown:false}}/>
           <Stack.Screen component={BuyRental} name='BuyRental' options={{ headerShown: false }} />
           <Stack.Screen component={ChatScreen} name='ChatScreen' options={{ headerShown: false }} />
-     
-
+          <Stack.Screen component={ProjectByuser} name='ProjectByuser' options={{ headerShown: false }} />
+          <Stack.Screen component={BlockedProfiles} name='BlockedProfiles' options={{ headerShown: false }} />
       </Stack.Navigator>
 
 

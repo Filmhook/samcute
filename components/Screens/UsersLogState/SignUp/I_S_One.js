@@ -126,9 +126,10 @@ export default function Industry_S_One() {
   const SubProfessionOpen = async () => {
     try {
       let allSubProfessions = [];
+      console.log('selectedProfessionId', selectedProfessionId)
       for (let id of selectedProfessionId) {
         const response = await PublicAPI.post(
-          'https://filmhook.annularprojects.com/filmhook-0.1/Film/getProfessionList',
+          'Film/getProfessionList',
           { filmProfesssionId: id },
          
         );

@@ -24,6 +24,7 @@ import privateAPI from '../../../api/privateAPI';
 import moment from 'moment';
 import PublicAPI from '../../../api/publicAPI';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import axios from 'axios';
 
 export default function Biography() {
   const navigation = useNavigation();
@@ -196,6 +197,7 @@ export default function Biography() {
                       textAlign: 'center',
                       left: responsiveWidth(3)
                     }}
+                    placeholderTextColor={'black'}
                     value={workExperience}
                     onChangeText={setworkExperience}
                     placeholder="Enter your Experience"
@@ -245,6 +247,7 @@ export default function Biography() {
                       textAlign: 'center',
                       left: responsiveWidth(3)
                     }}
+                    placeholderTextColor={'black'}
                     value={workSchedule}
                     onChangeText={setWorkSchedule}
                     placeholder="Enter your Schedule"
@@ -325,9 +328,11 @@ export default function Biography() {
         console.log('dataaaaaa', (user.dob))
         setSelectedDate(user.dob || '');
         setGender(user.gender || '');
-        setCountry(user.country || '');
-        setState(user.state || '');
+        setCountry(user.birthPlace || '');
+        setState(user.livingPlace || '');
         setDistrict(user.district || '');
+        setworkExperience(user.experience || 0);
+        setWorkSchedule(user.schedule)
       } catch (error) {
         console.error('Error fetching user data:', error);
         const customError = "usertype not get from AsyncStorage"
@@ -344,56 +349,42 @@ export default function Biography() {
     fetchData();
   }, []);
   const handleUpdatePersonalInfo = async () => {
-
-
-
     const userId = await AsyncStorage.getItem('userId');
-    const userIdString = userId.toString();
     const jwt = await AsyncStorage.getItem('jwt');
 
-
-    console.log('edit iiiiiii', userIdString)
-
-    const url = 'https://filmhook.annularprojects.com/filmhook-0.1/user/updateBiographyDetails';
+console.log('updatebiograt', userId, gender, country, state, workExperience)
+  
+    const url = 'user/updateBiographyDetails';
     const requestBody = {
       userId: userId,
       dob: selectedDate, // Format dob as 'yyyy-mm-dd'
       gender: gender,
-      country: country,
-      state: state,
-      district: district,
-
-
-
+      livingPlace: state,
+      birthPlace: country,
+      experience: workExperience,
+      schedule: workSchedule
     };
 
-
-
     try {
-      const response = await fetch(url, {
-        method: 'PUT',
+      const response = await privateAPI.put(url, requestBody, {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${jwt}` // Include the JWT token in the Authorization header
-        },
-        body: JSON.stringify(requestBody),
+         
+        }
       });
 
       console.log('User data:', response.data);
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error('Failed to update personal info');
       }
 
-
-
-      setIsEditing(false)
+      setIsEditing(false);
       Alert.alert('Success', 'Personal info updated successfully');
     } catch (error) {
-      // setIsLoading(false);
       Alert.alert('Error', error.message);
     }
   };
-
+  
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || dob;
@@ -420,7 +411,7 @@ export default function Biography() {
       hideDatePicker();
     
   };
-  console.log('dddd', selectedDate)
+
   const today = new Date();
   const minimumDate = new Date(1900, 0, 1); 
 
@@ -589,9 +580,10 @@ export default function Biography() {
                       top: responsiveHeight(-4.5),
                       textAlign: 'center'
                     }}
+                    placeholderTextColor={'black'}
                     value={country}
                     onChangeText={setCountry}
-                    placeholder="Enter your country"
+                    placeholder="Your Birth Place"
                   />
                 ) : (
                   <Text
@@ -641,9 +633,10 @@ export default function Biography() {
                       textAlign: 'center'
 
                     }}
+                    placeholderTextColor={'black'}
                     value={state}
                     onChangeText={setState}
-                    placeholder="Enter Your State"
+                    placeholder="Your living place"
                   />
                 ) : (
                   <Text
@@ -661,7 +654,7 @@ export default function Biography() {
             </ImageBackground>
           </View>
           {/* ///////////////////////////////////////////////*/}
-          <View style={style.bio_content_section}>
+          {/* <View style={style.bio_content_section}>
             <ImageBackground
               style={style.inputContainer}
               source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
@@ -707,7 +700,7 @@ export default function Biography() {
                 )}
               </View>
             </ImageBackground>
-          </View>
+          </View> */}
           <View>
             {bio()}
           </View>

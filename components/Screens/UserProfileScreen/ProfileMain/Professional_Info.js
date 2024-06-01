@@ -213,6 +213,7 @@ export default function Professionalinfo() {
                       fontFamily: 'Times New Roman',
                       textAlign: 'center'
                     }}
+                    placeholderTextColor={'black'}
                     value={religion}
                     onChangeText={setReligion}
                     placeholder="Enter your relegion"
@@ -258,6 +259,8 @@ export default function Professionalinfo() {
                       fontFamily: 'Times New Roman',
                       textAlign: 'center'
                     }}
+                    placeholderTextColor={'black'}
+
                     value={caste}
                     onChangeText={setCaste}
                     placeholder="Enter your caste"
@@ -300,6 +303,7 @@ export default function Professionalinfo() {
                       fontFamily: 'Times New Roman',
                       textAlign: 'center'
                     }}
+                    placeholderTextColor={'black'}
                     value={marital}
                     onChangeText={setMarital}
                     placeholder="Marital status "
@@ -342,6 +346,7 @@ export default function Professionalinfo() {
                       fontFamily: 'Times New Roman',
                       textAlign: 'center'
                     }}
+                    placeholderTextColor={'black'}
                     value={spouse}
                     onChangeText={setSpouse}
                     placeholder="your Spouse"
@@ -432,6 +437,7 @@ export default function Professionalinfo() {
                       placeholder="Enter children's name"
                       value={newChildren}
                       onChangeText={setNewChildren}
+                      placeholderTextColor={'black'}
                     />
                   </ImageBackground>
 
@@ -514,6 +520,7 @@ export default function Professionalinfo() {
                       textAlign: 'center'
 
                     }}
+                    placeholderTextColor={'black'}
                     value={mother}
                     onChangeText={setMother}
                     placeholder="your Mother Name"
@@ -556,6 +563,7 @@ export default function Professionalinfo() {
                       fontFamily: 'Times New Roman',
                       textAlign: 'center'
                     }}
+                    placeholderTextColor={'black'}
                     value={father}
                     onChangeText={setFather}
                     placeholder="Your Father Name"
@@ -650,6 +658,7 @@ export default function Professionalinfo() {
                       placeholder="Enter brother's name"
                       value={newBrother}
                       onChangeText={setNewBrother}
+                      placeholderTextColor={'black'}
                     />
                   </ImageBackground>
                   {newBrother.trim() !== '' ? (
@@ -759,6 +768,7 @@ export default function Professionalinfo() {
                       placeholder="Enter sister's name"
                       value={newSister}
                       onChangeText={setNewSister}
+                      placeholderTextColor={'black'}
                     />
                   </ImageBackground>
 

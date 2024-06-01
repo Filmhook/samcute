@@ -9,6 +9,8 @@ import { Appearance } from 'react-native';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import privateAPI from '../../api/privateAPI';
+import { Picker } from '@react-native-picker/picker';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 const ProfilePic = (userId, userName) => {
@@ -121,7 +123,7 @@ const ProfilePic = (userId, userName) => {
     followerCount()
   }, [followerCount])
 
-  const navigation=useNavigation();
+  const navigation = useNavigation();
 
 
   return (
@@ -258,13 +260,14 @@ const styleProfileCover = StyleSheet.create({
   imagePic: {
     width: '100%',
     height: '100%',
-    resizeMode: 'stretch'
+    resizeMode: 'stretch',
+    borderRadius: responsiveWidth(5)
   },
   image: {
     width: Dimensions.get('window').width,
     height: responsiveHeight(27),
     resizeMode: 'cover',
-    backgroundColor: 'red'
+    backgroundColor: 'Gray'
 
   },
   indicatorContainer: {
@@ -314,7 +317,7 @@ const styleProfileCover = StyleSheet.create({
 
 const Biography = (userId) => {
   const navigation = useNavigation();
-  const [dob, setDob] = useState(new Date());
+  const [dob, setDob] = useState();
   const [gender, setGender] = useState('');
   const [country, setCountry] = useState('');
   const [state, setState] = useState('');
@@ -330,14 +333,12 @@ const Biography = (userId) => {
         const jwt = await AsyncStorage.getItem('jwt');
         const userType = await AsyncStorage.getItem('usertype');
 
-        const response = await PublicAPI.get(`user/getUserByUserId?userId=${userId}`, {
-          headers: {
-            'Authorization': `Bearer ${jwt}`
-          }
+        const response = await privateAPI.get(`user/getUserByUserId?userId=${userId}`, {
+
         });
 
         const user = response.data.data;
-        setDob(user.dob );
+        setDob(user.dob || '');
         setGender(user.gender || '');
         setCountry(user.country || '');
         setState(user.state || '');
@@ -594,7 +595,7 @@ const Biography = (userId) => {
 
 const style = StyleSheet.create({
   container: {
-   
+
     marginTop: responsiveHeight(12),
     // height: responsiveHeight(55)
   },
@@ -606,7 +607,7 @@ const style = StyleSheet.create({
     borderRadius: 5,
   },
   inputContainer: {
-   
+
     flex: 1,
     width: '101%',
     height: '100%',
@@ -636,7 +637,7 @@ const style = StyleSheet.create({
   bio_content: {
     flex: 1,
     left: '43%',
-    marginTop:responsiveHeight(1)
+    marginTop: responsiveHeight(1)
     //  borderWidth:1
   },
   bio_content_section: {
@@ -675,30 +676,30 @@ const style = StyleSheet.create({
     padding: responsiveWidth(4),
     borderRadius: 8,
     marginTop: responsiveHeight(1),
-},
-bio_title_touchable: {
+  },
+  bio_title_touchable: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-},
-bio_title_text: {
+  },
+  bio_title_text: {
     fontWeight: 'bold',
     fontSize: responsiveFontSize(2.2),
     color: 'black',
     fontFamily: 'Cochin',
     width: responsiveWidth(70),
-},
-downArrowContainer: {
+  },
+  downArrowContainer: {
     width: responsiveWidth(6),
     height: responsiveHeight(4),
     alignItems: 'center',
     justifyContent: 'center',
-},
-downArrow: {
+  },
+  downArrow: {
     width: 20,
     height: 20,
-},
+  },
 });
 
 // BodyMeasurment
@@ -764,17 +765,17 @@ const BodyMeasurement = (userId) => {
   return (
     <>
       <View style={styles.container}>
-      <View style={styles.bio_title}>
-                    <TouchableOpacity style={styles.bio_title_touchable} onPress={toggleExpanded}>
-                        <Text style={styles.bio_title_text}>BODY MEASUREMENT</Text>
-                        <View style={styles.downArrowContainer}>
-                            <Image
-                                source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
-                                style={styles.downArrow}
-                            />
-                        </View>
-                    </TouchableOpacity>
-                </View>
+        <View style={styles.bio_title}>
+          <TouchableOpacity style={styles.bio_title_touchable} onPress={toggleExpanded}>
+            <Text style={styles.bio_title_text}>BODY MEASUREMENT</Text>
+            <View style={styles.downArrowContainer}>
+              <Image
+                source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
+                style={styles.downArrow}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
         {expanded && (
           <View style={styles.bio_content}>
             <View style={styles.bio_content_section}>
@@ -984,7 +985,7 @@ const BodyMeasurement = (userId) => {
 const getStyles = theme => {
   return StyleSheet.create({
     container: {
-     
+
       marginTop: responsiveHeight(0.2),
 
 
@@ -1012,7 +1013,7 @@ const getStyles = theme => {
     bio_content: {
       flex: 1,
       marginTop: responsiveHeight(1),
-      left:'43%'
+      left: '43%'
     },
     bio_content_section: {
       flexDirection: 'row',
@@ -1044,30 +1045,30 @@ const getStyles = theme => {
       padding: responsiveWidth(4),
       borderRadius: 8,
       marginTop: responsiveHeight(1),
-  },
-  bio_title_touchable: {
+    },
+    bio_title_touchable: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
       width: '100%',
-  },
-  bio_title_text: {
+    },
+    bio_title_text: {
       fontWeight: 'bold',
       fontSize: responsiveFontSize(2.2),
       color: 'black',
       fontFamily: 'Cochin',
       width: responsiveWidth(70),
-  },
-  downArrowContainer: {
+    },
+    downArrowContainer: {
       width: responsiveWidth(6),
       height: responsiveHeight(4),
       alignItems: 'center',
       justifyContent: 'center',
-  },
-  downArrow: {
+    },
+    downArrow: {
       width: 20,
       height: 20,
-  },
+    },
   });
 };
 
@@ -1133,17 +1134,17 @@ const Professionalinfo = (userId) => {
   return (
     <>
       <View style={stylePi.container}>
-      <View style={style.bio_title}>
-                    <TouchableOpacity style={style.bio_title_touchable} onPress={toggleExpanded}>
-                        <Text style={style.bio_title_text}>PERSONAL INFORMATION</Text>
-                        <View style={style.downArrowContainer}>
-                            <Image
-                                source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
-                                style={style.downArrow}
-                            />
-                        </View>
-                    </TouchableOpacity>
-                </View>
+        <View style={style.bio_title}>
+          <TouchableOpacity style={style.bio_title_touchable} onPress={toggleExpanded}>
+            <Text style={style.bio_title_text}>PERSONAL INFORMATION</Text>
+            <View style={style.downArrowContainer}>
+              <Image
+                source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
+                style={style.downArrow}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
 
 
         {expanded && (
@@ -1369,7 +1370,7 @@ const Professionalinfo = (userId) => {
             </View>
 
             <View style={{ rowGap: responsiveHeight(1) }}>
-              {/* <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+              {/* <ImageBackground style={style.inputContainer} source={require("../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
                             <View style={{rowGap:responsiveHeight(1)}}> */}
 
               {brother.map((value, index) => (
@@ -1600,30 +1601,30 @@ const stylePi = StyleSheet.create({
     padding: responsiveWidth(4),
     borderRadius: 8,
     marginTop: responsiveHeight(1),
-},
-bio_title_touchable: {
+  },
+  bio_title_touchable: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-},
-bio_title_text: {
+  },
+  bio_title_text: {
     fontWeight: 'bold',
     fontSize: responsiveFontSize(2.2),
     color: 'black',
     fontFamily: 'Cochin',
     width: responsiveWidth(70),
-},
-downArrowContainer: {
+  },
+  downArrowContainer: {
     width: responsiveWidth(6),
     height: responsiveHeight(4),
     alignItems: 'center',
     justifyContent: 'center',
-},
-downArrow: {
+  },
+  downArrow: {
     width: 20,
     height: 20,
-},
+  },
 });
 
 //Education
@@ -1688,17 +1689,17 @@ const Education = (userid) => {
     <>
       <View style={styleEducation.container}>
 
-      <View style={style.bio_title}>
-                    <TouchableOpacity style={style.bio_title_touchable} onPress={toggleExpanded}>
-                        <Text style={style.bio_title_text}>EDUCATION</Text>
-                        <View style={style.downArrowContainer}>
-                            <Image
-                                source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
-                                style={style.downArrow}
-                            />
-                        </View>
-                    </TouchableOpacity>
-                </View>
+        <View style={style.bio_title}>
+          <TouchableOpacity style={style.bio_title_touchable} onPress={toggleExpanded}>
+            <Text style={style.bio_title_text}>EDUCATION</Text>
+            <View style={style.downArrowContainer}>
+              <Image
+                source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
+                style={style.downArrow}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
 
 
         {expanded && (
@@ -1883,36 +1884,37 @@ const styleEducation = StyleSheet.create({
     padding: responsiveWidth(4),
     borderRadius: 8,
     marginTop: responsiveHeight(1),
-},
-bio_title_touchable: {
+  },
+  bio_title_touchable: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-},
-bio_title_text: {
+  },
+  bio_title_text: {
     fontWeight: 'bold',
     fontSize: responsiveFontSize(2.2),
     color: 'black',
     fontFamily: 'Cochin',
     width: responsiveWidth(70),
-},
-downArrowContainer: {
+  },
+  downArrowContainer: {
     width: responsiveWidth(6),
     height: responsiveHeight(4),
     alignItems: 'center',
     justifyContent: 'center',
-},
-downArrow: {
+  },
+  downArrow: {
     width: 20,
     height: 20,
-},
+  },
 })
 
 // profession
 
 
 const Profession = (userId) => {
+  const us = userId
   const [platformData, setPlatformData] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -1928,52 +1930,211 @@ const Profession = (userId) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const [editingPlatformId, setEditingPlatformId] = useState(null);
+  const [isModalVisibleExp, setModalVisibleExp] = useState(false);
+  const [startYear, setStartYear] = useState('');
+  const [endYear, setEndYear] = useState('');
+  const [currentSubProfessionId, setCurrentSubProfessionId] = useState(null);
+  const [subProfessions, setSubProfessions] = useState([]);
+  // const toggleModal = () => {
+  //   setModalVisibleExp(!isModalVisibleExp);
+  // };
+
+  // const years = Array.from(new Array(124), (val, index) => 1900 + index).concat('Present');
+
+  // const toggleEditMode = (platformId) => {
+
+  //   setIsEditing(true)
+  //   if (platformId === editingPlatformId) {
+  //     // Save changes and exit edit mode
+  //     handleSave();
+  //     setEditingPlatformId(null);
+  //   } else {
+  //     // Enter edit mode for the selected platform
+  //     setEditingPlatformId(platformId);
+  //   }
+  // };
+
+  // // useEffect(() => {
+
+  // //   fetchData(); // Fetch data initially when component mounts if expanded
+
+  // // }, []);
 
 
 
+  // const handleSave = async () => {
+  //   setIsEditing(false)
+  //   try {
+  //     const platform = platformData.find(platform => platform.platformPermanentId === editingPlatformId);
+  //     if (!platform) {
+  //       console.error('Platform not found for editing.');
+  //       return;
+  //     }
 
+  //     const response = await privateAPI.post(
+  //       'industryUser/updateIndustryUserPermanentDetails',
+  //       {
+  //         platformPermanentId: editingPlatformId,
+  //         filmCount: filmCountInput,
+  //         netWorth: netWorthInput,
+  //         dailySalary: dailySalaryInput,
 
+  //         // subProfession: subProfessionsInput.map((sp) => ({
+  //         //   subProfessionId: sp.subProfessionId,
+  //         //   startingYear: sp.startYear,
+  //         //   endingYear: sp.endYear,
+  //         // })),
+  //       },
+  //     );
+  //     Alert.alert('Update', `${platform.platformName} Updated`);
+
+  //     console.log('Platform details updated successfully:', response.data);
+
+  //     setFilmCountInput('');
+  //     setNetWorthInput('');
+  //     setDailySalaryInput('');
+  //     setEditingPlatformId(null); // Reset editingPlatformId after saving changes
+  //     // Update the state with the new values
+  //     setPlatformData(prevState =>
+  //       prevState.map(p => {
+  //         if (p.platformPermanentId === editingPlatformId) {
+  //           return {
+  //             ...p,
+  //             filmCount: filmCountInput,
+  //             netWorth: netWorthInput,
+  //             dailySalary: dailySalaryInput,
+  //           };
+  //         }
+  //         return p;
+  //       })
+  //     );
+  //   } catch (error) {
+  //     console.error('Error updating platform details:', error);
+  //   }
+  // };
+
+  const years = Array.from(new Array(124), (val, index) => 1900 + index).concat('Present');
+
+  const toggleModal = (subProfessionId) => {
+    const subProfession = subProfessions.find((sp) => sp.subProfessionId === subProfessionId);
+    if (subProfession) {
+      setStartYear(subProfession.startingYear);
+      setEndYear(subProfession.endingYear);
+    }
+    setCurrentSubProfessionId(subProfessionId);
+    setModalVisibleExp(true);
+  };
+
+  const saveYearSelection = () => {
+    updateSubProfessionYears(currentSubProfessionId, startYear, endYear);
+    setModalVisibleExp(false);
+  };
 
   const toggleEditMode = (platformId) => {
-
-    setIsEditing(true)
+    setIsEditing(true);
     if (platformId === editingPlatformId) {
-      // Save changes and exit edit mode
       handleSave();
       setEditingPlatformId(null);
     } else {
-      // Enter edit mode for the selected platform
       setEditingPlatformId(platformId);
+      const platform = platformData.find((platform) => platform.platformPermanentId === platformId);
+      if (platform) {
+        setFilmCountInput(platform.filmCount.toString());
+        setNetWorthInput(platform.netWorth.toString());
+        setDailySalaryInput(platform.dailySalary.toString());
+        setSubProfessions(platform.professions.flatMap((profession) => profession.subProfessions));
+      }
     }
   };
 
-  useEffect(() => {
+  const handleSave = async () => {
+    setIsEditing(false);
+    try {
+      const platform = platformData.find((platform) => platform.platformPermanentId === editingPlatformId);
+      if (!platform) {
+        console.error('Platform not found for editing.');
+        return;
+      }
 
-    fetchData(); // Fetch data initially when component mounts if expanded
+      const response = await privateAPI.post('industryUser/updateIndustryUserPermanentDetails', {
+        platformPermanentId: editingPlatformId,
+        filmCount: filmCountInput,
+        netWorth: netWorthInput,
+        dailySalary: dailySalaryInput,
+        subProfession: subProfessions.map((subProf) => ({
+          subProfessionId: subProf.subProfessionId,
+          startingYear: subProf.startingYear,
+          endingYear: subProf.endingYear,
+        })),
+      });
 
-  }, []);
+      Alert.alert('Update', `${platform.platformName} Updated`);
 
+      console.log('Platform details updated successfully:', response.data);
 
+      setFilmCountInput('');
+      setNetWorthInput('');
+      setDailySalaryInput('');
+      setEditingPlatformId(null);
 
+      setPlatformData((prevState) =>
+        prevState.map((p) => {
+          if (p.platformPermanentId === editingPlatformId) {
+            return {
+              ...p,
+              filmCount: filmCountInput.toString(),
+              netWorth: netWorthInput.toString(),
+              dailySalary: dailySalaryInput.toString(),
+              professions: p.professions.map((profession) => ({
+                ...profession,
+                subProfessions: profession.subProfessions.map((subProf) => {
+                  const updatedSubProf = subProfessions.find((sp) => sp.subProfessionId === subProf.subProfessionId);
+                  return updatedSubProf || subProf;
+                }),
+              })),
+            };
+          }
+          return p;
+        })
+      );
+    } catch (error) {
+      console.error('Error updating platform details:', error);
+    }
+  };
+
+  const updateSubProfessionYears = (subProfessionId, startYear, endYear) => {
+    setSubProfessions((prev) =>
+      prev.map((subProf) =>
+        subProf.subProfessionId === subProfessionId
+          ? { ...subProf, startingYear: startYear, endingYear: endYear }
+          : subProf
+      )
+    );
+  };
 
 
   const fetchData = async () => {
     try {
-      console.log('professionuserId', userId)
-      // const userId = await AsyncStorage.getItem('userId');
+      const userId = await AsyncStorage.getItem('userId');
       console.log('check userid', userId)
       const resp = await privateAPI.post(`industryUser/getIndustryUserPermanentDetails?userId=${userId}`);
       const response = resp.data;
+
+      // console.log(response[0].professions[0].subProfessions[0].subProfessionName);
 
       const modifiedData = response.map(item => ({
         platformName: item.platformName,
         industries: item.industries.map(industry => ({
           industryName: industry.industryName,
-          imageURL: `data:image/jpeg;base64,${industry.image}`, // Decode base64 to image URL
+          imageURL: `data:image/jpeg;base64,${industry.industryimage}`, // Decode base64 to image URL
         })),
         professions: item.professions.map(profession => ({
           professionName: profession.professionName,
-          subProfessions: profession.subProfessionNames || [],
+          // subProfessions: profession.subProfessionName || [],
+          subProfessions: profession.subProfessions.map(subName => subName.subProfessionName) || [],
+          startYear: profession.subProfessions.map(subName => subName.startingYear) || [],
+          endYear: profession.subProfessions.map(subName => subName.endingYear) || [],
+          subProfessionId: profession.subProfessions.map(subName => subName.subProfessionId) || [],
           imageURL: `data:image/jpeg;base64,${profession.image}`, // Decode base64 to image URL
         })),
         filmCount: item.filmCount,
@@ -1981,7 +2142,11 @@ const Profession = (userId) => {
         dailySalary: item.dailySalary,
         platformPermanentId: item.platformPermanentId,
         platformImageURL: `data:image/jpeg;base64,${item.platformImage}`, // Decode base64 to image URL
-        filePaths: item.outputWebModelList.map(file => file.filePath), // Add filePaths array from response
+        filePaths: item.outputWebModelList.map(file => ({
+          filePath: file.filePath,
+          description: file.description,
+        })),
+
       }));
 
       setPlatformData(modifiedData);
@@ -1995,12 +2160,14 @@ const Profession = (userId) => {
 
 
 
+
+
   // State to track the platform being edited
   const [projectPlatformId, setProjectPlatformId] = useState(null);
   const [openingImagePicker, setOpeningImagePicker] = useState(false);
 
   const project = (platformId) => {
-    console.log('platformId', platformId);
+    console.log('platformId', platformId)
     if (platformId === projectPlatformId) {
       // Save changes and exit edit mode
       openImagePicker(platformId);
@@ -2011,8 +2178,42 @@ const Profession = (userId) => {
     }
   };
 
-  const openImagePicker = (platformId) => {
-    setOpeningImagePicker(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+
+        console.log('check userid', userId)
+        const response = await privateAPI.post(
+          `industryUser/getIndustryUserPermanentDetails?userId=${userId}`,
+          {},
+
+        );
+        setPlatformData(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+
+
+  const toggleExpanded = () => {
+    setExpanded(!expanded);
+  };
+
+  //project
+
+  const [description, setDescription] = useState('');
+  const [platformId, setPlatformId] = useState(null);
+
+  const openImagePicker = (id) => {
+    setPlatformId(id);
     const options = {
       mediaType: 'photo',
       includeBase64: false,
@@ -2020,98 +2221,129 @@ const Profession = (userId) => {
       maxWidth: 300,
     };
 
-    launchImageLibrary(options, async (response) => {
-      setOpeningImagePicker(false);
+    launchImageLibrary(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('Image picker error: ', response.error);
+      } else if (response.errorCode) {
+        console.log('Image picker error: ', response.errorMessage);
       } else {
         const selectedImage = response.assets[0];
         setSelectedImage(selectedImage);
-        try {
-          await addImageWithTitle(platformId);
-        } catch (error) {
-          console.error('Failed to upload image:', error);
-        }
+        setModalVisible(true);  // Show the modal to enter description
       }
     });
   };
 
-
-
-  const addImageWithTitle = async (platformId) => {
+  const uploadImage = async () => {
     if (!selectedImage) {
-      throw new Error('No image selected.');
+      Alert.alert('No image selected', 'Please select an image first.');
+      return;
     }
-    const userId = await AsyncStorage.getItem('userId');
-    const jwt = await AsyncStorage.getItem('jwt');
-
-    console.log('usedidddd ', userId)
-    const myHeaders = new Headers();
-    myHeaders.append('Authorization', 'Bearer ' + jwt);
-
-    const formData = new FormData();
-
-    formData.append('userId', userId);
-    formData.append('platformPermanentId', platformId);
-
-    const imageUriParts = selectedImage.uri.split('.');
-    const fileType = imageUriParts[imageUriParts.length - 1];
-    formData.append(`fileInputWebModel.files[0]`, {
-      uri: selectedImage.uri,
-      name: `image.${fileType}`,
-      type: `image/${fileType}`,
-    });
-
-    const response = await fetch('https://filmhook.annularprojects.com/filmhook-0.1/IndustryUser/project/saveProjectFiles', {
-      method: 'POST',
-      body: formData,
-      headers: myHeaders
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to upload image. HTTP Error: ' + response.status);
+    if (!description.trim()) {
+      Alert.alert('No description', 'Please enter a description.');
+      return;
     }
 
-    const data = await response.json();
-    if (data.status !== 1) {
-      throw new Error('Failed to upload image. Server returned status: ' + data.status);
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      const jwt = await AsyncStorage.getItem('jwt');
+
+      const formData = new FormData();
+      formData.append('userId', userId);
+      formData.append('platformPermanentId', platformId); // Replace with actual platform ID
+      formData.append('fileInputWebModel.description', description);
+
+      const imageUriParts = selectedImage.uri.split('.');
+      const fileType = imageUriParts[imageUriParts.length - 1];
+      formData.append('fileInputWebModel.files[0]', {
+        uri: selectedImage.uri,
+        name: `image.${fileType}`,
+        type: `image/${fileType}`,
+      });
+
+      const response = await privateAPI.post(
+        'IndustryUser/project/saveProjectFiles',
+        formData,
+        {
+          headers: {
+
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      if (response.data.status === 1) {
+        Alert.alert('Success', 'Image uploaded successfully.');
+      } else {
+        Alert.alert('Upload failed', `Server returned status: ${response.data.status}`);
+      }
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+      Alert.alert('Error', 'Failed to upload image. Please try again.');
     }
 
-    Alert.alert('Posted');
-  };
-
-  const toggleExpanded = () => {
-    setExpanded(!expanded);
+    // Reset state
+    setSelectedImage(null);
+    setDescription('');
+    setModalVisible(false);
   };
 
 
   // Render JSX based on fetched data
   return (
     <View style={styleProfession.containers}>
-     <View style={styleProfession.bio_title}>
-                <TouchableOpacity style={styleProfession.bio_title_touchable} onPress={toggleExpanded}>
-                    <Text style={styleProfession.bio_title_text}>PROFESSION</Text>
-                    <View style={styleProfession.downArrowContainer}>
-                        <Image
-                            source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
-                            style={styleProfession.downArrow}
-                        />
-                    </View>
-                </TouchableOpacity>
-            </View>
+
+      <View style={styleProfession.bio_title}>
+        <TouchableOpacity style={styleProfession.bio_title_touchable} onPress={toggleExpanded}>
+          <Text style={styleProfession.bio_title_text}>PROFESSION</Text>
+          <View style={styleProfession.downArrowContainer}>
+            <Image
+              source={require('../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
+              style={styleProfession.downArrow}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
 
       {expanded && (
 
 
         <ScrollView style={{ width: responsiveWidth(100), }}>
-
+          {isEditing && (
+            <TouchableOpacity onPress={() => navigation.navigate('IndustryUpdateOne')} style={{
+              height: responsiveHeight(5.5),
+              width: responsiveWidth(45.5),
+              borderWidth: responsiveWidth(0.3),
+              borderColor: 'black',
+              borderRadius: responsiveWidth(2),
+              left: responsiveWidth(51),
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'blue'
+            }}>
+              <Text style={{
+                fontSize: responsiveFontSize(2),
+                color: 'white',
+              }}>Add Industry</Text>
+            </TouchableOpacity>
+          )}
           {loading ? (
             <Text style={{ textAlign: 'center' }}>Loading...</Text>
           ) : (
             platformData.map((platform, index) => (
               <View key={index} style={styleProfession.platformContainer}>
+                {/* <View style={{ width: responsiveWidth(96) }}>
+                  {editingPlatformId === platform.platformPermanentId ? (
+                    <TouchableOpacity onPress={() => toggleEditMode(platform.platformPermanentId, platform.platformName)}>
+                      <Text style={styleProfession.editButton}>Save</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={() => toggleEditMode(platform.platformPermanentId)}>
+                      <Text style={styleProfession.editButton}>Edit</Text>
+                    </TouchableOpacity>
+                  )}
+                </View> */}
+
 
                 <View style={{ flexDirection: 'row', columnGap: responsiveWidth(10), width: responsiveWidth(100), padding: responsiveWidth(1) }}>
                   <View style={{ width: responsiveHeight(19), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -2120,7 +2352,7 @@ const Profession = (userId) => {
                         <Image source={{ uri: platform.platformImageURL }} style={{ width: '100%', height: '80%' }} resizeMode='stretch' />
                       </View>
 
-                      <Text style={[styleProfession.platformName, styles.border]}>{platform.platformName}</Text>
+                      <Text style={[styleProfession.platformName, styleProfession.border]}>{platform.platformName}</Text>
                     </ImageBackground>
                   </View>
                   <View style={{ width: responsiveWidth(58) }}>
@@ -2148,33 +2380,110 @@ const Profession = (userId) => {
                             </View>
                           </ImageBackground>
                           {profession.subProfessions.map((subProfession, subIndex) => (
-                            <ImageBackground key={subIndex} style={{ width: responsiveWidth(30), marginBottom: responsiveHeight(1), padding: 2, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} source={require("../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                            <View style={{ flexDirection: 'row', rowGap: 1, width: responsiveWidth(48), justifyContent: 'center', alignItems: 'center', }}>
+                              <ImageBackground key={subIndex} style={{ width: responsiveWidth(26), marginBottom: responsiveHeight(1), padding: 2, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(1) }} source={require("../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
 
-                              <Text style={styleProfession.subProfession}>{subProfession}</Text>
-                            </ImageBackground>
+                                <Text style={styleProfession.subProfession}>{subProfession.subProfessionName} </Text>
+
+
+
+
+                              </ImageBackground>
+
+                              {editingPlatformId === platform.platformPermanentId ? (
+                                <TouchableOpacity onPress={() => toggleModal(subProfession.subProfessionId)} style={{ marginLeft: responsiveWidth(3) }}>
+                                  <Icon name="calendar" size={responsiveWidth(7)} color="blue" />
+                                </TouchableOpacity>
+                              ) : (
+
+
+
+                                <Text style={styleProfession.subProfessionYear}>{subProfession.startingYear ?? 'N/A'} - {subProfession.endingYear ?? 'N/A'}</Text>
+                              )}
+
+                              {/* <Text style={styles.subProfession}>{profession.endYear}</Text> */}
+                            </View>
                           ))}
                         </View>
                       ))}
                     </View>
+                    <Modal
+                      transparent={true}
+                      animationType="slide"
+                      visible={isModalVisibleExp}
+                      onRequestClose={() => setModalVisibleExp(false)}
+                    >
+                      <View style={styleProfession.modalContainer}>
+                        <View style={styleProfession.modalContent}>
+                          <Text style={styleProfession.modalTitle}>Select Start and End Year</Text>
+
+                          <Text style={styleProfession.label}>Start Year:</Text>
+                          <Picker
+                            selectedValue={startYear}
+                            style={styleProfession.picker}
+                            onValueChange={(itemValue) => setStartYear(itemValue)}
+                          >
+                            {years.map((year, index) => (
+                              <Picker.Item key={index} label={year.toString()} value={year.toString()} />
+                            ))}
+                          </Picker>
+
+                          <Text style={styleProfession.label}>End Year:</Text>
+                          <Picker
+                            selectedValue={endYear}
+                            style={styleProfession.picker}
+                            onValueChange={(itemValue) => setEndYear(itemValue)}
+                          >
+                            {years.map((year, index) => (
+                              <Picker.Item key={index} label={year.toString()} value={year.toString()} />
+                            ))}
+                          </Picker>
+
+                          <Button title="Confirm" onPress={saveYearSelection} />
+                          <Button title="Cancel" onPress={() => setModalVisibleExp(false)} />
+                        </View>
+                      </View>
+                    </Modal>
                     <View style={styleProfession.professionContainer}>
                       <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2) }} source={require("../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-
-                        <Text style={{ color: 'black' }}>Film Count: {platform.filmCount}</Text>
-
+                        {editingPlatformId === platform.platformPermanentId ? (
+                          <TextInput
+                            placeholder="Film Count"
+                            value={filmCountInput}
+                            onChangeText={text => setFilmCountInput(text)}
+                            keyboardType="numeric"
+                          />
+                        ) : (
+                          <Text style={{ color: 'black' }}>Film Count: {platform.filmCount}</Text>
+                        )}
                       </ImageBackground>
                     </View>
                     <View style={styleProfession.professionContainer}>
                       <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2) }} source={require("../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-
-                        <Text style={{ color: 'black' }}>Net Worth: {platform.netWorth}</Text>
-
+                        {editingPlatformId === platform.platformPermanentId ? (
+                          <TextInput
+                            placeholder="Net Worth"
+                            value={netWorthInput}
+                            onChangeText={text => setNetWorthInput(text)}
+                            keyboardType="numeric"
+                          />
+                        ) : (
+                          <Text style={{ color: 'black' }}>Net Worth: {platform.netWorth}</Text>
+                        )}
                       </ImageBackground>
                     </View>
                     <View style={styleProfession.professionContainer}>
                       <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2) }} source={require("../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-
-                        <Text style={{ color: 'black' }}>Daily Salary: {platform.dailySalary}</Text>
-
+                        {editingPlatformId === platform.platformPermanentId ? (
+                          <TextInput
+                            placeholder="Daily Salary"
+                            value={dailySalaryInput}
+                            onChangeText={text => setDailySalaryInput(text)}
+                            keyboardType="numeric"
+                          />
+                        ) : (
+                          <Text style={{ color: 'black' }}>Daily Salary: {platform.dailySalary}</Text>
+                        )}
                       </ImageBackground>
                     </View>
                   </View>
@@ -2183,11 +2492,50 @@ const Profession = (userId) => {
                   <Text style={{ fontSize: 25, color: '#323232', fontWeight: 'bold', marginLeft: 10, textDecorationLine: 'underline' }}>Projects</Text>
                 </View>
                 <ScrollView horizontal contentContainerStyle={{ margin: 1 }} style={{ width: '100%', padding: responsiveWidth(1) }}>
+                  {/* <View style={{ marginRight: responsiveWidth(2) }}>
+                    <TouchableOpacity onPress={() => openImagePicker(platform.platformPermanentId)} style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5", }} >
+                      <Image source={require('../../Assets/Home_Icon_And_Fonts/plus_icon.png')} style={{ width: 80, height: 80, alignSelf: 'center', top: 29 }} />
+                    </TouchableOpacity>
+                    <Modal
+                      animationType="slide"
+                      transparent={true}
+                      visible={modalVisible}
+                      onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                      }}
+                    >
+                      <View style={styleProfession.modalView}>
+                        {selectedImage && (
+                          <Image source={{ uri: selectedImage.uri }} style={styleProfession.image} />
+                        )}
+                        <TextInput
+                          style={styleProfession.textInput}
+                          placeholder="Enter description"
+                          value={description}
+                          onChangeText={setDescription}
+                        />
+                        <TouchableOpacity
+                          style={styleProfession.uploadButton}
+                          onPress={uploadImage}
+                        >
+                          <Text style={styleProfession.textStyle}>Upload Image</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styleProfession.cancelButton}
+                          onPress={() => setModalVisible(!modalVisible)}
+                        >
+                          <Text style={styleProfession.textStyle}>Cancel</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </Modal>
+                  </View> */}
 
-
-                  {platform.filePaths.map((url, index) => (
+                  {platform.outputWebModelList.map((file, index) => (
                     <View style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5", marginRight: responsiveWidth(2) }} >
-                      <Image key={index} source={{ uri: url }} style={{ width: '100%', height: '100%' }} resizeMode='stretch' />
+                      <Image key={index} source={{ uri: file.filePath }} style={{ width: '100%', height: '100%' }} resizeMode='stretch' />
+                      <View style={{ borderWidth: 1 }}>
+                        <Text style={styles.fileDescription}>{file.description}</Text>
+                      </View>
 
                     </View>
                   ))}
@@ -2291,8 +2639,60 @@ const styleProfession = StyleSheet.create({
   },
   subProfession: {
     color: 'black',
-    textAlign: 'center'
-    // marginLeft: 10,
+    textAlign: 'center',
+
+  },
+  subProfessionYear: {
+    color: 'black',
+    textAlign: 'center',
+    width: responsiveWidth(22)
+
+  },
+  image: {
+    alignSelf: 'center',
+    width: 300,
+    height: 300,
+    // marginVertical: 16,
+  },
+  textInput: {
+    width: '100%',
+    padding: 8,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginVertical: 8,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  uploadButton: {
+    backgroundColor: '#2196F3',
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  cancelButton: {
+    backgroundColor: '#f44336',
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    marginTop: 10,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   bio_title: {
     width: '100%',
@@ -2301,39 +2701,67 @@ const styleProfession = StyleSheet.create({
     padding: responsiveWidth(4),
     borderRadius: 8,
     marginTop: responsiveHeight(1),
-},
-bio_title_touchable: {
+  },
+  bio_title_touchable: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-},
-bio_title_text: {
+  },
+  bio_title_text: {
     fontWeight: 'bold',
     fontSize: responsiveFontSize(2.2),
     color: 'black',
     fontFamily: 'Cochin',
     width: responsiveWidth(70),
-},
-downArrowContainer: {
+  },
+  downArrowContainer: {
     width: responsiveWidth(6),
     height: responsiveHeight(4),
     alignItems: 'center',
     justifyContent: 'center',
-},
-downArrow: {
+  },
+  downArrow: {
     width: 20,
     height: 20,
-},
-  // border: {
+  },
+  button: {
+    padding: 10,
+    backgroundColor: '#007BFF',
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    marginVertical: 10,
+    color: 'black'
+  },
+  picker: {
+    width: '100%',
+    height: 50,
+  },
 
-  //   borderColor: 'black',
-
-  // },
 });
-
-// chat
-
 
 
 
@@ -2477,6 +2905,7 @@ export default function UserProfileDetials({ route }) {
         console.log('Functionality for Icon 5');
         break;
       case 'Icon 6':
+        navigation.navigate('ProjectByuser', {userId,  userName})
         console.log('Functionality for Icon 6');
         break;
       case 'Icon 7':
@@ -2728,7 +3157,7 @@ const styles = StyleSheet.create({
 
     height: 60,
     borderRadius: 30,
-  //  backgroundColor: '#007bff',
+    //  backgroundColor: '#007bff',
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 1, // Shadow for Android
@@ -2788,9 +3217,9 @@ const styles = StyleSheet.create({
     left: responsiveWidth(10),
     flexDirection: 'row',
     flexWrap: 'wrap',
-   // borderWidth:1,
-    justifyContent:'center',
-    alignItems:'center'
+    // borderWidth:1,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   iconContainer: {
     width: responsiveWidth(10),

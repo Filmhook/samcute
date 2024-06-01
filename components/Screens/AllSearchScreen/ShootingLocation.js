@@ -89,7 +89,8 @@ const ShootingLocationPage = () => {
             rate: item.cost,
             refer: item.terms,
             description: item.shootingLocationDescription,
-            day:item.hourMonthDay
+            day:item.hourMonthDay,
+            terms:item.shootingTermsAndCondition,
         });
     };
 
@@ -320,3 +321,7 @@ const styles = StyleSheet.create({
 });
 
 export default ShootingLocationPage;
+
+
+
+

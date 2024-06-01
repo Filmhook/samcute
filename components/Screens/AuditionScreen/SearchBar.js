@@ -7,6 +7,7 @@ import Modal from 'react-native-modal';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import privateAPI from '../../api/privateAPI';
+import { add } from 'lodash';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -18,6 +19,14 @@ const SearchBar = () => {
   const [usertype, setusertype] = useState('');
   const [countrytext, setCountrytext] = useState("");
   const [visible, setVisible] = useState(false);
+  const [subProfessionData, setSubProfessionData] = useState('');
+  const [filteredSubProfessionData, setFilteredSubProfessionData] = useState([]);
+
+  const [subProfessionSearchValue, setSubProfessionSearchValue] = useState('');
+  const [showSearchBox, setShowSearchBox] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+
 
   // Fetch data from API
   useEffect(() => {
@@ -49,19 +58,72 @@ const SearchBar = () => {
     getusertype();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await privateAPI.post(`audition/getAddressList`, {
+
+        }); // Replace with your API endpoint
+        setSubProfessionData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleSearchText = (text) => {
+    const filteredData = subProfessionData.filter((item) =>
+      item.address && item.address.toLowerCase().includes(text.toLowerCase())
+    );
+
+    setShowSearchBox(text !== '');
+    setFilteredSubProfessionData(filteredData);
+    setSubProfessionSearchValue(text);
+  };
+
+
+
   // Filtered data based on search text
   const filteredData = data.filter(item =>
     item.auditionDetailsName.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  const handleSelect = (item) => {
+    setSelectedItem(item);
+    setSubProfessionSearchValue(item.address);
+    setShowSearchBox(false);
+    setVisible(false); // Close the modal
+  };
+  console.log("selected item", subProfessionSearchValue)
+
+
+  const handleRemove = () => {
+    setSelectedItem(null);
+    setSubProfessionSearchValue('');
+
+  };
+
+  const handleValueChange = (itemValue) => {
+    setSelectedAuditionTitle(itemValue);
+    const selectedDetail = auditionDetails.find(detail => detail.id === itemValue);
+    setSelectedAuditionName(selectedDetail ? selectedDetail.address : '');
+  };
+
   const handleNavigation = (selectedJobId) => {
-    navigation.navigate('Postview', { selectedJobId });
-    console.log("selected job id", selectedJobId)
+    if (selectedItem && selectedItem.address == null) {
+      const address = selectedItem.address;
+      navigation.navigate('Postview', { selectedJobId, address });
+      console.log("selected job id", selectedJobId, selectedItem.address);
+    } else {
+      navigation.navigate('Postview', { selectedJobId });
+      console.log("selected job id", selectedJobId);
+    }
   };
 
   // Render item for FlatList
   const renderItem = ({ item }) => (
-    <View style={styles.open}>
+    <View >
       <ImageBackground style={styles.inputContainer} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode='stretch'>
         <View style={styles.inputContainer}>
           <TouchableOpacity onPress={() => handleNavigation(item.auditionDetailsId)} style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -100,6 +162,10 @@ const SearchBar = () => {
   };
 
   const Countryrender = ({ item }) => {
+
+
+
+
     return (
       <ScrollView style={{ left: responsiveWidth(2), width: responsiveWidth(50), top: 0 }}>
         <TouchableOpacity style={{ width: responsiveWidth(40), height: responsiveHeight(5), top: responsiveHeight(2), alignItems: 'center', left: responsiveWidth(12) }}>
@@ -109,18 +175,8 @@ const SearchBar = () => {
     );
   };
 
-  const country = [
-    { key: '1', value: 'valasaravakkam,chennai' },
-    { key: '2', value: 'royapettah,chennai' },
-    { key: '3', value: 'vadapalani,chennai' },
-    { key: '4', value: 'tnagar,chennai' },
-    { key: '5', value: 'gundy,chennai' },
-    { key: '6', value: 'shridevikuppam,chennai' },
-    { key: '7', value: 'vijayanagar,chennai' },
-    { key: '8', value: 'KK nagar,chennai' },
-    { key: '9', value: 'Porur,chennai' },
-    { key: '10', value: 'Kesavardhini,chennai' }
-  ];
+
+
 
   return (
     <>
@@ -132,7 +188,7 @@ const SearchBar = () => {
               placeholderTextColor={'black'}
               onChangeText={text => setSearchText(text)}
               value={searchText}
-              style={{ borderRadius: responsiveWidth(5), width: '90%', textAlign: 'center', margin: responsiveHeight(0.8), backgroundColor: '#F5F5F5', color: 'black', fontSize: responsiveFontSize(2), fontWeight: '400', borderColor: 'black', borderWidth: responsiveWidth(0.4) }}
+              style={{ borderRadius: responsiveWidth(5), width: '90%', textAlign: 'center', margin: responsiveHeight(0.8), backgroundColor: '#F5F5F5', color: 'black', fontSize: responsiveFontSize(2), fontWeight: '400', borderColor: 'black', borderWidth: responsiveWidth(0.4), }}
             />
             <View
               style={{
@@ -149,12 +205,21 @@ const SearchBar = () => {
           <View
             style={{ width: responsiveWidth(55), height: (responsiveHeight(4.3)), alignSelf: 'flex-end', right: responsiveWidth(2), flexDirection: 'row' }}
           >
-            <View style={{ width: responsiveWidth(5), height: responsiveHeight(4) }}>
+            <View style={{ width: responsiveWidth(5), height: responsiveHeight(4),right:responsiveWidth(10) }}>
               <Image source={require('../../../components/Assets/Audition_Icons_Fonts/pin_location_icon.png')} style={{ width: '100%', height: '100%' }} />
             </View>
             <View
-              style={{ width: responsiveWidth(51), height: responsiveHeight(4), left: responsiveWidth(2), justifyContent: 'flex-end' }}>
-              <Text style={{ fontSize: responsiveFontSize(2), color: '#000000', fontWeight: '400' }}>Valasaravakkam,Chennai</Text>
+              style={{ width: responsiveWidth(70), height: responsiveHeight(4), right: responsiveWidth(8), justifyContent: 'flex-end' }}
+            >
+              {selectedItem ? (
+                <Text style={{ fontSize: responsiveFontSize(1.5), color: '#000000', fontWeight: '400' }}>
+                  {selectedItem.address}
+                </Text>
+              ) : (
+                <Text style={{ fontSize: responsiveFontSize(2), color: '#000000', fontWeight: '400' }}>
+                  No address selected
+                </Text>
+              )}
             </View>
           </View>
           <View style={{ alignItems: 'center', justifyContent: 'center', height: responsiveHeight(70) }}>
@@ -175,24 +240,43 @@ const SearchBar = () => {
             animationIn={"fadeIn"}
             animationOut={'fadeOut'}
           >
-            <View style={{ position: 'absolute', width: responsiveWidth(70), height: responsiveHeight(40), left: responsiveWidth(20), top: responsiveWidth(28), backgroundColor: "#ffffff", borderRadius: responsiveWidth(3) }}>
+             <View style={styles.container}>
               <View>
+              <ScrollView horizontal={true} style={styles.scrollContainer}>
+                <View style={{borderWidth:responsiveWidth(0.5), borderRadius: responsiveWidth(3),
+               fontSize: responsiveFontSize(2), width: responsiveWidth(63),}}>
                 <TextInput
-                  multiline
-                  placeholder='Search...'
-                  value={countrytext}
-                  onChangeText={text => setCountrytext(text)}
-                  style={{
-                    width: responsiveWidth(60), height: responsiveHeight(4), top: responsiveWidth(3),
-                    left: responsiveWidth(5), borderRadius: responsiveWidth(3),
-                    fontSize: responsiveFontSize(1.2)
-                  }} />
+                  onChangeText={handleSearchText}
+                  value={subProfessionSearchValue}
+                  placeholder='Search Your Location'
+                  placeholderTextColor='black'
+                  style={styles.searchInput}/>
+                {selectedItem && (
+                  <TouchableOpacity style={styles.clearButton} onPress={handleRemove}>
+                    <Text style={styles.clearButtonText}>X</Text>
+                  </TouchableOpacity>
+                )}
+                </View>
+                  </ScrollView>
                 <View>
-                  <FlatList
-                    data={country.filter(item => item.value.toLowerCase().includes(countrytext.toLowerCase()))}
-                    renderItem={Countryrender}
-                    keyExtractor={item => item.key}
-                  />
+                  {showSearchBox && (
+                    <FlatList
+                      data={filteredSubProfessionData}
+                      keyExtractor={(item) => item.id.toString()}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          style={[
+                            styles.item,
+                            selectedItem && selectedItem.id === item.id && styles.selected,
+                          ]}
+                          onPress={() => handleSelect(item)}
+                        >
+                          <Text style={styles.itemText}>{item.address}</Text>
+                        </TouchableOpacity>
+                      )}
+                      style={styles.flatList}
+              contentContainerStyle={{ flexGrow: 1 }}
+                    />)}
                 </View>
               </View>
             </View>
@@ -216,10 +300,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   inputContainer: {
-    width: '100%',
-    height: '100%',
+    height: responsiveHeight(8.4),
+    width: responsiveWidth(86.7),
     justifyContent: 'center',
     alignItems: 'center',
+    margin:responsiveHeight(0.7)
   },
   floatingButton: {
     position: 'absolute',
@@ -236,6 +321,58 @@ const styles = StyleSheet.create({
     width: '50%',
     height: '50%',
     tintColor: '#fff',
+  },
+  container: {
+    position: 'absolute',
+    width: responsiveWidth(70),
+    height: responsiveHeight(40),
+    left: responsiveWidth(20),
+    top: responsiveWidth(28),
+    backgroundColor: "#ffffff",
+    borderRadius: responsiveWidth(3),
+    padding: responsiveWidth(3),
+  },
+  searchInput: {
+    width: responsiveWidth(55),
+    height: responsiveHeight(5),
+    marginTop: responsiveWidth(3),
+    borderRadius: responsiveWidth(3),
+    fontSize: responsiveFontSize(2),
+    // borderWidth:responsiveWidth(0.5)
+  },
+  
+  clearButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  clearButton: {
+    position: 'absolute',
+    right: 10,
+    padding: 5,
+    backgroundColor: 'red',
+    borderRadius: 15,
+    top:responsiveHeight(2)
+  },
+  item: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    padding: responsiveWidth(2),
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  flatList: {
+    maxHeight: responsiveHeight(30),
+  },
+  selected: {
+    backgroundColor: '#ddd',
+  },
+  itemText: {
+    color: 'black',
+    width: '100%',
+  },
+  scrollContainer: {
+    flexDirection: 'row',
+    // marginTop: responsiveWidth(3),
   },
 });
 

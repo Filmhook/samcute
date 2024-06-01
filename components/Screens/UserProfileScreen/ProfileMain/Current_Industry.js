@@ -96,7 +96,7 @@ export default function CurrentIndustry() {
                                             justifyContent: 'center',
                                             alignItems: 'center',
                                             flexDirection: 'row',
-                                          
+
                                         }}
                                         source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
                                         resizeMode="stretch">
@@ -109,11 +109,8 @@ export default function CurrentIndustry() {
                                         <Text
                                             key={index}
                                             style={{
-                                                fontSize: responsiveFontSize(2),
-                                                color: '#000000',
-                                                fontWeight: '500',
-                                                fontFamily: 'Times New Roman',
-                                                textAlign: 'center',
+                                                fontWeight: 'bold',
+                                                color: 'black'
                                                 // marginLeft: responsiveWidth(20), top: responsiveHeight(1)
                                             }}>
                                             {value.industryName}
@@ -123,7 +120,7 @@ export default function CurrentIndustry() {
                             </View>
                         </View>
 
-                       
+
                     </View>
                 )}
 
@@ -136,20 +133,20 @@ export default function CurrentIndustry() {
 const style = StyleSheet.create({
     container: {
         flex: 1,
-       // marginBottom:responsiveHeight(1)
+        // marginBottom:responsiveHeight(1)
 
     },
     imageContainer: {
         width: responsiveWidth(12),
         height: responsiveHeight(5),
-        justifyContent:'center'
-      //  borderWidth:1
+        justifyContent: 'center'
+        //  borderWidth:1
 
     },
     image: {
-        width:  responsiveWidth(9),
+        width: responsiveWidth(9),
         height: responsiveHeight(4),
-        resizeMode:'stretch'
+        resizeMode: 'stretch'
     },
 
     bio_title: {
@@ -188,7 +185,7 @@ const style = StyleSheet.create({
         flex: 1,
         left: responsiveWidth(43.5),
         marginTop: responsiveHeight(2),
-        marginBottom:responsiveHeight(1)
+        marginBottom: responsiveHeight(1)
     },
     bio_content_section: {
         // flexDirection:"row",
