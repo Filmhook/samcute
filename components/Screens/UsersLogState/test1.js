@@ -1,93 +1,70 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, View, Modal, Text, StyleSheet, Image } from 'react-native';
-import { responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, FlatList, ActivityIndicator } from 'react-native';
+import InfiniteScrollView from 'react-native-infinite-scroll-view';
 
-const MyComponent = () => {
-  const [isVisible, setIsVisible] = useState(false);
 
-  const toggleModal = () => {
-    setIsVisible(!isVisible);
-  };
+const POSTS_URL = 'https://filmhook.annularprojects.com/filmhook-0.1/user/post/getAllUsersPosts';
 
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        onPress={toggleModal}
-        style={styles.button}
-      >
-        <Image
-          source={require('../../Assets/Home_Icon_And_Fonts/plus_icon.png')}
-          style={styles.image}app
-          resizeMode='stretch'
+const Apps = () => {
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+
+    useEffect(() => {
+        fetchPosts();
+    }, []);
+
+    const fetchPosts = async () => {
+        if (loading) return;
+
+        setLoading(true);
+        try {
+            const response = await axios.get(POSTS_URL, {
+                headers: {
+                    Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyTmFtZSI6Im1kZGluZXNoMTA4QGdtYWlsLmNvbSIsInVzZXJUeXBlIjoiSW5kdXN0cnlVc2VyIiwiaWF0IjoxNzE3MjM4MTU2LCJleHAiOjE3MTcyMzkzNTZ9.NuVV5fCDZ_vy5rUP9uaf3AA2vOvcR7tp4SQQUNFFof4w3pJKjAHVG91t6jXuwg4KOmFkEwFYcBKxoj6m6OtpPg',
+                },
+                params: {
+                    page: page,
+                    limit: 10,  // Adjust the limit based on your requirements
+                },
+            });
+
+            if (response.data.status === 1) {
+                setPosts(prevPosts => [...prevPosts, ...response.data.data]);
+                setPage(prevPage => prevPage + 1);
+                setHasMore(response.data.data.length > 0);
+            }
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const renderFooter = () => {
+        return loading ? <ActivityIndicator size="large" color="#0000ff" /> : null;
+    };
+
+    return (
+        <FlatList
+            data={posts}
+            keyExtractor={(item) => item.postId}
+            renderItem={({ item }) => (
+                <View>
+                    <Text>{item.userName}</Text>
+                    <Text>{item.description}</Text>
+                    {item.postFiles && item.postFiles.map((file, index) => (
+                        <Image key={index} source={{ uri: file.filePath }} style={{ width: 100, height: 100 }} />
+                    ))}
+                </View>
+            )}
+            ListFooterComponent={renderFooter}
+            onEndReached={fetchPosts}
+            onEndReachedThreshold={0.5}
         />
-      </TouchableOpacity>
-
-      <Modal
-        visible={isVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={toggleModal}
-      >
-        <View style={styles.modalBackground}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalText}>This is a modal!</Text>
-            <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    </View>
-  );
+    );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  button: {
-    width: responsiveWidth(9),
-    height: responsiveWidth(9),
-    borderRadius: responsiveWidth(9),
-    elevation: 10,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  image: {
-    width: responsiveWidth(8),
-    height: responsiveHeight(4),
-  },
-  modalBackground: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    justifyContent: 'center',
-    alignItems: 'center',
-   
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-    alignItems: 'center',
-    top:responsiveHeight(15)
-  },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 20
-  },
-  closeButton: {
-    padding: 10,
-    backgroundColor: '#2196F3',
-    borderRadius: 5
-  },
-  closeButtonText: {
-    color: 'white',
-    fontSize: 16
-  }
-});
-
-export default MyComponent;
+export default Apps;

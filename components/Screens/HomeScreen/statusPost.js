@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Image, TextInput, } from 'react-native';
+import { View, Text, TouchableOpacity, Image, TextInput, Alert, } from 'react-native';
 
 import { useNavigation } from "@react-navigation/native";
 import Post_input from './homepage_functions/postinput';
@@ -9,7 +9,6 @@ import Modal from 'react-native-modal';
 import ImagePicker from 'react-native-image-crop-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import privateAPI from '../../api/privateAPI';
-
 
 
 
@@ -78,12 +77,28 @@ export default function StatusPost() {
       alert('Please enter a valid link.');
       return;
     }
+    console.log(trimmedPost)
 
     setLink(trimmedPost);
     setLinkstory('');
+    handleLinkPost()
 
     // Close the modal
     setVisible(!visible);
+  };
+  const handleLinkPost = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+
+      const response = await privateAPI.post(`user/post/addLink`, {
+        createdBy: userId,
+        links: link
+      });
+      Alert.alert("ok", 'Link posted successfully');
+      console.log("link posted successfully", response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const showDropdown = () => {
@@ -174,7 +189,6 @@ export default function StatusPost() {
 
           {/* for image post component */}
           <Handle_img_picker />
-        
           {/* for image post component */}
         </View>
         {/* this modal for type post and post cancel icon */}
@@ -192,6 +206,7 @@ export default function StatusPost() {
               <TextInput
                 value={linkstory}
                 placeholder="Add Your Link"
+                color='black'
                 placeholderTextColor={'black'}
                 multiline={true}
                 onChangeText={(e) => setLinkstory(e)}
@@ -208,7 +223,7 @@ export default function StatusPost() {
               <TouchableOpacity
                 onPress={isDropdownVisible ? hideDropdown : showDropdown}
                 style={{ height: responsiveHeight(3.8), width: responsiveWidth(18), justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#000000', borderRadius: responsiveWidth(2) }}>
-                <Text >{linkVisibility}</Text>
+                <Text style={{ color: 'black' }} >{linkVisibility}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handlePost}
@@ -221,7 +236,7 @@ export default function StatusPost() {
         {/* -------- */}
         <View style={{ flexDirection: 'row', padding: responsiveWidth(3), justifyContent: "space-between", height: responsiveHeight(11) }}>
 
-          <TouchableOpacity style={{
+          <TouchableOpacity  style={{
             width: responsiveWidth(12), height: responsiveWidth(12), borderRadius: responsiveWidth(12), backgroundColor: "#D9D9D9",
           }}>
             <Image source={require('../../Assets/Home_Icon_And_Fonts/add_icon.png')} style={{ width: "97%", height: "100%", marginLeft: responsiveWidth(0.3) }} resizeMode='stretch' />
@@ -239,7 +254,7 @@ export default function StatusPost() {
             width: responsiveWidth(12), height: responsiveWidth(12), borderRadius: responsiveWidth(12), backgroundColor: "#D9D9D9",
           }}>
             <Image source={require('../../Assets/Home_Icon_And_Fonts/promote_icon.png')} style={{ width: "85%", height: "100%", marginLeft: 5 }} resizeMode='stretch' />
-            <View style={{ width: responsiveWidth(20),}}>
+            <View style={{ width: responsiveWidth(20) }}>
               <Text style={{ width: responsiveWidth(14), textAlign: "center", fontSize: responsiveFontSize(1.6), letterSpacing: 0.3, color: "#000000", fontWeight: 500 }}>Promote</Text>
             </View>
           </TouchableOpacity>
@@ -259,7 +274,7 @@ export default function StatusPost() {
         onBackdropPress={() => setImagePickerModalVisible(false)}>
         <View style={{ backgroundColor: '#ffffff', padding: 10, borderRadius: 10 }}>
           <TouchableOpacity style={{ padding: 10 }} onPress={() => handleImageOption('camera')}>
-            <Text>Open Camera</Text>
+            <Text >Open Camera</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{ padding: 10 }} onPress={() => handleImageOption('gallery')}>
             <Text>Choose from Gallery</Text>

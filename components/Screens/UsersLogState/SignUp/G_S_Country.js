@@ -153,7 +153,7 @@ export default function SignUpCountry() {
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
 
             <View style={{ width: responsiveWidth(83), }}>
-              <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: '600', color: 'black' }}>Which country your Belongs to?</Text>
+              <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: '600', color: 'black' }}>Your birth place?</Text>
 
             </View>
 
@@ -190,7 +190,7 @@ export default function SignUpCountry() {
 
 
             <View style={{ width: responsiveWidth(83), }}>
-              <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: '600', color: 'black' }}>May I know your state?</Text>
+              <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: '600', color: 'black' }}>Your Living place?</Text>
 
             </View>
             <View style={styles.boxContent2}>
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
 
   },
   suggestionContainer: {
-    backgroundColor: '#d3d3d3', // Light gray color
+   // backgroundColor: '#d3d3d3', // Light gray color
     borderRadius: 5,
     marginVertical: 5,
     maxHeight: windowHeight * 0.4, // 40% of the window height
@@ -484,6 +484,7 @@ suggestion: {
     padding: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    color:'black'
 },
 
 

@@ -18,13 +18,18 @@ export default function CurrentIndustry() {
         // Function to fetch industry data
         const fetchIndustryData = async () => {
             try {
-                const response = await privateAPI.get('industryUser/getIndustryByuserId');
+                const userId = await AsyncStorage.getItem('userId');
+                const response = await privateAPI.get(`industryUser/getIndustryByuserId?userId=${userId}`);
                 setIndustryData(response.data.industryData);
             } catch (error) {
-                console.error('Error fetching the industry data:', error);
+                if (error.response && error.response.status === 404) {
+                    setIndustryData(null); // Set industry data to null if status is 404
+                } else {
+                    console.error('Error fetching the industry data:', error);
+                }
             }
         };
-
+    
         fetchIndustryData();
     }, []);
 

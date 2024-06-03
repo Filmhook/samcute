@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, StyleSheet, TouchableOpacity, Image, ScrollView, Modal, ImageBackground, Alert } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity, Image, ScrollView, ImageBackground, Alert } from 'react-native'
 import Biography from './BioGraphy'
 import Bodymeasurement from './BodyMeasurements'
 import Professionalinfo from './Professional_Info'
@@ -15,6 +15,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Myactive from './Myactive'
 import privateAPI from '../../../api/privateAPI'
 import { method } from 'lodash'
+import Modal from 'react-native-modal';
 
 export default function ProfileRoot() {
 
@@ -38,17 +39,7 @@ export default function ProfileRoot() {
 
 
 
-  const openModal = () => {
 
-    setModalVisible(true);
-    // setModalVisible(false);
-
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-
-  };
 
   const handleImage1Press = () => {
     // Function to navigate or perform action for image 1
@@ -66,34 +57,29 @@ export default function ProfileRoot() {
   const [selectedImage, setSelectedImage] = useState(null);
 
 
-
-  const handleImageOption = async (option) => {
-    try {
-      let image = null;
-      if (option === 'camera') {
-        image = await ImagePicker.openCamera({ cropping: true });
-      } else if (option === 'gallery') {
-        image = await ImagePicker.openPicker({ cropping: true, multiple: true});
-      }
-  
-      const formatedImg = image?.map(im => {
-      return { uri: im.path, type: im.mime, name: im.path.split('/').pop() }
-      })
-      console.log(`Select Story Images: ${JSON.stringify(formatedImg)}`)
-  
-      // Move the uploadStory function call here
-      setSelectedImage(formatedImg);
-    } catch (error) {
-      console.log('Image picker operation canceled or failed:', error);
-    } finally {
-      setShowGallery(false);
-    }
-  };
-  
-
-  
-
   const openGallery = () => {
+    setShowGallery(true);
+  };
+
+  const openCamera = () => {
+    ImagePicker.openCamera({
+      cropping: true,
+      width: 400,
+      height: 500,
+      compressImageQuality: 1,
+    })
+      .then((image) => {
+        let generateName = image.path.split('/')[image.path.split('/')?.length - 1];
+        setSelectedImage({ uri: image.path, type: image.mime, name: generateName });
+        console.log('images', { uri: image.path, type: image.mime, name: generateName });
+        setShowGallery(false);
+      })
+      .catch((error) => {
+        console.log('ImagePicker Error: ', error);
+      });
+  };
+
+  const openImagePicker = () => {
     ImagePicker.openPicker({
       cropping: true,
       width: 400,
@@ -120,13 +106,10 @@ export default function ProfileRoot() {
   const handleUpload = async () => {
     try {
       if (!selectedImage) return; // No image selected
-
+  
       const id = await AsyncStorage.getItem('userId');
-
-      const myHeaders = new Headers();
       const jwt = await AsyncStorage.getItem('jwt');
-      myHeaders.append('Authorization', 'Bearer ' + jwt);
-
+  
       const formData = new FormData();
       formData.append('userId', id);
       const imageUriParts = selectedImage.uri.split('.');
@@ -137,41 +120,46 @@ export default function ProfileRoot() {
         name: `image.${fileType}`,
       });
       formData.append('profilePhoto.description', 'Profile Pic');
-
-      const requestOptions = {
-        body: formData,
-        headers: myHeaders,
-        method: 'POST',
-        redirect: 'follow',
-      };
-
-      const response = await fetch(
-        'https://filmhook.annularprojects.com/filmhook-0.1/user/saveProfilePhoto',
-        requestOptions
+  
+      const response = await privateAPI.post(
+        'user/saveProfilePhoto',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+           
+          },
+        }
       );
-      const data = await response.json();
-
-      console.log('Profile pic upload response:', data); // Log the entire response object
-
-      if (data && data.status === 1) {
-       
+  
+      console.log('Profile pic upload response:', response.data); // Log the entire response object
+  
+      if (response.data && response.data.status === 1) {
         console.log('Profile pic uploaded successfully.');
-        fetchProfilePicture()
+        fetchProfilePicture();
         Alert.alert('Success', 'Profile picture updated successfully.');
-      } 
+      }
     } catch (error) {
       console.error('Error uploading profile picture:', error);
       // Handle upload error
       Alert.alert('Error', 'There was an error uploading the profile picture. Please try again.');
     }
   };
-  
+  const handleDeleteProfile = async () => {
+    try {
+      const id = await AsyncStorage.getItem('userId');
 
-  useEffect(() => {
-   
+      const response = await privateAPI.post(`user/deleteProfilePic`, {
+        userId: id
+      });
+      fetchProfilePicture();
+      Alert.alert('Deleted', 'ProfilePic deleted')
+      console.log("delete response ", response.data)
+    } catch (error) {
+      console.log("delete profile error", error)
+    }
+  };
 
-    fetchProfilePicture();
-  }, []);
   const fetchProfilePicture = async () => {
     try {
       const jwt = await AsyncStorage.getItem('jwt');
@@ -186,10 +174,10 @@ export default function ProfileRoot() {
         userId: id
       };
 
-      const response = await axios.post(
-        'https://filmhook.annularprojects.com/filmhook-0.1/user/getProfilePic',
+      const response = await privateAPI.post(
+        'user/getProfilePic',
         requestData,
-        { headers: myHeaders }
+       
       );
 
       const data = response.data;
@@ -208,24 +196,36 @@ export default function ProfileRoot() {
   };
 
 
-
-
-
-
-
-
-
-
-  const [showGalleryCover, setShowGalleryCover] = useState(false);
   const [selectedImageCover, setSelectedImageCover] = useState(null);
   const [coverPicture, setCoverPicture] = useState(null);
 
 
-
+  const [showGalleryCover, setShowGalleryCover] = useState(false);
   const [selectedImagesCover, setSelectedImagesCover] = useState([]);
- 
 
   const openGalleryCover = () => {
+    setShowGalleryCover(true);
+  };
+
+  const openCameraCover = () => {
+    ImagePicker.openCamera({
+      cropping: true,
+      width: 400,
+      height: 500,
+      compressImageQuality: 1,
+    })
+      .then((image) => {
+        let generateName = image.path.split('/')[image.path.split('/')?.length - 1];
+        setSelectedImage({ uri: image.path, type: image.mime, name: generateName });
+        console.log('images', { uri: image.path, type: image.mime, name: generateName });
+        setShowGallery(false);
+      })
+      .catch((error) => {
+        console.log('ImagePicker Error: ', error);
+      });
+  };
+
+  const openGalleryCovernew = () => {
     ImagePicker.openPicker({
       multiple: true,
       cropping: true,
@@ -259,13 +259,10 @@ export default function ProfileRoot() {
   const handleUploadCover = async (image) => {
     try {
       if (!image) return; // No image provided
-
+  
       const id = await AsyncStorage.getItem('userId');
-
-      const myHeaders = new Headers();
       const jwt = await AsyncStorage.getItem('jwt');
-      myHeaders.append('Authorization', 'Bearer ' + jwt);
-
+  
       const formData = new FormData();
       formData.append('userId', id);
       const imageUriParts = image.uri.split('.');
@@ -276,27 +273,26 @@ export default function ProfileRoot() {
         name: `image.${fileType}`,
       });
       formData.append('coverPhoto.description', 'Cover Pic');
-
-      const requestOptions = {
-        body: formData,
-        headers: myHeaders,
-        method: 'POST',
-        redirect: 'follow',
-      };
-
-      const response = await fetch(
+  
+      const response = await axios.post(
         'https://filmhook.annularprojects.com/filmhook-0.1/user/saveCoverPhoto',
-        requestOptions
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': 'Bearer ' + jwt,
+          },
+        }
       );
-      const data = await response.json();
-
-      console.log('Cover pic upload response:', data); // Log the entire response object
-
-      if (data && data.status === 1) {
+  
+      console.log('Cover pic upload response:', response.data); // Log the entire response object
+  
+      if (response.data && response.data.status === 1) {
         console.log('Cover pic uploaded successfully.');
+        fetchCover();
         Alert.alert('Success', 'Cover picture updated successfully.');
       } else {
-        console.error('Cover pic upload failed:', data.message);
+        console.error('Cover pic upload failed:', response.data.message);
         Alert.alert('Error', 'Cover picture upload failed. Please try again.');
       }
     } catch (error) {
@@ -305,42 +301,50 @@ export default function ProfileRoot() {
     }
   };
 
-
   const [coverPics, setCoverPics] = useState([]);
 
-  useEffect(() => {
-    const fetchCover = async () => {
-      try {
-        const id = await AsyncStorage.getItem("userId");
-        console.log("userId from async", id);
-        const response = await privateAPI.post(`user/getCoverPic`, {
-          userId: id
-        });
-        const responseData = response.data;
 
-        // Log the entire responseData object to see its structure
-        console.log("Data from API:", responseData);
+  const handleDeleteCover = async () => {
+    try {
+      const id = await AsyncStorage.getItem('userId');
 
-        // Check if responseData contains 'data' property and it's an array
-        if (responseData && responseData.data && Array.isArray(responseData.data)) {
-          // Accessing the array of cover pic objects
-          const coverPicsData = responseData.data;
-          console.log("Cover pics data:", coverPicsData);
-
-          // Set coverPics state with the array of cover pic objects
-          setCoverPics(coverPicsData);
-        } else {
-          console.error("Invalid data format in API response.");
-        }
-
-
-
-      } catch (error) {
-        console.error(error);
-      }
+      const response = await privateAPI.post(`user/deleteCoverPic`, {
+        userId: id
+      });
+      fetchCover();
+      console.log("delete response ", response.data)
+    } catch (error) {
+      console.log("delete cover error", error)
     }
-    fetchCover();
-  }, []);
+  };
+  const fetchCover = async () => {
+    try {
+      const id = await AsyncStorage.getItem("userId");
+      console.log("userId from async", id);
+      const response = await privateAPI.post(`user/getCoverPic`, {
+        userId: id
+      });
+      const responseData = response.data;
+
+      // Log the entire responseData object to see its structure
+
+      // Check if responseData contains 'data' property and it's an array
+      if (responseData && responseData.data && Array.isArray(responseData.data)) {
+        // Accessing the array of cover pic objects
+        const coverPicsData = responseData.data;
+
+        // Set coverPics state with the array of cover pic objects
+        setCoverPics(coverPicsData);
+      } else {
+        console.error("Invalid data format in API response.");
+      }
+
+
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const [followingCount, setFollowingCount] = useState(0);
   const [followerCount, setFollowerCount] = useState(0);
@@ -374,7 +378,11 @@ export default function ProfileRoot() {
       }
     };
     followerCount()
-  }, [followerCount])
+  }, [followerCount]);
+  useEffect(() => {
+    fetchCover();
+    fetchProfilePicture();
+  }, []);
 
 
   return (
@@ -395,6 +403,22 @@ export default function ProfileRoot() {
             </View>
           ))}
         </Swiper>
+        <Modal visible={showGalleryCover} animationType="slide">
+          <View style={{ backgroundColor: '#ffffff', padding: responsiveWidth(2), borderRadius: responsiveWidth(2), }}>
+            <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={openCameraCover}>
+              <Text style={{color:'black'}}>Open Camera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={openGalleryCovernew}>
+              <Text style={{color:'black'}}>Upload your Image</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={handleDeleteCover}>
+              <Text style={{color:'black'}}>Delete</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowGalleryCover(false)} style={{ padding: responsiveWidth(2) }} >
+              <Text style={{color:'black'}}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
         <TouchableOpacity onPress={openGalleryCover}>
 
           <Icon name="camera" size={15} color="#fff" style={styles.cameraIconC} />
@@ -408,13 +432,18 @@ export default function ProfileRoot() {
             <Text style={styles.noProfileText}>No profile pic</Text>
           )}
           <Modal visible={showGallery} animationType="slide">
-            <View style={styles.modalContainerP}>
-              <Text style={styles.title}>Select Profile Picture</Text>
-              <TouchableOpacity onPress={openGallery} style={styles.selectButton}>
-                <Text style={styles.selectButtonText}>Select from Gallery</Text>
+            <View style={{ backgroundColor: '#ffffff', padding: responsiveWidth(2), borderRadius: responsiveWidth(2), }}>
+              <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={openCamera}>
+                <Text style={{color:'black'}}>Open Camera</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => setShowGallery(false)} style={styles.cancelButton}>
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+              <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={openImagePicker}>
+                <Text style={{color:'black'}}>Upload your Image</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={handleDeleteProfile}>
+                <Text style={{color:'black'}}>Delete</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowGallery(false)} style={{ padding: responsiveWidth(2) }} >
+                <Text style={{color:'black'}}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </Modal>
@@ -446,68 +475,12 @@ export default function ProfileRoot() {
             </View>
           </View>
 
-          {/* <Modal isVisible={showGallery} onBackdropPress={() => setShowGallery(false)}>
-          <View style={{ backgroundColor: '#ffffff', padding: responsiveWidth(2), borderRadius: responsiveWidth(2) }}>
-            <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={() => handleImageOption('camera')}>
-              <Text>Open Camera</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={() => handleImageOption('gallery')}>
-              <Text>Upload your Image</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={() => setShowGallery(false)}>
-              <Text>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal> */}
+
         </View>
 
-       
-
-        {/* <View style={{ position: 'absolute', top: responsiveHeight(60), marginLeft: responsiveWidth(5) }}>
-          <TouchableOpacity onPress={() => openModal()}  >
-            <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/Chats-Menu.png')} style={{ width: responsiveWidth(12), height: responsiveHeight(5) }} />
-          </TouchableOpacity>
-
-          <Modal
-            visible={modalVisible}
-            transparent={true}
-            onRequestClose={closeModal}
-          >
-            <View style={styles.modalContainer}>
-              <TouchableOpacity onPress={handleImage1Press} >
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/hire.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleImage2Press}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/remove.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/pin.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/chat.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/call.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/project.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/block.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/UserProfile_Icons_Fonts/Booking.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={closeModal}>
-                <Image source={require('../../../Assets/Userprofile_And_Fonts/nine-Icons/market.png')} style={{ width: 40, height: 40 }} />
-              </TouchableOpacity>
 
 
 
-
-            </View>
-          </Modal>
-        </View>  */}
 
 
 
@@ -720,10 +693,6 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2),
     fontWeight: '500',
   },
-  
 
 
 })
-
-
-
