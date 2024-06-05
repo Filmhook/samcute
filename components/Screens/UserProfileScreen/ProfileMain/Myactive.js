@@ -78,6 +78,8 @@ export default function Myactive() {
         const [likeStatus, setLikeStatus] = useState(item.likeStatus);
         const [pinStatus, setPinStatus] = useState(item.pinStatus);
         const [promoteFlag, setPromoteFlag] = useState(item.promoteFlag);
+        const [profileURL, setProfileURL] = useState();
+
         // Initialize likes with the value from the item
         // const [hitlike, setHitlike] = useState(false);
 
@@ -93,8 +95,10 @@ export default function Myactive() {
             }
 
             setUserId(item.userId);
+            fetchProfilePicture();
+
             // setCountLike(item.LikeCount);
-        });
+        }, []);
         useEffect(() => {
             if (item.postFiles && item.postFiles.length > 0) {
                 const postFilePaths = item.postFiles.map(file => file.filePath);
@@ -105,6 +109,34 @@ export default function Myactive() {
 
             // setCountLike(item.likeCount);
         }, [item]);
+        const fetchProfilePicture = async () => {
+            try {
+                const id = await AsyncStorage.getItem('userId');
+
+                const requestData = {
+                    userId: id
+                };
+
+                const response = await privateAPI.post(
+                    'user/getProfilePic',
+                    requestData,
+                );
+
+                const data = response.data;
+
+                if (data.status === 1) {
+                    const profilePicUrl = data.data.filePath;
+                    setProfileURL(profilePicUrl);
+                    console.log('Profile pic found successfully:', profilePicUrl);
+                } else {
+                    setProfileURL(null);
+                    console.log('Profile pic not found:', data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching profile picture:', error);
+            }
+        };
+
 
 
         // Call the function to fetch initial counts
@@ -436,10 +468,7 @@ export default function Myactive() {
                 <View style={{}}>
                     <View>
 
-                        
-
                         <View style={{ flexDirection: "row", alignItems: 'center' }}>
-
 
                             {/* <LongTextComponent  text={caption}/> */}
 
@@ -481,7 +510,7 @@ export default function Myactive() {
                                 <Text
                                     style={{ fontWeight: "500", color: "black", fontSize: responsiveFontSize(1.4), top: 2 }}>
                                     {/* {profession} */}
-                                    {item.professionNames}
+                                    {item.professionNames.join(',')}
                                 </Text>
                                 <View
                                     style={{ width: responsiveWidth(30), height: responsiveHeight(2), top: responsiveHeight(0.6), flexDirection: 'row', right: responsiveWidth(1) }}>
@@ -597,7 +626,7 @@ export default function Myactive() {
 
                         <TouchableOpacity onPress={() => setPaused(!paused)}>
                             <View style={{ borderColor: "grey", width: responsiveWidth(100), height: responsiveHeight(50), paddingLeft: responsiveWidth(3), paddingRight: responsiveWidth(3) }}>
-                                <Swiper style={styles.wrapper} showsButtons loop={true}>
+                                <Swiper style={styles.wrapper} showsButtons={false} loop={true}>
                                     {item.postFiles.map((file) => (
                                         <View style={styles.slide} key={file.id}>
                                             {file.filePath.endsWith('.mp4') || file.filePath.endsWith('.mov') ? (
@@ -642,9 +671,9 @@ export default function Myactive() {
                                 <TouchableOpacity
                                     //  {`${formatCmpctNumber(like)} Likes`}
                                     onPress={() => handleLikePress(item.id)} // Call onLikePress with fileId
-                                    style={{ width: responsiveWidth(20), height: responsiveHeight(4.5), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', }}>
+                                    style={{ width: responsiveWidth(20), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', }}>
                                     <View
-                                        style={{ width: responsiveWidth(6), height: responsiveHeight(3.5), right: responsiveWidth(1) }}>
+                                        style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
                                         {likeStatus == true ?
                                             <Image source={require('../../../../components/Assets/Home_Icon_And_Fonts/Like_after_Icon.png')} style={{ width: "100%", height: "100%", }} resizeMode='stretch' />
 
@@ -665,10 +694,10 @@ export default function Myactive() {
                                     style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", left: responsiveWidth(2) }}>{commentCount} Comments</Text>
                                 <TouchableOpacity
                                     onPress={() => onCommentPress(item.id)}
-                                    style={{ width: responsiveWidth(28), height: responsiveHeight(4.5), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', left: responsiveWidth(2) }}>
+                                    style={{ width: responsiveWidth(28), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', left: responsiveWidth(2) }}>
 
                                     <View
-                                        style={{ width: responsiveWidth(6), height: responsiveHeight(3.5), right: responsiveWidth(1) }}>
+                                        style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
                                         <Image source={require('../../../Assets/Home_Icon_And_Fonts/comment.png')}
                                             style={{ width: "100%", height: "100%" }} resizeMode='stretch'
                                         />
@@ -683,9 +712,9 @@ export default function Myactive() {
                                 <Text style={{ textAlign: "center", fontWeight: "500", fontSize: responsiveFontSize(1.4), fontWeight: "500", color: "#000000", left: responsiveWidth(4) }}>{shareCount} Share</Text>
                                 <TouchableOpacity
                                     onPress={() => onSharePress(item.filePath, item.userId)}
-                                    style={{ width: responsiveWidth(20), height: responsiveHeight(4.5), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', left: responsiveWidth(4) }}>
+                                    style={{ width: responsiveWidth(20), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveWidth(2), flexDirection: "row", justifyContent: 'center', alignItems: 'center', left: responsiveWidth(4) }}>
                                     <View
-                                        style={{ width: responsiveWidth(6), height: responsiveHeight(3.5), right: responsiveWidth(1) }}>
+                                        style={{ width: responsiveWidth(6), height: responsiveHeight(2.5), right: responsiveWidth(1) }}>
                                         <Image source={require('../../../Assets/Home_Icon_And_Fonts/share_icon.png')}
                                             style={{ width: "100%", height: "95%", }} resizeMode='stretch'
                                         />
@@ -699,7 +728,7 @@ export default function Myactive() {
 
                             {/* promate button */}
                             <View style={{ margin: responsiveHeight(2), left: responsiveWidth(3) }}>
-                                <TouchableOpacity onPress={promoteEdit} style={{ width: responsiveWidth(18), height: responsiveHeight(4.5), borderWidth: 1, borderRadius: responsiveHeight(1) }}>
+                                <TouchableOpacity onPress={promoteEdit} style={{ width: responsiveWidth(18), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveHeight(1) }}>
                                     {promoteFlag == true ?
                                         <Text style={{ alignSelf: 'center', top: responsiveHeight(0.5), fontSize: responsiveFontSize(1.9), fontWeight: "500", color: "#000000" }}>Promoted</Text>
                                         : <Text style={{ alignSelf: 'center', top: responsiveHeight(0.5), fontSize: responsiveFontSize(1.9), fontWeight: "500", color: "#000000" }}>Promote</Text>
@@ -729,8 +758,8 @@ export default function Myactive() {
 
                             <View style={styles.modalContainer}>
                                 <TouchableOpacity
-                                    style={{ width: responsiveWidth(10), height: responsiveWidth(10), borderRadius: responsiveWidth(8), top: responsiveHeight(48), borderWidth: responsiveWidth(0.3), borderColor: 'black', right: responsiveWidth(3) }}>
-                                    <Image source={require('../../../../components/Assets/app_logo/8641606.jpg')}
+                                    style={{ width: responsiveWidth(10), height: responsiveWidth(10), borderRadius: responsiveWidth(8), top: responsiveHeight(48), borderWidth: responsiveWidth(0.1), borderColor: 'black', right: responsiveWidth(3) }}>
+                                    <Image source={{ uri: profileURL }}
                                         style={{ width: responsiveWidth(10), height: responsiveWidth(10), borderRadius: responsiveWidth(8), borderWidth: responsiveWidth(0.3), borderColor: 'black' }} />
 
                                 </TouchableOpacity>
@@ -758,23 +787,27 @@ export default function Myactive() {
                                         <ScrollView style={styles.commentsScrollView}>
                                             {/* Map through the comments array and render each comment */}
                                             {comments.map((comment, index) => (
-                                                <View key={index} style={styles.commentItem}>
-                                                    <View style={{ flexDirection: 'row' }}>
-                                                        <TouchableOpacity
-                                                            style={{ width: responsiveWidth(8), height: responsiveWidth(8), borderColor: '#000000', borderRadius: responsiveWidth(8) }}>
-                                                            <Image source={require('../../../../components/Assets/app_logo/8641606.jpg')}
-                                                                style={{ width: responsiveWidth(8), height: responsiveWidth(8), borderRadius: responsiveWidth(8) }} />
-                                                        </TouchableOpacity>
-                                                        <TouchableOpacity style={{ left: 3 }}>
-                                                            <Text style={{ fontSize: 10, color: '#000000', fontWeight: '700' }}>User names</Text>
-                                                        </TouchableOpacity>
-                                                        <Text style={{ fontSize: 10, color: '#000000', height: 15, fontWeight: '400', top: 13, left: -45 }}>1w</Text>
-                                                        <TouchableOpacity
-                                                            onPress={() => handle_cmnt_dlt(comment.commentId)}
-                                                            style={{ width: responsiveWidth(5), height: responsiveWidth(5), borderRadius: responsiveWidth(5), left: responsiveWidth(55), top: 2, backgroundColor: '#ffffff', borderWidth: 1 }}>
-                                                            <Image source={require('../../../Assets/Home_Icon_And_Fonts/link_icon.png')}
-                                                                style={{ width: '100%', height: '100%' }} />
-                                                        </TouchableOpacity>
+                                                <View key={index} style={styles.commentItem} >
+                                                    <View style={{ flexDirection: 'row', columnGap: responsiveWidth(13) }}>
+                                                        <View style={{ flexDirection: 'row', width: responsiveWidth(65) }}>
+                                                            <TouchableOpacity
+                                                                style={{ width: responsiveWidth(8), height: responsiveWidth(8), borderColor: '#000000', borderRadius: responsiveWidth(8) }}>
+                                                                <Image source={{ uri: comment.userProfilePic }}
+                                                                    style={{ width: responsiveWidth(8), height: responsiveWidth(8), borderRadius: responsiveWidth(8) }} />
+                                                            </TouchableOpacity>
+                                                            <TouchableOpacity style={{ left: 3 }}>
+                                                                <Text style={{ fontSize: 10, color: '#000000', fontWeight: '700' }}>{comment.userName}</Text>
+                                                            </TouchableOpacity>
+                                                            <Text style={{ fontSize: 10, color: '#000000', height: 15, fontWeight: '400', top: 13, left: -45 }}>{comment.time}</Text>
+                                                        </View>
+                                                        <View>
+                                                            <TouchableOpacity
+                                                                onPress={() => handle_cmnt_dlt(comment.commentId)}
+                                                                style={{ width: responsiveWidth(5), height: responsiveWidth(5), borderRadius: responsiveWidth(5), top: 2, backgroundColor: '#ffffff', borderWidth: 1 }}>
+                                                                <Image source={require('../../../Assets/Home_Icon_And_Fonts/link_icon.png')}
+                                                                    style={{ width: '100%', height: '100%' }} />
+                                                            </TouchableOpacity>
+                                                        </View>
                                                     </View>
                                                     {/* Render each comment using the comment variable */}
                                                     <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: '700', color: 'black' }}>{comment.content}</Text>
@@ -808,12 +841,9 @@ export default function Myactive() {
     return (
         <>
 
-        <Text style={{ fontWeight: 'bold',
-      fontSize: responsiveFontSize(2.2),
-      color: 'black',
-      marginLeft: responsiveWidth(2),
-      fontFamily: 'Cochin',
-      width: responsiveWidth(70), marginTop:responsiveHeight(1), left:responsiveWidth(2), marginBottom:responsiveHeight(2)}}>MY ACTIVITIES</Text>
+            <View style={styles.bio_title}>
+                <Text style={styles.bio_title_text}>MYACTIVITIES</Text>
+            </View>
             <FlatList
                 data={userPost}
                 style={{ padding: 0, margin: 0 }}
@@ -836,6 +866,22 @@ const styles = StyleSheet.create({
     modal: {
         margin: 0,
         justifyContent: 'flex-end',
+    },
+    bio_title: {
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: '#d3d3d3', // Light gray background color
+        padding: responsiveWidth(4),
+        borderRadius: 8,
+        marginTop: responsiveHeight(1),
+        marginBottom:responsiveHeight(1)
+    },
+    bio_title_text: {
+        fontWeight: 'bold',
+        fontSize: responsiveFontSize(2.2),
+        color: 'black',
+        fontFamily: 'Cochin',
+        width: responsiveWidth(70),
     },
     modalContainer: {
         backgroundColor: 'white',
@@ -892,7 +938,7 @@ const styles = StyleSheet.create({
     },
     commentsSection: {
         width: responsiveWidth(90),
-        bottom:responsiveHeight(3),
+
         // borderWidth:1
     },
     // commentsTitle: {
@@ -913,4 +959,3 @@ const styles = StyleSheet.create({
 
     },
 })
-

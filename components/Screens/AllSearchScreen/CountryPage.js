@@ -56,20 +56,20 @@ const CountryPage = ({ navigation }) => {
     }
   };
 
-  const Country = ({ id, name, description, filePath ,isSelected}) => (
+  const Country = ({ id, name, filePath ,isSelected}) => (
 
     <ImageBackground style={styles.inputContainer} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode='stretch'>
       <View style={styles.inputContainer}>
-        <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Bg-IMG.png')} style={{
+        {/* <ImageBackground source={require('../../Assets/AllSearch_Icon_And_Fonts/Bg-IMG.png')} style={{
           left: responsiveWidth(3), width: responsiveWidth(17),
           height: responsiveHeight(8), justifyContent: 'center',
           borderRadius: responsiveWidth(25), alignItems: 'center',
-        }} resizeMode='stretch'>
+        }} resizeMode='stretch'> */}
           <View >
-            <Image source={{ uri: filePath }} style={{ height: responsiveHeight(6.5), width: responsiveWidth(12), borderRadius: responsiveWidth(30), bottom: responsiveHeight(0.2) }} resizeMode='stretch' />
+            <Image source={{ uri: filePath }} style={{ height: responsiveHeight(6.5), width: responsiveWidth(12), borderRadius: responsiveWidth(30), bottom: responsiveHeight(0.2), left:responsiveWidth(2) }} resizeMode='stretch' />
           </View>
-        </ImageBackground>
-        <Text style={styles.title}>{description}</Text>
+        {/* </ImageBackground> */}
+        <Text style={styles.title}>{name}</Text>
         {isSelected && (
           <Image
             source={require('../../Assets/Login_page/greenTickmark-FilmHook.png')} // Path to your checkmark icon
@@ -77,7 +77,7 @@ const CountryPage = ({ navigation }) => {
           />
         )}
       </View>
-    </ImageBackground>
+     </ImageBackground>
 
   );
 
@@ -157,10 +157,11 @@ const styles = StyleSheet.create({
     borderRadius: responsiveWidth(3),
     height: responsiveHeight(9.2),
     width: responsiveWidth(87.5),
-    margin: responsiveWidth(1)
+    margin: responsiveWidth(1),
+   
   },
   title: {
-    fontSize: responsiveFontSize(1.6),
+    fontSize: responsiveFontSize(2.3),
     fontWeight: 'bold',
     color: 'black',
     left: responsiveWidth(6),

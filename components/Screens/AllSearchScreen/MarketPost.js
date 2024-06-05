@@ -149,6 +149,7 @@ export default function MarketPost() {
                         placeholder='Your Product Name'
                         value={ProductName}
                         placeholderTextColor='black'
+                        color='black'
 
                         onChangeText={setProductName}
                         style={{
@@ -165,6 +166,8 @@ export default function MarketPost() {
                         <TextInput
                             placeholder='Your Company Name'
                             placeholderTextColor='black'
+                            color='black'
+
                             value={CompanyName}
                             onChangeText={setCompanyName}
                             style={{
@@ -186,6 +189,8 @@ export default function MarketPost() {
                             placeholder='Your Product Description'
                             multiline
                             placeholderTextColor='black'
+                            color='black'
+
                             value={productDescription}
                             onChangeText={setProductDescription}
                             style={{
@@ -205,7 +210,10 @@ export default function MarketPost() {
                         <TextInput
                             placeholder='Used Product or New Product'
                             multiline
-                            placeholderTextColor='black' value={productType}
+                            color='black'
+
+                            placeholderTextColor='black'
+                            value={productType}
                             onChangeText={setProductType}
                             style={{
                                 paddingHorizontal: responsiveWidth(5),
@@ -246,7 +254,7 @@ export default function MarketPost() {
 
                     <View style={{ width: responsiveWidth(13), justifyContent: 'center', alignItems: 'center', borderRadius: responsiveWidth(2), height: responsiveHeight(5.2), }}>
                         <ImageBackground style={{ height: responsiveHeight(5.2), width: responsiveWidth(13), justifyContent: 'center', alignItems: 'center', borderRadius: responsiveWidth(2) }} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
-                            <Text style={{ color: 'black', fontWeight: '600' }}>INR ₹</Text>
+                            <Text style={{ color: 'black', fontWeight: '600', color: 'black' }}>INR ₹</Text>
                         </ImageBackground>
                     </View>
 
@@ -258,6 +266,7 @@ export default function MarketPost() {
                             placeholder="Price per quantity"
                             value={priceValue}
                             placeholderTextColor='black'
+                            color='black'
                             onChangeText={setPriceValue}
                             keyboardType='numeric'
                             style={{

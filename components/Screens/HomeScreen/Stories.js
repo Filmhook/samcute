@@ -20,7 +20,7 @@ const Stories = () => {
 
 const styles = StyleSheet.create({
   storiesContainer: {
-    // backgroundColor:'white',
+    backgroundColor:'#f0f4f5',
     // marginTop: 8,
     padding: 15,
   },

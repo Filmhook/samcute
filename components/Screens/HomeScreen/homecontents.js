@@ -27,8 +27,9 @@ export default function Homecontents() {
 
           <View style={{
             borderBottomWidth: responsiveWidth(2),
-            borderBottomColor: '#D7D7D7',
-            marginVertical: responsiveHeight(1)
+            borderBottomColor: '#9d9d9e',
+           bottom:responsiveHeight(0.5)
+            
           }} />
 
         {/* Story_containor */}
@@ -40,8 +41,9 @@ export default function Homecontents() {
 
           <View style={{
             borderBottomWidth: responsiveWidth(2),
-            borderBottomColor: '#D7D7D7',
-            marginVertical: responsiveHeight(1)
+            borderBottomColor: '#9d9d9e',
+            marginVertical: responsiveHeight(1),
+            bottom:responsiveHeight(2)
           }} />
 
 

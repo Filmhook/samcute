@@ -74,6 +74,7 @@ export default function Postfeedcontainor() {
     const [privateOrPublic, setPrivateOrPublic] = useState(item.privateOrPublic);
     const [likeStatus, setLikeStatus] = useState(item.likeStatus);
     const [pinStatus, setPinStatus] = useState(item.pinStatus);
+    const [profileURL, setProfileURL] = useState();
     // Initialize likes with the value from the item
     // const [hitlike, setHitlike] = useState(false);
 
@@ -89,8 +90,39 @@ export default function Postfeedcontainor() {
       }
 
       setUserId(item.userId);
+      fetchProfilePicture();
       // setCountLike(item.LikeCount);
     }, []);
+    const fetchProfilePicture = async () => {
+      try {
+        const id = await AsyncStorage.getItem('userId');
+
+        const requestData = {
+          userId: id
+        };
+
+        const response = await privateAPI.post(
+          'user/getProfilePic',
+          requestData,
+        );
+
+        const data = response.data;
+
+        if (data.status === 1) {
+          const profilePicUrl = data.data.filePath;
+          setProfileURL(profilePicUrl);
+          console.log('Profile pic found successfully:', profilePicUrl);
+        } else {
+          setProfileURL(null);
+          console.log('Profile pic not found:', data.message);
+        }
+      } catch (error) {
+        console.error('Error fetching profile picture:', error);
+      }
+    };
+
+
+
 
 
     // Call the function to fetch initial counts
@@ -305,6 +337,8 @@ export default function Postfeedcontainor() {
         setShowFullText(false);
       };
 
+      
+
       return (
         <View style={{
           width: responsiveWidth(94), padding: responsiveWidth(1), left: responsiveWidth(2)
@@ -366,6 +400,12 @@ export default function Postfeedcontainor() {
       setVisible(!visible)
     }
 
+    const [comvisible,setcomvisible] = useState(false)
+
+    const commentvisible=()=>{
+      setcomvisible(!comvisible)
+    }
+
     const pinPost = async (postId) => {
       try {
         const body = {
@@ -409,6 +449,14 @@ export default function Postfeedcontainor() {
         console.log('Error pinning profile:', error);
       }
     };
+
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const handleOptionPress = (option) => {
+      console.log(option);
+      // Handle the option press (e.g., navigate to edit screen, perform update, etc.)
+      setModalVisible(false);
+    };
     return (
       <View>
         <View style={{}}>
@@ -418,27 +466,20 @@ export default function Postfeedcontainor() {
 
               {/* <LongTextComponent  text={caption}/> */}
 
-              <View style={{ width: responsiveWidth(18), justifyContent: 'center', alignContent: 'center', paddingHorizontal: responsiveWidth(1) }}>
-                <TouchableOpacity
-                  style={{
-                    width: responsiveWidth(14),
-                    height: responsiveWidth(14),
-                    // borderWidth: responsiveWidth(0.4),
-                    borderRadius: responsiveWidth(14),
-                  }}>
-                  <Image source={{ uri: item.userProfilePic }}
-                    style={{ width: '100%', height: '100%', borderRadius: 50, }} resizeMode='stretch'
-                  />
+              <View style={{ width: responsiveWidth(18), justifyContent: 'center', alignContent: 'center', left: responsiveWidth(2), bottom: responsiveHeight(1) }}>
+                <TouchableOpacity style={{ marginLeft: responsiveWidth(0), width: responsiveWidth(13), height: responsiveHeight(7), borderWidth: responsiveWidth(0.5), borderRadius: responsiveWidth(3), backgroundColor: "grey", top: responsiveHeight(1) }} onPress={() => navigation.navigate('profilepage')}>
+                  <Image source={{ uri: item.userProfilePic }} style={{ width: '100%', height: '100%', borderRadius: 10, }} resizeMode='stretch' />
                 </TouchableOpacity>
-                <View style={{ width: responsiveWidth(9), height: responsiveHeight(2.4), borderRadius: responsiveWidth(2), borderWidth: 1, top: responsiveHeight(-1.8), left: responsiveWidth(2.5), backgroundColor: "#000000" }}>
+                <View style={{ width: responsiveWidth(9), height: responsiveHeight(2.4), borderRadius: responsiveWidth(2), borderWidth: 1, backgroundColor: "#000000", left: responsiveWidth(2) }}>
                   <Text
-                    style={{ color: "#ffffff", fontSize: responsiveFontSize(1.5), fontWeight: '800', left: responsiveWidth(0.2) }}>9.4</Text>
+                    style={{ color: "#ffffff", fontSize: responsiveFontSize(1.4), fontWeight: '800', left: responsiveWidth(0.2) }}>9.4</Text>
                   <View
-                    style={{ width: responsiveWidth(2), height: responsiveHeight(2), left: responsiveWidth(5.5), bottom: responsiveHeight(2) }}>
-                    <Image source={require('../../Assets/Userprofile_And_Fonts/star.png')}
+                    style={{ width: responsiveWidth(3), height: responsiveHeight(1.8), left: responsiveWidth(4.8), bottom: responsiveHeight(1.9) }}>
+                    <Image source={require('../../Assets/Home_Icon_And_Fonts/star_icon.png')}
                       style={{ width: "100%", height: "100%" }} resizeMode='stretch' />
                   </View>
                 </View>
+
 
               </View>
 
@@ -447,24 +488,24 @@ export default function Postfeedcontainor() {
               >
                 <TouchableOpacity onPress={() => navigation.navigate('UserProfile', { userId: item.userId, userName: item.userName })}>
                   <Text
-                    style={{ fontSize: responsiveFontSize(1.8), fontWeight: "900", color: "#000000", letterSpacing: 0.5 }}>
+                    style={{ fontSize: responsiveFontSize(2), fontWeight: "900", color: "#000000", letterSpacing: 0.5 }}>
                     {/* {name} */}
                     {item.userName}
                   </Text>
                 </TouchableOpacity>
 
                 <Text
-                  style={{ fontWeight: "500", color: "black", fontSize: responsiveFontSize(1.4), top: 2 }}>
+                  style={{ fontWeight: "500", color: "black", fontSize: responsiveFontSize(1.2),   }}>
                   {/* {profession} */}
-                  {item.professionNames}
+                  {item.professionNames.join(',')}
                 </Text>
                 <View
-                  style={{ width: responsiveWidth(30), height: responsiveHeight(2), top: responsiveHeight(0.6), flexDirection: 'row', right: responsiveWidth(1) }}>
+                  style={{ width: responsiveWidth(10), height: responsiveHeight(2), top: responsiveHeight(0.6), flexDirection: 'row', right: responsiveWidth(1) }}>
                   <Image source={require('../../Assets/Home_Icon_And_Fonts/postfeed_loc.png')}
-                    style={{ width: '20%', height: '100%', }} resizeMode='stretch' />
+                    style={{ width: '40%', height: '100%',bottom:responsiveHeight(0.5) }} resizeMode='stretch' />
 
                   <Text
-                    style={{ fontSize: responsiveFontSize(1.4), color: "black", fontWeight: '500' }}>
+                    style={{ fontSize: responsiveFontSize(1.4), color: "black", fontWeight: '500',bottom:responsiveHeight(0.5),width: responsiveWidth(15) }}>
                     {/* {place} */}
                     {item.locationName}
                   </Text>
@@ -474,13 +515,13 @@ export default function Postfeedcontainor() {
               </View>
               <View
                 style={{
-                  width: responsiveWidth(6),
-                  height: responsiveWidth(6),
+                  width: responsiveWidth(8),
+                  height: responsiveWidth(9),
                   borderRadius: responsiveWidth(5),
                   overflow: 'hidden',  // This ensures the image respects the border radius
                   justifyContent: 'center', // This centers the image
                   alignItems: 'center', // This centers the image
-                  right: responsiveWidth(4),
+                  right: responsiveWidth(8),
                   bottom: responsiveHeight(1.8)
                 }}
               >
@@ -494,20 +535,21 @@ export default function Postfeedcontainor() {
               </View>
 
               <View
-                style={{ flexDirection: "row", width: responsiveWidth(32), justifyContent: "space-evenly", alignItems: "center", bottom: responsiveHeight(2) }}>
-                <Text style={{ fontWeight: "bold", color: "#000000" }} >{elapsedTime}</Text>
+                style={{ flexDirection: "row", width: responsiveWidth(32), justifyContent: "space-evenly", alignItems: "center", bottom: responsiveHeight(2), right: responsiveWidth(4) }}>
+                <Text style={{ fontWeight: "bold", color: "#000000", fontSize: responsiveHeight(2), right: responsiveWidth(2) }} >{elapsedTime}</Text>
                 <View
-                  style={{ width: responsiveWidth(5), height: responsiveWidth(5), borderRadius: responsiveWidth(5) }}>
+                  style={{ width: responsiveWidth(6), height: responsiveHeight(3.6), borderRadius: responsiveWidth(5) }}>
                   {privateOrPublic === true ?
                     <Image source={require('../../Assets/Home_Icon_And_Fonts/lock_icon.png')} style={{ width: "90%", height: '90%' }} resizeMode='stretch' />
                     :
                     <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/public_earth.png')} style={{ width: "90%", height: '90%' }} resizeMode='stretch' />
                   }
                 </View>
-                <View>
+                <View style={{ flexDirection: "row", left: responsiveWidth(1) }}>
                   <Text
-                    style={{ fontWeight: "900", color: "#000000", width: responsiveWidth(3), fontSize: responsiveFontSize(2) }}>
+                    style={{ fontWeight: "900", color: "#000000", width: responsiveWidth(3), fontSize: responsiveFontSize(2), top: responsiveHeight(1), width: "30%", left: responsiveWidth(1) }}>
                     {item.followersCount}</Text>
+                  <Image source={require('../../Assets/Home_Icon_And_Fonts/Followers.png')} style={{ width: responsiveWidth(5), height: responsiveHeight(4) }}></Image>
                 </View>
 
                 <View>
@@ -523,24 +565,24 @@ export default function Postfeedcontainor() {
                     </TouchableOpacity>
                     {visible ? (
                       <View
-                        style={{ position: "absolute", marginTop: responsiveHeight(4), right: responsiveWidth(2.2), width: responsiveWidth(35), height: responsiveHeight(15), backgroundColor: "#666666", borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', rowGap: responsiveHeight(1.1), zIndex: 3 }}>
+                        style={{ position: "absolute", marginTop: responsiveHeight(4), right: responsiveWidth(2.2), width: responsiveWidth(35), height: responsiveHeight(10),  borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', rowGap: responsiveHeight(1.1), zIndex: 3 }}>
                         <TouchableOpacity onPress={() => pinPost(postId)}
-                          style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }} >
-                          <Image style={{ height: responsiveHeight(3), width: responsiveWidth(3), tintColor: 'white', zIndex: 3 }} source={require('../../Assets/Home_Icon_And_Fonts/pin_icon.png')} resizeMode='stretch'></Image>
+                          style={{ height: responsiveHeight(5), width: responsiveWidth(25), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }} >
+                          <Image style={{ height: responsiveHeight(4), width: responsiveWidth(5), tintColor: 'white', zIndex: 3 }} source={require('../../Assets/Home_Icon_And_Fonts/pin_icon.png')} resizeMode='stretch'></Image>
                           <Text
-                            style={{ color: '#ffffff' }}>Pin Post</Text>
+                            style={{ color: '#ffffff',fontWeight:"bold" }}>Pin Post</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => pinProfile(userId)}
+                        {/* <TouchableOpacity onPress={() => pinProfile(userId)}
                           style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }} >
                           <Image style={{ height: responsiveHeight(3), width: responsiveWidth(3), tintColor: 'white', zIndex: 3 }} source={require('../../Assets/Home_Icon_And_Fonts/pin_icon.png')} resizeMode='stretch'></Image>
                           <Text
                             style={{ color: '#ffffff' }}>Pin Profile</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         <TouchableOpacity onPress={() => reportPost(postId)}
-                          style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), justifyContent: 'center', borderColor: 'white', alignItems: 'center', borderWidth: responsiveWidth(0.3) }}
+                          style={{ height: responsiveHeight(5), width: responsiveWidth(25), backgroundColor: "#000000", borderRadius: responsiveWidth(2), justifyContent: 'center', borderColor: 'white', alignItems: 'center', borderWidth: responsiveWidth(0.3),bottom:responsiveHeight(1.1) }}
                         >
                           <Text
-                            style={{ color: '#ffffff' }}
+                            style={{ color: '#ffffff',fontWeight:"bold" }}
                           >Report Post</Text>
                         </TouchableOpacity>
 
@@ -627,13 +669,13 @@ export default function Postfeedcontainor() {
                   <View
                     style={{ width: responsiveWidth(6), height: responsiveHeight(3.5), right: responsiveWidth(1) }}>
                     {likeStatus ? // Check if LikeStatus is true
-                      <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/Like_after_Icon.png')} style={{ width: "100%", height: "100%", }} resizeMode='stretch' />
+                      <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/Like_after_Icon.png')} style={{ width: "100%", height: "100%", }} resizeMode='stretch'/>
                       :
                       <Image source={require('../../Assets/Home_Icon_And_Fonts/Like_icon.png')} style={{ width: "100%", height: "98%", }} resizeMode='stretch' />
                     }
                   </View>
                   <Text style={{ alignSelf: "center", fontSize: responsiveFontSize(1.9), fontWeight: "500", color: "#000000" }}>
-                    {likeStatus ? "Unlike" : "Like"} {/* Conditional rendering for Like/Unlike text */}
+                    {likeStatus ? "LIke" : "Like"} {/* Conditional rendering for Like/Unlike text */}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -692,8 +734,8 @@ export default function Postfeedcontainor() {
 
               <View style={styles.modalContainer}>
                 <TouchableOpacity
-                  style={{ width: responsiveWidth(10), height: responsiveWidth(10), borderRadius: responsiveWidth(8), top: responsiveHeight(48), borderWidth: responsiveWidth(0.3), borderColor: 'black', right: responsiveWidth(3) }}>
-                  <Image source={require('../../../components/Assets/app_logo/8641606.jpg')}
+                  style={{ width: responsiveWidth(10), height: responsiveWidth(10), borderRadius: responsiveWidth(8), top: responsiveHeight(48), borderWidth: responsiveWidth(0.1), borderColor: 'black', right: responsiveWidth(3) }}>
+                  <Image source={{ uri: profileURL }}
                     style={{ width: responsiveWidth(10), height: responsiveWidth(10), borderRadius: responsiveWidth(8), borderWidth: responsiveWidth(0.3), borderColor: 'black' }} />
 
                 </TouchableOpacity>
@@ -721,23 +763,91 @@ export default function Postfeedcontainor() {
                     <ScrollView style={styles.commentsScrollView}>
                       {/* Map through the comments array and render each comment */}
                       {comments.map((comment, index) => (
-                        <View key={index} style={styles.commentItem}>
-                          <View style={{ flexDirection: 'row' }}>
+                        <View key={index} style={styles.commentItem} >
+                          <View style={{ flexDirection: 'row', columnGap: responsiveWidth(13) }}>
+                            <View style={{ flexDirection: 'row', width: responsiveWidth(65) }}>
+                              <TouchableOpacity
+                                style={{ width: responsiveWidth(8), height: responsiveWidth(8), borderColor: '#000000', borderRadius: responsiveWidth(8) }}>
+                                <Image source={{ uri: comment.userProfilePic }}
+                                  style={{ width: responsiveWidth(8), height: responsiveWidth(8), borderRadius: responsiveWidth(8) }} />
+                              </TouchableOpacity>
+                              <TouchableOpacity style={{ left: 3 }}>
+                                <Text style={{ fontSize: 10, color: '#000000', fontWeight: '700' }}>{comment.userName}</Text>
+                              </TouchableOpacity>
+                              <Text style={{ fontSize: 10, color: '#000000', height: 15, fontWeight: '400', top: 13, left: -45 }}>{comment.time}</Text>
+                            </View>
+                            <View>
+                            {/* onPress={() => handle_cmnt_dlt(comment.commentId)} */}
                             <TouchableOpacity
-                              style={{ width: responsiveWidth(8), height: responsiveWidth(8), borderColor: '#000000', borderRadius: responsiveWidth(8) }}>
-                              <Image source={{ uri: comment.userProfilePic }}
-                                style={{ width: responsiveWidth(8), height: responsiveWidth(8), borderRadius: responsiveWidth(8) }} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ left: 3 }}>
-                              <Text style={{ fontSize: 10, color: '#000000', fontWeight: '700' }}>{comment.userName}</Text>
-                            </TouchableOpacity>
-                            <Text style={{ fontSize: 10, color: '#000000', height: 15, fontWeight: '400', top: 13, left: -45 }}>{comment.time}</Text>
-                            <TouchableOpacity
-                              onPress={() => handle_cmnt_dlt(comment.commentId)}
-                              style={{ width: responsiveWidth(5), height: responsiveWidth(5), borderRadius: responsiveWidth(5), left: responsiveWidth(55), top: 2, backgroundColor: '#ffffff', borderWidth: 1 }}>
-                              <Image source={require('../../Assets/Home_Icon_And_Fonts/link_icon.png')}
-                                style={{ width: '100%', height: '100%' }} />
-                            </TouchableOpacity>
+        onPress={commentvisible}
+        style={{ width: responsiveWidth(5), height: responsiveWidth(5), top: 2 }}
+      >
+         {visible ? (
+        <Image
+          source={require('../../../components/Assets/Home_Icon_And_Fonts/see_more_icon.png')}
+          style={{ width: '100%', height: '100%' }}
+        />
+      ) : <Image
+      source={require('../../../components/Assets/Home_Icon_And_Fonts/see_more_icon.png')}
+      style={{ width: '100%', height: '100%' }}
+    />}
+      </TouchableOpacity>
+
+      {comvisible ? (
+        <View
+          style={{
+            position: 'absolute',
+          
+            right: responsiveWidth(3.5),
+            width: responsiveWidth(35),
+            height: responsiveHeight(10),
+            borderRadius: responsiveWidth(3),
+            justifyContent: 'center',
+            alignItems: 'center',
+            rowGap: responsiveHeight(1.1),
+            zIndex: 3,
+            backgroundColor: '#ffffff', // Added background color for visibility
+          }}
+        >
+          <TouchableOpacity
+          
+            style={{
+              height: responsiveHeight(4),
+              width: responsiveWidth(15),
+              backgroundColor: '#000000',
+              borderRadius: responsiveWidth(2),
+              alignItems: 'center',
+              borderColor: 'white',
+              borderWidth: responsiveWidth(0.3),
+              flexDirection: 'row',
+              paddingHorizontal: responsiveWidth(2),
+              columnGap: responsiveWidth(3),
+              bottom:responsiveHeight(1)
+            }}
+          >
+          
+            <Text style={{ color: '#ffffff', fontWeight: 'bold' }}>Edit</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+           
+            style={{
+              height: responsiveHeight(4),
+              width: responsiveWidth(14),
+              backgroundColor: '#000000',
+              borderRadius: responsiveWidth(2),
+              justifyContent: 'center',
+              borderColor: 'white',
+              alignItems: 'center',
+              borderWidth: responsiveWidth(0.3),
+              bottom: responsiveHeight(2.2),
+            }}
+          >
+            <Text style={{ color: '#ffffff', fontWeight: 'bold' }}>Delete</Text>
+          </TouchableOpacity>
+        </View>
+      ) : null}
+                            </View>
                           </View>
                           {/* Render each comment using the comment variable */}
                           <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: '700', color: 'black' }}>{comment.content}</Text>
@@ -753,7 +863,6 @@ export default function Postfeedcontainor() {
 
             </Modal>
           </View>
-
           {/* Comment Modal */}
         </View>
         <View style={{
@@ -789,21 +898,8 @@ const styles = StyleSheet.create({
   //   justifyContent: 'center',
   //   alignItems: 'center',
   // },
-  modal: {
-    margin: 0,
-    justifyContent: 'flex-end',
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    height: 500,
-    borderWidth: 1,
+  
 
-  },
   playButton: {
     position: 'absolute',
     width: 50,
@@ -812,6 +908,21 @@ const styles = StyleSheet.create({
     left: '50%', // Position the button at the horizontal center of the container
     marginLeft: -25, // Adjust for half of the button width to center it precisely
     marginTop: -25, // Adjust for half of the button height to center it precisely
+  },
+  modal: {
+    margin: 0,
+    justifyContent: 'flex-end',
+  },
+  modalContainer: {
+    backgroundColor: '#F3F3F3',
+    padding: 20,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    height: 500,
+    borderWidth: 1,
+
   },
   commentInput: {
     height: 50,
@@ -862,10 +973,14 @@ const styles = StyleSheet.create({
 
   },
   commentItem: {
-    marginBottom: 20,
-    padding: 10,
+    marginBottom: responsiveHeight(1.5),
+    padding: responsiveWidth(2),
     backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    top: responsiveHeight(2)
+    borderRadius: responsiveWidth(3),
+    backgroundColor: 'white'
+
+
   },
+  
+  
 })

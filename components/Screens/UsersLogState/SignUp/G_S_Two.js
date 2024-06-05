@@ -190,14 +190,14 @@ export default function SignUpTwo() {
     }
   };
 
-  console.log('names ', name,
-    selectedDate,
-    selectedGender,
-    middleName,
-    lastName,
-    birthPlace,
-    livingPlace
-  )
+  // console.log('names ', name,
+  //   selectedDate,
+  //   selectedGender,
+  //   middleName,
+  //   lastName,
+  //   birthPlace,
+  //   livingPlace
+  // )
 
   const [loading, setLoading] = useState(false);
   const [loadingVerify, setLoadingVerify] = useState(false);
@@ -544,20 +544,19 @@ export default function SignUpTwo() {
                 flexDirection: 'row',
                 marginTop: responsiveHeight(2.2),
                 width: responsiveWidth(86.7),
-                columnGap: responsiveWidth(3),
-                paddingHorizontal: 2
+                columnGap: responsiveWidth(4.5),
+                paddingHorizontal: 2, justifyContent:'center', alignItems:'center'
+
               }}>
               {/* <ImageBackground style={styles.inputContainerPhn} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}> */}
 
               {/* </ImageBackground> */}
 
               <TouchableOpacity
-                onPress={() => setShow(true)}
+                // onPress={() => setShow(true)}
                 style={{
                   width: responsiveWidth(20),
-                  height: responsiveHeight(7),
-                  //  padding: responsiveWidth(1),
-
+                  height: responsiveHeight(6),
                   justifyContent: 'center',
                   alignItems: 'center',
                   //  bottom:responsiveHeight(7),
@@ -584,10 +583,7 @@ export default function SignUpTwo() {
                   </Text>
                 </ImageBackground>
               </TouchableOpacity>
-              <View style={{
-                flexDirection: 'column', alignItems: 'center', height: responsiveHeight(6.5),
-                width: responsiveWidth(40), borderRadius: responsiveWidth(3.2)
-              }}>
+            
                 <View style={styles.inputContainerPhn}>
                   <ImageBackground
                     style={styles.changenumber}
@@ -611,7 +607,7 @@ export default function SignUpTwo() {
                     />
                   </ImageBackground>
                 </View>
-              </View>
+            
 
               {loading ? (
                 <ActivityIndicator style={styles.loadingIndicator} size="large" color="#0000ff" />
@@ -853,7 +849,8 @@ const styles = StyleSheet.create({
     height: responsiveHeight(4),
     width: responsiveWidth(20),
     borderWidth: responsiveWidth(0),
-    marginTop: responsiveHeight(1)
+    marginTop: responsiveHeight(1),
+    left:responsiveWidth(17)
   },
   headerContainer: {
     height: responsiveHeight(25),
@@ -885,24 +882,15 @@ const styles = StyleSheet.create({
     // justifyContent:'center',
     alignItems: 'center',
 
-
+margin:responsiveWidth(2),
     borderRadius: responsiveWidth(2),
     height: responsiveHeight(6),
     width: responsiveWidth(30),
 
-    // shadowOffset: { width: 1, height: 4 }, // Shadow offset
-    // shadowOpacity: 0.6, // Shadow opacity
-    // shadowRadius: 2, // Shadow radius
-    // elevation: 1,
-    // shadowColor: 'gray',
-
-    // borderColor: 'black',
   },
   changeinputContainer: {
-    height: responsiveHeight(6),
+    height: responsiveHeight(6.5),
     width: responsiveWidth(20),
-
-
 
     justifyContent: 'center',
     alignItems: 'center',
@@ -911,23 +899,21 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
     marginBottom: 'auto',
 
-    height: responsiveHeight(6),
+    height: responsiveHeight(6.5),
     width: responsiveWidth(38),
     borderRadius: responsiveWidth(2),
     justifyContent: 'center',
     overflow: 'hidden',
   },
   otpContainer: {
-    justifyContent: 'center',
-    // alignItems:'center',
-    marginRight: responsiveWidth(16),
-    marginLeft: responsiveWidth(24),
-    marginBottom: responsiveHeight(1),
-    height: responsiveHeight(5),
+    marginTop: 'auto',
+    marginBottom: 'auto',
+left:responsiveWidth(2),
+    height: responsiveHeight(6.5),
     width: responsiveWidth(38),
     borderRadius: responsiveWidth(2),
-    marginTop: responsiveHeight(1)
-    // overflow: 'hidden'
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
 
   boxContent: {

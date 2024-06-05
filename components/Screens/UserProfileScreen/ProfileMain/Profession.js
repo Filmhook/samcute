@@ -379,7 +379,7 @@ export default function Profession() {
               left: responsiveWidth(51),
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: 'blue'
+              backgroundColor: 'blue',marginTop:responsiveHeight(1)
             }}>
               <Text style={{
                 fontSize: responsiveFontSize(2),
@@ -405,7 +405,7 @@ export default function Profession() {
                 </View>
 
 
-                <View style={{ flexDirection: 'row', columnGap: responsiveWidth(10), width: responsiveWidth(100), padding: responsiveWidth(1) }}>
+                <View style={{ flexDirection: 'row', columnGap: responsiveWidth(3), width: responsiveWidth(100), padding: responsiveWidth(1) }}>
                   <View style={{ width: responsiveHeight(19), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
                     <ImageBackground style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
                       <View style={{ width: responsiveWidth(21), height: responsiveHeight(6.5), right: responsiveWidth(2), margin: responsiveWidth(1) }}>
@@ -416,9 +416,9 @@ export default function Profession() {
                     </ImageBackground>
                   </View>
                   <View style={{ width: responsiveWidth(58) }}>
-                    <View style={styles.industriesContainer}>
+                    {/* <View style={styles.industriesContainer}>
                       {platform.industries.map((industry, index) => (
-                        <ImageBackground key={index} style={{ width: responsiveWidth(45), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                        <ImageBackground key={index} style={{ width: responsiveWidth(50), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
                           <View style={{ width: responsiveWidth(9), height: responsiveHeight(5), right: responsiveWidth(2), }}>
                             <Image source={{ uri: industry.imageURL }} style={{ width: '90%', height: '80%', padding: 1 }} resizeMode='stretch' />
                           </View>
@@ -427,11 +427,11 @@ export default function Profession() {
                           </View>
                         </ImageBackground>
                       ))}
-                    </View>
+                    </View> */}
                     <View style={styles.professionsContainer}>
                       {platform.professions.map((profession, index) => (
                         <View key={index} style={styles.professionContainer}>
-                          <ImageBackground style={{ width: responsiveWidth(45), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                          <ImageBackground style={{ width: responsiveWidth(51), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
                             <View style={{ width: responsiveWidth(9), height: responsiveHeight(5), right: responsiveWidth(2) }}>
                               <Image source={{ uri: profession.imageURL }} style={{ width: '100%', height: '80%' }} resizeMode='stretch' />
                             </View>
@@ -440,8 +440,8 @@ export default function Profession() {
                             </View>
                           </ImageBackground>
                           {profession.subProfessions.map((subProfession, subIndex) => (
-                            <View style={{ flexDirection: 'row', rowGap: 1, width: responsiveWidth(48), justifyContent:'center', alignItems:'center',   }}>
-                              <ImageBackground key={subIndex} style={{ width: responsiveWidth(26), marginBottom: responsiveHeight(1), padding: 2, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(1) }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                            <View style={{ flexDirection: 'row', rowGap: 1, width: responsiveWidth(52), justifyContent:'center', alignItems:'center',  }}>
+                              <ImageBackground key={subIndex} style={{ width: responsiveWidth(30), marginBottom: responsiveHeight(1), padding: 2, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',height:responsiveHeight(5) }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
 
                                 <Text style={styles.subProfession}>{subProfession.subProfessionName} </Text>
 
@@ -451,7 +451,7 @@ export default function Profession() {
                               </ImageBackground>
 
                               {editingPlatformId === platform.platformPermanentId ? (
-                                <TouchableOpacity onPress={() => toggleModal(subProfession.subProfessionId)} style={{ marginLeft: responsiveWidth(3) }}>
+                                <TouchableOpacity onPress={() => toggleModal(subProfession.subProfessionId)} style={{ marginLeft: responsiveWidth(3),  width:responsiveWidth(18) }}>
                                   <Icon name="calendar" size={responsiveWidth(7)} color="blue" />
                                 </TouchableOpacity>
                               ) : (
@@ -714,7 +714,9 @@ const styles = StyleSheet.create({
   subProfessionYear: {
     color: 'black',
     textAlign: 'center',
-    width:responsiveWidth(22)
+    width:responsiveWidth(22),
+    fontSize:responsiveFontSize(1.5),
+    fontWeight:'500'
    
   },
   image: {

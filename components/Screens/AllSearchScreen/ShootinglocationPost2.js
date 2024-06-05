@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 // import { View, TextInput, ImageBackground } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, TextInput, ScrollView,Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, TextInput, ScrollView, Alert } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { Image } from 'react-native-elements';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -14,6 +14,7 @@ import Checkbox from '@react-native-community/checkbox';
 import { title } from 'process';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { color } from 'react-native-elements/dist/helpers';
 // import Picker from '@react-native-picker/picker';
 
 const ShootinglocationPost2 = () => {
@@ -39,7 +40,7 @@ const ShootinglocationPost2 = () => {
                 let generateName = image.path.split("/").pop();
                 setProfilepics([{ uri: image.path, type: image.mime, name: generateName }]);
             }
-        }catch (error){
+        } catch (error) {
             console.log('Image picker operation canceled or failed:', error);
         }
     };
@@ -48,7 +49,7 @@ const ShootinglocationPost2 = () => {
 
     const handleCheckboxChange = (index) => {
         setSelectedCheckboxIndex(index);
-        
+
     };
 
     useEffect(() => {
@@ -69,7 +70,7 @@ const ShootinglocationPost2 = () => {
         setShowTextInput(!showTextInput);
     };
     const handlePostButton = async () => {
-      
+
         try {
             // Retrieve userId from AsyncStorage
             const id = await AsyncStorage.getItem('userId');
@@ -123,7 +124,7 @@ const ShootinglocationPost2 = () => {
                 // setPostModalVisible(false);
                 navigation.navigate('ShootingLocationPage');
             } else {
-               Alert.alert("status code")
+                Alert.alert("status code")
             }
         } catch (error) {
             console.error('Error posting:', error);
@@ -166,23 +167,25 @@ const ShootinglocationPost2 = () => {
                     <View style={styles.checkboxContainer}>
                         <Checkbox
                             value={selectedCheckboxIndex === true}
+                            style={{ borderWidth: 1, borderColor: 'black' }}
                             onValueChange={() => handleCheckboxChange(true)}
                         />
-                        <Text>Indoor Location</Text>
+                        <Text style={{ color: 'black' }}>Indoor Location</Text>
                     </View>
                     <View style={styles.checkboxContainer2}>
                         <Checkbox
                             value={selectedCheckboxIndex === false}
+                            borderColor='black' // Add border color here
                             onValueChange={() => handleCheckboxChange(false)}
                         />
-                        <Text>Outdoor Location</Text>
+                        <Text style={{ color: 'black' }}>Outdoor Location</Text>
                     </View>
                 </View>
                 <View style={{ flexDirection: 'row', width: responsiveWidth(86.7), margin: responsiveHeight(2) }}>
                     <View style={styles.boxContent}>
                         <ImageBackground style={styles.inputContainer} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
-                            
-                            <Text>INR-₹</Text>
+
+                            <Text style={{ color: 'black' }}>INR-₹</Text>
                         </ImageBackground>
                     </View>
                     <View style={styles.inputContainerPhn}>
@@ -190,7 +193,8 @@ const ShootinglocationPost2 = () => {
                             <TextInput
                                 placeholder="Price"
                                 value={number}
-                                // placeholderTextColor={'black'}
+                                placeholderTextColor="black"
+                                color='black'
                                 onChangeText={(text) => {
                                     // Filter out non-numeric characters
                                     const numericText = text.replace(/[^0-9]/g, '');
@@ -210,14 +214,16 @@ const ShootinglocationPost2 = () => {
                     </View>
                     <View style={styles.boxContentnew}>
                         <ImageBackground style={styles.inputContainernew} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
-                            <View style={{}}>
-                              
+                            <View style={{ color: 'black' }}>
+
                                 <Picker
                                     selectedValue={selectedOption}
+
                                     onValueChange={(itemValue, itemIndex) => setSelectedOption(itemValue)}
                                     style={{
                                         height: responsiveHeight(4),
-                                        width: responsiveWidth(35), fontSize: 1
+                                        width: responsiveWidth(35), fontSize: 1,
+                                        color: 'black'
                                     }}
                                 >
                                     <Picker.Item label="hour" value="hour" />
@@ -234,7 +240,8 @@ const ShootinglocationPost2 = () => {
                     <ImageBackground style={styles.inputContainerchange} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                         <TextInput
                             placeholder="Location Name"
-                            // placeholderTextColor="black"
+                            placeholderTextColor="black"
+                            color='black'
                             value={title}
                             onChangeText={setTitle}
                             style={styles.input}
@@ -246,10 +253,12 @@ const ShootinglocationPost2 = () => {
                     <ImageBackground style={styles.inputContainerchange1} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
                         <TextInput
                             placeholder='Location Description'
+                            placeholderTextColor='black'
+                            color='black'
                             multiline
                             value={productDescription}
                             onChangeText={setProductDescription}
-                           
+
                             style={{
                                 overflow: 'scroll',
                             }}
@@ -257,17 +266,17 @@ const ShootinglocationPost2 = () => {
                     </ImageBackground>
                 </View>
 
-      
+
                 <View style={styles.boxContentchange2}>
 
                     <ImageBackground style={styles.inputContainerchange1} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
-                        <TextInput placeholder='Terms&Condition' multiline
+                        <TextInput placeholder='Terms&Condition' placeholderTextColor='black' color='black' multiline
                             value={shootingTermsAndCondition} onChangeText={setTerms}
                             style={{
                                 overflow: 'scroll',
-                              
-                                width:"96%"
-                              }}
+
+                                width: "96%"
+                            }}
                         />
                     </ImageBackground>
                 </View>
@@ -277,14 +286,14 @@ const ShootinglocationPost2 = () => {
                     </TouchableOpacity>
                     {showTextInput && (
                         <ImageBackground style={styles.background} source={require('../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
-                            <TextInput placeholder='Paste Location Here' style={{ alignSelf: 'center' }} onChangeText={setLocationUrl} value={locationUrl} />
+                            <TextInput placeholder='Paste Location Here' placeholderTextColor='black' style={{ alignSelf: 'center', color: 'black' }} onChangeText={setLocationUrl} value={locationUrl} />
                         </ImageBackground>
                     )}
                 </View>
-                <View style={{width:responsiveWidth(20),left:responsiveWidth(25),bottom:responsiveHeight(2)}}>
-             <TouchableOpacity onPress={handlePostButton} style={{width:responsiveWidth(20),height:responsiveHeight(5),backgroundColor:'black',borderRadius:responsiveHeight(2)}}>
-             <Text style={{ fontSize: responsiveFontSize(2), fontWeight: '700', color: 'white', padding: responsiveWidth(2),alignSelf:'center' }}>Post</Text>
-             </TouchableOpacity>
+                <View style={{ width: responsiveWidth(20), left: responsiveWidth(25), bottom: responsiveHeight(2) }}>
+                    <TouchableOpacity onPress={handlePostButton} style={{ width: responsiveWidth(20), height: responsiveHeight(5), backgroundColor: 'black', borderRadius: responsiveHeight(2) }}>
+                        <Text style={{ fontSize: responsiveFontSize(2), fontWeight: '700', color: 'white', padding: responsiveWidth(2), alignSelf: 'center' }}>Post</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </ScrollView>
@@ -297,7 +306,7 @@ const styles = {
         alignItems: 'center',
         marginTop: responsiveHeight(2),
         // borderWidth:responsiveWidth(1),
-       
+
     },
     heading: {
         color: 'black',
@@ -336,32 +345,35 @@ const styles = {
     uploadIcon: {
         width: '20%',
         height: '63%',
-      
+
 
     },
     uploadText: {
         fontSize: responsiveWidth(5),
         bottom: responsiveHeight(5),
-        left: responsiveWidth(23)
+        left: responsiveWidth(23),
+        color: 'black'
     },
     checkboxContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         // right: responsiveWidth(23)
+        borderColor: 'black',
+        color: 'black'
     },
     checkboxContainer2: {
         flexDirection: 'row',
         alignItems: 'center',
-       
+
     },
     boxContent: {
         height: responsiveHeight(8.3),
         width: responsiveWidth(18),
-       
+
         borderRadius: responsiveWidth(3.2),
         // borderWidth: responsiveWidth(0.3),
         color: 'black',
-       
+
 
     },
     inputContainer: {
@@ -374,7 +386,7 @@ const styles = {
         color: 'black',
         // right: responsiveWidth(60),
         resizeMode: 'stretch',
-       
+
     },
     input: {
 
@@ -383,22 +395,22 @@ const styles = {
         width: '90%',
         fontSize: responsiveFontSize(1.5),
         overflow: 'scroll',
-       
+
     },
     inputContainerPhn: {
 
-       
+
         height: responsiveHeight(8.3),
         width: responsiveWidth(35),
 
-        
+
 
     },
     changenumber: {
-       
+
         height: responsiveHeight(6),
         width: responsiveWidth(30),
-      
+
     },
     boxContent2: {
         flex: 1,
@@ -428,10 +440,10 @@ const styles = {
         // margin: 10,
         // borderWidth: 1,
         borderColor: 'black',
-       
+
 
     },
-  
+
     boxContentchange: {
         height: responsiveHeight(8.3),
         width: responsiveWidth(86),
@@ -480,7 +492,7 @@ const styles = {
     background: {
         width: responsiveWidth(50),
         height: responsiveHeight(6),
-           right:responsiveWidth(6)
+        right: responsiveWidth(6)
 
     },
     linklogo: {
@@ -490,9 +502,9 @@ const styles = {
         borderRadius: responsiveHeight(2),
         overflow: 'hidden',
         right: responsiveHeight(8),
-        top:responsiveHeight(0.5)
+        top: responsiveHeight(0.5)
     },
-   
+
 };
 
 export default ShootinglocationPost2;

@@ -234,9 +234,9 @@ const TopBar = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [theme, setTheme] = useState(false);
 
-  const toggleSwitch = () => {
+  const toggleSwitch=()=>{
     setTheme(!theme)
-  }
+}
   const handleOpenPopup = () => {
     setIsVisible(true);
   };
@@ -244,7 +244,7 @@ const TopBar = () => {
   const handleClosePopup = () => {
     setIsVisible(false);
   };
-
+ 
 
   return (
     //TopBar Style
@@ -252,40 +252,37 @@ const TopBar = () => {
 
       {/* //Film_hook Logo */}
 
-      <View style={{ width: responsiveWidth(50), height: responsiveHeight(7), top: responsiveHeight(1), left: responsiveWidth(2) }}>
-        <Image source={require('../../Assets/Chats_Icon_And_Fonts/Film_hook.png')} style={{ width: responsiveWidth(50), height: responsiveHeight(4), alignSelf: 'center', justifyContent: 'center', top: responsiveHeight(1) }} />
+      <View style={{width:responsiveWidth(50),height:responsiveHeight(7),top:responsiveHeight(1),left:responsiveWidth(2)}}>
+      <Image source={require('../../Assets/Chats_Icon_And_Fonts/Film_hook.png')} style={{width:responsiveWidth(50),height:responsiveHeight(4), alignSelf:'center',justifyContent:'center',top:responsiveHeight(1)}}/>
       </View>
 
-      {/* Plus Icon */}
+            {/* Plus Icon */}
 
-      <View style={{ width: responsiveWidth(35), height: responsiveHeight(6), left: responsiveWidth(30), alignSelf: 'center', bottom: responsiveHeight(5) }}>
-        <TouchableOpacity onPress={handleOpenPopup} style={{ width: responsiveWidth(10), height: responsiveWidth(10), borderRadius: responsiveWidth(10), elevation: responsiveWidth(2), backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', left: responsiveWidth(24), bottom: responsiveHeight(0.5) }}>
-          <Image source={require('../../Assets/Home_Icon_And_Fonts/plus_icon.png')} style={{ width: responsiveWidth(6), height: responsiveHeight(3) }} />
-        </TouchableOpacity>
-        <Modal
-          visible={isVisible}
-          transparent={true}
-          animationType="fade"
-          onBackdropPress={() => setIsVisible(false)}
-          backdropTransitionInTiming={500}
-          backdropTransitionOutTiming={0}
-          animationIn={"slideInLeft"}
-          animationOut={"slideOutLeft"}
-          backdropOpacity={0.70}
-
+      <View style={{width:responsiveWidth(35),height:responsiveHeight(6),left:responsiveWidth(30),alignSelf:'center',bottom:responsiveHeight(5)}}>
+      <TouchableOpacity onPress={handleOpenPopup} style={{width:responsiveWidth(10),height:responsiveWidth(10),borderRadius:responsiveWidth(10),elevation:responsiveWidth(2),backgroundColor:'white', alignItems:'center',justifyContent:'center',left:responsiveWidth(24),bottom:responsiveHeight(0.5)}}>
+      <Image source={require('../../Assets/Home_Icon_And_Fonts/plus_icon.png')} style={{width:responsiveWidth(6),height:responsiveHeight(3)}}/>
+      </TouchableOpacity>
+      <Modal
+        visible={isVisible}
+        transparent={true}
+        animationType="fade"
+        onBackdropPress={() => setIsVisible(false)}
+        backdropTransitionInTiming={500}
+        backdropTransitionOutTiming={0}
+        animationIn={"slideInLeft"}
+        animationOut={"slideOutLeft"}
+        backdropOpacity={0.70}
+       
         >
           <TouchableOpacity style={style.modalBackground} activeOpacity={1} onPress={handleClosePopup}>
-            <View style={style.container}>
-
-             
-
-              <ProfileModalRoot />
-            </View>
-          </TouchableOpacity>
+          <View style={style.container}>
+             <ProfileModalRoot />
+             </View>
+             </TouchableOpacity>
 
         </Modal>
-        {/* modal Style */}
-        {/* <Modal visible={isVisible} transparent={true} animationType="fade">
+      {/* modal Style */}
+      {/* <Modal visible={isVisible} transparent={true} animationType="fade">
         <TouchableOpacity style={style.modalBackground} activeOpacity={1} onPress={handleClosePopup}>
  
 
@@ -325,9 +322,9 @@ const TopBar = () => {
       </Modal> */}
 
 
-        <TouchableOpacity style={{ width: responsiveWidth(10), height: responsiveWidth(10), borderRadius: responsiveWidth(10), elevation: responsiveWidth(2), backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', left: responsiveWidth(6), bottom: responsiveHeight(5) }}>
-          <Image source={require('../../Assets/Chats_Icon_And_Fonts/211694_bell_icon.png')} style={{ width: responsiveWidth(6), height: responsiveHeight(3) }} />
-        </TouchableOpacity>
+      <TouchableOpacity style={{width:responsiveWidth(10),height:responsiveWidth(10),borderRadius:responsiveWidth(10),elevation:responsiveWidth(2),backgroundColor:'white', alignItems:'center',justifyContent:'center',left:responsiveWidth(6),bottom:responsiveHeight(5)}}>
+      <Image source={require('../../Assets/Chats_Icon_And_Fonts/211694_bell_icon.png')} style={{width:responsiveWidth(6),height:responsiveHeight(3)}}/>
+      </TouchableOpacity>
 
       </View>
     </View>
@@ -336,13 +333,14 @@ const TopBar = () => {
 export default TopBar;
 
 const style = StyleSheet.create({
+ 
+ 
 
-
-
-  topBar: {
+  topBar:{
     backgroundColor: 'white',
     height: responsiveHeight(8),
-
+   borderBottomWidth:responsiveWidth(5),
+   borderBottomColor:"black"
 
   }
 })

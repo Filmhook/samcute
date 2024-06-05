@@ -89,8 +89,8 @@ const ShootingLocationPage = () => {
             rate: item.cost,
             refer: item.terms,
             description: item.shootingLocationDescription,
-            day:item.hourMonthDay,
-            terms:item.shootingTermsAndCondition,
+            day: item.hourMonthDay,
+            terms: item.shootingTermsAndCondition,
         });
     };
 
@@ -193,7 +193,7 @@ const ShootingLocationPage = () => {
                                         <Text style={{ width: responsiveWidth(25), height: responsiveHeight(3), borderRadius: responsiveWidth(2), backgroundColor: '#616161', textAlign: 'center', textAlignVertical: 'center', marginTop: responsiveHeight(1), color: 'white', fontWeight: '800', }}>₹{item.cost}k/{item.hourMonthDay}</Text>
 
                                         <TouchableOpacity onPress={() => navigateToDetails(item)}>
-                                            <Text style={{ width: responsiveWidth(20), height: responsiveHeight(5), borderRadius: responsiveWidth(3), backgroundColor: '#1d54dd', textAlign: 'center', textAlignVertical: 'center', marginTop: responsiveHeight(3), color: 'white', fontWeight: '800', fontSize: responsiveFontSize(2),right:responsiveHeight(2) }}>Reserve</Text>
+                                            <Text style={{ width: responsiveWidth(20), height: responsiveHeight(5), borderRadius: responsiveWidth(3), backgroundColor: '#1d54dd', textAlign: 'center', textAlignVertical: 'center', marginTop: responsiveHeight(3), color: 'white', fontWeight: '800', fontSize: responsiveFontSize(2), right: responsiveHeight(2) }}>Reserve</Text>
                                         </TouchableOpacity>
 
                                     </View>
@@ -204,16 +204,16 @@ const ShootingLocationPage = () => {
                                 </View>
 
                             </View>
-                           
+
                         </TouchableOpacity>
                     )}
                     keyExtractor={(item, index) => index.toString()} />
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('ShootinglocationPost2')}  style={styles.floatingButton}>
-            <Image
-            source={require('../../Assets/Audition_Icons_Fonts/write_icon_148501-removebg.png')}
-            style={styles.floatingButtonIcon}
-          />
+            <TouchableOpacity onPress={() => navigation.navigate('ShootinglocationPost2')} style={styles.floatingButton}>
+                <Image
+                    source={require('../../Assets/Audition_Icons_Fonts/write_icon_148501-removebg.png')}
+                    style={styles.floatingButtonIcon}
+                />
             </TouchableOpacity>
 
 
@@ -261,16 +261,16 @@ const styles = StyleSheet.create({
         opacity: 0.5,
         justifyContent: 'center',
         alignItems: 'center'
-      },
-      floatingButtonIcon: {
+    },
+    floatingButtonIcon: {
         width: responsiveWidth(9),
         height: responsiveWidth(9),
         borderRadius: responsiveWidth(9),
         alignSelf: 'center',
-      },
+    },
     calendar: {
         borderWidth: 2,
-        bottom:'140%',
+        bottom: '140%',
         borderColor: '#ccc',
         borderRadius: 5,
     },
@@ -282,9 +282,9 @@ const styles = StyleSheet.create({
     },
     input: {
         height: responsiveHeight(6),
-        width:'80%',
+        width: '80%',
         borderColor: 'black',
-      //  alignSelf:'center',
+        //  alignSelf:'center',
         borderWidth: 1,
         borderRadius: responsiveWidth(5),
         padding: 10,
@@ -321,7 +321,3 @@ const styles = StyleSheet.create({
 });
 
 export default ShootingLocationPage;
-
-
-
-

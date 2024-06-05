@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, Pressable, FlatList, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image, Pressable, FlatList, Platform, StyleSheet } from 'react-native';
 import Modal from 'react-native-modal'; // Import the Modal component
-
 
 // for firebase 
 import { app, database } from '../../../../FirebaseConfig';
-import { addDoc, collection, getFirestore, serverTimestamp, } from 'firebase/firestore'
-import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/firestore'
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 
 // for firebase 
 
@@ -16,86 +15,10 @@ const Post_input = () => {
   const [post, setPost] = useState('');
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [postVisibility, setPostVisibility] = useState('public');
-  //-------------------------------------------------------------
-
-  // const [isRecording, setIsRecording] = useState(false);
-  // const [recordedTime, setRecordedTime] = useState(0);
-  // const audioRecorderPlayer = new AudioRecorderPlayer();
-
-  // useEffect(() => {
-  //   if (Platform.OS === 'android') {
-  //     requestMicrophonePermission();
-  //   }
-  // }, []);
-
-  // const requestMicrophonePermission = async () => {
-  //   try {
-  //     const granted = await PermissionsAndroid.request(
-  //       PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-  //       {
-  //         title: 'Microphone Permission',
-  //         message: 'App needs access to your microphone to record audio.',
-  //         buttonNeutral: 'Ask Me Later',
-  //         buttonNegative: 'Cancel',
-  //         buttonPositive: 'OK',
-  //       },
-  //     );
-  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-  //       console.log('Microphone permission granted');
-  //     } else {
-  //       console.log('Microphone permission denied');
-  //     }
-  //   } catch (err) {
-  //     console.warn(err);
-  //   }
-  // };
-
-  // const startRecording = async () => {
-  //   const path = 'your-recording-path.amr';
-  //   try {
-  //     await AudioRecorderPlayer.startRecorder(path);
-  //     setIsRecording(true);
-  //     setRecordedTime(0);
-  //     startTimer();
-  //   } catch (error) {
-  //     console.error('Failed to start recording: ', error);
-  //   }
-  // };
-
-  // const stopRecording = async () => {
-  //   try {
-  //     const result = await AudioRecorderPlayer.stopRecorder();
-  //     setIsRecording(false);
-  //     console.log('Recording stopped, audio file saved at: ', result);
-  //   } catch (error) {
-  //     console.error('Failed to stop recording: ', error);
-  //   }
-  // };
-
-  // const startTimer = () => {
-  //   const timerInterval = setInterval(() => {
-  //     setRecordedTime(prevTime => prevTime + 1);
-  //   }, 1000);
-
-  //   return () => clearInterval(timerInterval);
-  // };
-
-  // const handleMicPressIn = () => {
-  //   startRecording();
-  // };
-
-  // const handleMicPressOut = () => {
-  //   stopRecording();
-  // };
-
-
-
-  //-------------------------------------------------------------
 
   const handleFocus = () => {
     setVisible(!visible);
   };
-
 
   const handlePost = () => {
     const trimmedPost = textstory.trim();
@@ -111,15 +34,11 @@ const Post_input = () => {
     // Close the modal
     setVisible(!visible);
 
-    // we write firebase code to save datats to database 
-
+    // Firebase code to save data to the database
     postData();
-
-    // we write firebase code to save datats to database 
   };
 
-  // for firebase-firestore  -----
-
+  // Firebase Firestore setup
   const firestore = getFirestore(app)
   const collectionName = 'Homepage-post';
 
@@ -130,17 +49,14 @@ const Post_input = () => {
         view_type: postVisibility,
         timestamp: serverTimestamp(),
         postId: Math.random().toString(36).substring(2),
-
       })
-      alert('Posted Successfull');
+      alert('Posted Successfully');
       console.log('Document written with ID: ', docRef.id);
       console.log('Post :', docRef);
     } catch (error) {
       console.error('Error adding document: ', error);
     }
   }
-
-  // for firebase-firestore  -----
 
   const showDropdown = () => {
     setIsDropdownVisible(true);
@@ -163,31 +79,34 @@ const Post_input = () => {
 
   return (
     <>
-      <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: responsiveWidth(4), width: responsiveWidth(60), right: responsiveWidth(2), }}>
+     <View style={[styles.card, styles.shadowProp]}>
+
         <Pressable onPress={handleFocus}>
           <View style={{ pointerEvents: 'none' }}>
             <TextInput
-              placeholder="Tab to write your caption..."
+              placeholder="What is in your mind?"
               showSoftInputOnFocus={false}
-              placeholderTextColor={'black'}
-              style={{ left: responsiveWidth(1) }}
+              placeholderTextColor={'gray'}
+              style={{ left: responsiveWidth(1),fontSize:responsiveFontSize(2.5) }}
             />
           </View>
         </Pressable>
 
         <TouchableOpacity
-          style={{ width: responsiveWidth(7), height: responsiveHeight(4), position: 'absolute', left: responsiveWidth(50) }}>
+          style={{ width: responsiveWidth(6), height: responsiveHeight(3), position: 'absolute', left: responsiveWidth(55) }}>
           {/* You can use a microphone icon image here */}
-          <Image source={require('../../../Assets/Chats_Icon_And_Fonts/Filmhook_mic.png')} style={{ width: "100%", height: "100%" }} resizeMode='stretch'/>
+          <Image source={require('../../../Assets/Chats_Icon_And_Fonts/Filmhook_mic.png')} style={{ width: "100%", height: "100%" }} resizeMode='stretch' />
         </TouchableOpacity>
       </View>
+      <TouchableOpacity style={{justifyContent:'center',alignItems:'center',backgroundColor:'black',height:responsiveHeight(4),width:responsiveWidth(14),borderRadius:responsiveHeight(1),top:responsiveHeight(2.5),right:responsiveWidth(4.5)}}>
+        <Text style={{color:'white',fontSize:responsiveFontSize(2.3)}}>Post</Text>
+      </TouchableOpacity>
 
       {/* this modal for type post and post cancel icon */}
       <Modal
         isVisible={visible}
         onBackdropPress={() => setVisible(false)}
         backdropTransitionInTiming={500}
-        //backdropTransitionOutTiming={0}
         animationIn={'fadeIn'}
         animationOut={'fadeOut'}
         backdropOpacity={0.5}
@@ -224,7 +143,6 @@ const Post_input = () => {
       </Modal>
       {/* this modal for type post and post cancel icon */}
 
-
       {/* Modal for dropdown options */}
       <Modal
         isVisible={isDropdownVisible}
@@ -247,5 +165,26 @@ const Post_input = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderRadius: responsiveWidth(2),
+    width: responsiveWidth(65),
+    right: responsiveWidth(6.5),
+    height: responsiveHeight(7),
+    // backgroundColor: 'white',
+    top:responsiveHeight(1)
+  },
+  shadowProp: {
+    shadowColor: 'black',
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.7,
+    shadowRadius: 3,
+    elevation: 0,
+  },
+});
 
 export default Post_input;

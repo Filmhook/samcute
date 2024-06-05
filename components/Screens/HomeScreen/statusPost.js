@@ -170,14 +170,14 @@ export default function StatusPost() {
       <View>
         <View style={{ flexDirection: 'row', padding: responsiveWidth(2), }}>
           {/* User Profile Section */}
-          <TouchableOpacity style={{ marginLeft: responsiveWidth(0), width: responsiveWidth(12.5), height: responsiveHeight(6), borderWidth: responsiveWidth(0.2), borderRadius: responsiveWidth(10), backgroundColor: "grey" }} onPress={() => navigation.navigate('profilepage')}>
-            <Image source={{ uri: filePath }} style={{ width: '100%', height: '100%', borderRadius: 50, }} resizeMode='stretch' />
+          <TouchableOpacity style={{ marginLeft: responsiveWidth(0), width: responsiveWidth(13), height: responsiveHeight(7), borderWidth: responsiveWidth(0.5), borderRadius: responsiveWidth(3), backgroundColor: "grey",top:responsiveHeight(1)}} onPress={() => navigation.navigate('profilepage')}>
+            <Image source={{ uri: filePath }} style={{ width: '100%', height: '100%', borderRadius: 10, }} resizeMode='stretch' />
           </TouchableOpacity>
-          <View style={{ width: responsiveWidth(7.5), height: responsiveHeight(2), borderRadius: responsiveWidth(2), top: responsiveHeight(4.5), left: responsiveWidth(-10), backgroundColor: "#000000", }}>
-            <Text
-              style={{ color: "#ffffff", fontSize: responsiveFontSize(1.2), left: responsiveWidth(1) }}>9.4</Text>
+          <View style={{ width: responsiveWidth(9), height: responsiveHeight(2.4), borderRadius: responsiveWidth(2), borderWidth: 1,  backgroundColor: "#000000",top:responsiveHeight(6),right:responsiveWidth(11) }}>
+                  <Text
+                    style={{ color: "#ffffff", fontSize: responsiveFontSize(1.4), fontWeight: '800', left: responsiveWidth(0.2) }}>9.4</Text>
             <View
-              style={{ width: responsiveWidth(3), height: responsiveHeight(1.5), left: responsiveWidth(4.4), top: responsiveHeight(-1.6) }}>
+              style={{ width: responsiveWidth(3), height: responsiveHeight(1.8), left: responsiveWidth(4.8),bottom:responsiveHeight(1.9) }}>
               <Image source={require('../../Assets/Home_Icon_And_Fonts/star_icon.png')}
                 style={{ width: "100%", height: "100%" }} resizeMode='stretch' />
             </View>
@@ -188,7 +188,7 @@ export default function StatusPost() {
           {/* for post input component */}
 
           {/* for image post component */}
-          <Handle_img_picker />
+          {/* <Handle_img_picker /> */}
           {/* for image post component */}
         </View>
         {/* this modal for type post and post cancel icon */}
@@ -234,36 +234,38 @@ export default function StatusPost() {
           </View>
         </Modal>
         {/* -------- */}
-        <View style={{ flexDirection: 'row', padding: responsiveWidth(3), justifyContent: "space-between", height: responsiveHeight(11) }}>
+        <View style={{ flexDirection: 'row', padding: responsiveWidth(3),  justifyContent: "space-between",height: responsiveHeight(11),left:responsiveWidth(6), }}>
 
-          <TouchableOpacity  style={{
-            width: responsiveWidth(12), height: responsiveWidth(12), borderRadius: responsiveWidth(12), backgroundColor: "#D9D9D9",
+          {/* <TouchableOpacity  style={{
+            width: responsiveWidth(12), height: responsiveWidth(12), borderRadius: responsiveWidth(12), backgroundColor: "#ffffff",
           }}>
             <Image source={require('../../Assets/Home_Icon_And_Fonts/add_icon.png')} style={{ width: "97%", height: "100%", marginLeft: responsiveWidth(0.3) }} resizeMode='stretch' />
             <Text style={{ textAlign: "center", fontSize: responsiveFontSize(1.6), letterSpacing: 0.5, color: "#000000", fontWeight: '500' }}>New</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+
+<Handle_img_picker />
 
           <TouchableOpacity onPress={handleGoLive} style={{
-            width: responsiveWidth(12), height: responsiveWidth(12), borderRadius: responsiveWidth(12), backgroundColor: "#D9D9D9",
+            width: responsiveWidth(12), height: responsiveWidth(12), borderRadius: responsiveWidth(12), backgroundColor: "#ffffff",right:responsiveWidth(35)
           }}>
-            <Image source={require('../../Assets/Home_Icon_And_Fonts/Live_icon.png')} style={{ width: "85%", height: "100%", marginLeft: 5 }} resizeMode='stretch' />
+            <Image source={require('../../Assets/Home_Icon_And_Fonts/Live_icon.png')} style={{ width: "87%", height: "95%", marginLeft: 5 }} resizeMode='stretch' />
             <Text style={{ textAlign: "center", fontSize: responsiveFontSize(1.6), letterSpacing: 0.5, color: "#000000", fontWeight: 500 }}>Live</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={handlePromote} style={{
-            width: responsiveWidth(12), height: responsiveWidth(12), borderRadius: responsiveWidth(12), backgroundColor: "#D9D9D9",
+            width: responsiveWidth(12), height: responsiveWidth(12), borderRadius: responsiveWidth(12), backgroundColor: "#ffffff",right:responsiveWidth(22)
           }}>
-            <Image source={require('../../Assets/Home_Icon_And_Fonts/promote_icon.png')} style={{ width: "85%", height: "100%", marginLeft: 5 }} resizeMode='stretch' />
+            <Image source={require('../../Assets/Home_Icon_And_Fonts/promote_icon.png')} style={{ width: "87%", height: "90%", marginLeft: 2 }} resizeMode='stretch' />
             <View style={{ width: responsiveWidth(20) }}>
               <Text style={{ width: responsiveWidth(14), textAlign: "center", fontSize: responsiveFontSize(1.6), letterSpacing: 0.3, color: "#000000", fontWeight: 500 }}>Promote</Text>
             </View>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={handleFocus} style={{
-            width: responsiveWidth(12), height: responsiveWidth(12), borderRadius: responsiveWidth(12), backgroundColor: "#D9D9D9",
+            width: responsiveWidth(12), height: responsiveWidth(12), borderRadius: responsiveWidth(12), backgroundColor: "#ffffff",right:responsiveWidth(10)
           }}>
             <Image source={require('../../Assets/Home_Icon_And_Fonts/link_icon.png')}
-              style={{ width: "100%", height: "100%", }} resizeMode='stretch' />
+              style={{ width: "87%", height: "93%",left:responsiveWidth(0.7),top:responsiveHeight(0.4) }} resizeMode='stretch' />
             <Text style={{ textAlign: "center", fontSize: responsiveFontSize(1.6), letterSpacing: 0.5, color: "#000000", fontWeight: 500 }}>Link</Text>
           </TouchableOpacity>
 

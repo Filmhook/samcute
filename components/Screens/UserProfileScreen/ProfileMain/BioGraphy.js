@@ -167,7 +167,8 @@ export default function Biography() {
     };
     if (userType === "IndustryUser") {
       return (
-        <View>
+        <View >
+
           <View style={style.bio_content_section}>
             <ImageBackground
               style={style.inputContainer}
@@ -175,13 +176,13 @@ export default function Biography() {
               resizeMode="stretch">
               <View
                 style={{
-                  width: responsiveWidth(7.2),
-                  height: responsiveHeight(4),
-                  marginLeft: responsiveWidth(1),
+                  marginLeft: responsiveWidth(6),
                   marginTop: responsiveHeight(0.5),
+                  width: responsiveWidth(12),
+                  height: responsiveHeight(6),
                 }}>
                 <Image
-                  source={require('../../../Assets/Userprofile_And_Fonts/update/Work_Exp.png')}
+                  source={require('../../../Assets/Userprofile_And_Fonts/update/Experience.png')}
                   style={{ width: '100%', height: '100%' }}
                 />
               </View>
@@ -189,27 +190,29 @@ export default function Biography() {
                 {isEditing ? (
                   <TextInput
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      fontSize: responsiveFontSize(2.5),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
-                      top: responsiveHeight(-4.5),
+                      top: responsiveHeight(-5.2),
                       textAlign: 'center',
                       left: responsiveWidth(3)
                     }}
                     placeholderTextColor={'black'}
                     value={workExperience}
                     onChangeText={setworkExperience}
+                    keyboardType='numeric'
                     placeholder="Enter your Experience"
                   />
                 ) : (
                   <Text
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      width:responsiveWidth(35),
+                      fontSize: responsiveFontSize(2.8),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
-                      top: responsiveHeight(-3.5),
+                      top: responsiveHeight(-4.5),
                     }}>
                     {workExperience}
                   </Text>
@@ -225,10 +228,10 @@ export default function Biography() {
               resizeMode="stretch">
               <View
                 style={{
-                  width: responsiveWidth(7.2),
-                  height: responsiveHeight(4),
-                  marginLeft: responsiveWidth(1),
+                  marginLeft: responsiveWidth(6),
                   marginTop: responsiveHeight(0.5),
+                  width: responsiveWidth(12),
+                  height: responsiveHeight(6),
                 }}>
                 <Image
                   source={require('../../../Assets/Userprofile_And_Fonts/update/Booking.png')}
@@ -239,7 +242,7 @@ export default function Biography() {
                 {isEditing ? (
                   <TextInput
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      fontSize: responsiveFontSize(2.5),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
@@ -255,11 +258,12 @@ export default function Biography() {
                 ) : (
                   <Text
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      width:responsiveWidth(35),
+                      fontSize: responsiveFontSize(2.8),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
-                      top: responsiveHeight(-3.5),
+                      top: responsiveHeight(-4.5),
                     }}>
                     {workSchedule}
                   </Text>
@@ -278,10 +282,10 @@ export default function Biography() {
             resizeMode="stretch">
             <View
               style={{
-                width: responsiveWidth(7.2),
-                height: responsiveHeight(4),
-                marginLeft: responsiveWidth(1),
-                marginTop: responsiveHeight(0.5),
+                marginLeft: responsiveWidth(0.8),
+                  marginTop: responsiveHeight(0.5),
+                  width: responsiveWidth(12),
+                  height: responsiveHeight(6),
               }}>
               <Image
                 source={require('../../../Assets/Userprofile_And_Fonts/update/Booking.png')}
@@ -291,11 +295,12 @@ export default function Biography() {
             <View style={style.bioTextContainer}>
               <Text
                 style={{
-                  fontSize: responsiveFontSize(2),
+                  width:responsiveWidth(35),
+                  fontSize: responsiveFontSize(2.8),
                   color: '#000000',
                   fontWeight: '500',
                   fontFamily: 'Times New Roman',
-                  top: responsiveHeight(-3.5),
+                  top: responsiveHeight(-4.5),
                 }}>
                 Get Verified
               </Text>
@@ -425,7 +430,7 @@ console.log('updatebiograt', userId, gender, country, state, workExperience)
 
         {/* ///////////////////////////////////////////////*/}
         <View style={style.bio_content}>
-          <View style={{right:responsiveWidth(42)}}>
+          <View style={{alignSelf:'flex-end'}}>
             {isEditing ? null : (
               <TouchableOpacity onPress={() => setIsEditing(true)} style={{ color: 'black' }}>
                 <Text style={style.editButton}>Edit</Text>
@@ -446,10 +451,10 @@ console.log('updatebiograt', userId, gender, country, state, workExperience)
               resizeMode="stretch">
               <View
                 style={{
-                  marginLeft: responsiveWidth(0.2),
+                  marginLeft: responsiveWidth(6),
                   marginTop: responsiveHeight(0.5),
-                  width: responsiveWidth(8),
-                  height: responsiveHeight(4),
+                  width: responsiveWidth(12),
+                  height: responsiveHeight(6),
                 }}>
                 <Image
                   source={require('../../../Assets/Userprofile_And_Fonts/update/Dob_Icon.png')}
@@ -463,18 +468,19 @@ console.log('updatebiograt', userId, gender, country, state, workExperience)
                 {isEditing ? (
                   <TouchableOpacity onPress={showDatePicker} style={{ bottom: responsiveHeight(5), width: responsiveWidth(40) }}>
                     <TextInput
-                      style={{ paddingHorizontal: responsiveWidth(8), fontSize: responsiveFontSize(2), color: '#000000', fontWeight: '500', fontFamily: 'Times New Roman' }}
+                      style={{marginLeft:responsiveWidth(2), fontSize: responsiveFontSize(2.5), color: '#000000', fontWeight: '500', fontFamily: 'Times New Roman' }}
                       value={selectedDate}
                       editable={false}
                     />
                   </TouchableOpacity>
                 ) : (
                   <Text style={{
-                    fontSize: responsiveFontSize(2),
+                    width:responsiveWidth(35),
+                    fontSize: responsiveFontSize(2.8),
                     color: '#000000',
                     fontWeight: '500',
                     fontFamily: 'Times New Roman',
-                    bottom: responsiveHeight(3)
+                    top: responsiveHeight(-4.5),
                   }} >{selectedDate}</Text>
                 )}
                 <DateTimePickerModal
@@ -499,10 +505,10 @@ console.log('updatebiograt', userId, gender, country, state, workExperience)
               resizeMode="stretch">
               <View
                 style={{
-                  width: responsiveWidth(7.2),
-                  height: responsiveHeight(4),
-                  marginLeft: responsiveWidth(1),
+                  marginLeft: responsiveWidth(6),
                   marginTop: responsiveHeight(0.5),
+                  width: responsiveWidth(12),
+                  height: responsiveHeight(6),
                 }}>
                 <Image
                   source={require('../../../Assets/Userprofile_And_Fonts/update/Gender_Icon.png')}
@@ -512,8 +518,9 @@ console.log('updatebiograt', userId, gender, country, state, workExperience)
               <View
                 style={{
                   bottom: responsiveHeight(4),
+                  
                   left: responsiveWidth(9),
-                  width: responsiveWidth(37),
+                  width: responsiveWidth(48),
                   height: responsiveHeight(4),
                   // borderWidth:1,
                   justifyContent: 'center',
@@ -531,19 +538,20 @@ console.log('updatebiograt', userId, gender, country, state, workExperience)
                     }
                   //style={{width:100,borderWidth:1,height:responsiveHeight(6)}}
                   >
-                    <Picker.Item label="Male" value="Male" />
-                    <Picker.Item label="Female" value="Female" />
-                    <Picker.Item label="Others" value="Others" />
+                    <Picker.Item label="Male" value="Male" style={{color:'black', fontSize:responsiveFontSize(2.8),}}/>
+                    <Picker.Item label="Female" value="Female"  style={{color:'black',fontSize:responsiveFontSize(2.8)}}/>
+                    <Picker.Item label="Others" value="Others"  style={{color:'black',fontSize:responsiveFontSize(2.8)}}/>
                   </Picker>
                 ) : (
                   <Text
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      fontSize: responsiveFontSize(2.8),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
-                      left: responsiveWidth(3),
-                      //top: responsiveHeight(1.8),
+                    bottom:responsiveHeight(1), right:responsiveWidth(1.5)
+                   //  right:responsiveWidth(10),
+                    
                     }}>
                     {gender}
                   </Text>
@@ -559,43 +567,51 @@ console.log('updatebiograt', userId, gender, country, state, workExperience)
               resizeMode="stretch">
               <View
                 style={{
-                  width: responsiveWidth(7.2),
-                  height: responsiveHeight(4),
-                  marginLeft: responsiveWidth(1),
+                  marginLeft: responsiveWidth(6),
                   marginTop: responsiveHeight(0.5),
+                  width: responsiveWidth(12),
+                  height: responsiveHeight(6),
                 }}>
                 <Image
-                  source={require('../../../Assets/Userprofile_And_Fonts/update/Birthplace_icon.png')}
-                  style={{ width: '70%', height: '100%' }}
+                  source={require('../../../Assets/Userprofile_And_Fonts/update/BirthPlace.png')}
+                  style={{ width: '90%', height: '100%' }}
                 />
               </View>
               <View style={style.bioTextContainer}>
                 {isEditing ? (
+                  <View style={{top: responsiveHeight(-6), height:responsiveHeight(7), alignItems:'center', justifyContent:'center',width:responsiveWidth(50)}}>
                   <TextInput
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      fontSize: responsiveFontSize(2.5),
                       color: '#000000',
                       fontWeight: '500',
+                      alignSelf: 'center',
                       fontFamily: 'Times New Roman',
-                      top: responsiveHeight(-4.5),
+                     
                       textAlign: 'center'
+
                     }}
                     placeholderTextColor={'black'}
                     value={country}
                     onChangeText={setCountry}
                     placeholder="Your Birth Place"
                   />
+                  </View>
                 ) : (
+                  <View style={{top: responsiveHeight(-6), height:responsiveHeight(7), alignItems:'center', justifyContent:'center'}}>
                   <Text
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      width:responsiveWidth(50),
+                      fontSize: responsiveFontSize(2.8),
                       color: '#000000',
+                      left:responsiveWidth(7),
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
-                      top: responsiveHeight(-3.5),
+                     
                     }}>
                     {country}
                   </Text>
+                  </View>
                 )}
               </View>
             </ImageBackground>
@@ -609,27 +625,28 @@ console.log('updatebiograt', userId, gender, country, state, workExperience)
               resizeMode="stretch">
               <View
                 style={{
-                  width: responsiveWidth(7.2),
-                  height: responsiveHeight(4),
-                  marginLeft: responsiveWidth(1),
+                  marginLeft: responsiveWidth(6),
                   marginTop: responsiveHeight(0.5),
+                  width: responsiveWidth(12),
+                  height: responsiveHeight(6),
                 }}>
                 <Image
-                  source={require('../../../Assets/Userprofile_And_Fonts/update/Leaving_Place_icon.png')}
-                  style={{ width: '70%', height: '100%' }}
+                  source={require('../../../Assets/Userprofile_And_Fonts/update/LivingPlace.png')}
+                  style={{ width: '90%', height: '100%' }}
                 />
               </View>
               <View></View>
               <View style={style.bioTextContainer}>
                 {isEditing ? (
+                   <View style={{top: responsiveHeight(-6), height:responsiveHeight(7), alignItems:'center', justifyContent:'center',width:responsiveWidth(50)}}>
                   <TextInput
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      fontSize: responsiveFontSize(2.5),
                       color: '#000000',
                       fontWeight: '500',
                       alignSelf: 'center',
                       fontFamily: 'Times New Roman',
-                      top: responsiveHeight(-4.5),
+                     
                       textAlign: 'center'
 
                     }}
@@ -638,17 +655,22 @@ console.log('updatebiograt', userId, gender, country, state, workExperience)
                     onChangeText={setState}
                     placeholder="Your living place"
                   />
+                  </View>
                 ) : (
+                  <View style={{top: responsiveHeight(-6), height:responsiveHeight(7), alignItems:'center', justifyContent:'center'}}>
                   <Text
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      width:responsiveWidth(50),
+                      fontSize: responsiveFontSize(2.8),
                       color: '#000000',
+                      left:responsiveWidth(7),
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
-                      top: responsiveHeight(-3.5),
+                     
                     }}>
                     {state}
                   </Text>
+                  </View>
                 )}
               </View>
             </ImageBackground>
@@ -701,9 +723,9 @@ console.log('updatebiograt', userId, gender, country, state, workExperience)
               </View>
             </ImageBackground>
           </View> */}
-          <View>
+         
             {bio()}
-          </View>
+         
           {/* ///////////////////////////////////////////////*/}
 
           {/* ///////////////////////////////////////////////*/}
@@ -728,16 +750,7 @@ const style = StyleSheet.create({
     borderRadius: 5,
   },
   inputContainer: {
-    //     flexDirection: 'row',
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
-    //     height: responsiveHeight(8.4),
-    //     width: responsiveWidth(88),
-    //  //   bottom:responsiveHeight(1),
-    //     margin:responsiveHeight(1),
-    //  //   margin: responsiveWidth(1),
-    //     color: 'black',
-    //     resizeMode: 'cover',
+   
     flex: 1,
     width: '101%',
     height: '100%',
@@ -751,7 +764,7 @@ const style = StyleSheet.create({
     marginTop: responsiveHeight(1),
   },
   editButton: {
-    fontSize: 18,
+    fontSize: responsiveFontSize(2.5),
     fontWeight: 'bold',
     marginBottom: 10,
     textDecorationLine: 'underline',
@@ -762,23 +775,27 @@ const style = StyleSheet.create({
   },
   bio_title_text: {
     fontWeight: 'bold',
-      fontSize: responsiveFontSize(2.2),
+      fontSize: responsiveFontSize(2.8),
       color: 'black',
       fontFamily: 'Cochin',
       width: responsiveWidth(70),
   },
   bio_content: {
     flex: 1,
-    left:responsiveWidth(43)
+    justifyContent:'center',
+    alignItems:'center',
+   // left:responsiveWidth(43)
     //  borderWidth:1
   },
   bio_content_section: {
     flexDirection: 'row',
-    width: responsiveWidth(53),
-    height: responsiveHeight(5.5),
-    // borderWidth:responsiveWidth(0.3),
+   
+    width: '90%',
+    height: responsiveHeight(10),
+    padding:responsiveWidth(2),
+  //   borderWidth:responsiveWidth(0.3),
     borderRadius: responsiveWidth(2),
-    marginBottom: responsiveHeight(1.5),
+    marginBottom: responsiveHeight(0.2),
   },
   // text:{
   //     fontSize:18,

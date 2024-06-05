@@ -194,9 +194,9 @@ export default function Professionalinfo() {
         )}
 
         {expanded && (
-          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) ,width:responsiveWidth(100), flexWrap:'wrap'}}>
             <View style={style.Lhs}>
-              <Text style={style.Lhs_text}> Religion </Text>
+              <Text style={style.Lhs_text}> Religion :</Text>
             </View>
 
             <View style={style.Rhs}>
@@ -207,7 +207,7 @@ export default function Professionalinfo() {
                 {isEditing ? (
                   <TextInput
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      fontSize: responsiveFontSize(2.8),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
@@ -222,7 +222,7 @@ export default function Professionalinfo() {
 
                   <Text
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      fontSize: responsiveFontSize(2.8),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
@@ -240,9 +240,9 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2),  width:responsiveWidth(100), flexWrap:'wrap'}}>
             <View style={style.Lhs}>
-              <Text style={style.Lhs_text}> Caste </Text>
+              <Text style={style.Lhs_text}> Caste :</Text>
             </View>
 
             <View style={style.Rhs}>
@@ -253,7 +253,7 @@ export default function Professionalinfo() {
                 {isEditing ? (
                   <TextInput
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      fontSize: responsiveFontSize(2.8),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
@@ -284,9 +284,9 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) ,width:responsiveWidth(100), flexWrap:'wrap'}}>
             <View style={style.Lhs}>
-              <Text style={style.Lhs_text}> Marital Status </Text>
+              <Text style={style.Lhs_text}> Marital Status :</Text>
             </View>
 
             <View style={style.Rhs}>
@@ -297,7 +297,7 @@ export default function Professionalinfo() {
                 {isEditing ? (
                   <TextInput
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      fontSize: responsiveFontSize(2.8),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
@@ -327,9 +327,9 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2), width:responsiveWidth(100), flexWrap:'wrap' }}>
             <View style={style.Lhs}>
-              <Text style={style.Lhs_text}> Spouse </Text>
+              <Text style={style.Lhs_text}> Spouse :</Text>
             </View>
 
             <View style={style.Rhs}>
@@ -340,7 +340,7 @@ export default function Professionalinfo() {
                 {isEditing ? (
                   <TextInput
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      fontSize: responsiveFontSize(2.8),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
@@ -369,9 +369,9 @@ export default function Professionalinfo() {
         )}
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) ,width:responsiveWidth(100), flexWrap:'wrap'}}>
             <View style={style.Lhs}>
-              <Text style={style.Lhs_text}> Children </Text>
+              <Text style={style.Lhs_text}> Children :</Text>
             </View>
 
             <View style={{ rowGap: responsiveHeight(1) }}>
@@ -379,8 +379,8 @@ export default function Professionalinfo() {
                 <ImageBackground
                   key={index}
                   style={{
-                    height: responsiveHeight(5.5),
-                    width: responsiveWidth(53),
+                    height: responsiveHeight(9),
+                    width: responsiveWidth(90),
                     borderColor: 'black',
                     borderRadius: responsiveWidth(2),
                     marginLeft: responsiveWidth(5.5),
@@ -404,7 +404,7 @@ export default function Professionalinfo() {
 
               {isEditing && !showAddChildrenButton && (
                 <TouchableOpacity onPress={() => setShowAddChildrenButton(true)} style={{
-                  height: responsiveHeight(5.5),
+                  height: responsiveHeight(5.5), left:responsiveWidth(36),
                   width: responsiveWidth(53),
                   borderWidth: responsiveWidth(0.3),
                   borderColor: 'black',
@@ -429,6 +429,7 @@ export default function Professionalinfo() {
                       marginLeft: responsiveWidth(5.5),
                       justifyContent: 'center',
                       alignItems: 'center',
+                      left:responsiveWidth(36)
                     }}
                     source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
                     resizeMode="stretch">
@@ -444,7 +445,7 @@ export default function Professionalinfo() {
 
                   {newChildren.trim() !== '' ? (
                     <TouchableOpacity onPress={handleAddChildren} style={{
-                      height: responsiveHeight(5.5),
+                      height: responsiveHeight(5.5), left:responsiveWidth(36),
                       width: responsiveWidth(53),
                       borderWidth: responsiveWidth(0.3),
                       borderColor: 'black',
@@ -458,7 +459,7 @@ export default function Professionalinfo() {
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity onPress={() => setShowAddChildrenButton(false)} style={{
-                      height: responsiveHeight(5.5),
+                      height: responsiveHeight(5.5),left:responsiveWidth(36),
                       width: responsiveWidth(53),
                       borderWidth: responsiveWidth(0.3),
                       borderColor: 'black',
@@ -499,9 +500,9 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2),width:responsiveWidth(100), flexWrap:'wrap' }}>
             <View style={style.Lhs}>
-              <Text style={style.Lhs_text}> Mother </Text>
+              <Text style={style.Lhs_text}> Mother :</Text>
             </View>
 
             <View style={style.Rhs}>
@@ -512,7 +513,7 @@ export default function Professionalinfo() {
                 {isEditing ? (
                   <TextInput
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      fontSize: responsiveFontSize(2.8),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
@@ -544,9 +545,9 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2),width:responsiveWidth(100), flexWrap:'wrap' }}>
             <View style={style.Lhs}>
-              <Text style={style.Lhs_text}> Father </Text>
+              <Text style={style.Lhs_text}> Father :</Text>
             </View>
 
             <View style={style.Rhs}>
@@ -587,9 +588,9 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2),width:responsiveWidth(100), flexWrap:'wrap' }}>
             <View style={style.Lhs}>
-              <Text style={style.Lhs_text}> Brother </Text>
+              <Text style={style.Lhs_text}> Brother :</Text>
             </View>
 
             <View style={{ rowGap: responsiveHeight(1) }}>
@@ -598,8 +599,8 @@ export default function Professionalinfo() {
                   <ImageBackground
                     key={`brother-${index}`}
                     style={{
-                      height: responsiveHeight(5.5),
-                      width: responsiveWidth(53),
+                      height: responsiveHeight(8),
+                      width: responsiveWidth(90),
                       borderColor: 'black',
                       borderRadius: responsiveWidth(2),
                       marginLeft: responsiveWidth(5.5),
@@ -626,7 +627,7 @@ export default function Professionalinfo() {
 
               {isEditing && !showAddButton && (
                 <TouchableOpacity onPress={() => setShowAddButton(true)} style={{
-                  height: responsiveHeight(5.5),
+                  height: responsiveHeight(5.5), left: responsiveWidth(36),
                   width: responsiveWidth(53),
                   borderWidth: responsiveWidth(0.3),
                   borderColor: 'black',
@@ -643,7 +644,7 @@ export default function Professionalinfo() {
                 <>
                   <ImageBackground
                     style={{
-                      height: responsiveHeight(5.5),
+                      height: responsiveHeight(5.5),left: responsiveWidth(36),
                       width: responsiveWidth(53),
                       borderColor: 'black',
                       borderRadius: responsiveWidth(2),
@@ -663,7 +664,7 @@ export default function Professionalinfo() {
                   </ImageBackground>
                   {newBrother.trim() !== '' ? (
                     <TouchableOpacity onPress={handleAddBrother} style={{
-                      height: responsiveHeight(5.5),
+                      height: responsiveHeight(5.5),left: responsiveWidth(36),
                       width: responsiveWidth(53),
                       borderWidth: responsiveWidth(0.3),
                       borderColor: 'black',
@@ -677,7 +678,7 @@ export default function Professionalinfo() {
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity onPress={() => setShowAddButton(false)} style={{
-                      height: responsiveHeight(5.5),
+                      height: responsiveHeight(5.5),left: responsiveWidth(36),
                       width: responsiveWidth(53),
                       borderWidth: responsiveWidth(0.3),
                       borderColor: 'black',
@@ -700,9 +701,9 @@ export default function Professionalinfo() {
 
         {/* -------------------------------------------------- */}
         {expanded && (
-          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2) }}>
+          <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2),width:responsiveWidth(100), flexWrap:'wrap' }}>
             <View style={style.Lhs}>
-              <Text style={style.Lhs_text}> Sister </Text>
+              <Text style={style.Lhs_text}> Sister : </Text>
             </View>
 
             <View style={{ rowGap: responsiveHeight(1) }}>
@@ -710,8 +711,8 @@ export default function Professionalinfo() {
                 <ImageBackground
                   key={`sister-${index}`}
                   style={{
-                    height: responsiveHeight(5.5),
-                    width: responsiveWidth(53),
+                    height: responsiveHeight(8),
+                    width: responsiveWidth(90),
                     borderColor: 'black',
                     borderRadius: responsiveWidth(2),
                     marginLeft: responsiveWidth(5.5),
@@ -735,7 +736,7 @@ export default function Professionalinfo() {
 
               {isEditing && !showAddSisterButton && (
                 <TouchableOpacity onPress={() => setShowAddSisterButton(true)} style={{
-                  height: responsiveHeight(5.5),
+                  height: responsiveHeight(5.5), left:responsiveWidth(36),
                   width: responsiveWidth(53),
                   borderWidth: responsiveWidth(0.3),
                   borderColor: 'black',
@@ -775,7 +776,7 @@ export default function Professionalinfo() {
 
                   {newSister.trim() !== '' ? (
                     <TouchableOpacity onPress={handleAddSister} style={{
-                      height: responsiveHeight(5.5),
+                      height: responsiveHeight(5.5), left:responsiveWidth(36),
                       width: responsiveWidth(53),
                       borderWidth: responsiveWidth(0.3),
                       borderColor: 'black',
@@ -789,7 +790,7 @@ export default function Professionalinfo() {
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity onPress={() => setShowAddSisterButton(false)} style={{
-                      height: responsiveHeight(5.5),
+                      height: responsiveHeight(5.5), left:responsiveWidth(36),
                       width: responsiveWidth(53),
                       borderWidth: responsiveWidth(0.3),
                       borderColor: 'black',
@@ -867,9 +868,10 @@ const style = StyleSheet.create({
   },
   Lhs: {
     height: responsiveHeight(5),
-    width: responsiveWidth(38),
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: responsiveWidth(50),
+    marginLeft:responsiveWidth(2)
+    
+   
   },
 
   editButton: {
@@ -883,18 +885,19 @@ const style = StyleSheet.create({
   },
   Lhs_text: {
     fontWeight: 'bold',
-    fontSize: responsiveFontSize(2.1),
+    fontSize: responsiveFontSize(2.8),
     color: '#323232',
-    marginLeft: responsiveWidth(1.5),
+   // marginLeft: responsiveWidth(1.5),
     fontFamily: 'Times New Roman',
   },
   Rhs: {
-    height: responsiveHeight(5.5),
-    width: responsiveWidth(53),
+    height: responsiveHeight(8),
+    width: responsiveWidth(88),
+   
     //borderWidth: responsiveWidth(0.3),
     borderColor: 'black',
     borderRadius: responsiveWidth(2),
-    marginLeft: responsiveWidth(5.5),
+    marginLeft: responsiveWidth(5.7),
     justifyContent: 'center',
     alignItems: 'center',
   },

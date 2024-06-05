@@ -27,27 +27,25 @@ export default function Promote() {
   const textColor = colors ? colors.text : 'black';
   const [userPost, setUserPost] = useState([]);
 
-  useEffect(() => {
-    const fetchUserPost = async () => {
-      try {
-        const userId = await AsyncStorage.getItem('userId')
-        const posts = await privateApi.get(`user/post/getPostsByUserId?userId=${userId}`);
-        setUserPost(posts.data.data);
-        console.log("Fetched User Post");
-        console.log('post dataaa', posts.data);
-      } catch (e) {
-        console.log("Fetching Failed in user post", e);
-      }
-    };
 
+  const fetchUserPost = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId')
+      const posts = await privateApi.get(`promote/getPromoteByUserId?userId=${userId}`);
+      setUserPost(posts.data.data);
+      console.log("Fetched User Post");
+      console.log('post dataaa', posts.data);
+    } catch (e) {
+      console.log("Fetching Failed in user post", e);
+    }
+  };
+
+  useEffect(() => {
     // Fetch data initially
     fetchUserPost();
 
-    // Set up interval to fetch data every 10 minutes
-    const intervalId = setInterval(fetchUserPost, 5 * 60 * 1000); // 5 minutes
 
-    // Clean up interval on unmount
-    return () => clearInterval(intervalId);
+
   }, []);
 
 
@@ -94,14 +92,17 @@ export default function Promote() {
       // setCountLike(item.likeCount);
     }, [item]);
 
-
-    // Call the function to fetch initial counts
-
-
-
-
-
-
+    handleDeletePromote = async () => {
+      try {
+        const response = await privateAPI.post(`promote/deletePromoteByUserId`, {
+          postId: postId
+        });
+        fetchUserPost();
+        console.log('delete response', response.data);
+      } catch (error) {
+        console.log("error on delete api", error)
+      }
+    };
 
     const options = {
       notation: 'compact',
@@ -251,121 +252,7 @@ export default function Promote() {
     };
 
 
-    const LongTextComponent = ({ text }) => {
-      const [showFullText, setShowFullText] = useState(false);
 
-      const toggleTextVisibility = () => {
-        setShowFullText(!showFullText);
-      };
-
-      const handleSeeLess = () => {
-        setShowFullText(false);
-      };
-
-      return (
-        <View style={{
-          width: responsiveWidth(94), padding: responsiveWidth(1), left: responsiveWidth(2)
-        }}>
-          <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: "400", lineHeight: responsiveHeight(2.5), color: "#000000", textAlign: 'justify', flexDirection: 'row' }} numberOfLines={showFullText ? undefined : 3}>
-            {text}
-          </Text>
-          {text.length > 3 && (
-            <View>
-              {showFullText ? (
-                <TouchableOpacity onPress={handleSeeLess}>
-                  <Text style={{ color: 'blue' }}>See Less</Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity onPress={toggleTextVisibility}>
-                  <Text style={{ color: 'blue' }}>See More</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          )}
-        </View>
-      );
-    };
-
-
-    const onSharePress = async () => {
-
-      const options = {
-        // Your default message
-        // message: `${item.caption} `,
-        message: imageUrl
-      };
-      try {
-        const result = await Share.share(options);
-        if (result.action === Share.sharedAction) {
-          console.log('Post shared successfully');
-          // Assuming you want to share the file after sharing via Share API
-          const shareResponse = await privateApi.post('user/post/addShare', {
-            userId: userId,
-            // postUrl: imageUrl,
-            postId: postId
-          });
-          console.log('File shared via API successfully');
-          console.log("psotId", postId);
-          const count = shareResponse.data.data;
-          setShareCount(count.totalSharesCount);
-          console.log("share count ", count.totalSharesCount)
-
-        } else if (result.action === Share.dismissedAction) {
-          console.log('Share dismissed');
-        }
-      } catch (error) {
-        console.error('Error sharing post:', error.message);
-      }
-    };
-    const [visible, setVisible] = useState(false)
-
-    const handle_seemoreicon = () => {
-      setVisible(!visible)
-    }
-
-    const pinPost = async (postId) => {
-      try {
-        const body = {
-          flag: 1,
-          pinMediaId: postId
-        };
-
-        // Make API call to pin the post using postId
-        const response = await privateAPI.post('/pin/addPin', body);
-        // Handle response as needed
-        console.log('Post pinned successfully:', response.data);
-        Alert.alert('success', 'Post pinned successfully')
-      } catch (error) {
-        console.error('Error pinning post:', error);
-      }
-    };
-
-    const reportPost = async (postId) => {
-      try {
-        const body = {
-          postId: postId,
-          reason: 'report'
-        }
-        const response = await privateAPI.post('/report/addPostReport', body);
-        console.log('reported Post successfully:', response.data)
-        Alert.alert('success', 'reported Post successfully')
-      } catch (error) {
-        console.log('Error repoting post:', error);
-      }
-    };
-    const pinProfile = async (userId) => {
-      try {
-        const body = {
-          flag: 0,
-          pinProfileId: userId
-        }
-        const response = await privateAPI.post('pin/addPin', body);
-        console.log('profile pinned successfully:', response.data)
-        Alert.alert('success', 'profile pinned successfully')
-      } catch (error) {
-        console.log('Error pinning profile:', error);
-      }
-    };
     const promoteEdit = () => {
       navigation.navigate('PromoteEdit', {
         imageUrls,
@@ -539,7 +426,7 @@ export default function Promote() {
 
               {/* promate button */}
               <View style={{ margin: responsiveHeight(2), left: responsiveWidth(3) }}>
-                <TouchableOpacity style={{ width: responsiveWidth(18), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveHeight(1), backgroundColor: 'black' }}>
+                <TouchableOpacity style={{ width: responsiveWidth(18), height: responsiveHeight(3.9), borderWidth: 1, borderRadius: responsiveHeight(1), backgroundColor: 'black' }} onPress={handleDeletePromote}>
 
                   <Text style={{ alignSelf: 'center', top: responsiveHeight(0.5), fontSize: responsiveFontSize(1.9), fontWeight: "500", color: "white" }}>Delete</Text>
 

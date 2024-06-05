@@ -74,6 +74,8 @@ export default function Login() {
       await AsyncStorage.setItem('fcmToken', token);
       await AsyncStorage.setItem('username', response.data.username);
       const userType = response.data.userType;
+      const FhCode = response.data.filmHookCode;
+      await AsyncStorage.setItem('FhCode', FhCode);
       await AsyncStorage.setItem('usertype', userType);
     
   
