@@ -6,7 +6,6 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import {PermissionsAndroid, Platform} from 'react-native';
 import {
   ClientRoleType,
   createAgoraRtcEngine,
@@ -90,6 +89,7 @@ export default function VideoCallingScreen({navigation}) {
     }
   };
   console.log(ONE_ON_ONE_VIDEO_CALL_CONFIG)
+  
 
   if (remoteUserId) {
     return (

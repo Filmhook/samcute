@@ -29,6 +29,7 @@ export default function Otp_GS() {
     const retrieveMail = async () => {
 
         const mailId = await AsyncStorage.getItem('mail');
+        console.log(`getting email id - ${mailId}`)
         if (mailId !== null) {
           setMail(mailId)
 
@@ -50,7 +51,7 @@ export default function Otp_GS() {
 
       console.log('success', response.data);
       Alert.alert('Email number Verified successfully');
-      navigation.navigate('Tabbar');
+      navigation.navigate('Login');
     } catch (error) {
       console.log(error);
       console.log('Input OTP:', otp);

@@ -139,12 +139,17 @@ const Timeline = ({ route }) => {
       {!loading && jobPosts.length > 0 && (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Text style={{ color: 'black', right: responsiveWidth(36), fontWeight: 'bold', fontSize: 20 }}>New Jobs</Text>
-          <FlatList
+          
+          {/* <FlatList
             data={jobPosts}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => <JobPost {...item} />}
             style={{ height: '90%' }}
-          />
+          /> */}
+
+{jobPosts.map((item,index)=>(
+        <obPost {...item} />
+      ))}
         </View>
       )}
 

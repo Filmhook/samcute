@@ -55,7 +55,7 @@ export default function StatusPost() {
   const [link, setLink] = useState('');
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [linkVisibility, setLinkVisibility] = useState('public');
-  const [filePath, setFilePath] = useState('');
+  const [filePath, setFilePath] = useState(null);
 
 
   const handleFocus = () => {
@@ -163,15 +163,23 @@ export default function StatusPost() {
       }
     };
 
-    fetchProfilePicture();
+    // fetchProfilePicture();
   }, []);
   return (
     <>
       <View>
         <View style={{ flexDirection: 'row', padding: responsiveWidth(2), }}>
           {/* User Profile Section */}
-          <TouchableOpacity style={{ marginLeft: responsiveWidth(0), width: responsiveWidth(13), height: responsiveHeight(7), borderWidth: responsiveWidth(0.5), borderRadius: responsiveWidth(3), backgroundColor: "grey",top:responsiveHeight(1)}} onPress={() => navigation.navigate('profilepage')}>
-            <Image source={{ uri: filePath }} style={{ width: '100%', height: '100%', borderRadius: 10, }} resizeMode='stretch' />
+          <TouchableOpacity style={{ marginLeft: responsiveWidth(0), width: responsiveWidth(12.5), height: responsiveHeight(6), borderWidth: responsiveWidth(0.2), borderRadius: responsiveWidth(10), backgroundColor: "grey" }} onPress={() => navigation.navigate('profilepage')}>
+        {!filePath && (
+            <Image source={require('../../Assets/Userprofile_And_Fonts/Filmhook_UserProfile.png')} style={{ width: '100%', height: '100%', borderRadius: 50, }} resizeMode='stretch' />
+
+        ) }
+         {filePath  && (
+            <Image source={{ uri: filePath }} style={{ width: '100%', height: '100%', borderRadius: 50, }} resizeMode='stretch' />
+
+        ) }
+        
           </TouchableOpacity>
           <View style={{ width: responsiveWidth(9), height: responsiveHeight(2.4), borderRadius: responsiveWidth(2), borderWidth: 1,  backgroundColor: "#000000",top:responsiveHeight(6),right:responsiveWidth(11) }}>
                   <Text

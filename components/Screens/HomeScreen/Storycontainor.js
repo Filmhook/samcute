@@ -298,33 +298,33 @@ export default function StoryContainer() {
 
   useEffect(() => {
     const fetchProfilePicture = async () => {
-      try {
-        const jwt = await AsyncStorage.getItem('jwt');
-        const id = await AsyncStorage.getItem('userId');
+      // try {
+      //   const jwt = await AsyncStorage.getItem('jwt');
+      //   const id = await AsyncStorage.getItem('userId');
 
-        const myHeaders = {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + jwt
-        };
+      //   const myHeaders = {
+      //     'Content-Type': 'application/json',
+      //     'Authorization': 'Bearer ' + jwt
+      //   };
 
-        const requestData = {
-          userId: id
-        };
+      //   const requestData = {
+      //     userId: id
+      //   };
 
-        const response = await privateAPI.post('user/getProfilePic', requestData, { headers: myHeaders });
+      //   const response = await privateAPI.post('user/getProfilePic', requestData, { headers: myHeaders });
 
-        const data = response.data; // Extract response data
+      //   const data = response.data; // Extract response data
 
-        if (data.status === 1) {
-          const profilePicUrl = data.data.filePath; // Extract filePath from response
-          setImageURL(profilePicUrl); // Update state with profile picture URL
-          console.log('Profile pic found successfully:', profilePicUrl);
-        } else {
-          throw new Error('Failed to fetch profile picture');
-        }
-      } catch (error) {
-        console.error('Error fetching profile picture:', error);
-      }
+      //   if (data.status === 1) {
+      //     const profilePicUrl = data.data.filePath; // Extract filePath from response
+      //     setImageURL(profilePicUrl); // Update state with profile picture URL
+      //     console.log('Profile pic found successfully:', profilePicUrl);
+      //   } else {
+      //     throw new Error('Failed to fetch profile picture');
+      //   }
+      // } catch (error) {
+      //   console.error('Error fetching profile picture:', error);
+      // }
     };
 
     fetchProfilePicture();

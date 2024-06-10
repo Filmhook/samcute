@@ -100,7 +100,7 @@ export default function Industry_S_One() {
       console.error('Error fetching platform dropdown data:', error);
     }
   };
-
+console.log("Thiihihihiihi")
   const ProfessionOpen = async () => {
     try {
       const response = await PublicAPI.post('/Film/getProfessionMapList', {});
@@ -236,7 +236,9 @@ export default function Industry_S_One() {
             </Text>
           </View>
 
-          <View style={{}}>
+          <View style={{
+            zIndex: 1
+          }}>
             <DropDownPicker
               items={dropdownData}
               open={isOpendata}
@@ -269,7 +271,6 @@ export default function Industry_S_One() {
               badgeDotColors={['green', 'red', 'blue', 'yellow']}
               badgeTextStyle={'black'}
               style={{
-
                 marginTop: responsiveHeight(1),
                 marginBottom: responsiveHeight(1),
                 borderWidth: responsiveWidth(0.5),
@@ -277,11 +278,11 @@ export default function Industry_S_One() {
                 borderRadius: responsiveWidth(2),
                 height: responsiveHeight(8),
                 width: responsiveWidth(86),
-                zIndex: 3,
+                zIndex: 11111,
               }}
             />
           </View>
-          <View style={{}}>
+          <View style={{zIndex : 1}}>
             <DropDownPicker
               items={platformData}
               open={isOpen}
@@ -324,14 +325,14 @@ export default function Industry_S_One() {
                 shadowOffset: {width: -3, height: 9},
                 shadowOpacity: 0.6,
                 shadowRadius: 2,
-                elevation: 1,
+                // elevation: 1,
                 shadowColor: 'gray',
-                zIndex: 2,
+                // zIndex: -1,
               }}
             />
           </View>
 
-          <View>
+          <View style={{zIndex : 1}}>
             <DropDownPicker
               items={professionData}
               open={isOpenProf}
@@ -374,14 +375,14 @@ export default function Industry_S_One() {
                 height: responsiveHeight(8),
                 width: responsiveWidth(86),
                 // left: responsiveWidth(3),
-                zIndex: 1,
+                // zIndex: 1,
 
                 // borderColor: 'black',
                 // margin: responsiveWidth(1),
               }}
             />
           </View>
-          <View style={{}}>
+          <View style={{ zIndex: 1}}>
             <DropDownPicker
               items={subProfessionData}
               open={isOpenProfSub}
@@ -419,7 +420,7 @@ export default function Industry_S_One() {
                 borderRadius: responsiveWidth(2),
                 height: responsiveHeight(8),
                 width: responsiveWidth(86),
-                zIndex: 2,
+                // zIndex: 2,
               }}
             />
           </View>
@@ -433,6 +434,7 @@ export default function Industry_S_One() {
                   color: 'white',
                   fontWeight: 'bold',
                   fontSize: responsiveFontSize(2),
+                  zIndex: -1111
                 }}>
                 Back
               </Text>

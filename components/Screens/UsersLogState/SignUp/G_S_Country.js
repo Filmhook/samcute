@@ -75,9 +75,9 @@ export default function SignUpCountry() {
 
   const handlePressNav = () => {
     let isError = false;
-  
+  console.log(name , selectedDate , selectedGender , middleName , lastName)
     // Validation for name, selectedDate, selectedGender, middleName, lastName
-    if (!name || !selectedDate || !selectedGender || !middleName || !lastName) {
+    if (!name || !selectedDate || !selectedGender) {
       // Handle the error, e.g., show an error message
       isError = true;
     }
@@ -97,7 +97,7 @@ export default function SignUpCountry() {
     } else {
       setLivingPlaceError('');
     }
-  
+  console.log("isError - " , isError)
     // Navigate to next screen if there are no errors
     if (!isError) {
       navigation.navigate('SignUpTwo', {
@@ -132,7 +132,6 @@ export default function SignUpCountry() {
   return (
     <View style={styles.container}>
 
-      <ScrollView>
         <View style={styles.formContainer}>
 
 
@@ -233,7 +232,6 @@ export default function SignUpCountry() {
           </View>
         </View>
 
-      </ScrollView>
     </View>
 
   );

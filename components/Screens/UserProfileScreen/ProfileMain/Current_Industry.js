@@ -10,8 +10,7 @@ export default function CurrentIndustry() {
     // if industry becomes two or more values come 
     // const industries = user.Industry || [];
     //console.log('industries:',industries);
-    const [expanded, setExpanded] = useState(false);
-
+    const [expanded, setExpanded] = useState(false);         
     const [industryData, setIndustryData] = useState([]);
 
     useEffect(() => {
@@ -22,11 +21,7 @@ export default function CurrentIndustry() {
                 const response = await privateAPI.get(`industryUser/getIndustryByuserId?userId=${userId}`);
                 setIndustryData(response.data.industryData);
             } catch (error) {
-                if (error.response && error.response.status === 404) {
-                    setIndustryData(null); // Set industry data to null if status is 404
-                } else {
-                    console.error('Error fetching the industry data:', error);
-                }
+                console.log('Error fetching the industry data:', error);
             }
         };
     
@@ -44,20 +39,7 @@ export default function CurrentIndustry() {
 
             <View style={style.container}>
 
-                {/* <View style={style.bio_title}>
-                    <TouchableOpacity style={style.bio_title} onPress={toggleExpanded}>
-                        <Text style={style.bio_title_text}>CURRENTLY WORKING INDUSTRY
-
-                        </Text>
-
-                        <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
-                            <Image
-                                source={require("../../../Assets/Userprofile_And_Fonts/update/down-arrow.png")}
-                                style={style.downArrow}
-                            />
-                        </View>
-                    </TouchableOpacity>
-                </View> */}
+                
                 <View style={style.bio_title}>
                     <TouchableOpacity style={style.bio_title_touchable} onPress={toggleExpanded}>
                         <Text style={style.bio_title_text}>CURRENTLY WORKING INDUSTRY</Text>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, FlatList, Modal, TextInput, ScrollView, Button } from 'react-native';
+import { View, Text, Image, TouchableOpacity, FlatList, Modal, TextInput, Button } from 'react-native';
 import { getFirestore, collection, query, getDocs, doc, addDoc, deleteDoc, setDoc } from 'firebase/firestore';
 import { Share } from 'react-native';
 import app from '../../../FirebaseConfig';
@@ -54,9 +54,8 @@ export default function Posts() {
 
   return (
     <>
-      <FlatList
-        data={posts}
-        renderItem={({ item }) => (
+{posts.map((item) =>(
+    
           <RenderPost
             post={item}
             handleLikeDislike={handleLikeDislike}
@@ -70,9 +69,8 @@ export default function Posts() {
             setCommentText={setCommentText}
             submitComment={submitComment}
           />
-        )}
-        keyExtractor={(item) => item.id}
-      />
+))}
+        
 
       {/* Comment Modal */}
       <Modal visible={isCommentVisible}>
@@ -86,8 +84,7 @@ export default function Posts() {
           <Button title="Close" onPress={closeCommentModal} />
         </View>
       </Modal>
-      {/* Comment Modal */}
-    </>
+      </>
   );
 }
 

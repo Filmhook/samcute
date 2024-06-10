@@ -93,6 +93,8 @@ export default function Postview() {
         { length: responsiveHeight(25), offset: responsiveHeight(25) * index, index }
       )}
     />
+      
+
   );
 }
 

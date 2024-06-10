@@ -1,7 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import refreshToken from './refreshToken';
-
 // Create private API instance with base URL
 const privateAPI = axios.create({
   baseURL: 'https://filmhook.annularprojects.com/filmhook-0.1',

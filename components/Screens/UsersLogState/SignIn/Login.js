@@ -17,6 +17,7 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
+import refreshToken from '../../../api/refreshToken';
 
 import PublicAPI from '../../../api/publicAPI';
 import {Alert} from 'react-native';
@@ -24,8 +25,8 @@ import messaging from '@react-native-firebase/messaging';
 
 export default function Login() {
   const user1 = {
-    email: 'yaswanthshankar2705@gmail.com',
-    password: 'maninew',
+    email: 'jesuraj3040@gmail.com',
+    password: 'Jesuraj@123',
   };
 
   const user2 = {
@@ -33,8 +34,8 @@ export default function Login() {
     password: 'Annular@234',
   };
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState('jesuraj3040@gmail.com');
+  const [password, setPassword] = useState('Jesuraj@123');
   const [showPassword, setShowPassword] = useState('');
   //yaswanthshankar2705@gmail.com
   //benishabeni21@gmail.com
@@ -104,13 +105,13 @@ export default function Login() {
     // navigation.navigate('Tabbar');
     const emailRegex = /\S+@\S+\.\S+/; // Regex pattern for a basic email format check
 
-    if (!email.trim()) {
+    if (email.length===0 || !email.trim()) {
       Alert.alert('Error', 'Please enter email');
       return;
     } else if (!emailRegex.test(email.trim())) {
       Alert.alert('Error', 'Please enter a valid email address');
       return;
-    } else if (!password.trim()) {
+    } else if (password.length===0 || !password.trim()) {
       Alert.alert('Error', 'Please enter password');
       return;
     } else {

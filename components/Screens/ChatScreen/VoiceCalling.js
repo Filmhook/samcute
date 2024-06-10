@@ -6,7 +6,7 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import {PermissionsAndroid, Platform} from 'react-native';
+import { Platform} from 'react-native';
 import {mediaDevices} from 'react-native-webrtc';
 
 import {

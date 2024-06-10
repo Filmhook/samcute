@@ -6,7 +6,7 @@ import { AppRegistry } from 'react-native';
 import App from './App';
 import { name as appName } from './app.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import privateAPI from './components/api/privateAPI'
 import handleincomingvideoCall from './notification';
 import { navigate } from './components/NavigationService';
 import notifee, { AndroidCategory, AndroidImportance, AndroidLaunchActivityFlag, AndroidVisibility, EventType, TimeUnit } from '@notifee/react-native';
