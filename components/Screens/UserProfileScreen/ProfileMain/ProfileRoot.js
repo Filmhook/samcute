@@ -11,14 +11,13 @@ import Swiper from 'react-native-swiper'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import ImagePicker from 'react-native-image-crop-picker';
-import {launchCamera,launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Myactive from './Myactive'
 import privateAPI from '../../../api/privateAPI'
 import { method } from 'lodash'
 import Modal from 'react-native-modal';
 
-const ProfileRoot = () =>{
+export default function ProfileRoot() {
 
   const [userData, setUserData] = useState(null);
   const [imageURL, setImageURL] = useState(null);
@@ -58,61 +57,44 @@ const ProfileRoot = () =>{
   const [selectedImage, setSelectedImage] = useState(null);
 
 
-
-  const handleImageOption = async (option) => {
-    try {
-      let image = null;
-      if (option === 'camera') {
-        image = await ImagePicker.openCamera({ cropping: true });
-      } else if (option === 'gallery') {
-        image = await ImagePicker.openPicker({ cropping: true, multiple: true});
-      }
-  
-      const formatedImg = image?.map(im => {
-      return { uri: im.path, type: im.mime, name: im.path.split('/').pop() }
-      })
-      console.log(`Select Story Images: ${JSON.stringify(formatedImg)}`)
-  
-      // Move the uploadStory function call here
-      setSelectedImage(formatedImg);
-    } catch (error) {
-      console.log('Image picker operation canceled or failed:', error);
-    } finally {
-      setShowGallery(false);
-    }
-  };
-  
-
-  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-  async function generateString(length) {
-    let result = ' ';
-    const charactersLength = characters.length;
-    for ( let i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-
-    return result;
-  }
-
-
   const openGallery = () => {
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: 2000,
-      maxWidth: 2000,
-    };
-   try{
-    launchImageLibrary(options, response => {
-        let generateName =  generateString(5) ? generateString(5)  :'imgaeNmaw';
-        setSelectedImage({ uri: response.uri || response.assets?.[0]?.uri,  name: generateName });
-        console.log('images', { uri: response.uri ||  response.assets?.[0]?.uri, name: generateName });
+    setShowGallery(true);
+  };
+
+  const openCamera = () => {
+    ImagePicker.openCamera({
+      cropping: true,
+      width: 400,
+      height: 500,
+      compressImageQuality: 1,
+    })
+      .then((image) => {
+        let generateName = image.path.split('/')[image.path.split('/')?.length - 1];
+        setSelectedImage({ uri: image.path, type: image.mime, name: generateName });
+        console.log('images', { uri: image.path, type: image.mime, name: generateName });
         setShowGallery(false);
       })
-    }catch(error){
-      alert("Error Seelcting Image")
-    }
+      .catch((error) => {
+        console.log('ImagePicker Error: ', error);
+      });
+  };
+
+  const openImagePicker = () => {
+    ImagePicker.openPicker({
+      cropping: true,
+      width: 400,
+      height: 500,
+      compressImageQuality: 1,
+    })
+      .then((image) => {
+        let generateName = image.path.split('/')[image.path.split('/')?.length - 1];
+        setSelectedImage({ uri: image.path, type: image.mime, name: generateName });
+        console.log('images', { uri: image.path, type: image.mime, name: generateName });
+        setShowGallery(false);
+      })
+      .catch((error) => {
+        console.log('ImagePicker Error: ', error);
+      });
   };
 
   useEffect(() => {
@@ -124,13 +106,12 @@ const ProfileRoot = () =>{
   const handleUpload = async () => {
     try {
       if (!selectedImage) return; // No image selected
+  
       const id = await AsyncStorage.getItem('userId');
-      const myHeaders = new Headers();
       const jwt = await AsyncStorage.getItem('jwt');
   
       const formData = new FormData();
       formData.append('userId', id);
-      console.log(selectedImage)
       const imageUriParts = selectedImage.uri.split('.');
       const fileType = imageUriParts[imageUriParts.length - 1];
       formData.append('profilePhoto.files', {
@@ -210,7 +191,7 @@ const ProfileRoot = () =>{
         console.log('Profile pic not found:', data.message);
       }
     } catch (error) {
-      console.log('Error fetching profile picture:', error);
+      console.error('Error fetching profile picture:', error);
     }
   };
 
@@ -223,38 +204,57 @@ const ProfileRoot = () =>{
   const [selectedImagesCover, setSelectedImagesCover] = useState([]);
 
   const openGalleryCover = () => {
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: 2000,
-      maxWidth: 2000,
-    };
-  try{
-    launchImageLibrary(options, response => {
-       
-          let generateName = generateString(4) ? generateString(4) :"cover`immage";
-          setSelectedImagesCover([{ uri: response.uri ||  response.assets?.[0]?.uri,  name: generateName }])
-        
-        console.log('Selected images:', generateName);
+    setShowGalleryCover(true);
+  };
+
+  const openCameraCover = () => {
+    ImagePicker.openCamera({
+      cropping: true,
+      width: 400,
+      height: 500,
+      compressImageQuality: 1,
+    })
+      .then((image) => {
+        let generateName = image.path.split('/')[image.path.split('/')?.length - 1];
+        setSelectedImage({ uri: image.path, type: image.mime, name: generateName });
+        console.log('images', { uri: image.path, type: image.mime, name: generateName });
+        setShowGallery(false);
+      })
+      .catch((error) => {
+        console.log('ImagePicker Error: ', error);
+      });
+  };
+
+  const openGalleryCovernew = () => {
+    ImagePicker.openPicker({
+      multiple: true,
+      cropping: true,
+      width: 400,
+      height: 500,
+      compressImageQuality: 1,
+    })
+      .then((images) => {
+        const formattedImages = images.map((image) => {
+          let generateName = image.path.split('/')[image.path.split('/')?.length - 1];
+          return { uri: image.path, type: image.mime, name: generateName };
+        });
+
+        setSelectedImagesCover(formattedImages);
+        console.log('Selected images:', formattedImages);
         setShowGalleryCover(false);
       })
       .catch((error) => {
         console.log('ImagePicker Error: ', error);
       });
-    }catch(error){
-      alert("Error Seelcting Image")
-    }
-
-      
   };
 
-   useEffect(() => {
+  useEffect(() => {
     if (selectedImagesCover.length > 0) {
       selectedImagesCover.forEach(image => {
         handleUploadCover(image);
       });
     }
-   }, [selectedImagesCover]);
+  }, [selectedImagesCover]);
 
   const handleUploadCover = async (image) => {
     try {
@@ -274,13 +274,13 @@ const ProfileRoot = () =>{
       });
       formData.append('coverPhoto.description', 'Cover Pic');
   
-      const response = await axios.post(
-        'https://filmhook.annularprojects.com/filmhook-0.1/user/saveCoverPhoto',
+      const response = await privateAPI.post(
+        'user/saveCoverPhoto',
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            'Authorization': 'Bearer ' + jwt,
+          
           },
         }
       );
@@ -308,24 +308,14 @@ const ProfileRoot = () =>{
     try {
       const id = await AsyncStorage.getItem('userId');
 
-        // Check if responseData contains 'data' property and it's an array
-        if (responseData && responseData.data && Array.isArray(responseData.data)) {
-          // Accessing the array of cover pic objects
-          const coverPicsData = responseData.data;
-          console.log("Cover pics data:", coverPicsData);
-
-          // Set coverPics state with the array of cover pic objects
-          setCoverPics(coverPicsData);
-        } else {
-          console.log("Invalid data format in API response.",);
-        }
-
-
-
-      } catch (error) {
-        console.error(error);
-      }
-    
+      const response = await privateAPI.post(`user/deleteCoverPic`, {
+        userId: id
+      });
+      fetchCover();
+      console.log("delete response ", response.data)
+    } catch (error) {
+      console.log("delete cover error", error)
+    }
   };
   const fetchCover = async () => {
     try {
@@ -389,24 +379,13 @@ const ProfileRoot = () =>{
     };
     followerCount()
   }, [followerCount]);
-
   useEffect(() => {
     fetchCover();
     fetchProfilePicture();
   }, []);
 
-  const openCameraCover = ()=>{
 
-  }
-
-const openImagePicker = ( )=>{
-
-}  
-const openCamera = ( )=>{
-
-} 
-
-   return (
+  return (
     <>
 
       <ScrollView style={styles.container}>
@@ -429,7 +408,7 @@ const openCamera = ( )=>{
             <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={openCameraCover}>
               <Text style={{color:'black'}}>Open Camera</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ padding: responsiveWidth(2) }} >
+            <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={openGalleryCovernew}>
               <Text style={{color:'black'}}>Upload your Image</Text>
             </TouchableOpacity>
             <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={handleDeleteCover}>
@@ -442,7 +421,7 @@ const openCamera = ( )=>{
         </Modal>
         <TouchableOpacity onPress={openGalleryCover}>
 
-          <Image source={require("../../../Assets/ios/photo-camera.png")} style={styles.cameraIconC}  />
+          <Icon name="camera" size={15} color="#fff" style={styles.cameraIconC} />
         </TouchableOpacity>
 
 
@@ -470,8 +449,8 @@ const openCamera = ( )=>{
           </Modal>
         </View>
         <TouchableOpacity onPress={openGallery} style={{ width: responsiveWidth(8), height: responsiveWidth(8), borderRadius: responsiveWidth(8), position: 'absolute', top: responsiveHeight(32), left: responsiveWidth(31), justifyContent: 'center', alignItems: 'center' }} >
-        <Image source={require("../../../Assets/ios/photo-camera.png")} tyle={styles.cameraIcon}  />
 
+          <Icon name="camera" size={11} color="#fff" style={styles.cameraIcon} />
         </TouchableOpacity>
         <View style={{ marginTop: responsiveHeight(-21), marginLeft: responsiveWidth(44), }}>
           <Text style={styles.profile_name}>{userName}</Text>
@@ -487,6 +466,7 @@ const openCamera = ( )=>{
             </TouchableOpacity>
 
           </View>
+          {/* //////////////////////////////////////////////////////*/}
           <View style={{ flexDirection: "row", position: "absolute", top: responsiveHeight(10), left: responsiveWidth(-39), }}>
             <Text style={styles.review}>Reviews </Text>
             <View style={styles.review_box}>
@@ -518,6 +498,7 @@ const openCamera = ( )=>{
 
         <Profession />
 
+        {/* <MyActivities /> */}
         <Myactive />
 
 
@@ -526,8 +507,6 @@ const openCamera = ( )=>{
     </>
   )
 }
-
-export default ProfileRoot;
 
 const styles = StyleSheet.create({
   container: {
@@ -589,8 +568,6 @@ const styles = StyleSheet.create({
     right: 10,
     zIndex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    width:30,
-    height:30
 
   },
   profileimage: {

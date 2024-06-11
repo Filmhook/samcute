@@ -66,8 +66,7 @@ const TopBar = () => {
       height: responsiveHeight(7.8),
       flexDirection: 'row',
       columnGap: responsiveWidth(14),
-      marginTop: 40
-
+      
     },
     // container: {
     //   flex: 1,
@@ -419,7 +418,7 @@ const TopBar = () => {
         style={{
           height: responsiveHeight(7),
           width: responsiveWidth(60),
-          marginBottom: responsiveHeight(3),
+          marginBottom: responsiveHeight(3), 
           flexDirection: 'row',
           position: 'relative',
 
