@@ -1,7 +1,7 @@
 // Imports dependencies.
 import React, { useEffect, useState, useRef } from 'react';
 import {
-  SafeAreaView,
+  Image,
   FlatList,
   StyleSheet,
   Text,
@@ -369,8 +369,12 @@ console.log("Fetched Msg...")
           <View style={styles.TopBar}>
             <Text style={styles.UsernameText}>{data.userName}</Text>
             <View style={styles.TopBarRightIcons}>
-              <Ionicons name="call-outline" size={27} style={{ marginRight: 15 }} color="blue" onPress={() => GetchannelToken('voice')} />
-              <AntDesign name="videocamera" size={27} color="blue" onPress={() => GetchannelToken('video')} />
+            <TouchableOpacity style={{ marginRight: 20 }}  onPress={() => GetchannelToken('voice')} >
+              <Image  source={require('../Assets/ios/call.png')} style={{height:22,width:22}} />
+              </TouchableOpacity>
+              <TouchableOpacity  onPress={() => GetchannelToken('video')} >
+              <Image  source={require('../Assets/ios/video-call.png')} style={{height:22,width:22}} />
+              </TouchableOpacity>
             </View>
           </View>
           <ScrollView ref={scrollViewRef} style={styles.ScrollView}>
@@ -392,7 +396,10 @@ console.log("Fetched Msg...")
 
 
           <View style={styles.MessageEnteringView}>
-            <Entypo name="emoji-flirt" size={30} color="blue" onPress={() => setOpenEmojiKeyboard(true)} />
+            <TouchableOpacity onPress={() => setOpenEmojiKeyboard(true)}>
+            <Image  source={require('../Assets/ios/happy.png')} style={{height:30,width:30}} color="blue"  />
+
+            </TouchableOpacity>
             <TextInput
               multiline
               style={styles.MessageInput}
@@ -400,7 +407,6 @@ console.log("Fetched Msg...")
               placeholderTextColor={'grey'}
               onChangeText={text => setContent(text)}
               value={content}
-              keyboardType="emoji"
             />
 
 
@@ -413,7 +419,8 @@ console.log("Fetched Msg...")
             )}
 
             <TouchableOpacity style={styles.SendBTN} onPress={SaveMessages}  >
-              <FontAwesome name="send" size={20} color="white" />
+              <Image  source={require('../Assets/ios/send.png')} style={{height:20,width:20}} color="blue"  />
+
             </TouchableOpacity>
           </View>
         </View >
@@ -471,7 +478,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: '75%',
     borderRadius: 5,
-    paddingLeft: 15
+    paddingLeft: 15,
+    paddingVertical:10
   },
   SendBTN: {
     backgroundColor: 'blue',

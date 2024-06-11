@@ -17,11 +17,7 @@ export default function CurrentIndustry() {
                 const response = await privateAPI.get(`industryUser/getIndustryByuserId?userId=${userId}`);
                 setIndustryData(response.data.industryData);
             } catch (error) {
-                if (error.response && error.response.status === 404) {
-                    setIndustryData(null); // Set industry data to null if status is 404
-                } else {
-                    console.error('Error fetching the industry data:', error);
-                }
+                console.log('Error fetching the industry data:', error);
             }
         };
     

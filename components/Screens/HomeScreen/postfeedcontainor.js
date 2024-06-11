@@ -623,16 +623,9 @@ export default function Postfeedcontainor() {
                             style={{ width: "100%", height: '100%' }}
                             paused={paused}
                             resizeMode="contain"
-                            onLoad={() => setCurrentTime(0)} // Set the current time to the beginning when video loads
-                            onProgress={({ currentTime }) => setCurrentTime(currentTime)} // Update current time as video progresses
-                            seek={currentTime} // Seek to the current time
+                            controls={true}
                           />
-                          {paused && ( // Display play button only if video is paused
-                            <Image
-                              source={require('../../../components/Assets/video/play_button.png')}
-                              style={styles.playButton}
-                            />
-                          )}
+                         
                         </View>
                       ) : (
                         <Image
@@ -878,14 +871,12 @@ export default function Postfeedcontainor() {
   //renderitem lists
   return (
     <>
-      <FlatList
-        data={userPost}
-        style={{ padding: 0, margin: 0 }}
-        renderItem={({ item }) => <Datas item={item} />}
-        keyExtractor={(item, index) => index.toString()} // Use index as the key since there are no unique IDs in the data
-      />
-
-
+     
+     {userPost &&(
+      userPost.map((item,index)=>(
+        <Datas item={item} key={index} />
+      ))
+    )}
     </>
 
   )

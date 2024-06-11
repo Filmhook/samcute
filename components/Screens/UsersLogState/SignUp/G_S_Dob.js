@@ -21,7 +21,7 @@ export default function SignUpDob() {
 
     const navigation = useNavigation();
 
-    const [selectedGender, setSelectedGender] = useState(null);
+    const [selectedGender, setSelectedGender] = useState("male");
 
 
     const [dobError, setDobError] = useState('');
@@ -163,26 +163,22 @@ export default function SignUpDob() {
 
                         <View style={{ width: responsiveWidth(83), marginBottom: responsiveHeight(1.5) }}>
                             <Text style={{ fontSize: responsiveFontSize(2.5), fontWeight: '600', color: 'black' }}>What your Sex?</Text>
-
-                        </View>
-
-
-                        <View style={styles.boxContent2}>
-                            <ImageBackground style={styles.inputContainer} source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')} resizeMode="stretch">
-                            <View style={styles.selectContainer}>
+                           
                                 <Picker
-                                    style={styles.picker}
+                                    itemStyle={styles.picker}
                                     selectedValue={selectedGender}
                                     onValueChange={(itemValue) => setSelectedGender(itemValue)}>
-                                    <Picker.Item label="SELECT GENDER" value={null} />
                                     <Picker.Item label="Male" value="male" />
                                     <Picker.Item label="Female" value="female" />
 
                                     <Picker.Item label="Others" value="others" />
                                 </Picker>
-                            </View>
-                            </ImageBackground>
+                        
+                   
                         </View>
+
+
+
                         {genderError ? <Text style={styles.errorMessage}>{genderError}</Text> : null}
 
 
@@ -256,7 +252,6 @@ const styles = StyleSheet.create({
     picker: {
         width: responsiveWidth(87),
         borderRadius: 8,
-        height: responsiveHeight(7),
         borderCurve: responsiveWidth(2),
         color: "#333",
         borderWidth: 1,

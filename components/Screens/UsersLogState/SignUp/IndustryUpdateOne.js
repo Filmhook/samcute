@@ -189,7 +189,7 @@ export default function IndustryUpdateOne() {
       console.error('Registration failed:', error);
     }
   };
-
+console.log("wowowoowowow")
   return (
     <View style={styles.container}>
       <ScrollView>

@@ -259,6 +259,7 @@ export default function SignUpTwo() {
       const userDetails = response.data.data.userDetails;
       console.log('submit', userDetails)
       const userId = userDetails.userId;
+      console.log("submmited user id - " , userId)
       await AsyncStorage.setItem('userId', userId.toString());
       const storedId = await AsyncStorage.getItem('userId');
       console.log("idddddddd", storedId);
@@ -292,8 +293,10 @@ export default function SignUpTwo() {
         Alert.alert('Error', 'Please agree to continue')
         return;
       }
+      submit();
 
       const userId = await AsyncStorage.getItem('userId');
+      console.log("getting email id - " , userId)
       const response = await PublicAPI.post(`/user/emailNotification`, {
         userId: userId
       });
@@ -312,6 +315,7 @@ export default function SignUpTwo() {
       }
 
       const userId = await AsyncStorage.getItem('userId');
+      console.log("getting email id - " , mail)
       const response = await PublicAPI.post(`/user/emailNotification`, {
         userId: userId
       });

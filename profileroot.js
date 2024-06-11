@@ -325,7 +325,7 @@ const ProfileRoot = () =>{
       } catch (error) {
         console.error(error);
       }
-    
+    }
   };
   const fetchCover = async () => {
     try {
@@ -389,22 +389,11 @@ const ProfileRoot = () =>{
     };
     followerCount()
   }, [followerCount]);
-
   useEffect(() => {
     fetchCover();
     fetchProfilePicture();
   }, []);
 
-  const openCameraCover = ()=>{
-
-  }
-
-const openImagePicker = ( )=>{
-
-}  
-const openCamera = ( )=>{
-
-} 
 
    return (
     <>
@@ -429,7 +418,7 @@ const openCamera = ( )=>{
             <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={openCameraCover}>
               <Text style={{color:'black'}}>Open Camera</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ padding: responsiveWidth(2) }} >
+            <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={openGalleryCovernew}>
               <Text style={{color:'black'}}>Upload your Image</Text>
             </TouchableOpacity>
             <TouchableOpacity style={{ padding: responsiveWidth(2) }} onPress={handleDeleteCover}>
@@ -524,7 +513,7 @@ const openCamera = ( )=>{
       </ScrollView>
 
     </>
-  )
+  );
 }
 
 export default ProfileRoot;

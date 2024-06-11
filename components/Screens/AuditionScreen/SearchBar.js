@@ -180,7 +180,7 @@ const SearchBar = () => {
 
   return (
     <>
-      <ScrollView>
+      <View>
         <View style={{ height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f5f5f5' }}>
           <View style={{ flexDirection: 'row' }}>
             <TextInput
@@ -188,7 +188,7 @@ const SearchBar = () => {
               placeholderTextColor={'black'}
               onChangeText={text => setSearchText(text)}
               value={searchText}
-              style={{ borderRadius: responsiveWidth(5), width: '90%', textAlign: 'center', margin: responsiveHeight(0.8), backgroundColor: '#F5F5F5', color: 'black', fontSize: responsiveFontSize(2), fontWeight: '400', borderColor: 'black', borderWidth: responsiveWidth(0.4), }}
+              style={{ borderRadius: responsiveWidth(5), width: '90%',height:45, textAlign: 'center', margin: responsiveHeight(0.8), backgroundColor: '#F5F5F5', color: 'black', fontSize: responsiveFontSize(2), fontWeight: '400', borderColor: 'black', borderWidth: responsiveWidth(0.4), }}
             />
             <View
               style={{
@@ -228,6 +228,7 @@ const SearchBar = () => {
               keyExtractor={(item) => item.auditionDetailsId.toString()}
               renderItem={renderItem}
               style={{ height: '90%', width: '95%' }}
+
             />
           </View>
           {renderFloatingButton()}
@@ -282,7 +283,7 @@ const SearchBar = () => {
             </View>
           </Modal>
         </KeyboardAvoidingView>
-      </ScrollView>
+      </View>
     </>
   );
 }

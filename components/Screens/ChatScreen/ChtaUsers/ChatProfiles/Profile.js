@@ -15,12 +15,15 @@ export default function Chatprofiles({ items }) {
   console.log('items chatprofile', items )
 
   return (
+    <ScrollView>
 
-    <FlatList
-      style={{ marginTop: 10, marginBottom: 60 }}
-      data={items}
-      renderItem={({ item, }) => (
-        <TouchableOpacity key={item.id} onPress={() => navigation.navigate('ChatScreen', {
+
+ 
+
+    {items.map((item,index)=>(
+
+   
+        <TouchableOpacity key={index} onPress={() => navigation.navigate('ChatScreen', {
           data: item
         })}>
           <View style={style.Chatprofiles}>
@@ -43,13 +46,11 @@ export default function Chatprofiles({ items }) {
 
           </View>
         </TouchableOpacity>
-      )}
-      keyExtractor={(item) => item.id}
-    />
+      
+  ))}
+   </ScrollView>
 
-
-  );
-}
+)}
 
 const style = StyleSheet.create({
   Chatprofiles: {

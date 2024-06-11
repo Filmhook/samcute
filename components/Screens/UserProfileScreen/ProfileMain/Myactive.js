@@ -841,17 +841,19 @@ export default function Myactive() {
     return (
         <>
 
-            <View style={styles.bio_title}>
-                <Text style={styles.bio_title_text}>MY ACTIVITIES</Text>
-            </View>
-            <FlatList
-                data={userPost}
-                style={{ padding: 0, margin: 0 }}
-                renderItem={({ item }) => <Datas item={item} />}
-                keyExtractor={(item, index) => index.toString()} // Use index as the key since there are no unique IDs in the data
-            />
-
-
+        <Text style={{ fontWeight: 'bold',
+      fontSize: responsiveFontSize(2.2),
+      color: 'black',
+      marginLeft: responsiveWidth(2),
+      fontFamily: 'Cochin',
+      width: responsiveWidth(70), marginTop:responsiveHeight(1), left:responsiveWidth(2), marginBottom:responsiveHeight(2)}}>MY ACTIVITIES</Text>
+          {userPost && (
+          
+           userPost.map((item,index)=>(
+            <Datas item={item} key={index} />
+           ))
+        )}
+          
         </>
 
     )
@@ -876,13 +878,7 @@ const styles = StyleSheet.create({
         marginTop: responsiveHeight(1),
         marginBottom:responsiveHeight(1)
     },
-    bio_title_text: {
-        fontWeight: 'bold',
-        fontSize: responsiveFontSize(2.2),
-        color: 'black',
-        fontFamily: 'Cochin',
-        width: responsiveWidth(70),
-    },
+   
     modalContainer: {
         backgroundColor: 'white',
         padding: 20,

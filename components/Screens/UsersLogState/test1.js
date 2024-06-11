@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, ActivityIndicator } from 'react-native';
-import InfiniteScrollView from 'react-native-infinite-scroll-view';
 
 
 const POSTS_URL = 'https://filmhook.annularprojects.com/filmhook-0.1/user/post/getAllUsersPosts';

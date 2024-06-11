@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Alert, BackHandler } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
-import { PermissionsAndroid } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -66,8 +65,8 @@ const TopBar = () => {
       backgroundColor: 'white',
       height: responsiveHeight(7.8),
       flexDirection: 'row',
-      columnGap: responsiveWidth(14)
-      //borderWidth:1
+      columnGap: responsiveWidth(14),
+      marginTop: 40
 
     },
     // container: {
@@ -260,19 +259,19 @@ const TopBar = () => {
 
   useEffect(() => {
     async function requestUserPermission() {
-      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-      const authStatus = await messaging().requestPermission();
-      const enabled =
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+      // PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+      // const authStatus = await messaging().requestPermission();
+      // const enabled =
+      //   authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      //   authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-      if (enabled) {
-        console.log('Authorization status:', authStatus);
-        getFCMToken()
+      // if (enabled) {
+      //   console.log('Authorization status:', authStatus);
+      //   getFCMToken()
 
-      } else {
-        console.log('Permission denied');
-      }
+      // } else {
+      //   console.log('Permission denied');
+      // }
     }
     requestUserPermission()
     GETAsuncStorage()
@@ -415,11 +414,7 @@ const TopBar = () => {
     //TopBar Style
     <View style={style.topBar}>
 
-      {/* //Film_hook Logo */}
-
-      {/* <View style={{ width: responsiveWidth(60), height: responsiveHeight(5), top: responsiveHeight(1),left:responsiveWidth(1),}}>
-        <Image source={require('../Assets/Chats_Icon_And_Fonts/Film_hook.png')} style={{ width: responsiveWidth(60), height: responsiveHeight(5), alignSelf: 'center', justifyContent: 'center',  }} resizeMode='stretch'/>
-      </View> */}
+      
       <View
         style={{
           height: responsiveHeight(7),

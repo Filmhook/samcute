@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
-  Switch,
+  Image,
   FlatList,
   TouchableOpacity,
   TextInput
@@ -19,7 +19,7 @@ import {
   RtcSurfaceView,
   ChannelProfileType,
 } from 'react-native-agora';
-import { PermissionsAndroid, Platform } from 'react-native';
+import {  Platform } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -131,18 +131,19 @@ export default function GoLive() {
   }
 
   const getPermission = async () => {
-    if (Platform.OS === 'android') {
-      await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      ]);
-    }
+    // if (Platform.OS === 'android') {
+    //   await PermissionsAndroid.requestMultiple([
+    //     PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+    //     PermissionsAndroid.PERMISSIONS.CAMERA,
+    //   ]);
+    // }
   };
 
   const join = async () => {
     console.log('init live', token, channelName, uid, isJoined, isHost)
 
     if (isJoined) {
+      console.log("Already Joined")
       return;
     }
     try {
@@ -215,7 +216,7 @@ export default function GoLive() {
     console.log('live saved - ' , uid , channelName ,token )
       const liveId = uuid.v4();
       setLiveChannelId(liveId)
-      const res = await privateAPI.post('/live/saveLiveChannelDetails', {
+      const res = await privateAPI.get('/live/saveLiveChannelDetails', {
         userId: uid,
         channelName: channelName,
         startTime: new Date(),
@@ -273,6 +274,7 @@ export default function GoLive() {
   const [allComments, setAllComments] = useState(false);
 
   const OpenCommentsSession = async () => {
+    console.log(liveChannelId)
     try {
       const res = await privateAPI.get(`/live/getLiveCommentDetails?liveChannelId=${liveChannelId}`);
       console.log("All comments data  ", JSON.stringify(res.data))
@@ -281,7 +283,7 @@ export default function GoLive() {
       setVisibleCommentsModal(true)
 
     } catch (error) {
-      console.error(error)
+      console.error("Opening Comments error",error)
     }
 
   }
@@ -337,15 +339,19 @@ export default function GoLive() {
             {isHost && isJoined && (
               <Text style={styles.timer}>{formatTime(timer)}</Text>
             )}
-            <FontAwesome6 name="rotate" size={20} color="white" onPress={() => agoraEngineRef.current.switchCamera()} />
+            <TouchableOpacity onPress={() => agoraEngineRef.current.switchCamera()}>
+            <Image  source={require('../../../Assets/ios/sync.png')} style={{height:20,width:20}} color="blue"  />
+            </TouchableOpacity>
 
           </View>
 
           <View style={styles.BtnsFrontViewBottom}>
             <TouchableOpacity style={styles.BtnsFrontViewBottomCont} onPress={() => setvisibleJoinedUsersModal(true)}>
-              <AntDesign name="user" size={24} color="white" />
+              <Image  source={require('../../../Assets/ios/user.png')} style={{height:20,width:20}} color="blue"  />
+
               <Text>Watching</Text>
-              <Entypo name="chevron-down" size={24} color="white" />
+              <Image  source={require('../../../Assets/ios/down.png')} style={{height:20,width:20}} color="blue"  />
+
             </TouchableOpacity>
             <View style={[styles.BtnsFrontViewBottomCont, {
 
@@ -354,7 +360,10 @@ export default function GoLive() {
                 if (!joiningUse) {
                   if (isJoined && isHost) {
                     return (
-                      <FontAwesome name="stop-circle-o" size={50} color="red" onPress={leave} />
+                      <TouchableOpacity onPress={leave}>
+                        <Image  source={require('../../../Assets/ios/stop.png')} style={{height:50,width:50}} color="blue"  />
+                      </TouchableOpacity>
+
                     )
                   } else {
                     if (uid && token && channelName) {
@@ -422,12 +431,15 @@ export default function GoLive() {
         animationType="slide" // You can customize animationType
         transparent={true}
         visible={visibleJoinLiveModal}
-      >
+      > 
         <View style={styles.LivesModalView}>
           <View style={styles.ModalTopBar}>
-            <AntDesign onPress={() => setVisibleJoinLiveModal(false)} name="closecircle" size={30} color="black" />
+            <TouchableOpacity onPress={() => setVisibleJoinLiveModal(false)} >
+            <Image  source={require('../../../Assets/ios/delete.png')} style={{height:30,width:30}} color="blue"  />
+            </TouchableOpacity>
+
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-              <FontAwesome name="circle" size={20} color="red" />
+            <Image  source={require('../../../Assets/ios/record.png')} style={{height:20,width:20}} color="blue"  />
               <Text style={styles.ModalTopBarText}>On Live</Text>
             </View>
           </View>
@@ -440,7 +452,8 @@ export default function GoLive() {
                   JoinAsRemoteUser(item)
                 }}>
                   <View style={styles.ModalOnlIveUserBar}>
-                    <AntDesign name="user" size={24} color="blue" />
+                  <Image  source={require('../../../Assets/ios/user.png')} style={{height:20,width:20}} color="blue"  />
+
                     <Text style={styles.ModalOnlIveUserText}>{item.username ? item.username : ""}</Text>
                   </View>
                 </TouchableOpacity>
@@ -459,7 +472,9 @@ export default function GoLive() {
       >
         <View style={styles.JoinedUserModalView}>
           <View style={styles.JoinedUserModalViewTopBar}>
-            <AntDesign onPress={() => setvisibleJoinedUsersModal(false)} name="closecircle" size={30} color="black" />
+          <TouchableOpacity onPress={() => setvisibleJoinedUsersModal(false)}>
+          <Image  source={require('../../../Assets/ios/delete.png')} style={{height:30,width:30}}  />
+          </TouchableOpacity>
             <Text>Joined People</Text>
           </View>
           <FlatList
@@ -468,6 +483,8 @@ export default function GoLive() {
             renderItem={({ item }) => (
               <View style={styles.JoinedUserBarView}>
                 <AntDesign name="user" size={24} color="blue" />
+                <Image  source={require('../../../Assets/ios/user.png')} style={{height:30,width:30}} />
+
                 <Text style={styles.ModalOnlIveUserText}>{item.userName}</Text>
               </View>
             )}
@@ -614,7 +631,8 @@ const styles = StyleSheet.create({
   LivesModalView: {
     flex: 1,
     backgroundColor: 'white',
-    padding: 10
+    padding: 10,
+    paddingTop:50
   },
   ModalTopBar: {
     width: '100%',
@@ -645,7 +663,8 @@ const styles = StyleSheet.create({
   },
   JoinedUserModalView: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    paddingTop:30
   },
   JoinedUserModalViewTopBar: {
     width: '100%',
