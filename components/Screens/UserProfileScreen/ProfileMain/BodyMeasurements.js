@@ -32,6 +32,11 @@ const BodyMeasurement = () => {
   const [biceps, setBiceps] = useState('');
   const [theme, setTheme] = useState(Appearance.getColorScheme());
   const [unit, setUnit] = useState('cms');
+  const [heightUnit, setHeightUnit] = useState('');
+  const [weightUnit, setWeightUnit] = useState('');
+  const [skinToneUnit, setSkinToneUnit] = useState('');
+  const [hairUnit, setHairUnit] = useState('');
+  const [bicepsUnit, setBicepsUnit] = useState('in');
 
   useEffect(() => {
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
@@ -168,37 +173,32 @@ const BodyMeasurement = () => {
                 </View>
                 <View style={styles.bioTextContainer}>
                   {isEditing ? (
-                    <View  style={{ 
-                      flexDirection: 'row',
-                   
-                      bottom:responsiveHeight(6)
-                     // alignItems: 'center',
-                    }}>
+                   <View style={{flexDirection:'row', top: responsiveHeight(-5.2), width:responsiveWidth(65),left:responsiveWidth(22)}}>
                       <TextInput
                         style={{
-                          fontSize: responsiveFontSize(2.8),
-                          color: '#000000',
-                          fontWeight: '500',
-                          fontFamily: 'Times New Roman',
-                       //   top: responsiveHeight(-5.2),
-                          left: responsiveWidth(25), width:responsiveWidth(20),
+                        fontSize: responsiveFontSize(2.5),
+                        color: '#000000',
+                        fontWeight: '500',
+                        fontFamily: 'Times New Roman',
+                        width:responsiveWidth(53), 
                         
                         }}
                         placeholderTextColor={'black'}
                         value={height}
                         onChangeText={setHeight}
-                        placeholder={`Your height (${height} cm)`}
+                        placeholder={`What is your Height?`}
                       />
                       <Picker
-                        selectedValue={unit}
-                        style={styles.picker}
-                        onValueChange={(itemValue) => setUnit(itemValue)}
-                      >
-                        <Picker.Item label="cms" value="cms" />
-                        <Picker.Item label="inch" value="inch" />
-                        <Picker.Item label="feet" value="feet" />
-                      </Picker>
-                    </View>
+                      selectedValue={heightUnit}
+                      style={styles.picker}
+                      onValueChange={(itemValue) => setHeightUnit(itemValue)}>
+                      <Picker.Item label="Cms" value="Cms" />
+                      <Picker.Item label="inch" value="Inch" />
+                      <Picker.Item label="feet" value="Feet" />
+                     
+                    </Picker>
+                  </View>
+                     
 
                   ) : (
                     <Text
@@ -210,7 +210,7 @@ const BodyMeasurement = () => {
                         top: responsiveHeight(-4.5),
                         left: responsiveWidth(25),
                       }}>
-                      {height} Centimeter
+                      {height} {heightUnit}
                     </Text>
                   )}
                 </View>
@@ -236,20 +236,32 @@ const BodyMeasurement = () => {
                 </View>
                 <View style={styles.bioTextContainer}>
                   {isEditing ? (
+                    <View style={{flexDirection:'row', top: responsiveHeight(-4.8), width:responsiveWidth(65),left:responsiveWidth(22)}}>
                     <TextInput
                       style={{
-                        fontSize: responsiveFontSize(2.8),
-                        color: '#000000',
-                        fontWeight: '500',
-                        fontFamily: 'Times New Roman',
-                        top: responsiveHeight(-5.2),
-                        left: responsiveWidth(25),
-                      }}
+                      fontSize: responsiveFontSize(2.5),
+                      color: '#000000',
+                      fontWeight: '500',
+                      fontFamily: 'Times New Roman',
+                      width:responsiveWidth(53),
+                      height:responsiveHeight(5)
+                     
+                     }}
                       placeholderTextColor={'black'}
                       value={weight}
                       onChangeText={setWeight}
-                      placeholder="Your weight in kg"
+                      placeholder="Enter your Weight?"
                     />
+                     <Picker
+                      selectedValue={weightUnit}
+                      style={styles.picker}
+                      onValueChange={(itemValue) => setWeightUnit(itemValue)}>
+                      <Picker.Item label="kgs" value="kgs" style={{color:'black'}}/>
+                      <Picker.Item label="lb" value="lb" style={{color:'black'}} />
+                    
+                     
+                    </Picker>
+                  </View>
                   ) : (
                     <Text
                       style={{
@@ -260,7 +272,7 @@ const BodyMeasurement = () => {
                         top: responsiveHeight(-4.5),
                         left: responsiveWidth(25),
                       }}>
-                      {weight} Kilogram
+                      {weight} {weightUnit}
                     </Text>
                   )}
                 </View>
@@ -285,20 +297,37 @@ const BodyMeasurement = () => {
                 </View>
                 <View style={styles.bioTextContainer}>
                   {isEditing ? (
+                    <View style={{flexDirection:'row', top: responsiveHeight(-5.2), width:responsiveWidth(65),left:responsiveWidth(22)}}>
                     <TextInput
                       style={{
-                        fontSize: responsiveFontSize(2.8),
-                        color: '#000000',
-                        fontWeight: '500',
-                        fontFamily: 'Times New Roman',
-                        top: responsiveHeight(-5.2),
-                        left: responsiveWidth(25),
-                      }}
+                      fontSize: responsiveFontSize(2.5),
+                      color: '#000000',
+                      fontWeight: '500',
+                      fontFamily: 'Times New Roman',
+                      width:responsiveWidth(53),
+                     
+                     }}
                       placeholderTextColor={'black'}
                       value={skinTone}
                       onChangeText={setSkinTone}
-                      placeholder="Enter your skinTone"
+                      placeholder="Select Skin Tone?"
                     />
+                     <Picker
+                      selectedValue={skinToneUnit}
+                      style={styles.picker}
+                      onValueChange={(itemValue) => setSkinToneUnit(itemValue)}>
+                      <Picker.Item label="Asian" value="Asian" style={{color:'black'}}/>
+                      <Picker.Item label="Arab" value="Arab" style={{color:'black'}} />
+                      <Picker.Item label="Black" value="Black" style={{color:'black'}} />
+                      <Picker.Item label="Latine" value="Latine" style={{color:'black'}} />
+                      <Picker.Item label="Indian" value="Indian" style={{color:'black'}} />
+                      <Picker.Item label="White" value="White" style={{color:'black'}} />
+                      
+                      <Picker.Item label="Other Mixed" value="Other Mixed" style={{color:'black'}} />
+                    
+                     
+                    </Picker>
+                  </View>
                   ) : (
                     <Text
                       style={{
@@ -334,20 +363,42 @@ const BodyMeasurement = () => {
                 </View>
                 <View style={styles.bioTextContainer}>
                   {isEditing ? (
+                    <View style={{flexDirection:'row', top: responsiveHeight(-6.5), width:responsiveWidth(65),left:responsiveWidth(22)}}>
                     <TextInput
                       style={{
-                        fontSize: responsiveFontSize(2.8),
-                        color: '#000000',
-                        fontWeight: '500',
-                        fontFamily: 'Times New Roman',
-                        top: responsiveHeight(-5.2),
-                        left: responsiveWidth(25),
-                      }}
+                      fontSize: responsiveFontSize(2.5),
+                      color: '#000000',
+                      fontWeight: '500',
+                      fontFamily: 'Times New Roman',
+                      width:responsiveWidth(53),
+                     
+                     }}
                       placeholderTextColor={'black'}
                       value={hairColor}
                       onChangeText={setHairColor}
-                      placeholder="Enter your hair color"
+                      placeholder="Choose Hair Colour?"
                     />
+                    <Picker
+                      selectedValue={hairUnit}
+                      style={styles.picker}
+                      onValueChange={(itemValue) => setHairUnit(itemValue)}>
+                      <Picker.Item label="Blonde" value="Blonde" style={{color:'black'}}/>
+                      <Picker.Item label="Black" value="Black" style={{color:'black'}} />
+                      <Picker.Item label="Brunette" value="Brunette" style={{color:'black'}} />
+                      <Picker.Item label="Red" value="Red" style={{color:'black'}} />
+                      <Picker.Item label="White" value="White" style={{color:'black'}} />
+                      <Picker.Item label="Gold" value="Gold" style={{color:'black'}} />
+                      <Picker.Item label="Silver" value="Silver" style={{color:'black'}} />
+                      <Picker.Item label="Brown" value="Brown" style={{color:'black'}} />
+                      <Picker.Item label="Purple" value="Purple" style={{color:'black'}} />
+                      <Picker.Item label="Blue" value="Blue" style={{color:'black'}} />
+                      
+                      
+                      <Picker.Item label="Other" value="Other" style={{color:'black'}} />
+                    
+                     
+                    </Picker>
+                  </View>
                   ) : (
                     <Text
                       style={{
@@ -391,7 +442,7 @@ const BodyMeasurement = () => {
                       {isEditing ? (
                         <TextInput
                           style={{
-                            fontSize: responsiveFontSize(2.8),
+                            fontSize: responsiveFontSize(2.5),
                             color: '#000000',
                             fontWeight: '500',
                             fontFamily: 'Times New Roman',
@@ -402,7 +453,7 @@ const BodyMeasurement = () => {
                           placeholderTextColor={'black'}
                           value={chest}
                           onChangeText={setChest}
-                          placeholder="Set Chest in In"
+                          placeholder="Chest?"
                         />
                       ) : (
                         <Text
@@ -431,7 +482,7 @@ const BodyMeasurement = () => {
                       {isEditing ? (
                         <TextInput
                           style={{
-                            fontSize: responsiveFontSize(2.8),
+                            fontSize: responsiveFontSize(2.5),
                             color: '#000000',
                             fontWeight: '500',
                             fontFamily: 'Times New Roman',
@@ -440,7 +491,7 @@ const BodyMeasurement = () => {
                           placeholderTextColor={'black'}
                           value={waist}
                           onChangeText={setWaist}
-                          placeholder="Set waist in In"
+                          placeholder="Waist?"
                         />
                       ) : (
                         <Text
@@ -469,7 +520,7 @@ const BodyMeasurement = () => {
                       {isEditing ? (
                         <TextInput
                           style={{
-                            fontSize: responsiveFontSize(2.8),
+                            fontSize: responsiveFontSize(2.5),
                             color: '#000000',
                             fontWeight: '500',
                             fontFamily: 'Times New Roman',
@@ -478,7 +529,7 @@ const BodyMeasurement = () => {
                           placeholderTextColor={'black'}
                           value={biceps}
                           onChangeText={setBiceps}
-                          placeholder="Set biceps in In"
+                          placeholder="Biceps?"
                         />
                       ) : (
                         <Text
@@ -684,26 +735,14 @@ const getStyles = theme => {
       // padding: responsiveWidth(4),
 
     },
-    bio_title: {
-      flex: responsiveWidth(0.2),
-      width: '100%',
-      flexDirection: 'row',
-      columnGap: responsiveWidth(20),
-      marginTop: responsiveHeight(1),
+    picker: {
+     
+     justifyContent:'center',alignItems:'center',
+      width: responsiveWidth(12),
+      height: responsiveHeight(5),
+     // backgroundColor: '#000', 
     },
-    downArrow: {
-      width: 20,
-      height: 20,
-      marginRight: responsiveWidth(2),
-    },
-    bio_title_text: {
-      fontWeight: 'bold',
-      fontSize: responsiveFontSize(2.2),
-      color: 'black',
-      marginLeft: responsiveWidth(2),
-      fontFamily: 'Cochin',
-      width: responsiveWidth(70),
-    },
+    
     bio_content: {
       flex: 1,
       justifyContent: 'center',
@@ -712,7 +751,7 @@ const getStyles = theme => {
 
     },
     editButton: {
-      fontSize: responsiveFontSize(3),
+      fontSize: responsiveFontSize(2.2),
       fontWeight: 'bold',
       marginBottom: 10,
       textDecorationLine: 'underline',
@@ -762,7 +801,7 @@ const getStyles = theme => {
     },
     bio_title_text: {
       fontWeight: 'bold',
-      fontSize: responsiveFontSize(2.8),
+      fontSize: responsiveFontSize(2.2),
       color: 'black',
       fontFamily: 'Cochin',
       width: responsiveWidth(70),
@@ -777,10 +816,7 @@ const getStyles = theme => {
       width: 20,
       height: 20,
     },
-    picker: {
-   left:responsiveWidth(60),
-      height: 40,
-    },
+   
   });
 };
 

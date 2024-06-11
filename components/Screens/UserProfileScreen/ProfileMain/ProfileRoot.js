@@ -384,6 +384,7 @@ export default function ProfileRoot() {
     fetchProfilePicture();
   }, []);
 
+ 
 
   return (
     <>

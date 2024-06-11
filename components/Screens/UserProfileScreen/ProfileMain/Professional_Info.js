@@ -239,7 +239,7 @@ export default function Professionalinfo() {
         )}
 
         {/* -------------------------------------------------- */}
-        {expanded && (
+        {/* {expanded && (
           <View style={{ flexDirection: 'row', marginTop: responsiveHeight(2),  width:responsiveWidth(100), flexWrap:'wrap'}}>
             <View style={style.Lhs}>
               <Text style={style.Lhs_text}> Caste :</Text>
@@ -280,7 +280,7 @@ export default function Professionalinfo() {
               </ImageBackground>
             </View>
           </View>
-        )}
+        )} */}
 
         {/* -------------------------------------------------- */}
         {expanded && (
@@ -311,7 +311,7 @@ export default function Professionalinfo() {
                 ) : (
                   <Text
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      fontSize: responsiveFontSize(2.8),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
@@ -354,7 +354,7 @@ export default function Professionalinfo() {
                 ) : (
                   <Text
                     style={{
-                      fontSize: responsiveFontSize(2),
+                      fontSize: responsiveFontSize(2.8),
                       color: '#000000',
                       fontWeight: '500',
                       fontFamily: 'Times New Roman',
@@ -946,7 +946,7 @@ const style = StyleSheet.create({
     marginTop: responsiveHeight(1),
   },
   editButton: {
-    fontSize: 18,
+    fontSize: responsiveFontSize(2.2),
     fontWeight: 'bold',
     marginBottom: 10,
     textDecorationLine: 'underline',

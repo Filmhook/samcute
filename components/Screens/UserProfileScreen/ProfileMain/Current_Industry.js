@@ -6,12 +6,7 @@ import PublicAPI from '../../../api/publicAPI';
 import privateAPI from '../../../api/privateAPI';
 
 export default function CurrentIndustry() {
-
-    // if industry becomes two or more values come 
-    // const industries = user.Industry || [];
-    //console.log('industries:',industries);
     const [expanded, setExpanded] = useState(false);
-
     const [industryData, setIndustryData] = useState([]);
 
     useEffect(() => {
@@ -33,119 +28,84 @@ export default function CurrentIndustry() {
         fetchIndustryData();
     }, []);
 
-
     const toggleExpanded = () => {
         setExpanded(!expanded);
     };
 
-
     return (
-        <>
+        <View style={style.container}>
+            <View style={style.bio_title}>
+                <TouchableOpacity style={style.bio_title_touchable} onPress={toggleExpanded}>
+                    <Text style={style.bio_title_text}>CURRENTLY WORKING INDUSTRY</Text>
+                    <View style={style.downArrowContainer}>
+                        <Image
+                            source={require('../../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
+                            style={style.downArrow}
+                        />
+                    </View>
+                </TouchableOpacity>
+            </View>
 
-            <View style={style.container}>
-
-                {/* <View style={style.bio_title}>
-                    <TouchableOpacity style={style.bio_title} onPress={toggleExpanded}>
-                        <Text style={style.bio_title_text}>CURRENTLY WORKING INDUSTRY
-
-                        </Text>
-
-                        <View style={{ width: responsiveWidth(5), height: responsiveHeight(4), alignItems: 'center', justifyContent: 'center' }}>
-                            <Image
-                                source={require("../../../Assets/Userprofile_And_Fonts/update/down-arrow.png")}
-                                style={style.downArrow}
-                            />
-                        </View>
-                    </TouchableOpacity>
-                </View> */}
-                <View style={style.bio_title}>
-                    <TouchableOpacity style={style.bio_title_touchable} onPress={toggleExpanded}>
-                        <Text style={style.bio_title_text}>CURRENTLY WORKING INDUSTRY</Text>
-                        <View style={style.downArrowContainer}>
-                            <Image
-                                source={require('../../../Assets/Userprofile_And_Fonts/update/down-arrow.png')}
-                                style={style.downArrow}
-                            />
-                        </View>
-                    </TouchableOpacity>
-                </View>
-
-                {expanded && (
-                    <View style={style.bio_content}>
-                        {/* <View style={style.bio_content_section}>
-                            <ImageBackground style={style.inputContainer} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                                <Text style={{
-                                    fontSize: responsiveFontSize(2),
-                                    color: '#000000',
-                                    fontWeight: '500',
-                                    fontFamily: "Times New Roman",
-
-                                }}> Cinema Of India</Text>
-                            </ImageBackground>
-                        </View> */}
-
-                        {/* ///////////////////////////////////////////////*/}
-                        <View style={{}}>
-
-                            <View style={{ rowGap: responsiveHeight(1) }}>
-                                {industryData.map((value, index) => (
+            {expanded && (
+                <View style={style.bio_content}>
+                   
+                        <View style={{ rowGap: responsiveHeight(1),}}>
+                            {industryData ? (
+                                industryData.map((value, index) => (
                                     <ImageBackground
-
+                                        key={index}
                                         style={{
-                                            height: responsiveHeight(5.5),
-                                            width: responsiveWidth(53),
-                                            // borderWidth: responsiveWidth(0.3),
-                                            borderColor: 'black',
-                                            borderRadius: responsiveWidth(2),
-
+                                            height: responsiveHeight(8),
+                                            width: responsiveWidth(90),
+                                           columnGap:responsiveWidth(12),
                                             justifyContent: 'center',
                                             alignItems: 'center',
                                             flexDirection: 'row',
-
+                                           
                                         }}
                                         source={require('../../../Assets/Login_page/Medium_B_User_Profile.png')}
-                                        resizeMode="stretch">
+                                        resizeMode="stretch"
+                                    >
                                         <View style={style.imageContainer}>
                                             <Image
-                                                source={{ uri: value.image }} // Assuming the image URL is directly usable
+                                                source={{ uri: value.image }} 
                                                 style={style.image}
                                             />
                                         </View>
                                         <Text
                                             key={index}
                                             style={{
-                                                fontWeight: 'bold',
-                                                color: 'black'
-                                                // marginLeft: responsiveWidth(20), top: responsiveHeight(1)
-                                            }}>
+                                                
+                                                color: 'black', fontSize:responsiveFontSize(2.8)
+                                            }}
+                                        >
                                             {value.industryName}
                                         </Text>
                                     </ImageBackground>
-                                ))}
-                            </View>
+                                ))
+                            ) : (
+                                <Text style={{ fontWeight: 'bold', color: 'black' }}>N/A</Text>
+                            )}
                         </View>
-
-
-                    </View>
-                )}
-
-            </View>
-            {/* <View style={style.hr_tag} /> */}
-        </>
-    )
+                    
+                </View>
+            )}
+        </View>
+    );
 }
+
 
 const style = StyleSheet.create({
     container: {
         flex: 1,
-        // marginBottom:responsiveHeight(1)
+       
 
     },
     imageContainer: {
-        width: responsiveWidth(12),
-        height: responsiveHeight(5),
-        justifyContent: 'center'
-        //  borderWidth:1
+        width: responsiveWidth(13),
+        height: responsiveHeight(6),
+        justifyContent: 'center',
+
 
     },
     image: {
@@ -154,31 +114,7 @@ const style = StyleSheet.create({
         resizeMode: 'stretch'
     },
 
-    bio_title: {
-        flex: responsiveWidth(0.2),
-        width: '100%',
-        flexDirection: 'row',
-        columnGap: responsiveWidth(20),
-        marginTop: responsiveHeight(1)
-        // borderWidth:1
-    },
-    downArrow: {
-        width: 20,
-        height: 20,
-        marginRight: responsiveWidth(2),
-        // Add styles for your down arrow icon
-    },
-    bio_title_text: {
-        fontWeight: "bold",
-        fontSize: responsiveFontSize(2.2),
-        color: "black",
-        marginLeft: responsiveWidth(2),
-        fontFamily: 'Cochin',
-        //  textDecorationLine: "underline",
-        //  borderWidth:1,
-        width: responsiveWidth(70)
-
-    },
+   
     inputContainer: {
 
         justifyContent: 'center',
@@ -188,9 +124,11 @@ const style = StyleSheet.create({
     },
     bio_content: {
         flex: 1,
-        left: responsiveWidth(43.5),
+      //  left: responsiveWidth(43.5),
         marginTop: responsiveHeight(2),
-        marginBottom: responsiveHeight(1)
+        marginBottom: responsiveHeight(1),
+        justifyContent:'center',
+        alignItems:'center'
     },
     bio_content_section: {
         // flexDirection:"row",
@@ -199,8 +137,7 @@ const style = StyleSheet.create({
         //  borderWidth:responsiveWidth(0.3),
         borderRadius: responsiveWidth(2),
         marginBottom: responsiveHeight(1),
-        justifyContent: 'center',
-        alignItems: 'center',
+      
 
     },
     hr_tag: {

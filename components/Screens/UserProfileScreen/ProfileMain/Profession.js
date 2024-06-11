@@ -1,6 +1,6 @@
 
 import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity, ActivityIndicator, TextInput, Alert, Modal, Button } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Profession_project from './Projects'
 import Profession_tv_drama_project from './Tv_Drama_Projects'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
@@ -13,7 +13,8 @@ import { useNavigation } from '@react-navigation/native'
 import axios from 'axios'
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import MonthPicker from 'react-native-month-year-picker';
+import moment from 'moment';
 
 
 
@@ -28,7 +29,7 @@ export default function Profession() {
   const [netWorthInput, setNetWorthInput] = useState('');
   const [dailySalaryInput, setDailySalaryInput] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  // const [modalVisible, setModalVisible] = useState(false);
   const [currentTitle, setCurrentTitle] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
@@ -38,6 +39,7 @@ export default function Profession() {
   const [endYear, setEndYear] = useState('');
   const [currentSubProfessionId, setCurrentSubProfessionId] = useState(null);
   const [subProfessions, setSubProfessions] = useState([]);
+
   // const toggleModal = () => {
   //   setModalVisibleExp(!isModalVisibleExp);
   // };
@@ -128,12 +130,33 @@ export default function Profession() {
     setModalVisibleExp(true);
   };
 
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
+
+  const handleStartDateChange = (event, newDate) => {
+    setShowStartPicker(false);
+    if (newDate) {
+      const formattedDate = `${newDate.getFullYear()}`;
+      setStartYear(formattedDate);
+    }
+  };
+
+  const handleEndDateChange = (event, newDate) => {
+    setShowEndPicker(false);
+    if (newDate) {
+      const formattedDate = `${newDate.getFullYear()}`;
+      setEndYear(formattedDate);
+    }
+  };
+
   const saveYearSelection = () => {
     updateSubProfessionYears(currentSubProfessionId, startYear, endYear);
+    console.log(startYear, endYear,  currentSubProfessionId)
     setModalVisibleExp(false);
   };
 
   const toggleEditMode = (platformId) => {
+    console.log('platid', platformId)
     setIsEditing(true);
     if (platformId === editingPlatformId) {
       handleSave();
@@ -142,9 +165,9 @@ export default function Profession() {
       setEditingPlatformId(platformId);
       const platform = platformData.find((platform) => platform.platformPermanentId === platformId);
       if (platform) {
-        setFilmCountInput(platform.filmCount.toString());
-        setNetWorthInput(platform.netWorth.toString());
-        setDailySalaryInput(platform.dailySalary.toString());
+        setFilmCountInput(platform.filmCount);
+        setNetWorthInput(platform.netWorth);
+        setDailySalaryInput(platform.dailySalary);
         setSubProfessions(platform.professions.flatMap((profession) => profession.subProfessions));
       }
     }
@@ -185,9 +208,9 @@ export default function Profession() {
           if (p.platformPermanentId === editingPlatformId) {
             return {
               ...p,
-              filmCount: filmCountInput.toString(),
-              netWorth: netWorthInput.toString(),
-              dailySalary: dailySalaryInput.toString(),
+              filmCount: filmCountInput,
+              netWorth: netWorthInput,
+              dailySalary: dailySalaryInput,
               professions: p.professions.map((profession) => ({
                 ...profession,
                 subProfessions: profession.subProfessions.map((subProf) => {
@@ -206,6 +229,7 @@ export default function Profession() {
   };
 
   const updateSubProfessionYears = (subProfessionId, startYear, endYear) => {
+    
     setSubProfessions((prev) =>
       prev.map((subProf) =>
         subProf.subProfessionId === subProfessionId
@@ -214,11 +238,6 @@ export default function Profession() {
       )
     );
   };
-
-
-  
-
-
 
 
 
@@ -240,26 +259,25 @@ export default function Profession() {
 
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userId = await AsyncStorage.getItem('userId');
-        console.log('check userid', userId)
-        const response = await privateAPI.post(
-          `industryUser/getIndustryUserPermanentDetails?userId=${userId}`,
-          {},
-
-        );
-        setPlatformData(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      }
-    };
 
     fetchData();
   }, []);
+  const fetchData = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      console.log('check userid', userId)
+      const response = await privateAPI.post(
+        `industryUser/getIndustryUserPermanentDetails?userId=${userId}`,
+        {},
 
+      );
+      setPlatformData(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setLoading(false);
+    }
+  };
 
 
 
@@ -295,6 +313,7 @@ export default function Profession() {
   };
 
   const uploadImage = async () => {
+    console.log('image chck', selectedImage)
     if (!selectedImage) {
       Alert.alert('No image selected', 'Please select an image first.');
       return;
@@ -333,6 +352,7 @@ export default function Profession() {
       );
 
       if (response.data.status === 1) {
+        fetchData()
         Alert.alert('Success', 'Image uploaded successfully.');
       } else {
         Alert.alert('Upload failed', `Server returned status: ${response.data.status}`);
@@ -346,6 +366,27 @@ export default function Profession() {
     setSelectedImage(null);
     setDescription('');
     setModalVisible(false);
+  };
+
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+  const handleSubmit = () => {
+    // Handle submission or any other action
+    console.log("Selected start year:", startDate);
+    console.log("Selected end year:", endDate);
+    closeModal();
   };
 
 
@@ -379,7 +420,7 @@ export default function Profession() {
               left: responsiveWidth(51),
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: 'blue',marginTop:responsiveHeight(1)
+              backgroundColor: 'blue', marginTop: responsiveHeight(1)
             }}>
               <Text style={{
                 fontSize: responsiveFontSize(2),
@@ -406,9 +447,9 @@ export default function Profession() {
 
 
                 <View style={{ flexDirection: 'row', columnGap: responsiveWidth(3), width: responsiveWidth(100), padding: responsiveWidth(1) }}>
-                  <View style={{ width: responsiveHeight(19), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <View style={{ width: responsiveHeight(19), height: responsiveHeight(12), justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', top: responsiveHeight(1) }}>
                     <ImageBackground style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                      <View style={{ width: responsiveWidth(21), height: responsiveHeight(6.5), right: responsiveWidth(2), margin: responsiveWidth(1) }}>
+                      <View style={{ width: responsiveWidth(21), height: responsiveHeight(10), right: responsiveWidth(2), margin: responsiveWidth(1), }}>
                         <Image source={{ uri: platform.platformImageURL }} style={{ width: '100%', height: '80%' }} resizeMode='stretch' />
                       </View>
 
@@ -431,8 +472,8 @@ export default function Profession() {
                     <View style={styles.professionsContainer}>
                       {platform.professions.map((profession, index) => (
                         <View key={index} style={styles.professionContainer}>
-                          <ImageBackground style={{ width: responsiveWidth(51), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                            <View style={{ width: responsiveWidth(9), height: responsiveHeight(5), right: responsiveWidth(2) }}>
+                          <ImageBackground style={{ width: responsiveWidth(53), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                            <View style={{ width: responsiveWidth(9), height: responsiveHeight(6), right: responsiveWidth(2) }}>
                               <Image source={{ uri: profession.imageURL }} style={{ width: '100%', height: '80%' }} resizeMode='stretch' />
                             </View>
                             <View style={{ width: responsiveWidth(29) }}>
@@ -440,8 +481,8 @@ export default function Profession() {
                             </View>
                           </ImageBackground>
                           {profession.subProfessions.map((subProfession, subIndex) => (
-                            <View style={{ flexDirection: 'row', rowGap: 1, width: responsiveWidth(52), justifyContent:'center', alignItems:'center',  }}>
-                              <ImageBackground key={subIndex} style={{ width: responsiveWidth(30), marginBottom: responsiveHeight(1), padding: 2, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',height:responsiveHeight(5) }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                            <View style={{ flexDirection: 'row', rowGap: 1, width: responsiveWidth(52), justifyContent: 'center', alignItems: 'center', }}>
+                              <ImageBackground key={subIndex} style={{ width: responsiveWidth(30), marginBottom: responsiveHeight(1), padding: 2, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: responsiveHeight(5.5) }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
 
                                 <Text style={styles.subProfession}>{subProfession.subProfessionName} </Text>
 
@@ -451,14 +492,17 @@ export default function Profession() {
                               </ImageBackground>
 
                               {editingPlatformId === platform.platformPermanentId ? (
-                                <TouchableOpacity onPress={() => toggleModal(subProfession.subProfessionId)} style={{ marginLeft: responsiveWidth(3),  width:responsiveWidth(18) }}>
+                                <TouchableOpacity
+                                  onPress={() => toggleModal(subProfession.subProfessionId)} 
+                                 
+                                  style={{ marginLeft: responsiveWidth(3), width: responsiveWidth(18) }}>
                                   <Icon name="calendar" size={responsiveWidth(7)} color="blue" />
                                 </TouchableOpacity>
                               ) : (
 
-                                
 
-                                <Text style={styles.subProfessionYear}>{subProfession.startingYear ?? 'N/A'} - {subProfession.endingYear ?? 'N/A'}</Text>
+
+                                <Text style={styles.subProfessionYear}>{subProfession.startingYear ?? null} - {subProfession.endingYear ?? null}</Text>
                               )}
 
                               {/* <Text style={styles.subProfession}>{profession.endYear}</Text> */}
@@ -467,7 +511,7 @@ export default function Profession() {
                         </View>
                       ))}
                     </View>
-                    <Modal
+                    {/* <Modal
                       transparent={true}
                       animationType="slide"
                       visible={isModalVisibleExp}
@@ -478,17 +522,9 @@ export default function Profession() {
                           <Text style={styles.modalTitle}>Select Start and End Year</Text>
 
                           <Text style={styles.label}>Start Year:</Text>
-                          <Picker
-                            selectedValue={startYear}
-                            style={styles.picker}
-                            onValueChange={(itemValue) => setStartYear(itemValue)}
-                          >
-                            {years.map((year, index) => (
-                              <Picker.Item key={index} label={year.toString()} value={year.toString()} />
-                            ))}
-                          </Picker>
+                          
 
-                          <Text style={styles.label}>End Year:</Text>
+
                           <Picker
                             selectedValue={endYear}
                             style={styles.picker}
@@ -499,33 +535,77 @@ export default function Profession() {
                             ))}
                           </Picker>
 
-                          <View style={{flexDirection:'row', columnGap:responsiveWidth(8)}}>
-                          {/* <Button title="Cancel" onPress={() => setModalVisibleExp(false)} />
-                          <Button title="Confirm" onPress={saveYearSelection} /> */}
-                          <TouchableOpacity onPress={() => setModalVisibleExp(false)}  style={{backgroundColor:'red', width:responsiveWidth(18), justifyContent:'center', alignItems:'center', height:responsiveHeight(4), borderRadius:responsiveWidth(2), padding:responsiveWidth(1)}}><Text style={{fontSize:responsiveFontSize(2), color:'black'}}>Cancel</Text></TouchableOpacity>
-                          <TouchableOpacity onPress={saveYearSelection} style={{backgroundColor:'lightblue', width:responsiveWidth(18), justifyContent:'center', alignItems:'center', height:responsiveHeight(4), borderRadius:responsiveWidth(2), padding:responsiveWidth(1)}}><Text style={{fontSize:responsiveFontSize(2), color:'black'}}>Confirm</Text></TouchableOpacity>
-                         
+                          <View style={{ flexDirection: 'row', columnGap: responsiveWidth(8) }}>
+                           
+                            <TouchableOpacity onPress={() => setModalVisibleExp(false)} style={{ backgroundColor: 'red', width: responsiveWidth(18), justifyContent: 'center', alignItems: 'center', height: responsiveHeight(4), borderRadius: responsiveWidth(2), padding: responsiveWidth(1) }}><Text style={{ fontSize: responsiveFontSize(2), color: 'black' }}>Cancel</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={saveYearSelection} style={{ backgroundColor: 'lightblue', width: responsiveWidth(18), justifyContent: 'center', alignItems: 'center', height: responsiveHeight(4), borderRadius: responsiveWidth(2), padding: responsiveWidth(1) }}><Text style={{ fontSize: responsiveFontSize(2), color: 'black' }}>Confirm</Text></TouchableOpacity>
+
                           </View>
                         </View>
                       </View>
+                    </Modal> */}
+                    <Modal
+                      animationType="slide"
+                      transparent={true}
+                      visible={isModalVisibleExp}
+                      onRequestClose={() => setModalVisibleExp(false)}
+                    >
+                      <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                          <View style={styles.inputContainer}>
+                            <Text style={styles.dateText}>
+                              {startYear ? startYear : "Select Start Year"}
+                            </Text>
+                            <TouchableOpacity onPress={() => setShowStartPicker(true)}>
+                              <Icon name="calendar" size={20} style={styles.icon} />
+                            </TouchableOpacity>
+                          </View>
+                          <View style={styles.inputContainer}>
+                            <Text style={styles.dateText}>
+                              {endYear ? endYear : "Select End Year"}
+                            </Text>
+                            <TouchableOpacity onPress={() => setShowEndPicker(true)}>
+                              <Icon name="calendar" size={20} style={styles.icon} />
+                            </TouchableOpacity>
+                          </View>
+                          <TouchableOpacity onPress={saveYearSelection} style={styles.submitButton}>
+                            <Text style={styles.buttonText}>Submit</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
                     </Modal>
+                    {showStartPicker && (
+                      <MonthPicker
+                        onChange={handleStartDateChange}
+                        value={new Date()}
+                      
+                        maximumDate={new Date()}
+                        locale="en"
+                        mode="year"
+                      />
+                    )}
+                    {showEndPicker && (
+                      <MonthPicker
+                        onChange={handleEndDateChange}
+                        value={new Date()}
+                       
+                        maximumDate={new Date()}
+                        locale="en"
+                        mode="year"
+                      />
+                    )}
+
                     <View style={styles.professionContainer}>
-                      <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2) }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
-                        {editingPlatformId === platform.platformPermanentId ? (
-                          <TextInput
-                            placeholder="Film Count"
-                            value={filmCountInput}
-                            onChangeText={text => setFilmCountInput(text)}
-                            keyboardType="numeric"
-                            placeholderTextColor={'black'}
-                          />
-                        ) : (
-                          <Text style={{ color: 'black' }}>Film Count: {platform.filmCount}</Text>
-                        )}
+                      <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+
+                        <Text style={{ color: 'black' }}>
+                          {platform.filmCount !== null ? `${platform.filmCount} ${platform.platformName}` : `0 ${platform.platformName}`}
+                        </Text>
+
                       </ImageBackground>
                     </View>
                     <View style={styles.professionContainer}>
-                      <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2) }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                      <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
                         {editingPlatformId === platform.platformPermanentId ? (
                           <TextInput
                             placeholder="Net Worth"
@@ -540,7 +620,7 @@ export default function Profession() {
                       </ImageBackground>
                     </View>
                     <View style={styles.professionContainer}>
-                      <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: responsiveWidth(2) }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
+                      <ImageBackground style={{ width: responsiveWidth(45), height: responsiveHeight(5.5), marginBottom: responsiveHeight(1), flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }} source={require("../../../Assets/Login_page/Medium_B_User_Profile.png")} resizeMode="stretch">
                         {editingPlatformId === platform.platformPermanentId ? (
                           <TextInput
                             placeholder="Daily Salary"
@@ -554,6 +634,7 @@ export default function Profession() {
                         )}
                       </ImageBackground>
                     </View>
+
                   </View>
                 </View>
                 <View style={{ width: '100%' }}>
@@ -597,26 +678,32 @@ export default function Profession() {
                         </TouchableOpacity>
                       </View>
                     </Modal>
-                  </View>
+                   
+                  </View> 
 
-                  {platform.outputWebModelList.map((file, index) => (       
-              <View style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5",marginRight:responsiveWidth(2)}} >  
-              <Image key={index} source={{ uri: file.filePath }} style={{ width: '100%', height: '100%' }} resizeMode='stretch'/>
-              <View style={{borderWidth:1}}>
-              <Text style={styles.fileDescription}>{file.description}</Text>
-              </View>
-                              
-              </View>
-              ))} 
+
+
+                  {platform.outputWebModelList.map((file, index) => (
+                    <View style={{ width: 130, height: 150, borderWidth: 1, backgroundColor: "#F5F5F5", marginRight: responsiveWidth(2) }} >
+                      <Image key={index} source={{ uri: file.filePath }} style={{ width: '100%', height: '100%' }} resizeMode='stretch' />
+                      <View style={{ borderWidth: 1 }}>
+                        <Text style={styles.fileDescription}>{file.description}</Text>
+                      </View>
+
+                    </View>
+                  ))}
 
                 </ScrollView>
+                <View style={{ borderBottomWidth: responsiveHeight(0.5), borderBottomColor: 'gray', width: responsiveWidth(100), marginTop: responsiveHeight(0.5) }} />
 
-                <View style={styles.horizontalLine} />
               </View>
             ))
           )}
         </ScrollView>
+
       )}
+
+
     </View>
   );
 
@@ -697,27 +784,27 @@ const styles = StyleSheet.create({
     color: 'black'
   },
   professionsContainer: {
-    marginLeft: responsiveWidth(2),
+    // marginLeft: responsiveWidth(1),
   },
   professionContainer: {
     marginBottom: 5,
   },
   profession: {
     fontWeight: 'bold',
-    color: 'black'
+    color: 'black', fontSize: responsiveFontSize(1.9)
   },
   subProfession: {
     color: 'black',
-    textAlign: 'center',
-   
+    textAlign: 'center', fontSize: responsiveFontSize(1.9)
+
   },
   subProfessionYear: {
     color: 'black',
     textAlign: 'center',
-    width:responsiveWidth(22),
-    fontSize:responsiveFontSize(1.5),
-    fontWeight:'500'
-   
+    width: responsiveWidth(22),
+    fontSize: responsiveFontSize(1.5),
+    fontWeight: '500'
+
   },
   image: {
     alignSelf: 'center',
@@ -830,6 +917,38 @@ const styles = StyleSheet.create({
   picker: {
     width: '100%',
     height: 50,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: responsiveWidth(10),
+    borderRadius: 10,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: responsiveHeight(5), width:responsiveWidth(60)
+  },
+  dateText: {
+    flex: 1,
+    fontSize:responsiveFontSize(2)
+   
+  
+  },
+  icon: {
+    color: '#3498db',
+  },
+  submitButton: {
+    marginTop: 20,
+    backgroundColor: '#3498db',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
   },
 
 });

@@ -651,6 +651,7 @@ export default function SignUpTwo() {
                         paddingHorizontal: responsiveWidth(4),
                         fontSize: responsiveFontSize(1.8),
                         fontWeight: '500',
+                        color:'black'
                         // borderWidth:5
                       }}
                     />

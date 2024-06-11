@@ -842,7 +842,7 @@ export default function Myactive() {
         <>
 
             <View style={styles.bio_title}>
-                <Text style={styles.bio_title_text}>MYACTIVITIES</Text>
+                <Text style={styles.bio_title_text}>MY ACTIVITIES</Text>
             </View>
             <FlatList
                 data={userPost}

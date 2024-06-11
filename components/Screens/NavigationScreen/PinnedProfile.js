@@ -34,6 +34,8 @@ const PinnedProfile = ({ onPress }) => {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text  style={{ marginLeft: 10, alignSelf: 'center', color: 'black', fontSize: responsiveFontSize(2), fontWeight: '500' }}>PinnedProfile</Text>
+
+         
           {/* <Text style={styles.subtitle}>
             Lorem ipsum dolor sit amet consectetur.
           </Text> */}

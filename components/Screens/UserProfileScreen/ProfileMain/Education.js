@@ -137,7 +137,7 @@ export default function Education() {
                 {expanded && (
 
 
-                    <View style={{ flexDirection: "row", marginTop: 15 }}>
+                    <View style={{ flexDirection: "row", marginTop: 15, width: responsiveWidth(100), flexWrap: 'wrap',}}>
 
                         <View style={style.Lhs}>
 
@@ -176,7 +176,7 @@ export default function Education() {
 
                 {/* -------------------------------------------------- */}
                 {expanded && (
-                    <View style={{ flexDirection: "row", marginTop: 15 }}>
+                    <View style={{ flexDirection: "row", marginTop: 15,width: responsiveWidth(100), flexWrap: 'wrap' }}>
 
                         <View style={style.Lhs}>
 
@@ -214,7 +214,7 @@ export default function Education() {
                 )}
                 {/* -------------------------------------------------- */}
                 {expanded && (
-                    <View style={{ flexDirection: "row", marginTop: 15 }}>
+                    <View style={{ flexDirection: "row", marginTop: 15 ,width: responsiveWidth(100), flexWrap: 'wrap'}}>
 
                         <View style={style.Lhs}>
 
@@ -259,9 +259,9 @@ export default function Education() {
 
 const style = StyleSheet.create({
     container: {
-      
+
         flex: 1,
-      
+
 
     },
     headder_text: {
@@ -300,26 +300,26 @@ const style = StyleSheet.create({
     },
     Lhs: {
         height: responsiveHeight(5),
-        width: responsiveWidth(38),
-        justifyContent: "center",
-        alignItems: "center",
+        width: responsiveWidth(50),
+        marginLeft: responsiveWidth(2)
     },
     Lhs_text: {
         fontWeight: "bold",
-        fontSize: responsiveFontSize(2.1),
+        fontSize: responsiveFontSize(2.8),
         color: "#323232",
         marginLeft: responsiveWidth(1.5),
         fontFamily: "Times New Roman",
     },
     Rhs: {
-        height: responsiveHeight(5.5),
-        width: responsiveWidth(53),
-        // borderWidth: responsiveWidth(0.3),
-        borderColor: "black",
+        height: responsiveHeight(8),
+        width: responsiveWidth(88),
+
+        //borderWidth: responsiveWidth(0.3),
+        borderColor: 'black',
         borderRadius: responsiveWidth(2),
-        marginLeft: responsiveWidth(5.5),
-        justifyContent: "center",
-        alignItems: "center"
+        marginLeft: responsiveWidth(5.7),
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     inputContainer: {
 
@@ -341,7 +341,7 @@ const style = StyleSheet.create({
         marginVertical: responsiveHeight(1),
     },
     editButton: {
-        fontSize: 18,
+        fontSize: responsiveFontSize(2.2),
         color: 'black',
         fontWeight: 'bold',
         marginBottom: 10,
@@ -356,28 +356,28 @@ const style = StyleSheet.create({
         padding: responsiveWidth(4),
         borderRadius: 8,
         marginTop: responsiveHeight(1),
-      },
-      bio_title_touchable: {
+    },
+    bio_title_touchable: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         width: '100%',
-      },
-      bio_title_text: {
+    },
+    bio_title_text: {
         fontWeight: 'bold',
         fontSize: responsiveFontSize(2.2),
         color: 'black',
         fontFamily: 'Cochin',
         width: responsiveWidth(70),
-      },
-      downArrowContainer: {
+    },
+    downArrowContainer: {
         width: responsiveWidth(6),
         height: responsiveHeight(4),
         alignItems: 'center',
         justifyContent: 'center',
-      },
-      downArrow: {
+    },
+    downArrow: {
         width: 20,
         height: 20,
-      },
+    },
 })

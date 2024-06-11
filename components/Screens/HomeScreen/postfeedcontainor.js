@@ -522,13 +522,13 @@ export default function Postfeedcontainor() {
                   justifyContent: 'center', // This centers the image
                   alignItems: 'center', // This centers the image
                   right: responsiveWidth(8),
-                  bottom: responsiveHeight(1.8)
+                  bottom: responsiveHeight(2)
                 }}
               >
                 {pinStatus === true && (
                   <Image
                     source={require('../../Assets/Home_Icon_And_Fonts/pin_icon.png')}
-                    style={{ width: '90%', height: '90%' }}
+                    style={{ width: '100%', height: '85%' }}
                     resizeMode='stretch'
                   />
                 )}
@@ -538,18 +538,18 @@ export default function Postfeedcontainor() {
                 style={{ flexDirection: "row", width: responsiveWidth(32), justifyContent: "space-evenly", alignItems: "center", bottom: responsiveHeight(2), right: responsiveWidth(4) }}>
                 <Text style={{ fontWeight: "bold", color: "#000000", fontSize: responsiveHeight(2), right: responsiveWidth(2) }} >{elapsedTime}</Text>
                 <View
-                  style={{ width: responsiveWidth(6), height: responsiveHeight(3.6), borderRadius: responsiveWidth(5) }}>
+                  style={{ width: responsiveWidth(6), height: responsiveHeight(3.6), borderRadius: responsiveWidth(5) , top:responsiveHeight(0.5)}}>
                   {privateOrPublic === true ?
-                    <Image source={require('../../Assets/Home_Icon_And_Fonts/lock_icon.png')} style={{ width: "90%", height: '90%' }} resizeMode='stretch' />
+                    <Image source={require('../../Assets/Home_Icon_And_Fonts/lock_icon.png')} style={{ width: "90%", height: '70%' }} resizeMode='stretch' />
                     :
                     <Image source={require('../../../components/Assets/Home_Icon_And_Fonts/public_earth.png')} style={{ width: "90%", height: '90%' }} resizeMode='stretch' />
                   }
                 </View>
                 <View style={{ flexDirection: "row", left: responsiveWidth(1) }}>
                   <Text
-                    style={{ fontWeight: "900", color: "#000000", width: responsiveWidth(3), fontSize: responsiveFontSize(2), top: responsiveHeight(1), width: "30%", left: responsiveWidth(1) }}>
+                    style={{ fontWeight: "bold", color: "#000000", width: responsiveWidth(3), fontSize: responsiveFontSize(2.5), width: "30%", left: responsiveWidth(1), }}>
                     {item.followersCount}</Text>
-                  <Image source={require('../../Assets/Home_Icon_And_Fonts/Followers.png')} style={{ width: responsiveWidth(5), height: responsiveHeight(4) }}></Image>
+                  <Image source={require('../../Assets/Home_Icon_And_Fonts/Followers.png')} style={{ width: responsiveWidth(5), height: responsiveHeight(3) }}></Image>
                 </View>
 
                 <View>
@@ -567,10 +567,9 @@ export default function Postfeedcontainor() {
                       <View
                         style={{ position: "absolute", marginTop: responsiveHeight(4), right: responsiveWidth(2.2), width: responsiveWidth(35), height: responsiveHeight(10),  borderRadius: responsiveWidth(3), justifyContent: 'center', alignItems: 'center', rowGap: responsiveHeight(1.1), zIndex: 3 }}>
                         <TouchableOpacity onPress={() => pinPost(postId)}
-                          style={{ height: responsiveHeight(5), width: responsiveWidth(25), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }} >
-                          <Image style={{ height: responsiveHeight(4), width: responsiveWidth(5), tintColor: 'white', zIndex: 3 }} source={require('../../Assets/Home_Icon_And_Fonts/pin_icon.png')} resizeMode='stretch'></Image>
+                          style={{ height: responsiveHeight(5), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', justifyContent:'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }} >
                           <Text
-                            style={{ color: '#ffffff',fontWeight:"bold" }}>Pin Post</Text>
+                            style={{ color: '#ffffff',fontWeight:"bold" , fontSize:responsiveFontSize(2)}}>Pin Post</Text>
                         </TouchableOpacity>
                         {/* <TouchableOpacity onPress={() => pinProfile(userId)}
                           style={{ height: responsiveHeight(3), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), alignItems: 'center', borderColor: 'white', borderWidth: responsiveWidth(0.3), flexDirection: 'row', paddingHorizontal: responsiveWidth(2), columnGap: responsiveWidth(3) }} >
@@ -579,10 +578,10 @@ export default function Postfeedcontainor() {
                             style={{ color: '#ffffff' }}>Pin Profile</Text>
                         </TouchableOpacity> */}
                         <TouchableOpacity onPress={() => reportPost(postId)}
-                          style={{ height: responsiveHeight(5), width: responsiveWidth(25), backgroundColor: "#000000", borderRadius: responsiveWidth(2), justifyContent: 'center', borderColor: 'white', alignItems: 'center', borderWidth: responsiveWidth(0.3),bottom:responsiveHeight(1.1) }}
+                          style={{ height: responsiveHeight(5), width: responsiveWidth(30), backgroundColor: "#000000", borderRadius: responsiveWidth(2), justifyContent: 'center', borderColor: 'white', alignItems: 'center', borderWidth: responsiveWidth(0.3),bottom:responsiveHeight(1.1) }}
                         >
                           <Text
-                            style={{ color: '#ffffff',fontWeight:"bold" }}
+                            style={{ color: '#ffffff',fontWeight:"bold", fontSize:responsiveFontSize(2) }}
                           >Report Post</Text>
                         </TouchableOpacity>
 
